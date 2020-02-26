@@ -3,7 +3,7 @@
 # Script to initialise project by executing steps as follows:
 #   - Replace port number
 #   - Replace package `demo`
-#   - Replace slug from `spring-boot-template` to one of two (first in first used):
+#   - Replace slug from `pcq-backend` to one of two (first in first used):
 #      - user input
 #      - git config value of the root project. Value in use: `remote.origin.url`
 #   - Clean-up README file from template related info
@@ -33,10 +33,10 @@ do
   perl -i -pe "s/4550/$port/g" ${i}
 done
 
-# Replace spring-boot-template slug
+# Replace pcq-backend slug
 for i in ${files_with_slug[@]}
 do
-  perl -i -pe "s/spring-boot-template/$slug/g" ${i}
+  perl -i -pe "s/pcq-backend/$slug/g" ${i}
 done
 
 # Replace demo package in all files under ./src
