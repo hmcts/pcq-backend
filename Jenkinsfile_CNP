@@ -2,7 +2,7 @@
 
 properties([
   // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
-  pipelineTriggers([cron('H 05 * * *')])
+  //pipelineTriggers([cron('H 05 * * *')])
 ])
 
 @Library("Infrastructure")
@@ -11,6 +11,8 @@ def type = "java"
 def product = "pcq"
 def component = "pcq-backend"
 
-withNightlyPipeline(type, product, component) {
+withPipeline(type, product, component) {
+  installCharts()
   enableSlackNotifications('#pcq-builds')
+  disableLegacyDeployment()
 }
