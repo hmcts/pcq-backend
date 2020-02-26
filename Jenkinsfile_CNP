@@ -11,6 +11,8 @@ def type = "java"
 def product = "pcq"
 def component = "pcq-backend"
 
-withNightlyPipeline(type, product, component) {
+withPipeline(type, product, component) {
+  installCharts()
   enableSlackNotifications('#pcq-builds')
+  disableLegacyDeployment()
 }
