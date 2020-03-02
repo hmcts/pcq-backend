@@ -1,4 +1,4 @@
-package uk.gov.hmcts.pcq;
+package uk.gov.hmcts.reform.pcqbackend;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

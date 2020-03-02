@@ -20,15 +20,6 @@ allprojects {
 
 sourceSets {
 
-  unitTest {
-    java {
-      compileClasspath += main.output
-      runtimeClasspath += main.output
-      srcDir file('src/test/java')
-    }
-    resources.srcDir file('src/test/resources')
-  }
-
   functionalTest {
     java {
       compileClasspath += main.output
