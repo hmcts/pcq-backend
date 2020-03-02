@@ -185,8 +185,10 @@ dependencies {
   integrationTestCompile sourceSets.test.runtimeClasspath
 
   functionalTestCompile sourceSets.main.runtimeClasspath
+  functionalTestCompile sourceSets.test.runtimeClasspath
 
   smokeTestCompile sourceSets.main.runtimeClasspath
+  smokeTestCompile sourceSets.test.runtimeClasspath
 }
 
 test {
