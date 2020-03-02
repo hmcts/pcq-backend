@@ -1,33 +1,18 @@
-# Spring Boot application template
+# PCQ Backend Application
 
 [![Build Status](https://travis-ci.org/hmcts/pcq-backend.svg?branch=master)](https://travis-ci.org/hmcts/pcq-backend)
 
 ## Purpose
 
-The purpose of this template is to speed up the creation of new Spring applications within HMCTS
-and help keep the same standards across multiple teams. If you need to create a new app, you can
-simply use this one as a starting point and build on top of it.
+This is the Protected Characterstics Back-End application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service
 
 ## What's inside
 
-The template is a working application with a minimal setup. It contains:
- * application skeleton
- * setup script to prepare project
- * common plugins and libraries
- * docker setup
- * swagger configuration for api documentation ([see how to publish your api documentation to shared repository](https://github.com/hmcts/reform-api-docs#publish-swagger-docs))
- * code quality tools already set up
- * integration with Travis CI
- * Hystrix circuit breaker enabled
- * MIT license and contribution information
- * Helm chart using chart-java.
-
-The application exposes health endpoint (http://localhost:4550/health) and metrics endpoint
-(http://localhost:4550/metrics).
+The application exposes health endpoint (http://localhost:4550/health).
 
 ## Plugins
 
-The template contains the following plugins:
+The application uses the following plugins:
 
   * checkstyle
 
@@ -186,7 +171,7 @@ and providing fallback options. We recommend you to use Hystrix in your applicat
 
 ### Hystrix circuit breaker
 
-This template API has [Hystrix Circuit Breaker](https://github.com/Netflix/Hystrix/wiki/How-it-Works#circuit-breaker)
+This API has [Hystrix Circuit Breaker](https://github.com/Netflix/Hystrix/wiki/How-it-Works#circuit-breaker)
 already enabled. It monitors and manages all the`@HystrixCommand` or `HystrixObservableCommand` annotated methods
 inside `@Component` or `@Service` annotated classes.
 
