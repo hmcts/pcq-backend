@@ -86,6 +86,8 @@ pmd {
   ruleSetFiles = files("config/pmd/ruleset.xml")
 }
 
+project.tasks['jacocoTestReport'].dependsOn test, integration
+
 jacocoTestReport {
   executionData(test, integration)
   reports {
