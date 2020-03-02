@@ -12,7 +12,7 @@ public class DeleteMe {
 
     @Test
     public void assertTrue() {
-        assertThat(true, is(true));
+        assertThat("True equals true", true, is(true));
     }
 
 }
