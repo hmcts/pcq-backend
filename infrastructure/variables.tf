@@ -2,9 +2,15 @@ variable "product" {
   default = "pcq"
 }
 
+variable "component" {
+  default = "backend"
+}
+
 variable "location" {
   default = "UK South"
 }
+
+variable "deployment_namespace" {}
 
 variable "env" {}
 
