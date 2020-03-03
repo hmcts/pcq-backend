@@ -1,8 +1,6 @@
 variable "product" {
-  type = "string"
+  default = "pcq"
 }
-
-variable "component" {}
 
 variable "location" {
   default = "UK South"

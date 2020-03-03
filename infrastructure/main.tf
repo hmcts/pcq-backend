@@ -1,7 +1,7 @@
 provider "azurerm" {}
 
 resource "azurerm_resource_group" "rg" {
-  name     = "${var.product}-${var.component}-${var.env}"
+  name     = "${var.product}-${var.env}"
   location = var.location
 
   tags = var.common_tags
@@ -30,7 +30,7 @@ resource "azurerm_key_vault_secret" "AZURE_APPINSGHTS_KEY" {
 }
 
 resource "azurerm_application_insights" "appinsights" {
-  name                = "${var.product}-${var.component}-appinsights-${var.env}"
+  name                = "${var.product}-appinsights-${var.env}"
   location            = var.appinsights_location
   resource_group_name = azurerm_resource_group.rg.name
   application_type    = "Web"
