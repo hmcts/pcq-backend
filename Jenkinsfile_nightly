@@ -9,7 +9,7 @@ properties([
 
 def type = "java"
 def product = "pcq"
-def component = "pcq-backend"
+def component = "backend"
 
 withNightlyPipeline(type, product, component) {
   enableSlackNotifications('#pcq-builds')

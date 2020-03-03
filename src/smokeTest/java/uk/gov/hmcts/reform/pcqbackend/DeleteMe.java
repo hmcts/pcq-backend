@@ -1,4 +1,4 @@
-package uk.gov.hmcts.pcq;
+package uk.gov.hmcts.reform.pcqbackend;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +12,7 @@ public class DeleteMe {
 
     @Test
     public void assertTrue() {
-        assertThat(true, is(true));
+        assertThat("True equals true", true, is(true));
     }
 
 }
