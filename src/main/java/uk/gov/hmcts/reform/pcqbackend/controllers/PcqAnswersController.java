@@ -38,6 +38,7 @@ public class PcqAnswersController {
 
     Logger logger = LoggerFactory.getLogger(PcqAnswersController.class);
 
+
     @Autowired
     private Environment environment;
 
@@ -53,7 +54,8 @@ public class PcqAnswersController {
 
             //Step 1. Check the request contains the required header content.
             coRelationId = validateRequestHeader(headers);
-            logger.info("Co-Relation Id : " + coRelationId + " - submitAnswers API call invoked.");
+            coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
+            logger.info("Co-Relation Id : {} - submitAnswers API call invoked.", coRelationId);
 
             //Step 2. Validate the request body against the JSON Schema.
             validateRequestAgainstSchema(answerRequest, environment
@@ -67,18 +69,22 @@ public class PcqAnswersController {
             return generateResponseEntity(pcqId, ive.getErrorCode(),
                                           environment.getProperty("api-error-messages.bad_request"));
         } catch (SchemaValidationException sve) {
-            logger.error("Co-Relation Id : " + coRelationId + " - submitAnswers API failed schema validations. "
-                             + "Detailed error message as follows \n" + sve.getFormattedError());
+            logger.error(
+                "Co-Relation Id : {} - submitAnswers API failed schema validations. "
+                    + "Detailed error message as follows \n {}",
+                coRelationId,
+                sve.getFormattedError()
+            );
             return generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
                                           environment.getProperty("api-error-messages.bad_request"));
         } catch (IOException ioe) {
-            logger.error("Co-Relation Id : " + coRelationId + " - submitAnswers API call failed "
-                        + "due to error - " + ioe.getMessage());
+            logger.error("Co-Relation Id : {} - submitAnswers API call failed "
+                        + "due to error - {}", coRelationId, ioe.getMessage());
             return generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                           environment.getProperty("api-error-messages.internal_error"));
         } catch (Exception e) {
-            logger.error("Co-Relation Id : " + coRelationId + " - submitAnswers API call failed "
-                             + "due to error - " + e.getMessage(), e);
+            logger.error("Co-Relation Id : {} - submitAnswers API call failed "
+                             + "due to error - {}", coRelationId, e.getMessage(), e);
             return generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                           environment.getProperty("api-error-messages.internal_error"));
         }
@@ -87,27 +93,14 @@ public class PcqAnswersController {
                                       environment.getProperty("api-error-messages.created"));
     }
 
-    //@GetMapping(path="/pcqWithoutCase", produces = "application/json")
-    //public PCQWithoutCaseResponse getPcqWithoutCase()
-    //{
-    //    return null;
-    //}
-
-    //@PutMapping(path = "/addCaseForPCQ/{pcqId}", produces = "application/json")
-    //public ResponseEntity<Object> addCaseForPcq(@PathVariable Long pcqId, String caseId)
-    //{
-    //    return null;
-    //}
-
     private ResponseEntity<Object> generateResponseEntity(int pcqId, HttpStatus code, String message) {
 
         Map<String, Object> responseMap = new ConcurrentHashMap<>();
-        //TODO: Generate below as per the schema
         responseMap.put("pcqId", Integer.valueOf(pcqId));
         responseMap.put("responseStatus", message);
         responseMap.put("responseStatusCode", String.valueOf(code.value()));
 
-        return new ResponseEntity<Object>(responseMap, code);
+        return new ResponseEntity<>(responseMap, code);
 
     }
 
@@ -124,6 +117,7 @@ public class PcqAnswersController {
 
     }
 
+    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void validateRequestAgainstSchema(Object requestObject, String schemaFileName) throws IOException,
         SchemaValidationException {
 
@@ -131,7 +125,6 @@ public class PcqAnswersController {
         //Convert the requestObject to a JSON String.
         ObjectMapper mapper = new ObjectMapper();
         String jsonString = mapper.writeValueAsString(requestObject);
-        //logger.info("Method - validateRequestAgainstSchema, converted json string is " + jsonString);
 
         //Use the json string to form a JSONNode.
         JsonNode jsonNode = mapper.readTree(jsonString);
@@ -146,7 +139,16 @@ public class PcqAnswersController {
             Set<ValidationMessage> errorSet = jsonSchema.validate(jsonNode);
 
             if (errorSet != null && !errorSet.isEmpty()) {
-                throw new SchemaValidationException("Request does not conform to JSON Schema.", errorSet);
+
+                StringBuilder strBuilder = new StringBuilder();
+
+                //noinspection RedundantExplicitVariableType
+                for (ValidationMessage validationMessage : errorSet) {
+                    strBuilder.append(validationMessage.getMessage());
+                    strBuilder.append(" ; ");
+                }
+
+                throw new SchemaValidationException("Request does not conform to JSON Schema.", strBuilder.toString());
             }
 
         } finally {
@@ -161,5 +163,6 @@ public class PcqAnswersController {
             throw new InvalidRequestException("Version number mis-match", HttpStatus.FORBIDDEN);
         }
     }
+
 
 }
