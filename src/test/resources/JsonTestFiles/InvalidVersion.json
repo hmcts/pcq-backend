@@ -1,0 +1,15 @@
+{
+  "pcqId": 1234,
+  "caseId": "",
+  "partyId": "23",
+  "channel": 1,
+  "completedDate": "2020-03-05T09:13:45",
+  "serviceId": 0,
+  "actor": 1,
+  "versionNo": 2,
+  "pcqAnswers": {
+    "dob_provided": 1,
+    "dob": "1970-01-01",
+    "language_main": null
+  }
+}

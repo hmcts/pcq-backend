@@ -20,6 +20,15 @@ allprojects {
 
 sourceSets {
 
+  test {
+    java {
+      compileClasspath += main.output
+      runtimeClasspath += main.output
+      srcDir file('src/test/java')
+    }
+    resources.srcDir file('src/test/resources')
+  }
+
   functionalTest {
     java {
       compileClasspath += main.output
@@ -55,6 +64,7 @@ tasks.withType(JavaCompile) {
 task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification') {
   testClassesDirs = sourceSets.test.output.classesDirs
   classpath = sourceSets.test.runtimeClasspath
+  useJUnitPlatform()
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
@@ -175,6 +185,9 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.1.RELEASE'
 
+  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.31"
+
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
@@ -195,6 +208,8 @@ test {
   useJUnitPlatform()
   failFast = true
 }
+
+
 
 mainClassName = 'uk.gov.hmcts.reform.pcqbackend.Application'
 
