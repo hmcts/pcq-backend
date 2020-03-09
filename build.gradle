@@ -146,9 +146,6 @@ dependencyCheck {
 
 dependencyManagement {
   dependencies {
-    dependency group: 'org.codehaus.groovy', name: 'groovy-xml', version: '3.0.2'
-    dependency group: 'org.codehaus.groovy', name: 'groovy-json', version: '3.0.2'
-    dependency group: 'org.apache.sling', name: 'org.apache.sling.javax.activation', version: '0.14.0'
     dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
     // CVE-2018-10237 - Unbounded memory allocation
     dependencySet(group: 'com.google.guava', version: '28.2-jre') {
