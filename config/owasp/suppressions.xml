@@ -7,7 +7,6 @@
     <gav regex="true">^org\.springframework\.security:spring-security-crypto:5.2.[0-2].RELEASE</gav>
     <cpe>cpe:/a:pivotal_software:spring_security</cpe>
     <cve>CVE-2018-1258</cve>
-
   </suppress>
 
   <suppress until="2020-01-31">
@@ -17,6 +16,12 @@
     <packageUrl regex="true">^pkg:maven/org\.apache\.tomcat\.embed.*$</packageUrl>
     <cve>CVE-2019-17563</cve>
     <cve>CVE-2019-12418</cve>
+  </suppress>
+
+  <suppress>
+    <notes><![CDATA[ no fix available ]]></notes>
+    <gav regex="true">^org.codehaus.groovy:groovy-(json|xml):2\.5\.9$</gav>
+    <cve>CVE-2016-6497</cve>
   </suppress>
 
 </suppressions>
