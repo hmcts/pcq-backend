@@ -1,0 +1,156 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "PCQ Answer Definitions Schema",
+  "description": "This is the definitions schema for all answers that can be provided by the PCQ service",
+  "definitions": {
+    "all_answers": {
+      "id": "#all_answers",
+      "type": "object",
+      "properties": {
+        "dob_provided": {
+          "id": "#dob_provided",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, null ]
+        },
+        "dob": {
+          "id": "#dob",
+          "type": [ "string" , "null"],
+          "pattern": "\\d{4}-[01]\\d-[0-3]\\d"
+        },
+        "language_main": {
+          "id": "#language_main",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "language_other": {
+          "id": "#language_other",
+          "type": [ "string", "null" ],
+          "minLength": 1
+        },
+        "english_language_level": {
+          "id": "#english_language_level",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, 3, 4, null ]
+        },
+        "sex": {
+          "id": "#sex",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "gender_different": {
+          "id": "#gender_different",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "gender_other": {
+          "id": "#gender_other",
+          "type": [ "string", "null" ]
+        },
+        "sexuality": {
+          "id": "#sexuality",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, 3, 4, null ]
+        },
+        "sexuality_other": {
+          "id": "#sexuality_other",
+          "type": [ "string", "null" ]
+        },
+        "marriage": {
+          "id": "#marriage",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "ethnicity": {
+          "id": "#ethnicity",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, null ]
+        },
+        "ethnicity_other": {
+          "id": "#ethnicity_other",
+          "type": [ "string", "null" ]
+        },
+        "religion": {
+          "id": "#religion",
+          "type": [ "integer", "null" ],
+          "enum": [ 1, 2, 3, 4, 5, 6, 7, 8, null ]
+        },
+        "religion_other": {
+          "id": "#religion_other",
+          "type": [ "string", "null" ]
+        },
+        "disability_conditions": {
+          "id": "#disability_conditions",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_impact": {
+          "id": "#disability_impact",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, 3, null ]
+        },
+        "disability_vision": {
+          "id": "#disability_vision",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_hearing": {
+          "id": "#disability_hearing",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_mobility": {
+          "id": "#disability_mobility",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_dexterity": {
+          "id": "#disability_dexterity",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_learning": {
+          "id": "#disability_learning",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_memory": {
+          "id": "#disability_memory",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_health": {
+          "id": "#disability_health",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_stamina": {
+          "id": "#disability_stamina",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_social": {
+          "id": "#disability_social",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "disability_condition_other": {
+          "id": "#disability_condition_other",
+          "type": [ "string", "null" ]
+        },
+        "disability_none": {
+          "id": "#disability_none",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, 2, null ]
+        },
+        "pregnancy": {
+          "id": "#pregnancy",
+          "type": ["integer", "null"],
+          "enum": [ 0, 1, 2, null ]
+        }
+      },
+      "additionalProperties": false
+    }
+
+  }
+
+}

@@ -19,8 +19,14 @@ api-error-messages:
 api-required-header-keys:
   co-relationid: X-Correlation-Id
 api-schema-file:
-  submitanswer-schema: submitAnswersSchema.json
+    submitanswer-schema: submitAnswersSchema.json
 api-version-number: 1
+
+#Application specific unit test properties
+unit-test:
+  api-urls:
+    submit_answer: /pcq/backend/submitAnswers
+
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:

@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "classpath:./answer_definitions_schema.json",
+  "type": "object",
+  "title": "The PCQ Response Schema",
+  "required": [
+    "pcqId",
+    "partyId",
+    "channel",
+    "completedDate",
+    "serviceId",
+    "actor",
+    "versionNo",
+    "pcqAnswers"
+  ],
+  "properties": {
+    "pcqId": {
+      "id": "#pcqId",
+      "type": "integer",
+      "title": "The PCQ Identifier"
+    },
+    "caseId": {
+      "id": "#caseId",
+      "type": "string",
+      "title": "The Case Identifier"
+    },
+    "partyId": {
+      "id": "#partyId",
+      "type": "string",
+      "title": "The Party Identifier"
+    },
+    "channel": {
+      "id": "#channel",
+      "type": "integer",
+      "title": "The Channel of ingress",
+      "default": 1,
+      "enum": [ 1, 2 ]
+    },
+    "completedDate": {
+      "id": "#completedDate",
+      "type": "string",
+      "title": "The Completed Date",
+      "pattern": "\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d(?:\\.\\d+)?Z?"
+    },
+    "serviceId": {
+      "id": "#serviceId",
+      "type": "integer",
+      "title": "The Service Identifier"
+    },
+    "actor": {
+      "id": "#actor",
+      "type": "integer",
+      "title": "The Actor",
+      "enum": [
+        1, 2, 3
+      ]
+    },
+    "versionNo": {
+      "id": "#versionNo",
+      "type": "integer",
+      "title": "The Version Number"
+    },
+    "pcqAnswers": {
+      "id": "#pcqAnswers",
+      "title": "The PCQ Answers",
+      "$ref": "#/definitions/all_answers"
+    }
+  }
+}
