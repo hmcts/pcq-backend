@@ -16,6 +16,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                    "/swagger-resources/**",
                                    "/health",
                                    "/health/liveness",
+                                   "/v2/api-docs/**",
                                    "/info",
                                    "/favicon.ico",
                                    "/");
