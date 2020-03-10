@@ -6,13 +6,18 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes = {SmokeTestConfiguration.class})
 public class SmokeTests {
 
     @Value("${test.instance.uri}")
@@ -33,7 +38,8 @@ public class SmokeTests {
     }
 
     @Test
-    public void shouldGetOkStatusFromHealthEndpointForSolCcdService() {
+    public void shouldGetOkStatusFromHealthEndpointForPcqBackend() {
+
         ValidatableResponse response = given().spec(requestSpec)
             .when()
             .get(url + "/health")
@@ -43,7 +49,7 @@ public class SmokeTests {
     }
 
     @Test
-    public void shouldGetOkStatusFromInfoEndpointForSolCcdService() {
+    public void shouldGetOkStatusFromInfoEndpointForPcqBackend() {
         ValidatableResponse response = given().spec(requestSpec)
             .when()
             .get(url + "/info")
