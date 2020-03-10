@@ -7,7 +7,6 @@
     <gav regex="true">^org\.springframework\.security:spring-security-crypto:5.2.[0-2].RELEASE</gav>
     <cpe>cpe:/a:pivotal_software:spring_security</cpe>
     <cve>CVE-2018-1258</cve>
-
   </suppress>
 
   <suppress until="2020-01-31">
@@ -19,4 +18,35 @@
     <cve>CVE-2019-12418</cve>
   </suppress>
 
+  <suppress>
+    <notes><![CDATA[Nested dependency of adal4j. Microsoft needs to update strong relation of this library in ServiceBus]]></notes>
+    <gav regex="true">^org\.apache\.sling:org\.apache\.sling\.javax\.activation:0\.1\.0$</gav>
+    <cve>CVE-2016-5394</cve>
+    <cve>CVE-2016-6798</cve>
+  </suppress>
+
+  <suppress>
+    <notes><![CDATA[ no fix available ]]></notes>
+    <gav regex="true">^org.codehaus.groovy:groovy-(json|xml):2\.5\.9$</gav>
+    <cve>CVE-2016-6497</cve>
+  </suppress>
+
+  <suppress>
+    <notes><![CDATA[ no fix available ]]></notes>
+    <gav regex="true">^org.springframework.security:spring-security-(config|web|core):5\.2\.2\.RELEASE$</gav>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+
+  <suppress>
+    <notes><![CDATA[No fix is available]]></notes>
+    <gav regex="true">.*security.*</gav>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+
+  <suppress>
+    <notes><![CDATA[No fix is available]]></notes>
+    <filePath regex="true">.*spring-security-test-5\.2\.2\.RELEASE\.jar</filePath>
+    <cve>CVE-2018-1258</cve>
+  </suppress>
+  
 </suppressions>
