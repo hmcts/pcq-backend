@@ -2,16 +2,15 @@ package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -22,13 +21,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -36,9 +37,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(PcqAnswersController.class)
+@Import(SubmitAnswersService.class)
+@Slf4j
+@SuppressWarnings("PMD.ExcessiveImports")
 public class PcqAnswersControllerTest {
-
-    Logger logger = LoggerFactory.getLogger(PcqAnswersControllerTest.class);
 
     @Autowired
     private transient MockMvc mvc;
@@ -46,8 +48,8 @@ public class PcqAnswersControllerTest {
     @Autowired
     private Environment environment;
 
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
+    @Autowired
+    ApplicationContext context;
 
     private static String submitAnswerApiUrl;
 
@@ -67,6 +69,12 @@ public class PcqAnswersControllerTest {
 
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
 
+    //private static final String STATUS_CODE_CREATED = "201";
+
+    //private static final String STATUS_CODE_FORBIDDEN = "403";
+
+    //private static final String STATUS_CODE_BAD_REQUEST = "400";
+
     @Before
     public void setupEnvironmentVariables() {
         submitAnswerApiUrl = environment.getProperty("unit-test.api-urls.submit_answer");
@@ -85,10 +93,8 @@ public class PcqAnswersControllerTest {
         HttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        //Mock DAO when ready.
-
+        int pcqId = 1234;
         try {
-            int pcqId = 1234;
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
             mvc.perform(MockMvcRequestBuilders
@@ -101,9 +107,6 @@ public class PcqAnswersControllerTest {
                                 .andExpect(jsonPath(JSON_PATH_PCQID).value(pcqId))
                                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS).value(apiErrorMessageCreated))
                                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS_CODE).value("201"));
-
-            checkLogsForKeywords();
-
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -123,10 +126,9 @@ public class PcqAnswersControllerTest {
 
         //Mock DAO when ready.
 
+        int pcqId = 1234;
         try {
-            int pcqId = 1234;
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
             mvc.perform(MockMvcRequestBuilders
                             .post(submitAnswerApiUrl)
                             .header(headerKey, CO_RELATION_ID_FOR_TEST)
@@ -138,7 +140,6 @@ public class PcqAnswersControllerTest {
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS).value(apiErrorMessageCreated))
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS_CODE).value("201"));
 
-            checkLogsForKeywords();
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -157,11 +158,9 @@ public class PcqAnswersControllerTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
         //Mock DAO when ready.
-
+        int pcqId = 1234;
         try {
-            int pcqId = 1234;
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
             mvc.perform(MockMvcRequestBuilders
                             .post(submitAnswerApiUrl)
                             .header(headerKey, CO_RELATION_ID_FOR_TEST)
@@ -173,10 +172,9 @@ public class PcqAnswersControllerTest {
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS).value(apiErrorMessageBadRequest))
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS_CODE).value("403"));
 
-            checkLogsForKeywords();
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -192,11 +190,10 @@ public class PcqAnswersControllerTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
         //Mock DAO when ready.
+        int pcqId = 1234;
 
         try {
-            int pcqId = 123;
             String jsonStringRequest = asJsonString(new PcqAnswerRequest(pcqId));
-            //logger.info("testInvalidRequestForMissingHeader - Generated Json String is " + jsonStringRequest);
             mvc.perform(MockMvcRequestBuilders
                             .post(submitAnswerApiUrl)
                             .content(jsonStringRequest)
@@ -225,11 +222,9 @@ public class PcqAnswersControllerTest {
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
         //Mock DAO when ready.
-
+        int pcqId = 1234;
         try {
-            int pcqId = 1234;
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
-            //logger.info("testInvalidRequestForInvalidJson - Generated Json String is " + jsonStringRequest);
             mvc.perform(MockMvcRequestBuilders
                             .post(submitAnswerApiUrl)
                             .header(headerKey, CO_RELATION_ID_FOR_TEST)
@@ -241,7 +236,6 @@ public class PcqAnswersControllerTest {
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS).value(apiErrorMessageBadRequest))
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS_CODE).value("400"));
 
-            checkLogsForKeywords();
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -270,9 +264,15 @@ public class PcqAnswersControllerTest {
         return new String(Files.readAllBytes(resource.toPath()));
     }
 
-    private void checkLogsForKeywords() {
-        assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
-                   "Co-Relation Id was not logged in log files.");
+    public static PcqAnswerRequest jsonObjectFromString(String jsonString) throws IOException {
+        return new ObjectMapper().readValue(jsonString, PcqAnswerRequest.class);
+    }
+
+    public static List<String> getTestHeader() {
+        List<String> headerList =  new ArrayList<>();
+        headerList.add(CO_RELATION_ID_FOR_TEST);
+
+        return headerList;
     }
 
 }

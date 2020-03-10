@@ -2,14 +2,15 @@ package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import javax.servlet.http.HttpServletRequest;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,15 +39,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @WebMvcTest
+@Slf4j
 public class PcqSubmitAnswersControllerTest {
 
-    Logger logger = LoggerFactory.getLogger(PcqSubmitAnswersControllerTest.class);
 
     @Autowired
     private transient MockMvc mvc;
 
     @Autowired
     private Environment environment;
+
+    @Rule
+    public OutputCaptureRule capture = new OutputCaptureRule();
 
     private static String submitAnswerApiUrl;
 
@@ -101,6 +106,43 @@ public class PcqSubmitAnswersControllerTest {
 
             //Check database when ready.
 
+            checkLogsForKeywords();
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage());
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with all valid parameters and that the answers record
+     * is successfully updated in the database. The response status code will be 201.
+     */
+    @DisplayName("Should update the answers successfully and return with 201 response code")
+    @Test
+    public void testSubmitAnswersSecondTime()  {
+        HttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
+        //Mock DAO when ready.
+
+        try {
+            int pcqId = 1234;
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+            mvc.perform(MockMvcRequestBuilders
+                            .post(submitAnswerApiUrl)
+                            .header(headerKey, CO_RELATION_ID_FOR_TEST)
+                            .content(jsonStringRequest)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath(JSON_PATH_PCQID).value(pcqId))
+                .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS).value(apiErrorMessageCreated))
+                .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS_CODE).value("201"));
+
+            checkLogsForKeywords();
+
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
         }
@@ -133,6 +175,7 @@ public class PcqSubmitAnswersControllerTest {
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS).value(apiErrorMessageBadRequest))
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS_CODE).value("403"));
 
+            checkLogsForKeywords();
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -197,7 +240,7 @@ public class PcqSubmitAnswersControllerTest {
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS).value(apiErrorMessageBadRequest))
                 .andExpect(jsonPath(JSON_PATH_RESPONSE_STATUS_CODE).value("400"));
 
-
+            checkLogsForKeywords();
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -223,6 +266,11 @@ public class PcqSubmitAnswersControllerTest {
     public static String jsonStringFromFile(String fileName) throws IOException {
         File resource = new ClassPathResource(fileName).getFile();
         return new String(Files.readAllBytes(resource.toPath()));
+    }
+
+    private void checkLogsForKeywords() {
+        assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
+                   "Co-Relation Id was not logged in log files.");
     }
 
 
