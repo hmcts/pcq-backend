@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
-
 
 
 /**
@@ -47,12 +47,12 @@ public class PcqAnswersController {
         notes = "This API will create a new record in the database for the given PCQId where none exists "
         + "and will update an existing record with the answers as submitted by the users")
     @ApiResponses({
-        @ApiResponse(code = 201, message = "Successfully saved to database."),
-        @ApiResponse(code = 202, message = "Request valid but stale."),
-        @ApiResponse(code = 400, message = "Request failed schema validation."),
-        @ApiResponse(code = 403, message = "Version number mismatch."),
-        @ApiResponse(code = 500, message = "General/Un-recoverable error."),
-        @ApiResponse(code = 503, message = "Database down/un-available.")
+        @ApiResponse(code = 201, message = "Successfully saved to database.", response = SubmitResponse.class),
+        @ApiResponse(code = 202, message = "Request valid but stale.", response = SubmitResponse.class),
+        @ApiResponse(code = 400, message = "Request failed schema validation.", response = SubmitResponse.class),
+        @ApiResponse(code = 403, message = "Version number mismatch.", response = SubmitResponse.class),
+        @ApiResponse(code = 500, message = "General/Un-recoverable error.", response = SubmitResponse.class),
+        @ApiResponse(code = 503, message = "Database down/un-available.", response = SubmitResponse.class)
     })
     @ResponseBody
     public ResponseEntity<Object> submitAnswers(@RequestHeader HttpHeaders headers,
