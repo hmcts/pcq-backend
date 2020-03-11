@@ -188,7 +188,7 @@ def versions = [
   reformLogging       : '5.1.1',
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '2.9.2',
-  restAssured         : '3.1.1',
+  restAssured         : '4.2.0',
   serenityBddVersion  : '2.0.41',
   lombok              : '1.18.12'
 ]
@@ -227,6 +227,11 @@ dependencies {
   functionalTestCompile sourceSets.test.runtimeClasspath
 
   smokeTestCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
+  smokeTestCompile group: 'io.rest-assured', name: 'xml-path', version: '4.2.0'
+  smokeTestCompile group: 'io.rest-assured', name: 'json-path', version: '4.2.0'
+  smokeTestRuntime group: 'io.rest-assured', name: 'xml-path', version: '4.2.0'
+  smokeTestRuntime group: 'io.rest-assured', name: 'json-path', version: '4.2.0'
+
   smokeTestCompile sourceSets.main.runtimeClasspath
   smokeTestCompile sourceSets.test.runtimeClasspath
 }
