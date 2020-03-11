@@ -24,3 +24,22 @@ services:
       - LOGBACK_REQUIRE_ERROR_CODE=false
     ports:
       - $SERVER_PORT:$SERVER_PORT
+
+  pcq-backend-database:
+    build: docker/database
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      PCQ_DB: ${PCQ_DB}
+      PCQ_DB_USERNAME: ${PCQ_DB_USERNAME}
+      PCQ_DB_PASSWORD: ${PCQ_DB_PASSWORD}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 5050:5432
+    volumes:
+      - pcq-backend-database-data:/var/lib/postgresql/data
+
+volumes:
+  pcq-backend-database-data:
