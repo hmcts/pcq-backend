@@ -49,5 +49,29 @@
     <cve>CVE-2018-1258</cve>
   </suppress>
 
+  <suppress>
+    <notes><![CDATA[
+      file name: gradle-pitest-plugin-1.4.6.jar
+      ]]></notes>
+    <cpe>cpe:/a:gradle:gradle</cpe>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+       file name: gradle-pitest-plugin-1.4.6.jar
+       ]]></notes>
+    <cve>CVE-2019-11065</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+       file name: gradle-pitest-plugin-1.4.6.jar
+       ]]></notes>
+    <cve>CVE-2019-15052</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+       file name: gradle-pitest-plugin-1.4.6.jar
+       ]]></notes>
+    <cve>CVE-2019-16370</cve>
+  </suppress>
 
 </suppressions>
