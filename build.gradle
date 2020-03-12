@@ -1,3 +1,12 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath("net.serenity-bdd:serenity-gradle-plugin:2.1.5")
+  }
+}
+
 plugins {
   id 'application'
   id 'checkstyle'
@@ -14,6 +23,7 @@ plugins {
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
+apply plugin: 'net.serenity-bdd.aggregator'
 
 group = 'uk.gov.hmcts.reform'
 version = '0.0.1'
@@ -87,8 +97,12 @@ task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification'
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
+
+  systemProperty "scenario", System.getProperty('scenario')
+
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
+  finalizedBy aggregate
 }
 
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
@@ -212,7 +226,8 @@ def versions = [
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '2.9.2',
   restAssured         : '4.2.0',
-  serenityBddVersion  : '2.0.41',
+  serenityBddVersion  : '2.1.5',
+  serenity            : '2.1.5',
   lombok              : '1.18.12',
   gradlePitest        : '1.4.6',
   pitest              : '1.4.6',
@@ -250,11 +265,25 @@ dependencies {
   testCompile 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.6'
   testCompile 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
 
+  testCompile group: 'net.serenity-bdd', name: 'serenity-core', version: '2.1.5'
+  testCompile group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: '2.1.5'
+  testCompile group: 'net.serenity-bdd', name: 'serenity-spring', version: '2.1.5'
+  testCompile group: 'net.serenity-bdd', name: 'serenity-junit', version: '2.1.5'
+  testCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
+  testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.2.0'
+  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.2.0'
+  testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.2.0'
+  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.2.0'
+
+
+
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
 
   functionalTestCompile sourceSets.main.runtimeClasspath
   functionalTestCompile sourceSets.test.runtimeClasspath
+  functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+  functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   smokeTestCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
   smokeTestCompile group: 'io.rest-assured', name: 'xml-path', version: '4.2.0'

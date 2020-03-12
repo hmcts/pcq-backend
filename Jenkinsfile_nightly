@@ -25,6 +25,7 @@ withNightlyPipeline(type, product, component) {
 
   enableSlackNotifications('#pcq-builds')
   enableMutationTest()
+  enableFullFunctionalTest()
 
   // enableSecurityScan()
 }
