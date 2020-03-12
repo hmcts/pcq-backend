@@ -24,6 +24,7 @@ withNightlyPipeline(type, product, component) {
   env.Rules = params.SecurityRules
 
   enableSlackNotifications('#pcq-builds')
+  enableMutationTest()
 
   // enableSecurityScan()
 }
