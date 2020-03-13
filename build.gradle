@@ -251,7 +251,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
-  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.31"
+  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.34"
 
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
