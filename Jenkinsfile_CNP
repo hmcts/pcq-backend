@@ -15,4 +15,15 @@ withPipeline(type, product, component) {
   installCharts()
   enableSlackNotifications('#pcq-builds')
   disableLegacyDeployment()
+
+  env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
+
+  after('functionalTest:preview') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+  }
+
+  after('functionalTest:aat') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+  }
+
 }
