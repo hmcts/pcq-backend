@@ -85,14 +85,17 @@ public class PcqAnswers implements Serializable {
     @JsonProperty("disability_memory")
     private Integer disabilityMemory;
 
-    @JsonProperty("disability_health")
-    private Integer disabilityHealth;
+    @JsonProperty("disability_mental_health")
+    private Integer disabilityMentalHealth;
 
     @JsonProperty("disability_stamina")
     private Integer disabilityStamina;
 
     @JsonProperty("disability_social")
     private Integer disabilitySocial;
+
+    @JsonProperty("disability_other")
+    private Integer disabilityOther;
 
     @JsonProperty("disability_condition_other")
     private String disabilityConditionOther;
@@ -291,12 +294,12 @@ public class PcqAnswers implements Serializable {
         this.disabilityMemory = disabilityMemory;
     }
 
-    public Integer getDisabilityHealth() {
-        return disabilityHealth;
+    public Integer getDisabilityMentalHealth() {
+        return disabilityMentalHealth;
     }
 
-    public void setDisabilityHealth(Integer disabilityHealth) {
-        this.disabilityHealth = disabilityHealth;
+    public void setDisabilityMentalHealth(Integer disabilityMentalHealth) {
+        this.disabilityMentalHealth = disabilityMentalHealth;
     }
 
     public Integer getDisabilityStamina() {
@@ -313,6 +316,14 @@ public class PcqAnswers implements Serializable {
 
     public void setDisabilitySocial(Integer disabilitySocial) {
         this.disabilitySocial = disabilitySocial;
+    }
+
+    public Integer getDisabilityOther() {
+        return disabilityOther;
+    }
+
+    public void setDisabilityOther(Integer disabilityOther) {
+        this.disabilityOther = disabilityOther;
     }
 
     public String getDisabilityConditionOther() {

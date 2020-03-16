@@ -12,14 +12,24 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswers;
+import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,7 +40,11 @@ public class SubmitAnswersService {
     @Autowired
     private Environment environment;
 
+    @Autowired
+    private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals"})
+    @Transactional
     public ResponseEntity<Object> processPcqAnswers(List<String> headers, PcqAnswerRequest answerRequest) {
         int pcqId = answerRequest.getPcqId();
         String coRelationId = "";
@@ -47,6 +61,64 @@ public class SubmitAnswersService {
 
             //Step 3. Validate the version number of the request matches the back-end version.
             validateVersionNumber(answerRequest.getVersionNo());
+
+            //Step 4. Check whether record exists in database for the pcqId.
+            Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository.
+                findById(answerRequest.getPcqId());
+
+            if (protectedCharacteristics.isEmpty())
+            {
+                // Create the new PCQ Answers record.
+                ProtectedCharacteristics createCharacteristics = convertJsonToDomain(answerRequest);
+                protectedCharacteristicsRepository.save(createCharacteristics);
+
+                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record created.", coRelationId);
+
+            } else {
+                // Update the PCQ Record.
+                ProtectedCharacteristics updateChars = convertJsonToDomain(answerRequest);
+                int resultCount = protectedCharacteristicsRepository.updateCharacteristics(updateChars.getDobProvided(),
+                                                                       updateChars.getDateOfBirth(),
+                                                                       updateChars.getMainLanguage(),
+                                                                       updateChars.getOtherLanguage(),
+                                                                       updateChars.getEnglishLanguageLevel(),
+                                                                       updateChars.getSex(),
+                                                                       updateChars.getGenderDifferent(),
+                                                                       updateChars.getOtherGender(),
+                                                                       updateChars.getSexuality(),
+                                                                       updateChars.getOtherSexuality(),
+                                                                       updateChars.getMarriage(),
+                                                                       updateChars.getEthnicity(),
+                                                                       updateChars.getOtherEthnicity(),
+                                                                       updateChars.getReligion(),
+                                                                       updateChars.getOtherReligion(),
+                                                                       updateChars.getDisabilityConditions(),
+                                                                       updateChars.getDisabilityImpact(),
+                                                                       updateChars.getDisabilityVision(),
+                                                                       updateChars.getDisabilityHearing(),
+                                                                       updateChars.getDisabilityMobility(),
+                                                                       updateChars.getDisabilityDexterity(),
+                                                                       updateChars.getDisabilityLearning(),
+                                                                       updateChars.getDisabilityMemory(),
+                                                                       updateChars.getDisabilityMentalHealth(),
+                                                                       updateChars.getDisabilityStamina(),
+                                                                       updateChars.getDisabilitySocial(),
+                                                                       updateChars.getDisabilityOther(),
+                                                                       updateChars.getOtherDisabilityDetails(),
+                                                                       updateChars.getDisabilityNone(),
+                                                                       updateChars.getPregnancy(),
+                                                                       updateChars.getPcqId(),
+                                                                       updateChars.getCompletedDate());
+
+                if (resultCount == 0) {
+                    log.error("Co-Relation Id : {} - submitAnswers API, Completed Date is in the past.", coRelationId);
+                    return generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
+                                                  environment.getProperty("api-error-messages.accepted"));
+                } else {
+                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record saved.",
+                             coRelationId);
+                }
+            }
 
         } catch (InvalidRequestException ive) {
             log.error(ive.getMessage());
@@ -149,5 +221,72 @@ public class SubmitAnswersService {
 
     public void setEnvironment(Environment environment) {
         this.environment = environment;
+    }
+
+
+    private ProtectedCharacteristics convertJsonToDomain(PcqAnswerRequest pcqAnswerRequest) {
+        ProtectedCharacteristics protectedCharacterstics = new ProtectedCharacteristics();
+        protectedCharacterstics.setPcqId(pcqAnswerRequest.getPcqId());
+        protectedCharacterstics.setActor(pcqAnswerRequest.getActor());
+        protectedCharacterstics.setCaseId(pcqAnswerRequest.getCaseId());
+        protectedCharacterstics.setChannel(pcqAnswerRequest.getChannel());
+        protectedCharacterstics.setCompletedDate(getTimeFromString(pcqAnswerRequest.getCompletedDate()));
+        protectedCharacterstics.setPartyId(pcqAnswerRequest.getPartyId());
+        protectedCharacterstics.setServiceId(pcqAnswerRequest.getServiceId());
+        protectedCharacterstics.setVersionNumber(pcqAnswerRequest.getVersionNo());
+
+        PcqAnswers pcqAnswers = pcqAnswerRequest.getPcqAnswers();
+        if (pcqAnswers != null) {
+            protectedCharacterstics.setDobProvided(pcqAnswers.getDobProvided());
+            if(pcqAnswers.getDob() != null) {
+                protectedCharacterstics.setDateOfBirth(getDateFromString(pcqAnswers.getDob()));
+            }
+            protectedCharacterstics.setMainLanguage(pcqAnswers.getLanguageMain());
+            protectedCharacterstics.setOtherLanguage(pcqAnswers.getLanguageOther());
+            protectedCharacterstics.setEnglishLanguageLevel(pcqAnswers.getEnglishLanguageLevel());
+            protectedCharacterstics.setSex(pcqAnswers.getSex());
+            protectedCharacterstics.setGenderDifferent(pcqAnswers.getGenderDifferent());
+            protectedCharacterstics.setOtherGender(pcqAnswers.getGenderOther());
+            protectedCharacterstics.setSexuality(pcqAnswers.getSexuality());
+            protectedCharacterstics.setOtherSexuality(pcqAnswers.getSexualityOther());
+            protectedCharacterstics.setMarriage(pcqAnswers.getMarriage());
+            protectedCharacterstics.setEthnicity(pcqAnswers.getEthnicity());
+            protectedCharacterstics.setOtherEthnicity(pcqAnswers.getEthnicityOther());
+            protectedCharacterstics.setReligion(pcqAnswers.getReligion());
+            protectedCharacterstics.setOtherReligion(pcqAnswers.getReligionOther());
+            protectedCharacterstics.setDisabilityConditions(pcqAnswers.getDisabilityConditions());
+            protectedCharacterstics.setDisabilityImpact(pcqAnswers.getDisabilityImpact());
+            protectedCharacterstics.setDisabilityVision(pcqAnswers.getDisabilityVision());
+            protectedCharacterstics.setDisabilityHearing(pcqAnswers.getDisabilityHearing());
+            protectedCharacterstics.setDisabilityMobility(pcqAnswers.getDisabilityMobility());
+            protectedCharacterstics.setDisabilityDexterity(pcqAnswers.getDisabilityDexterity());
+            protectedCharacterstics.setDisabilityLearning(pcqAnswers.getDisabilityLearning());
+            protectedCharacterstics.setDisabilityMemory(pcqAnswers.getDisabilityMemory());
+            protectedCharacterstics.setDisabilityMentalHealth(pcqAnswers.getDisabilityMentalHealth());
+            protectedCharacterstics.setDisabilityStamina(pcqAnswers.getDisabilityStamina());
+            protectedCharacterstics.setDisabilitySocial(pcqAnswers.getDisabilitySocial());
+            protectedCharacterstics.setDisabilityOther(pcqAnswers.getDisabilityOther());
+            protectedCharacterstics.setOtherDisabilityDetails(pcqAnswers.getDisabilityConditionOther());
+            protectedCharacterstics.setDisabilityNone(pcqAnswers.getDisabilityNone());
+            protectedCharacterstics.setPregnancy(pcqAnswers.getPregnancy());
+
+        }
+
+        return protectedCharacterstics;
+    }
+
+    private Timestamp getTimeFromString(String timeStampStr) {
+        String pattern = "yyyy-MM-ddTHH:mm:ss.SSSZ";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(timeStampStr));
+
+        return Timestamp.valueOf(localDateTime);
+    }
+
+    private Date getDateFromString(String dateStr) {
+        String pattern = "yyyy-MM-dd";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        LocalDate localDate = LocalDate.from(formatter.parse(dateStr));
+        return Date.valueOf(localDate);
     }
 }
