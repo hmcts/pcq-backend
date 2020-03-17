@@ -97,7 +97,7 @@ public class PcqAnswers implements Serializable {
     @JsonProperty("disability_other")
     private Integer disabilityOther;
 
-    @JsonProperty("disability_condition_other")
+    @JsonProperty("disability_other_details")
     private String disabilityConditionOther;
 
     @JsonProperty("disability_none")

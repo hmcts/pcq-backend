@@ -16,34 +16,34 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswers;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
+import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.transaction.Transactional;
+
 
 @Slf4j
 @Service
 public class SubmitAnswersService {
 
-    @Autowired
-    private Environment environment;
+    Environment environment;
+
+    ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @Autowired
-    private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+    public SubmitAnswersService(ProtectedCharacteristicsRepository protectedCharacteristicsRepository,
+                                Environment environment) {
+        this.protectedCharacteristicsRepository = protectedCharacteristicsRepository;
+        this.environment = environment;
+    }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals"})
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(List<String> headers, PcqAnswerRequest answerRequest) {
         int pcqId = answerRequest.getPcqId();
@@ -63,57 +63,58 @@ public class SubmitAnswersService {
             validateVersionNumber(answerRequest.getVersionNo());
 
             //Step 4. Check whether record exists in database for the pcqId.
-            Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository.
-                findById(answerRequest.getPcqId());
+            Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
+                .findById(answerRequest.getPcqId());
 
-            if (protectedCharacteristics.isEmpty())
-            {
+            ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
+            if (protectedCharacteristics.isEmpty()) {
                 // Create the new PCQ Answers record.
-                ProtectedCharacteristics createCharacteristics = convertJsonToDomain(answerRequest);
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record created.", coRelationId);
+                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record created.",
+                         coRelationId);
 
             } else {
                 // Update the PCQ Record.
-                ProtectedCharacteristics updateChars = convertJsonToDomain(answerRequest);
-                int resultCount = protectedCharacteristicsRepository.updateCharacteristics(updateChars.getDobProvided(),
-                                                                       updateChars.getDateOfBirth(),
-                                                                       updateChars.getMainLanguage(),
-                                                                       updateChars.getOtherLanguage(),
-                                                                       updateChars.getEnglishLanguageLevel(),
-                                                                       updateChars.getSex(),
-                                                                       updateChars.getGenderDifferent(),
-                                                                       updateChars.getOtherGender(),
-                                                                       updateChars.getSexuality(),
-                                                                       updateChars.getOtherSexuality(),
-                                                                       updateChars.getMarriage(),
-                                                                       updateChars.getEthnicity(),
-                                                                       updateChars.getOtherEthnicity(),
-                                                                       updateChars.getReligion(),
-                                                                       updateChars.getOtherReligion(),
-                                                                       updateChars.getDisabilityConditions(),
-                                                                       updateChars.getDisabilityImpact(),
-                                                                       updateChars.getDisabilityVision(),
-                                                                       updateChars.getDisabilityHearing(),
-                                                                       updateChars.getDisabilityMobility(),
-                                                                       updateChars.getDisabilityDexterity(),
-                                                                       updateChars.getDisabilityLearning(),
-                                                                       updateChars.getDisabilityMemory(),
-                                                                       updateChars.getDisabilityMentalHealth(),
-                                                                       updateChars.getDisabilityStamina(),
-                                                                       updateChars.getDisabilitySocial(),
-                                                                       updateChars.getDisabilityOther(),
-                                                                       updateChars.getOtherDisabilityDetails(),
-                                                                       updateChars.getDisabilityNone(),
-                                                                       updateChars.getPregnancy(),
-                                                                       updateChars.getPcqId(),
-                                                                       updateChars.getCompletedDate());
+                int resultCount = protectedCharacteristicsRepository.updateCharacteristics(
+                    createCharacteristics.getDobProvided(),
+                    createCharacteristics.getDateOfBirth(),
+                    createCharacteristics.getMainLanguage(),
+                    createCharacteristics.getOtherLanguage(),
+                    createCharacteristics.getEnglishLanguageLevel(),
+                    createCharacteristics.getSex(),
+                    createCharacteristics.getGenderDifferent(),
+                    createCharacteristics.getOtherGender(),
+                    createCharacteristics.getSexuality(),
+                    createCharacteristics.getOtherSexuality(),
+                    createCharacteristics.getMarriage(),
+                    createCharacteristics.getEthnicity(),
+                    createCharacteristics.getOtherEthnicity(),
+                    createCharacteristics.getReligion(),
+                    createCharacteristics.getOtherReligion(),
+                    createCharacteristics.getDisabilityConditions(),
+                    createCharacteristics.getDisabilityImpact(),
+                    createCharacteristics.getDisabilityVision(),
+                    createCharacteristics.getDisabilityHearing(),
+                    createCharacteristics.getDisabilityMobility(),
+                    createCharacteristics.getDisabilityDexterity(),
+                    createCharacteristics.getDisabilityLearning(),
+                    createCharacteristics.getDisabilityMemory(),
+                    createCharacteristics.getDisabilityMentalHealth(),
+                    createCharacteristics.getDisabilityStamina(),
+                    createCharacteristics.getDisabilitySocial(),
+                    createCharacteristics.getDisabilityOther(),
+                    createCharacteristics.getOtherDisabilityDetails(),
+                    createCharacteristics.getDisabilityNone(),
+                    createCharacteristics.getPregnancy(),
+                    createCharacteristics.getPcqId(),
+                    createCharacteristics.getCompletedDate());
 
                 if (resultCount == 0) {
                     log.error("Co-Relation Id : {} - submitAnswers API, Completed Date is in the past.", coRelationId);
-                    return generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
-                                                  environment.getProperty("api-error-messages.accepted"));
+                    return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
+                                                                 environment.getProperty(
+                                                                     "api-error-messages.accepted"));
                 } else {
                     log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record saved.",
                              coRelationId);
@@ -122,7 +123,7 @@ public class SubmitAnswersService {
 
         } catch (InvalidRequestException ive) {
             log.error(ive.getMessage());
-            return generateResponseEntity(pcqId, ive.getErrorCode(),
+            return ConversionUtil.generateResponseEntity(pcqId, ive.getErrorCode(),
                                           environment.getProperty("api-error-messages.bad_request"));
         } catch (SchemaValidationException sve) {
             log.error(
@@ -131,32 +132,30 @@ public class SubmitAnswersService {
                 coRelationId,
                 sve.getFormattedError()
             );
-            return generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
+            return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
                                           environment.getProperty("api-error-messages.bad_request"));
         } catch (IOException ioe) {
             log.error("Co-Relation Id : {} - submitAnswers API call failed "
                           + "due to error - {}", coRelationId, ioe.getMessage());
-            return generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
+            return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                           environment.getProperty("api-error-messages.internal_error"));
         } catch (Exception e) {
             log.error("Co-Relation Id : {} - submitAnswers API call failed "
                           + "due to error - {}", coRelationId, e.getMessage(), e);
-            return generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
+            return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                           environment.getProperty("api-error-messages.internal_error"));
         }
 
-        return generateResponseEntity(pcqId, HttpStatus.CREATED,
+        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.CREATED,
                                       environment.getProperty("api-error-messages.created"));
     }
 
-    private ResponseEntity<Object> generateResponseEntity(int pcqId, HttpStatus code, String message) {
+    public ProtectedCharacteristics getProtectedCharacteristicsById(int pcqId) {
+        log.info("getAnswer API invoked");
+        Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
+            .findById(pcqId);
 
-        Map<String, Object> responseMap = new ConcurrentHashMap<>();
-        responseMap.put("pcqId", Integer.valueOf(pcqId));
-        responseMap.put("responseStatus", message);
-        responseMap.put("responseStatusCode", String.valueOf(code.value()));
-
-        return new ResponseEntity<>(responseMap, code);
+        return protectedCharacteristics.orElse(null);
 
     }
 
@@ -186,8 +185,7 @@ public class SubmitAnswersService {
 
         //Generate the JSON Schema object from the schema file in the classpath.
         JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance();
-        InputStream inputStream = new ClassPathResource(schemaFileName).getInputStream();
-        try {
+        try (InputStream inputStream = new ClassPathResource(schemaFileName).getInputStream()) {
             JsonSchema jsonSchema = jsonSchemaFactory.getSchema(inputStream);
 
             //Now validate the json against the schema
@@ -206,87 +204,15 @@ public class SubmitAnswersService {
                 throw new SchemaValidationException("Request does not conform to JSON Schema.", strBuilder.toString());
             }
 
-        } finally {
-            //Close the stream at the end.
-            inputStream.close();
         }
 
     }
 
     private void validateVersionNumber(int requestVersionNumber) throws InvalidRequestException {
-        if (requestVersionNumber != Integer.valueOf(environment.getProperty("api-version-number"))) {
+        if (requestVersionNumber != Integer.parseInt(Objects.requireNonNull(environment.getProperty(
+            "api-version-number")))) {
             throw new InvalidRequestException("Version number mis-match", HttpStatus.FORBIDDEN);
         }
     }
 
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-
-
-    private ProtectedCharacteristics convertJsonToDomain(PcqAnswerRequest pcqAnswerRequest) {
-        ProtectedCharacteristics protectedCharacterstics = new ProtectedCharacteristics();
-        protectedCharacterstics.setPcqId(pcqAnswerRequest.getPcqId());
-        protectedCharacterstics.setActor(pcqAnswerRequest.getActor());
-        protectedCharacterstics.setCaseId(pcqAnswerRequest.getCaseId());
-        protectedCharacterstics.setChannel(pcqAnswerRequest.getChannel());
-        protectedCharacterstics.setCompletedDate(getTimeFromString(pcqAnswerRequest.getCompletedDate()));
-        protectedCharacterstics.setPartyId(pcqAnswerRequest.getPartyId());
-        protectedCharacterstics.setServiceId(pcqAnswerRequest.getServiceId());
-        protectedCharacterstics.setVersionNumber(pcqAnswerRequest.getVersionNo());
-
-        PcqAnswers pcqAnswers = pcqAnswerRequest.getPcqAnswers();
-        if (pcqAnswers != null) {
-            protectedCharacterstics.setDobProvided(pcqAnswers.getDobProvided());
-            if(pcqAnswers.getDob() != null) {
-                protectedCharacterstics.setDateOfBirth(getDateFromString(pcqAnswers.getDob()));
-            }
-            protectedCharacterstics.setMainLanguage(pcqAnswers.getLanguageMain());
-            protectedCharacterstics.setOtherLanguage(pcqAnswers.getLanguageOther());
-            protectedCharacterstics.setEnglishLanguageLevel(pcqAnswers.getEnglishLanguageLevel());
-            protectedCharacterstics.setSex(pcqAnswers.getSex());
-            protectedCharacterstics.setGenderDifferent(pcqAnswers.getGenderDifferent());
-            protectedCharacterstics.setOtherGender(pcqAnswers.getGenderOther());
-            protectedCharacterstics.setSexuality(pcqAnswers.getSexuality());
-            protectedCharacterstics.setOtherSexuality(pcqAnswers.getSexualityOther());
-            protectedCharacterstics.setMarriage(pcqAnswers.getMarriage());
-            protectedCharacterstics.setEthnicity(pcqAnswers.getEthnicity());
-            protectedCharacterstics.setOtherEthnicity(pcqAnswers.getEthnicityOther());
-            protectedCharacterstics.setReligion(pcqAnswers.getReligion());
-            protectedCharacterstics.setOtherReligion(pcqAnswers.getReligionOther());
-            protectedCharacterstics.setDisabilityConditions(pcqAnswers.getDisabilityConditions());
-            protectedCharacterstics.setDisabilityImpact(pcqAnswers.getDisabilityImpact());
-            protectedCharacterstics.setDisabilityVision(pcqAnswers.getDisabilityVision());
-            protectedCharacterstics.setDisabilityHearing(pcqAnswers.getDisabilityHearing());
-            protectedCharacterstics.setDisabilityMobility(pcqAnswers.getDisabilityMobility());
-            protectedCharacterstics.setDisabilityDexterity(pcqAnswers.getDisabilityDexterity());
-            protectedCharacterstics.setDisabilityLearning(pcqAnswers.getDisabilityLearning());
-            protectedCharacterstics.setDisabilityMemory(pcqAnswers.getDisabilityMemory());
-            protectedCharacterstics.setDisabilityMentalHealth(pcqAnswers.getDisabilityMentalHealth());
-            protectedCharacterstics.setDisabilityStamina(pcqAnswers.getDisabilityStamina());
-            protectedCharacterstics.setDisabilitySocial(pcqAnswers.getDisabilitySocial());
-            protectedCharacterstics.setDisabilityOther(pcqAnswers.getDisabilityOther());
-            protectedCharacterstics.setOtherDisabilityDetails(pcqAnswers.getDisabilityConditionOther());
-            protectedCharacterstics.setDisabilityNone(pcqAnswers.getDisabilityNone());
-            protectedCharacterstics.setPregnancy(pcqAnswers.getPregnancy());
-
-        }
-
-        return protectedCharacterstics;
-    }
-
-    private Timestamp getTimeFromString(String timeStampStr) {
-        String pattern = "yyyy-MM-ddTHH:mm:ss.SSSZ";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(timeStampStr));
-
-        return Timestamp.valueOf(localDateTime);
-    }
-
-    private Date getDateFromString(String dateStr) {
-        String pattern = "yyyy-MM-dd";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDate localDate = LocalDate.from(formatter.parse(dateStr));
-        return Date.valueOf(localDate);
-    }
 }

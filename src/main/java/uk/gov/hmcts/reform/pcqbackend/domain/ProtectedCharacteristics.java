@@ -4,17 +4,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
 
 @Entity(name = "protected_characteristics")
 @NoArgsConstructor
 @Getter
 @Setter
+@SuppressWarnings({"PMD.TooManyFields"})
 public class ProtectedCharacteristics implements Serializable {
 
     public static final long serialVersionUID = 5428747L;
