@@ -25,7 +25,7 @@ spring:
       minimumIdle: 2
       maximumPoolSize: 10
       idleTimeout: 10000
-      poolName: {to-be-defined}HikariCP
+      poolName: PCQHikariCP
       maxLifetime: 7200000
       connectionTimeout: 30000
   jpa:

@@ -16,15 +16,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @SpringBootTest
-@SuppressWarnings("PMD")
 public class TestContainerDbTest {
 
     @ClassRule
     public static PostgreSQLContainer postgresContainer = new PostgreSQLContainer<>();
 
     @BeforeClass
+    @SuppressWarnings({"PMD.JUnit4TestShouldUseBeforeAnnotation"})
     public static void setUp() {
         String jdbcUrl = postgresContainer.getJdbcUrl();
         String username = postgresContainer.getUsername();
@@ -35,6 +36,7 @@ public class TestContainerDbTest {
     }
 
     @Test
+    @SuppressWarnings({"PMD.CloseResource"})
     public void testDatabaseExists() throws SQLException {
         String jdbcUrl = postgresContainer.getJdbcUrl();
         String username = postgresContainer.getUsername();
@@ -43,18 +45,19 @@ public class TestContainerDbTest {
                 .getConnection(jdbcUrl, username, password);
         ResultSet resultSet =
             conn.createStatement().executeQuery("SELECT count(*) from protected_characteristics");
-        int result = -1;
         if (resultSet.next()) {    // result is properly examined and used
-            result = resultSet.getInt(1);
+            assertEquals("Does protected_characteristics table exist",0, resultSet.getInt(1));
         }
         JdbcUtils.closeConnection(conn);
         JdbcUtils.closeResultSet(resultSet);
-        assertEquals("Does protected_characteristics table exist",0, result);
     }
 
+    @Test
     @AfterClass
+    @SuppressWarnings({"PMD.JUnit4TestShouldUseAfterAnnotation"})
     public static void testCleanup() {
         postgresContainer.stop();
         ContainerDatabaseDriver.killContainers();
+        assertFalse("Ensure container is stopped.", postgresContainer.isRunning());
     }
 }
