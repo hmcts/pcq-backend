@@ -77,6 +77,20 @@ The application uses the following plugins:
 
 Located in `./bin/init.sh`. Simply run and follow the explanation how to execute it.
 
+### Database
+
+To run the pcq-database, execute docker-compose:
+
+```
+    docker-compose -f docker-compose.yml up pcq-database
+```
+
+To add the table definitions you'll need to execute the migrate script:
+
+```
+    ./gradlew -Pflyway.user=pcquser -Pflyway.password=pcqpass -Pflyway.url=jdbc:postgresql://0.0.0.0:5050/pcq flywayMigrate
+```
+
 ## Notes
 
 Since Spring Boot 2.1 bean overriding is disabled. If you want to enable it you will need to set `spring.main.allow-bean-definition-overriding` to `true`.

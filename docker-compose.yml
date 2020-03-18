@@ -22,24 +22,26 @@ services:
       - LOGBACK_REQUIRE_THREAD
       - LOGBACK_REQUIRE_ALERT_LEVEL=false
       - LOGBACK_REQUIRE_ERROR_CODE=false
+      # database configuration
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://pcq-database:5432/${PCQ_DB}
+      - SPRING_DATASOURCE_USERNAME=${PCQ_DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${PCQ_DB_PASSWORD}
     ports:
       - $SERVER_PORT:$SERVER_PORT
+    depends_on:
+      - pcq-database
 
-  pcq-backend-database:
-    build: docker/database
-    healthcheck:
-      interval: 10s
-      timeout: 10s
-      retries: 10
+  pcq-database:
+    container_name: pcq-database
+    image: postgres:11-alpine
     environment:
-      PCQ_DB: ${PCQ_DB}
-      PCQ_DB_USERNAME: ${PCQ_DB_USERNAME}
-      PCQ_DB_PASSWORD: ${PCQ_DB_PASSWORD}
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: ${PCQ_DB_USERNAME}
+      POSTGRES_PASSWORD: ${PCQ_DB_PASSWORD}
+      POSTGRES_DB: ${PCQ_DB}
     ports:
       - 5050:5432
     volumes:
-      - pcq-backend-database-data:/var/lib/postgresql/data
+      - pcq-database-data:/var/lib/postgresql/data
 
 volumes:
-  pcq-backend-database-data:
+  pcq-database-data:
