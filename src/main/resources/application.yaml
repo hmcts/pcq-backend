@@ -11,6 +11,17 @@ management:
       exposure:
         include: health, info, prometheus
 
+#Application specific properties
+api-error-messages:
+  bad_request: Invalid Request
+  created: Successfully created
+  internal_error: Unknown error occurred
+api-required-header-keys:
+  co-relationid: X-Correlation-Id
+api-schema-file:
+  submitanswer-schema: submitAnswersSchema.json
+api-version-number: 1
+
 spring:
   application:
     name: Protected Characteristics Questions
