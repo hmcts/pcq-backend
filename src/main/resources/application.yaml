@@ -15,12 +15,16 @@ management:
 api-error-messages:
   bad_request: Invalid Request
   created: Successfully created
+  accepted: Success
   internal_error: Unknown error occurred
 api-required-header-keys:
   co-relationid: X-Correlation-Id
 api-schema-file:
   submitanswer-schema: submitAnswersSchema.json
 api-version-number: 1
+
+
+#If you use a database then uncomment below lines and update db properties accordingly
 
 spring:
   application:

@@ -34,10 +34,13 @@ CREATE TABLE protected_characteristics (
  disability_mental_health SMALLINT,
  disability_stamina SMALLINT,
  disability_social SMALLINT,
+ disability_other SMALLINT,
  disability_condition_other TEXT,
  disability_none SMALLINT,
  pregnancy SMALLINT
 );
+
+CREATE INDEX completed_date_idx ON protected_characteristics (completed_date);
 
 comment on column protected_characteristics.pcq_id is 'Unique PCQ Id';
 comment on column protected_characteristics.case_id is 'Case Reference Number (stored as Encrypted value)';
@@ -73,6 +76,7 @@ comment on column protected_characteristics.disability_memory is 'Disability Mem
 comment on column protected_characteristics.disability_mental_health is 'Mental Health';
 comment on column protected_characteristics.disability_stamina is 'Disability Stamina';
 comment on column protected_characteristics.disability_social is 'Disability Social';
+comment on column protected_characteristics.disability_other is 'Other Disability';
 comment on column protected_characteristics.disability_condition_other is 'Details of other disabilities not listed';
 comment on column protected_characteristics.disability_none is 'Disability None';
 comment on column protected_characteristics.pregnancy is 'Are you pregnant or have you been pregnant in last year?';
