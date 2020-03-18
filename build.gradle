@@ -160,7 +160,9 @@ def versions = [
   junit           : '5.5.0',
   reformLogging   : '5.1.1',
   springBoot      : springBoot.class.package.implementationVersion,
-  springfoxSwagger: '2.9.2'
+  springfoxSwagger: '2.9.2',
+  serenityBddVersion: '2.1.13',
+  lombok          : '1.18.12'
 ]
 
 dependencies {
@@ -178,11 +180,20 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
+  compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+
+  integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.13.0'
+  integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: '1.13.0'
+  integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenityBddVersion
+  integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenityBddVersion
+  integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenityBddVersion
+  integrationTestCompile group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenityBddVersion
 
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
