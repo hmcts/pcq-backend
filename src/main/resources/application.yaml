@@ -23,6 +23,7 @@ api-schema-file:
   submitanswer-schema: submitAnswersSchema.json
 api-version-number: 1
 
+
 #If you use a database then uncomment below lines and update db properties accordingly
 
 spring:
@@ -39,7 +40,7 @@ spring:
       minimumIdle: 2
       maximumPoolSize: 10
       idleTimeout: 10000
-      poolName: {to-be-defined}HikariCP
+      poolName: PCQHikariCP
       maxLifetime: 7200000
       connectionTimeout: 30000
   jpa:
