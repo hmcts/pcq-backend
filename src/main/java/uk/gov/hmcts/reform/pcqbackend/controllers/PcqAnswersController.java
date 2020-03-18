@@ -37,10 +37,9 @@ import javax.validation.constraints.NotBlank;
 @RequestMapping(path = "/pcq/backend")
 @AllArgsConstructor
 @Slf4j
-@Api(tags = "PCQ BackEnd - API for PCQ database operations.", value = "This is the Protected Characterstics "
-    + "Back-End API that will save user's answers to the database, fetch PCQ Ids that don't have an associated "
-    + "case record and add case information to a PCQ record in the database. "
-    + "The API will be invoked by two components - PCQ front-end and the Consolidation service.")
+@Api(tags = "PCQ BackEnd - API for PCQ database operations.", value = "This is the Protected Characteristics "
+    + "Back-End API that will save user's answers to the database. "
+    + "The API will be invoked by the PCQ front-end service.")
 public class PcqAnswersController {
 
     @Autowired

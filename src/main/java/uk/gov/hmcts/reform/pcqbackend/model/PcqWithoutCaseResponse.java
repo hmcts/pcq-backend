@@ -1,11 +1,15 @@
 package uk.gov.hmcts.reform.pcqbackend.model;
 
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * This is the object representing the REST response for the PCQWithoutACase API.
  */
+@NoArgsConstructor
 public class PcqWithoutCaseResponse implements Serializable {
 
     public static final long serialVersionUID = 432973322;
