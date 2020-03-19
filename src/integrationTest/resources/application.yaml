@@ -15,11 +15,12 @@ management:
 api-error-messages:
   bad_request: Invalid Request
   created: Successfully created
+  accepted: Success
   internal_error: Unknown error occurred
 api-required-header-keys:
   co-relationid: X-Correlation-Id
 api-schema-file:
-    submitanswer-schema: submitAnswersSchema.json
+    submitanswer-schema: JsonSchema/submitAnswersSchema.json
 api-version-number: 1
 
 #Application specific unit test properties
@@ -32,11 +33,9 @@ unit-test:
 spring:
   application:
     name: Spring Boot Template
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${DB_OPTIONS:}
-#    username: ${DB_USER_NAME}
-#    password: ${DB_PASSWORD}
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql://localhost/pcq
 #    properties:
 #      charSet: UTF-8
 #    hikari:
@@ -46,10 +45,19 @@ spring:
 #      poolName: {to-be-defined}HikariCP
 #      maxLifetime: 7200000
 #      connectionTimeout: 30000
-#  jpa:
+  jpa:
 #    properties:
 #      hibernate:
 #        jdbc:
 #          lob:
 #            # silence the 'wall-of-text' - unnecessary exception throw about blob types
 #            non_contextual_creation: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+  flyway:
+    locations: classpath:db/migration
+
+flyway:
+  noop:
+    strategy: "false"

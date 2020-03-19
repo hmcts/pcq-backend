@@ -1,12 +1,12 @@
 {
-	"$schema": "http://json-schema.org/draft-04/schema#",
-	"title": "PCQ Answer Definitions Schema",
-	"description": "This is the definitions schema for all answers that can be provided by the PCQ service",
-	"definitions": {
-		"all_answers": {
-			"id": "#all_answers",
-			"type": "object",
-			"properties": {
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "PCQ Answer Definitions Schema",
+  "description": "This is the definitions schema for all answers that can be provided by the PCQ service",
+  "definitions": {
+    "all_answers": {
+      "id": "#all_answers",
+      "type": "object",
+      "properties": {
         "dob_provided": {
           "id": "#dob_provided",
           "type": [ "integer", "null" ],
@@ -91,66 +91,71 @@
         "disability_vision": {
           "id": "#disability_vision",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "disability_hearing": {
           "id": "#disability_hearing",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "disability_mobility": {
           "id": "#disability_mobility",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "disability_dexterity": {
           "id": "#disability_dexterity",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "disability_learning": {
           "id": "#disability_learning",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "disability_memory": {
           "id": "#disability_memory",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
-        "disability_health": {
-          "id": "#disability_health",
+        "disability_mental_health": {
+          "id": "#disability_mental_health",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "disability_stamina": {
           "id": "#disability_stamina",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "disability_social": {
           "id": "#disability_social",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
-        "disability_condition_other": {
-          "id": "#disability_condition_other",
+        "disability_other": {
+          "id": "#disability_other",
+          "type": [ "integer", "null" ],
+          "enum": [ 0, 1, null ]
+        },
+        "disability_other_details": {
+          "id": "#disability_other_details",
           "type": [ "string", "null" ]
         },
         "disability_none": {
           "id": "#disability_none",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ 0, 1, null ]
         },
         "pregnancy": {
           "id": "#pregnancy",
           "type": ["integer", "null"],
           "enum": [ 0, 1, 2, null ]
         }
-			},
-			"additionalProperties": false
-		}
+      },
+      "additionalProperties": false
+    }
 
-	}
+  }
 
 }
