@@ -258,7 +258,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
-  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.31"
+  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.35"
   compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
 
