@@ -1996,4 +1996,11 @@
     <gav regex="true">^org\.testcontainers:postgresql:1\.13\.0$</gav>
     <cpe>cpe:/a:postgresql:postgresql</cpe>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: postgresql-1.13.0.jar
+   ]]></notes>
+    <sha1>95d3232e8c631c978357d5b35abfebe25b197424</sha1>
+    <cpe>cpe:/a:postgresql:postgresql</cpe>
+  </suppress>
 </suppressions>
