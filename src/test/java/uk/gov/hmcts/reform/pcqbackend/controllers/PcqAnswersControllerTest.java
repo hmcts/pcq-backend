@@ -71,7 +71,7 @@ public class PcqAnswersControllerTest {
 
     private static final String SCHEMA_FILE_PROPERTY = "api-schema-file.submitanswer-schema";
 
-    private static final String SCHEMA_FILE = "submitAnswersSchema.json";
+    private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
 
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
 

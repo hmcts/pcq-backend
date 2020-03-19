@@ -20,7 +20,7 @@ api-error-messages:
 api-required-header-keys:
   co-relationid: X-Correlation-Id
 api-schema-file:
-  submitanswer-schema: submitAnswersSchema.json
+  submitanswer-schema: JsonSchema/submitAnswersSchema.json
 api-version-number: 1
 
 
@@ -29,6 +29,7 @@ api-version-number: 1
 spring:
   application:
     name: Protected Characteristics Questions
+
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB:pcq}${PCQ_DB_CONN_OPTIONS:}
@@ -43,13 +44,34 @@ spring:
       poolName: PCQHikariCP
       maxLifetime: 7200000
       connectionTimeout: 30000
+#    tomcat:
+#      max-active: 10
+#      max-idle: 10
+#      min-idle: 2
+#      max-wait: 10000
+#      test-on-borrow: true
+#      test-on-connect: true
+#      test-on-idle: true
+#      validation-query: "SELECT 1"
+#      time-between-eviction-runs-millis: 10000
+#      test-while-idle: true
+#      test-on-return: true
+#      remove-abandoned: true
+#      remove-abandoned-timeout: 60
+#      log-abandoned: true
+#      abandon-when-percentage-full: 0
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         jdbc:
           lob:
             # silence the 'wall-of-text' - unnecessary exception throw about blob types
             non_contextual_creation: true
+
+#  flyway.enabled: true
+#    flyway.locations: classpath:db/migration,classpath:db/postgres
+
 
 flyway:
   noop:
