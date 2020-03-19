@@ -42,38 +42,43 @@ public final class ConversionUtil {
         answerResponse.setServiceId(protectedCharacteristics.getServiceId());
         answerResponse.setActor(protectedCharacteristics.getActor());
         answerResponse.setVersionNo(protectedCharacteristics.getVersionNumber());
-        answerResponse.setDobProvided(protectedCharacteristics.getDobProvided());
+
+        PcqAnswers pcqAnswers = new PcqAnswers();
+
+        pcqAnswers.setDobProvided(protectedCharacteristics.getDobProvided());
         if (protectedCharacteristics.getDateOfBirth() != null) {
-            answerResponse.setDob(convertDateToString(protectedCharacteristics.getDateOfBirth()));
+            pcqAnswers.setDob(convertDateToString(protectedCharacteristics.getDateOfBirth()));
         }
-        answerResponse.setLanguageMain(protectedCharacteristics.getMainLanguage());
-        answerResponse.setLanguageOther(protectedCharacteristics.getOtherLanguage());
-        answerResponse.setEnglishLanguageLevel(protectedCharacteristics.getEnglishLanguageLevel());
-        answerResponse.setSex(protectedCharacteristics.getSex());
-        answerResponse.setGenderDifferent(protectedCharacteristics.getGenderDifferent());
-        answerResponse.setGenderOther(protectedCharacteristics.getOtherGender());
-        answerResponse.setSexuality(protectedCharacteristics.getSexuality());
-        answerResponse.setSexualityOther(protectedCharacteristics.getOtherSexuality());
-        answerResponse.setMarriage(protectedCharacteristics.getMarriage());
-        answerResponse.setEthnicity(protectedCharacteristics.getEthnicity());
-        answerResponse.setEthnicityOther(protectedCharacteristics.getOtherEthnicity());
-        answerResponse.setReligion(protectedCharacteristics.getReligion());
-        answerResponse.setReligionOther(protectedCharacteristics.getOtherReligion());
-        answerResponse.setDisabilityConditions(protectedCharacteristics.getDisabilityConditions());
-        answerResponse.setDisabilityImpact(protectedCharacteristics.getDisabilityImpact());
-        answerResponse.setDisabilityVision(protectedCharacteristics.getDisabilityVision());
-        answerResponse.setDisabilityHearing(protectedCharacteristics.getDisabilityHearing());
-        answerResponse.setDisabilityMobility(protectedCharacteristics.getDisabilityMobility());
-        answerResponse.setDisabilityDexterity(protectedCharacteristics.getDisabilityDexterity());
-        answerResponse.setDisabilityLearning(protectedCharacteristics.getDisabilityLearning());
-        answerResponse.setDisabilityMemory(protectedCharacteristics.getDisabilityMemory());
-        answerResponse.setDisabilityMentalHealth(protectedCharacteristics.getDisabilityMentalHealth());
-        answerResponse.setDisabilityStamina(protectedCharacteristics.getDisabilityStamina());
-        answerResponse.setDisabilitySocial(protectedCharacteristics.getDisabilitySocial());
-        answerResponse.setDisabilityOther(protectedCharacteristics.getDisabilityOther());
-        answerResponse.setDisabilityConditionOther(protectedCharacteristics.getOtherDisabilityDetails());
-        answerResponse.setDisabilityNone(protectedCharacteristics.getDisabilityNone());
-        answerResponse.setPregnancy(protectedCharacteristics.getPregnancy());
+        pcqAnswers.setLanguageMain(protectedCharacteristics.getMainLanguage());
+        pcqAnswers.setLanguageOther(protectedCharacteristics.getOtherLanguage());
+        pcqAnswers.setEnglishLanguageLevel(protectedCharacteristics.getEnglishLanguageLevel());
+        pcqAnswers.setSex(protectedCharacteristics.getSex());
+        pcqAnswers.setGenderDifferent(protectedCharacteristics.getGenderDifferent());
+        pcqAnswers.setGenderOther(protectedCharacteristics.getOtherGender());
+        pcqAnswers.setSexuality(protectedCharacteristics.getSexuality());
+        pcqAnswers.setSexualityOther(protectedCharacteristics.getOtherSexuality());
+        pcqAnswers.setMarriage(protectedCharacteristics.getMarriage());
+        pcqAnswers.setEthnicity(protectedCharacteristics.getEthnicity());
+        pcqAnswers.setEthnicityOther(protectedCharacteristics.getOtherEthnicity());
+        pcqAnswers.setReligion(protectedCharacteristics.getReligion());
+        pcqAnswers.setReligionOther(protectedCharacteristics.getOtherReligion());
+        pcqAnswers.setDisabilityConditions(protectedCharacteristics.getDisabilityConditions());
+        pcqAnswers.setDisabilityImpact(protectedCharacteristics.getDisabilityImpact());
+        pcqAnswers.setDisabilityVision(protectedCharacteristics.getDisabilityVision());
+        pcqAnswers.setDisabilityHearing(protectedCharacteristics.getDisabilityHearing());
+        pcqAnswers.setDisabilityMobility(protectedCharacteristics.getDisabilityMobility());
+        pcqAnswers.setDisabilityDexterity(protectedCharacteristics.getDisabilityDexterity());
+        pcqAnswers.setDisabilityLearning(protectedCharacteristics.getDisabilityLearning());
+        pcqAnswers.setDisabilityMemory(protectedCharacteristics.getDisabilityMemory());
+        pcqAnswers.setDisabilityMentalHealth(protectedCharacteristics.getDisabilityMentalHealth());
+        pcqAnswers.setDisabilityStamina(protectedCharacteristics.getDisabilityStamina());
+        pcqAnswers.setDisabilitySocial(protectedCharacteristics.getDisabilitySocial());
+        pcqAnswers.setDisabilityOther(protectedCharacteristics.getDisabilityOther());
+        pcqAnswers.setDisabilityConditionOther(protectedCharacteristics.getOtherDisabilityDetails());
+        pcqAnswers.setDisabilityNone(protectedCharacteristics.getDisabilityNone());
+        pcqAnswers.setPregnancy(protectedCharacteristics.getPregnancy());
+
+        answerResponse.setPcqAnswers(pcqAnswers);
 
 
         return answerResponse;
@@ -152,16 +157,14 @@ public final class ConversionUtil {
     }
 
     public static Timestamp getTimeFromString(String timeStampStr) {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(COMPLETED_DATE_FORMAT);
         LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(timeStampStr));
 
         return Timestamp.valueOf(localDateTime);
     }
 
     public static Date getDateFromString(String dateStr) {
-        String pattern = "yyyy-MM-dd";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DOB_FORMAT);
         LocalDate localDate = LocalDate.from(formatter.parse(dateStr));
         return Date.valueOf(localDate);
     }
