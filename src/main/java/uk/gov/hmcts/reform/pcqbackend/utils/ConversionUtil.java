@@ -23,7 +23,7 @@ public final class ConversionUtil {
 
     private static final String COMPLETED_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
-    private static final String DOB_FORMAT = "yyyy-MM-dd";
+    private static final String DOB_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     private ConversionUtil() {
 
@@ -94,7 +94,7 @@ public final class ConversionUtil {
         return dateFormat.format(date);
     }
 
-    public static ResponseEntity<Object> generateResponseEntity(int pcqId, HttpStatus code, String message) {
+    public static ResponseEntity<Object> generateResponseEntity(String pcqId, HttpStatus code, String message) {
 
         Map<String, Object> responseMap = new ConcurrentHashMap<>();
         responseMap.put("pcqId", pcqId);

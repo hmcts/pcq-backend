@@ -22,7 +22,7 @@ EOSQL
 
 psql -v ON_ERROR_STOP=1 --username $PCQ_DB_USERNAME $PCQ_DB <<-EOSQL
   CREATE TABLE protected_characteristics (
-   pcq_id integer PRIMARY KEY,
+   pcq_id TEXT PRIMARY KEY,
    case_id TEXT,
    party_id TEXT,
    channel SMALLINT NOT NULL,

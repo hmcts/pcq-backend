@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +65,8 @@ public class SubmitAnswersServiceTest {
 
     private static final String API_VERSION_PROPERTY = "api-version-number";
 
+    private static final String TEST_PCQ_ID = "T1234";
+
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -78,7 +78,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
         try {
-            PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest(1234);
+            PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(null, pcqAnswerRequest);
 
             assertNotNull(responseEntity, RESPONSE_NULL_MSG);
@@ -148,7 +148,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
@@ -181,7 +181,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
 
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
@@ -189,8 +189,8 @@ public class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             int resultCount = 1;
             int dobProvided = 1;
-            Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = getTimeFromString();
+            Date testDob = new Date(getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
+            Timestamp testTimeStamp = getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -207,7 +207,8 @@ public class SubmitAnswersServiceTest {
                                                                           null, null,
                                                                           null, null,
                                                                           null, null,
-                                                                          null, pcqId, testTimeStamp)
+                                                                          null,
+                                                                          testTimeStamp, pcqId, testTimeStamp)
             ).thenReturn(resultCount);
 
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
@@ -233,7 +234,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
 
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
@@ -241,8 +242,8 @@ public class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             int resultCount = 0;
             int dobProvided = 1;
-            Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = getTimeFromString();
+            Date testDob = new Date(getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
+            Timestamp testTimeStamp = getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -259,7 +260,8 @@ public class SubmitAnswersServiceTest {
                                                                           null, null,
                                                                           null, null,
                                                                           null, null,
-                                                                          null, pcqId, testTimeStamp)
+                                                                          null,
+                                                                          testTimeStamp, pcqId, testTimeStamp)
             ).thenReturn(resultCount);
 
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
@@ -285,7 +287,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
@@ -315,12 +317,12 @@ public class SubmitAnswersServiceTest {
 
     @Test
     public void testGetProtectedCharacteristicsPositive() {
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
 
         try {
 
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(1234);
+            targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
@@ -340,7 +342,7 @@ public class SubmitAnswersServiceTest {
 
     @Test
     public void testGetProtectedCharacteristicsNegative() {
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
 
         try {
 
@@ -383,10 +385,10 @@ public class SubmitAnswersServiceTest {
         return headerList;
     }
 
-    private Timestamp getTimeFromString() {
+    private Timestamp getTimeFromString(String timeStr) {
         String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse("2020-03-05T09:13:45.000Z"));
+        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(timeStr));
 
         return Timestamp.valueOf(localDateTime);
     }

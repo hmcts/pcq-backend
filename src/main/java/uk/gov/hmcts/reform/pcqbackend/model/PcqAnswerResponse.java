@@ -16,7 +16,7 @@ public class PcqAnswerResponse implements Serializable {
     public static final long serialVersionUID = 1328743L;
 
     @JsonProperty("pcq_id")
-    private int pcqId;
+    private String pcqId;
 
     @JsonProperty("case_id")
     private String caseId;

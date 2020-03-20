@@ -75,6 +75,8 @@ public class PcqAnswersControllerTest {
 
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
 
+    private static final String TEST_PCQ_ID = "T1234";
+
     @BeforeEach
     public void setUp() {
         this.environment = mock(Environment.class);
@@ -101,7 +103,7 @@ public class PcqAnswersControllerTest {
     @Test
     public void testSubmitAnswersFirstTime()  {
 
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -141,7 +143,7 @@ public class PcqAnswersControllerTest {
     @Test
     public void testSubmitAnswersSecondTime()  {
 
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -168,7 +170,8 @@ public class PcqAnswersControllerTest {
                                                                           null, null,
                                                                           null, null,
                                                                           null, null,
-                                                                          null, pcqId, testTimeStamp)
+                                                                          null,
+                                                                          testTimeStamp, pcqId, testTimeStamp)
             ).thenReturn(resultCount);
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
@@ -199,7 +202,7 @@ public class PcqAnswersControllerTest {
                 null, null,
                 null, null,
                 null, null,
-                null, pcqId, testTimeStamp);
+                null, testTimeStamp, pcqId, testTimeStamp);
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -216,7 +219,7 @@ public class PcqAnswersControllerTest {
     @Test
     public void testCompletedDateStale()  {
 
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -243,7 +246,8 @@ public class PcqAnswersControllerTest {
                                                                           null, null,
                                                                           null, null,
                                                                           null, null,
-                                                                          null, pcqId, testTimeStamp)
+                                                                          null,
+                                                                          testTimeStamp, pcqId, testTimeStamp)
             ).thenReturn(resultCount);
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             when(environment.getProperty("api-error-messages.accepted")).thenReturn(API_ERROR_MESSAGE_ACCEPTED);
@@ -276,7 +280,7 @@ public class PcqAnswersControllerTest {
                 null, null,
                 null, null,
                 null, null,
-                null, pcqId, testTimeStamp);
+                null, testTimeStamp, pcqId, testTimeStamp);
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -324,7 +328,7 @@ public class PcqAnswersControllerTest {
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
     public void testInvalidRequestForMissingHeader()  {
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
 
         try {
             String jsonStringRequest = asJsonString(new PcqAnswerRequest(pcqId));
@@ -388,7 +392,7 @@ public class PcqAnswersControllerTest {
     @Test
     public void testInternalError()  {
 
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -428,11 +432,11 @@ public class PcqAnswersControllerTest {
     @Test
     public void testGetAnswerFound()  {
 
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
 
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(1234);
+            targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
@@ -461,7 +465,7 @@ public class PcqAnswersControllerTest {
     @Test
     public void testGetAnswerNotFound()  {
 
-        int pcqId = 1234;
+        String pcqId = TEST_PCQ_ID;
         try {
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
