@@ -22,7 +22,7 @@ public class ProtectedCharacteristics implements Serializable {
     public static final long serialVersionUID = 5428747L;
 
     @Id
-    private Integer pcqId;
+    private String pcqId;
 
     @Column(name = "CASE_ID")
     private String caseId;

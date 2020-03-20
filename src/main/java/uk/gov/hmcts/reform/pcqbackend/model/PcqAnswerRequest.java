@@ -9,7 +9,7 @@ public class PcqAnswerRequest implements Serializable {
 
     public static final long serialVersionUID = 4328743L;
 
-    private int pcqId;
+    private String pcqId;
 
     private String caseId;
 
@@ -31,7 +31,7 @@ public class PcqAnswerRequest implements Serializable {
         // Intentionally left blank.
     }
 
-    public PcqAnswerRequest(int pcqId) {
+    public PcqAnswerRequest(String pcqId) {
 
         this.pcqId = pcqId;
     }
@@ -100,11 +100,11 @@ public class PcqAnswerRequest implements Serializable {
         this.pcqAnswers = pcqAnswers;
     }
 
-    public int getPcqId() {
+    public String getPcqId() {
         return pcqId;
     }
 
-    public void setPcqId(int pcqId) {
+    public void setPcqId(String pcqId) {
         this.pcqId = pcqId;
     }
 }
