@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "classpath:./answer_definitions_schema.json",
+  "id": "classpath:./JsonSchema/answer_definitions_schema.json",
   "type": "object",
   "title": "The PCQ Response Schema",
   "required": [

@@ -63,7 +63,7 @@ public class SubmitAnswersServiceTest {
 
     private static final String SCHEMA_FILE_PROPERTY = "api-schema-file.submitanswer-schema";
 
-    private static final String SCHEMA_FILE = "submitAnswersSchema.json";
+    private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
 
     private static final String API_VERSION_PROPERTY = "api-version-number";
 

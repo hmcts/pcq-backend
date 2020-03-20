@@ -9,7 +9,7 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-@Repository
+@Repository()
 public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, Integer> {
 
     @SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.UseObjectForClearerAPI"})

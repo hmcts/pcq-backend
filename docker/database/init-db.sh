@@ -2,8 +2,8 @@
 
 set -e
 
-if [ -z "$PCQ_DB" ] || [ -z "$PCQ_DB_USERNAME" ] || [ -z "$PCQ_DB_PASSWORD" ]; then
-  echo "ERROR: Missing environment variable. Set value for 'PCQ_DB', 'PCQ_DB_USERNAME' and 'PCQ_DB_PASSWORD'."
+if [ -z "$PCQ_DB_NAME" ] || [ -z "$PCQ_DB_USERNAME" ] || [ -z "$PCQ_DB_PASSWORD" ]; then
+  echo "ERROR: Missing environment variable. Set value for 'PCQ_DB_NAME', 'PCQ_DB_USERNAME' and 'PCQ_DB_PASSWORD'."
   exit 1
 fi
 
@@ -12,7 +12,7 @@ psql -v ON_ERROR_STOP=1 --username postgres --set USERNAME=$PCQ_DB_USERNAME --se
   CREATE USER :USERNAME WITH PASSWORD ':PASSWORD';
 EOSQL
 
-psql -v ON_ERROR_STOP=1 --username postgres --set USERNAME=$PCQ_DB_USERNAME --set PASSWORD=$PCQ_DB_PASSWORD --set DATABASE=$PCQ_DB <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username postgres --set USERNAME=$PCQ_DB_USERNAME --set PASSWORD=$PCQ_DB_PASSWORD --set DATABASE=$PCQ_DB_NAME <<-EOSQL
   CREATE DATABASE :DATABASE
     WITH OWNER = :USERNAME
     ENCODING = 'UTF-8'
@@ -20,7 +20,7 @@ psql -v ON_ERROR_STOP=1 --username postgres --set USERNAME=$PCQ_DB_USERNAME --se
     ALTER SCHEMA public OWNER TO :USERNAME;
 EOSQL
 
-psql -v ON_ERROR_STOP=1 --username $PCQ_DB_USERNAME $PCQ_DB <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username $PCQ_DB_USERNAME $PCQ_DB_NAME <<-EOSQL
   CREATE TABLE protected_characteristics (
    pcq_id integer PRIMARY KEY,
    case_id TEXT,
