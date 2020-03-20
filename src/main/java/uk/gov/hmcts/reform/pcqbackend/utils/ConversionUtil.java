@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
@@ -97,7 +98,7 @@ public final class ConversionUtil {
     public static ResponseEntity<Object> generateResponseEntity(String pcqId, HttpStatus code, String message) {
 
         Map<String, Object> responseMap = new ConcurrentHashMap<>();
-        responseMap.put("pcqId", pcqId);
+        responseMap.put("pcqId", HtmlUtils.htmlEscape(pcqId));
         responseMap.put("responseStatus", message);
         responseMap.put("responseStatusCode", String.valueOf(code.value()));
 
