@@ -18,7 +18,7 @@ public class PcqAnswerResponse implements Serializable {
     @JsonProperty("pcq_id")
     private String pcqId;
 
-    @JsonProperty("case_id")
+    @JsonProperty("ccdCaseId")
     private String caseId;
 
     @JsonProperty("party_id")
@@ -31,10 +31,10 @@ public class PcqAnswerResponse implements Serializable {
     private String completedDate;
 
     @JsonProperty("service_id")
-    private Integer serviceId;
+    private String serviceId;
 
     @JsonProperty("actor")
-    private Integer actor;
+    private String actor;
 
     @JsonProperty("version_number")
     private Integer versionNo;
