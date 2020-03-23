@@ -1,11 +1,11 @@
 {
   "pcqId": "T1234",
-  "caseId": "",
+  "ccdCaseId": null,
   "partyId": "23",
   "channel": 1,
   "completedDate": "2020-03-05T09:13:45",
-  "serviceId": 0,
-  "actor": 1,
+  "serviceId": "PROBATE",
+  "actor": "DEFENDANT",
   "versionNo": 1,
   "pcqAnswers": {
     "dob_provided": 1

@@ -37,10 +37,10 @@ public class ProtectedCharacteristics implements Serializable {
     private Timestamp completedDate;
 
     @Column(name = "SERVICE_ID")
-    private Integer serviceId;
+    private String serviceId;
 
     @Column(name = "ACTOR")
-    private Integer actor;
+    private String actor;
 
     @Column(name = "VERSION_NUMBER")
     private Integer versionNumber;

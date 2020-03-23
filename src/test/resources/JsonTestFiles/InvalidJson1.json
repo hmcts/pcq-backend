@@ -1,10 +1,10 @@
 {
   "pcqId": "T1234",
-  "caseId": "C1-Test12",
+  "ccdCaseId": "C1-Test12",
   "channel": 1,
   "completedDate": "112",
-  "serviceId": 0,
-  "actor": 1,
+  "serviceId": "PROBATE",
+  "actor": "DEFENDANT",
   "versionNo": 1,
   "pcqAnswers": {
     "dob_provided": 0,

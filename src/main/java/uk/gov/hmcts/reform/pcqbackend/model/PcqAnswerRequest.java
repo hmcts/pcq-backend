@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pcqbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -11,6 +13,7 @@ public class PcqAnswerRequest implements Serializable {
 
     private String pcqId;
 
+    @JsonProperty("ccdCaseId")
     private String caseId;
 
     private String partyId;
@@ -19,9 +22,9 @@ public class PcqAnswerRequest implements Serializable {
 
     private String completedDate;
 
-    private int serviceId;
+    private String serviceId;
 
-    private int actor;
+    private String actor;
 
     private int versionNo;
 
@@ -68,19 +71,19 @@ public class PcqAnswerRequest implements Serializable {
         this.completedDate = completedDate;
     }
 
-    public int getServiceId() {
+    public String getServiceId() {
         return serviceId;
     }
 
-    public void setServiceId(int serviceId) {
+    public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
 
-    public int getActor() {
+    public String getActor() {
         return actor;
     }
 
-    public void setActor(int actor) {
+    public void setActor(String actor) {
         this.actor = actor;
     }
 
