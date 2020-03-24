@@ -14,6 +14,7 @@ def component = "backend"
 withPipeline(type, product, component) {
 
   installCharts()
+  enableDbMigration('pcq')
   enableSlackNotifications('#pcq-builds')
   disableLegacyDeployment()
 

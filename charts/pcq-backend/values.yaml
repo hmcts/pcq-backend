@@ -2,6 +2,12 @@ java:
   applicationPort: 4550
   ingressHost: pcq-backend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   aadIdentityName: pcq
+  keyVaults:
+    pcq:
+      secrets:
+        - backend-POSTGRES-PASS
+        - flyway-password
+        - AppInsightsInstrumentationKey
   environment:
     PCQ_DB_NAME: pcq
     PCQ_DB_USERNAME: pcquser@pcq-backend-{{ .Values.global.environment }}
