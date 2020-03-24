@@ -12,6 +12,7 @@ def product = "pcq"
 def component = "backend"
 
 withPipeline(type, product, component) {
+
   installCharts()
   enableSlackNotifications('#pcq-builds')
   disableLegacyDeployment()

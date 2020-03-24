@@ -14,7 +14,7 @@ public class SubmitResponse implements Serializable {
 
     public static final long serialVersionUID = 5328745L;
 
-    private int pcqId;
+    private String pcqId;
 
     private String responseStatus;
 

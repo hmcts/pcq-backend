@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "classpath:./JsonSchema/answer_definitions_schema.json",
+  "id": "classpath:/JsonSchema/answer_definitions_schema.json",
   "type": "object",
   "title": "The PCQ Response Schema",
   "required": [
@@ -16,12 +16,12 @@
   "properties": {
     "pcqId": {
       "id": "#pcqId",
-      "type": "integer",
+      "type": "string",
       "title": "The PCQ Identifier"
     },
-    "caseId": {
-      "id": "#caseId",
-      "type": "string",
+    "ccdCaseId": {
+      "id": "#ccdCaseId",
+      "type": ["string", "null"],
       "title": "The Case Identifier"
     },
     "partyId": {
@@ -44,20 +44,16 @@
     },
     "serviceId": {
       "id": "#serviceId",
-      "type": "integer",
+      "type": "string",
       "title": "The Service Identifier"
     },
     "actor": {
       "id": "#actor",
-      "type": "integer",
-      "title": "The Actor",
-      "enum": [
-        1, 2, 3
-      ]
+      "type": "string",
+      "title": "The Actor"
     },
     "versionNo": {
       "id": "#versionNo",
-
       "type": "integer",
       "title": "The Version Number"
     },

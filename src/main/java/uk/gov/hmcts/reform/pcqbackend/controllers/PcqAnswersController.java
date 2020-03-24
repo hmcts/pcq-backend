@@ -97,7 +97,7 @@ public class PcqAnswersController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public ResponseEntity<PcqAnswerResponse> getAnswersByPcqId(@PathVariable("pcqId") @NotBlank int pcqId) {
+    public ResponseEntity<PcqAnswerResponse> getAnswersByPcqId(@PathVariable("pcqId") @NotBlank String pcqId) {
 
         ProtectedCharacteristics protectedCharacteristics = submitAnswersService
             .getProtectedCharacteristicsById(pcqId);
