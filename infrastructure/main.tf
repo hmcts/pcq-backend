@@ -41,7 +41,7 @@ module "pcq" {
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-PASS"
-  value        = "${module.bulk-scan-db.postgresql_password}"
+  value        = "${module.pcq-db.postgresql_password}"
 }
 
 # Copy postgres password for flyway migration
