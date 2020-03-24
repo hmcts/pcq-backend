@@ -32,7 +32,7 @@ module "pcq" {
     PCQ_DB_PORT         = "${module.pcq-db.postgresql_listen_port}"
     PCQ_DB_USERNAME     = "${module.pcq-db.postgresql_user}"
     PCQ_DB_PASSWORD     = "${module.pcq-db.postgresql_password}"
-    PCQ_DB_NAME         = "${module.pcq-db.postgresql_database}"
+    PCQ_DB_NAME         = "${module.pcq-db.database_name}"
     PCQ_DB_CONN_OPTIONS = "${local.db_connection_options}"
     FLYWAY_URL                    = "jdbc:postgresql://${module.pcq-db.host_name}:${module.pcq-db.postgresql_listen_port}/${module.pcq-db.postgresql_database}${local.db_connection_options}"
     FLYWAY_USER                   = "${module.pcq-db.postgresql_user}"
