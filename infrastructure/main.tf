@@ -1,4 +1,6 @@
-provider "azurerm" {}
+provider "azurerm" {
+  version = "=1.33.1"
+}
 
 locals {
   db_connection_options = "?sslmode=require"
