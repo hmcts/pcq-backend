@@ -1,5 +1,9 @@
 provider "azurerm" {}
 
+local {
+  db_connection_options = "?sslmode=require"
+}
+
 module "pcq-db" {
   source             = "git@github.com:hmcts/cnp-module-postgres?ref=master"
   product            = "${var.product}-${var.component}"
@@ -15,8 +19,6 @@ module "pcq-db" {
   common_tags        = "${var.common_tags}"
   subscription       = "${var.subscription}"
 }
-
-db_connection_options = "?sslmode=require"
 
 module "pcq" {
   source                          = "git@github.com:hmcts/cnp-module-webapp?ref=master"
