@@ -4,6 +4,7 @@ provider "azurerm" {
 
 locals {
   db_connection_options = "?sslmode=require"
+  vaultName             = "${var.product}-${var.env}"
 }
 
 module "pcq-db" {
@@ -42,11 +43,34 @@ module "pcq" {
     FLYWAY_NOOP_STRATEGY          = "true"
   }
 }
+  
+data "azurerm_key_vault" "key_vault" {
+  name                = "${local.vaultName}"
+  resource_group_name = "${local.vaultName}"
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES-USER" {
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+  name         = "${var.component}-POSTGRES-USER"
+  value        = "${module.pcq-db.postgresql_user}"
+}
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-PASS"
   value        = "${module.pcq-db.postgresql_password}"
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+  name         = "${var.component}-POSTGRES-PORT"
+  value        = "${module.pcq-db.postgresql_listen_port}"
+}
+
+resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+  name         = "${var.component}-POSTGRES-DATABASE"
+  value        = "${module.pcq-db.database_name}"
 }
 
 # Copy postgres password for flyway migration
