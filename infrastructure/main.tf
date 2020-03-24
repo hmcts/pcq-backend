@@ -24,6 +24,9 @@ module "pcq" {
   source                          = "git@github.com:hmcts/cnp-module-webapp?ref=master"
   env                             = "${var.env}"
   java_container_version          = "11.0"
+  product                         = "${var.product}-${var.component}"
+  subscription                    = "${var.subscription}"
+  common_tags                     = "${var.common_tags}"
 
   app_settings = {
     // db
