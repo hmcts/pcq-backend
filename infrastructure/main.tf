@@ -1,6 +1,6 @@
 provider "azurerm" {}
 
-local {
+locals {
   db_connection_options = "?sslmode=require"
 }
 
