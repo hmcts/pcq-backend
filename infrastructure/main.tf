@@ -30,6 +30,7 @@ module "pcq" {
   java_container_version          = "11.0"
   subscription                    = "${var.subscription}"
   common_tags                     = "${var.common_tags}"
+  appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
 
   app_settings = {
     // db
@@ -43,7 +44,7 @@ module "pcq" {
     FLYWAY_NOOP_STRATEGY          = "true"
   }
 }
-  
+
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.vaultName}"
   resource_group_name = "${local.vaultName}"
