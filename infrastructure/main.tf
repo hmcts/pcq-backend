@@ -37,11 +37,13 @@ module "pcq" {
 
   app_settings = {
     // db
+    PCQ_DB_HOST                   = "${module.pcq-db.host_name}"
     PCQ_DB_PORT                   = "${module.pcq-db.postgresql_listen_port}"
     PCQ_DB_USERNAME               = "${module.pcq-db.user_name}"
     PCQ_DB_PASSWORD               = "${module.pcq-db.postgresql_password}"
     PCQ_DB_NAME                   = "${module.pcq-db.postgresql_database}"
     PCQ_DB_CONN_OPTIONS           = "${local.db_connection_options}"
+    FLYWAY_URL                    = "jdbc:postgresql://${module.pcq-db.host_name}:${module.pcq-db.postgresql_listen_port}/${module.pcq-db.postgresql_database}${local.db_connection_options}"
     FLYWAY_USER                   = "${module.pcq-db.user_name}"
     FLYWAY_PASSWORD               = "${module.pcq-db.postgresql_password}"
     FLYWAY_NOOP_STRATEGY          = "true"
@@ -67,6 +69,12 @@ resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-PASS"
   value        = "${module.pcq-db.postgresql_password}"
+}
+  
+resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
+  key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
+  name         = "${var.component}-POSTGRES-HOST"
+  value        = "${module.pcq-db.host_name}"
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
