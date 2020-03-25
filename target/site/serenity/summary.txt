@@ -1,7 +1,7 @@
-Serenity report generated 24-03-2020 19:32
-35 test scenarios 
+Serenity report generated 25-03-2020 17:07
+41 test scenarios 
 
-Passed:             35
+Passed:             41
 Pending             0
 Failed:             0
 Failed with errors: 0

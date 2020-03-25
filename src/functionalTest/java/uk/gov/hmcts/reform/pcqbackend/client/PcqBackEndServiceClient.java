@@ -14,6 +14,7 @@ import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @SuppressWarnings("unchecked")
@@ -79,6 +80,10 @@ public class PcqBackEndServiceClient {
         response.then()
             .assertThat()
             .statusCode(status.value());
+
+        if (status == HttpStatus.UNAUTHORIZED) {
+            return null;
+        }
         return response.body().as(Map.class);
     }
 
@@ -146,6 +151,23 @@ public class PcqBackEndServiceClient {
         response.then()
             .assertThat()
             .statusCode(FORBIDDEN.value());
+
+        return response.body().as(Map.class);
+    }
+
+    public Map<String, Object> unRecoverableError(PcqAnswerRequest answerRequest) {
+        Response response = getMultipleAuthHeaders()
+            .body(answerRequest)
+            .post(SUBMIT_ANSWERS_URL)
+            .andReturn();
+
+        if (response.statusCode() != INTERNAL_SERVER_ERROR.value()) {
+            log.info(INFO_MSG_CONSTANT_1 + response.asString());
+        }
+
+        response.then()
+            .assertThat()
+            .statusCode(INTERNAL_SERVER_ERROR.value());
 
         return response.body().as(Map.class);
     }

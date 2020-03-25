@@ -71,8 +71,8 @@ public class SubmitAnswersService {
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record created.",
-                         coRelationId);
+                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record submitted "
+                             + "for creation.", coRelationId);
 
             } else {
                 // Update the PCQ Record.
@@ -117,8 +117,8 @@ public class SubmitAnswersService {
                                                                  environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
-                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record saved.",
-                             coRelationId);
+                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
+                                 + "submitted for Update.", coRelationId);
                 }
             }
 
