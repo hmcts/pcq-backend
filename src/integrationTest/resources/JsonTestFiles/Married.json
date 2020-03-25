@@ -18,6 +18,6 @@
     "gender_other": "TestGender",
     "sexuality": 4,
     "sexuality_other": "OtherSexuality",
-    "marriage": 1
+    "marriage": null
   }
 }

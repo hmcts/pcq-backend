@@ -26,23 +26,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SuppressWarnings({"PMD.TooManyMethods"})
 public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
-    public static final String RESPONSE_KEY_1 = "pcqId";
-    public static final String RESPONSE_KEY_2 = "responseStatusCode";
-    public static final String RESPONSE_KEY_3 = "responseStatus";
     public static final String RESPONSE_KEY_4 = "response_body";
-    public static final String HTTP_CREATED = "201";
-    public static final String RESPONSE_CREATED_MSG = "Successfully created";
     public static final String HTTP_ACCEPTED = "202";
     public static final String HTTP_BAD_REQUEST = "400";
     public static final String RESPONSE_ACCEPTED_MSG = "Success";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
 
-    private static final String NOT_FOUND_MSG = "Record Not found";
-    private static final String PCQ_NOT_VALID_MSG = "PCQId not valid";
-    private static final String TEST_PCQ_ID = "UPDATE-INTEG-TEST";
     private static final String TEST_DUP_PCQ_ID = "UPDATE-DUP-INTEG-TEST";
-    private static final String STATUS_CODE_INVALID_MSG = "Response Status Code not valid";
-    private static final String STATUS_INVALID_MSG = "Response Status not valid";
     private static final String IO_EXCEPTION_MSG = "IOException while executing test";
 
 
@@ -70,7 +60,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -102,7 +92,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             assertNotEquals("DobProvided matching", protectedCharacteristicsOptional.get().getDobProvided(),
                          answerRequest.getPcqAnswers().getDobProvided());
 
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -132,7 +122,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -166,7 +156,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             assertNotEquals("Dob not matching", protectedCharacteristicsOptional
                 .get().getDateOfBirth(), answerRequest.getPcqAnswers().getDob());
 
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -185,18 +175,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/MainLanguage.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 3; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setLanguageMain(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -226,7 +216,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -256,7 +246,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
             protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
             assertNotEquals("OtherLanguage not matching", protectedCharacteristicsOptional
@@ -280,18 +270,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/LanguageLevel.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 5; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setEnglishLanguageLevel(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -310,18 +300,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Sex.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 3; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setSex(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -340,18 +330,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Gender.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 3; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setGenderDifferent(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -381,7 +371,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -400,18 +390,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Sexuality.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 5; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setSexuality(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -441,7 +431,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -471,7 +461,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
             protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
             assertNotEquals("OtherSexuality not matching", protectedCharacteristicsOptional
@@ -495,18 +485,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Married.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 3; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setMarriage(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -525,18 +515,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Ethnicity.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 19; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setEthnicity(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -566,7 +556,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -596,7 +586,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
             protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
             assertNotEquals("OtherEtnicity not matching", protectedCharacteristicsOptional
@@ -620,18 +610,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Religion.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 9; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setReligion(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -661,7 +651,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -691,7 +681,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
             protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
             assertNotEquals("OtherReligion not matching", protectedCharacteristicsOptional
@@ -715,18 +705,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DisabilityConditions.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 3; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setDisabilityConditions(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -745,18 +735,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DisabilityImpact.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 4; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setDisabilityImpact(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -786,7 +776,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -816,7 +806,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -846,7 +836,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
             protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
             assertNotEquals("OtherDisabilityDetails not matching", protectedCharacteristicsOptional
@@ -870,18 +860,18 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Pregnancy.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            runAnswerUpdates(answerRequest);
+            assertLogsForKeywords();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            for (int i = 0; i < 3; i++) {
+                PcqAnswers answers = answerRequest.getPcqAnswers();
+                answers.setPregnancy(i);
+                answerRequest.setPcqAnswers(answers);
+                answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
-            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            checkLogsForKeywords();
+                runAnswerUpdates(answerRequest);
+                assertLogsForKeywords();
+            }
 
 
         } catch (IOException e) {
@@ -915,7 +905,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
             assertNotEquals("Pregnancy not matching", protectedCharacteristicsOptional
                 .get().getPregnancy(), answerRequest.getPcqAnswers().getPregnancy());
 
-            checkLogsForKeywords();
+            assertLogsForKeywords();
 
 
         } catch (IOException e) {
@@ -938,7 +928,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
         assertNotNull("Answer record not found", protectedCharacteristicsOptional.get());
         assertEquals("PCQ Id not matching", protectedCharacteristicsOptional.get().getPcqId(), TEST_PCQ_ID);
 
-        checkLogsForKeywords();
+        assertLogsForKeywords();
 
 
     }
@@ -975,7 +965,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
         return answerRequest;
     }
 
-    private void checkLogsForKeywords() {
+    private void assertLogsForKeywords() {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
     }

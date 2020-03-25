@@ -14,14 +14,29 @@ import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Configuration
 public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
 
     public static final String CO_RELATION_ID_FOR_TEST = "INTEG-TEST-PCQ";
+    public static final String RESPONSE_KEY_1 = "pcqId";
+    public static final String RESPONSE_KEY_2 = "responseStatusCode";
+    public static final String RESPONSE_KEY_3 = "responseStatus";
+    public static final String HTTP_CREATED = "201";
+    public static final String RESPONSE_CREATED_MSG = "Successfully created";
+
+    public static final String NOT_FOUND_MSG = "Record Not found";
+    public static final String PCQ_NOT_VALID_MSG = "PCQId not valid";
+    public static final String TEST_PCQ_ID = "UPDATE-INTEG-TEST";
+    public static final String STATUS_CODE_INVALID_MSG = "Response Status Code not valid";
+    public static final String STATUS_INVALID_MSG = "Response Status not valid";
 
     @Autowired
     protected ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
@@ -135,6 +150,27 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
                      answerRequest.getPcqAnswers().getDisabilityNone());
         assertEquals("Pregnancy not matching", protectedCharacteristics.getPregnancy(),
                      answerRequest.getPcqAnswers().getPregnancy());
+    }
+
+    protected void runAnswerUpdates(PcqAnswerRequest answerRequest) {
+        Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
+        assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
+        assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+        assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
+                     response.get(RESPONSE_KEY_3));
+
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
+            protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+
+        assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
+        checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+    }
+
+    protected String updateCompletedDate(String completedDateStr) {
+        Timestamp completedTime = ConversionUtil.getTimeFromString(completedDateStr);
+        Calendar calendar = Calendar.getInstance();
+        completedTime.setTime(calendar.getTimeInMillis());
+        return ConversionUtil.convertTimeStampToString(completedTime);
     }
 
     @SuppressWarnings("unchecked")

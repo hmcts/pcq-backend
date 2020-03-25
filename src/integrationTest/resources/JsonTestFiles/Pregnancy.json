@@ -37,6 +37,6 @@
     "disability_other": 1,
     "disability_other_details": "Other test disabilities",
     "disability_none": 0,
-    "pregnancy": 2
+    "pregnancy": null
   }
 }

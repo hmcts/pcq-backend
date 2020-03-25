@@ -24,6 +24,6 @@
     "religion": 8,
     "religion_other": "TestOtherReligion",
     "disability_conditions": 1,
-    "disability_impact": 0
+    "disability_impact": null
   }
 }

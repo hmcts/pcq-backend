@@ -23,6 +23,6 @@
     "ethnicity_other": "TestOtherEthnicity",
     "religion": 8,
     "religion_other": "TestOtherReligion",
-    "disability_conditions": 1
+    "disability_conditions": null
   }
 }

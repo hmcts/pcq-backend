@@ -21,6 +21,6 @@
     "marriage": 1,
     "ethnicity": 18,
     "ethnicity_other": "TestOtherEthnicity",
-    "religion": 6
+    "religion": null
   }
 }

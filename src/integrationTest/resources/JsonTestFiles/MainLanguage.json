@@ -10,6 +10,6 @@
   "pcqAnswers": {
     "dob_provided": 1,
     "dob": "1985-01-01T00:00:00.000Z",
-    "language_main": 1
+    "language_main": null
   }
 }

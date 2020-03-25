@@ -12,6 +12,6 @@
     "dob": "1985-01-01T00:00:00.000Z",
     "language_main": 0,
     "language_other": "TestLanguage",
-    "english_language_level": 3
+    "english_language_level": null
   }
 }
