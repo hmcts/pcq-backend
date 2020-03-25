@@ -9,7 +9,6 @@ locals {
 
 module "pcq-db" {
   source                 = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product                = "${var.product}-${var.component}"
   location               = "${var.location_db}"
   env                    = "${var.env}"
   database_name          = "pcq"
@@ -24,7 +23,6 @@ module "pcq-db" {
 
 module "pcq" {
   source                          = "git@github.com:hmcts/cnp-module-webapp?ref=master"
-  product                         = "${var.product}-${var.component}"
   location                        = "${var.location}"
   env                             = "${var.env}"
   java_container_version          = "10.0"
