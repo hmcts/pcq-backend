@@ -13,7 +13,7 @@ module "pcq-db" {
   location               = "${var.location_db}"
   env                    = "${var.env}"
   database_name          = "pcq"
-  postgresql_user        = "pcquser@pcq-backend-${var.env}"
+  postgresql_user        = "pcquser"
   postgresql_version     = "11"
   postgresql_listen_port = "5432"
   sku_name               = "GP_Gen5_2"
@@ -34,11 +34,11 @@ module "pcq" {
   app_settings = {
     // db
     PCQ_DB_PORT         = "${module.pcq-db.postgresql_listen_port}"
-    PCQ_DB_USERNAME     = "${module.pcq-db.postgresql_user}"
+    PCQ_DB_USERNAME     = "${module.pcq-db.user_name}"
     PCQ_DB_PASSWORD     = "${module.pcq-db.postgresql_password}"
-    PCQ_DB_NAME         = "${module.pcq-db.database_name}"
+    PCQ_DB_NAME         = "${module.pcq-db.postgresql_database}"
     PCQ_DB_CONN_OPTIONS = "${local.db_connection_options}"
-    FLYWAY_USER                   = "${module.pcq-db.postgresql_user}"
+    FLYWAY_USER                   = "${module.pcq-db.user_name}"
     FLYWAY_PASSWORD               = "${module.pcq-db.postgresql_password}"
     FLYWAY_NOOP_STRATEGY          = "true"
   }
@@ -52,7 +52,7 @@ data "azurerm_key_vault" "key_vault" {
 resource "azurerm_key_vault_secret" "POSTGRES-USER" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-USER"
-  value        = "${module.pcq-db.postgresql_user}"
+  value        = "${module.pcq-db.user_name}"
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
@@ -70,7 +70,7 @@ resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
 resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-DATABASE"
-  value        = "${module.pcq-db.database_name}"
+  value        = "${module.pcq-db.postgresql_database}"
 }
 
 # Copy postgres password for flyway migration
