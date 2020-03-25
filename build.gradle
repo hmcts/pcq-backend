@@ -324,6 +324,12 @@ flyway {
   baselineVersion = '000'
 }
 
+import org.flywaydb.gradle.task.FlywayMigrateTask
+
+task migratePostgresDatabase(type: FlywayMigrateTask) {
+  baselineOnMigrate = true
+}
+
 mainClassName = 'uk.gov.hmcts.reform.pcqbackend.Application'
 
 bootJar {
