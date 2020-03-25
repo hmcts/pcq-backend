@@ -32,7 +32,6 @@ module "pcq" {
   common_tags                     = "${var.common_tags}"
   appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
   is_frontend                     = "false"
-  instance_size                   = "${local.sku_size}"
   asp_name                        = "${var.product}-${var.env}"
   asp_rg                          = "${var.product}-${var.env}"
 
