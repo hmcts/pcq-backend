@@ -4,11 +4,13 @@ provider "azurerm" {
 
 locals {
   db_connection_options  = "?sslmode=require"
-  vaultName              = "${var.product}-${var.env}"
+  vault_name             = "${var.product}-${var.env}"
+  asp_name               = "${var.product}"
 }
 
 module "pcq-db" {
   source                 = "git@github.com:hmcts/cnp-module-postgres?ref=master"
+  product                = "${var.product}-${var.component}"
   location               = "${var.location_db}"
   env                    = "${var.env}"
   database_name          = "pcq"
@@ -23,6 +25,7 @@ module "pcq-db" {
 
 module "pcq" {
   source                          = "git@github.com:hmcts/cnp-module-webapp?ref=master"
+  product                         = "${var.product}-${var.component}"
   location                        = "${var.location}"
   env                             = "${var.env}"
   java_container_version          = "10.0"
@@ -30,8 +33,8 @@ module "pcq" {
   common_tags                     = "${var.common_tags}"
   appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
   is_frontend                     = "false"
-  asp_name                        = "${var.product}-${var.env}"
-  asp_rg                          = "${var.product}-${var.env}"
+  asp_name                        = "${local.asp_name}-${var.env}"
+  asp_rg                          = "${local.asp_name}-${var.env}"
 
   app_settings = {
     // db
@@ -49,8 +52,8 @@ module "pcq" {
 }
 
 data "azurerm_key_vault" "key_vault" {
-  name                = "${local.vaultName}"
-  resource_group_name = "${local.vaultName}"
+  name                = "${local.vault_name}"
+  resource_group_name = "${local.vault_name}"
 }
   
 ////////////////////////////////
