@@ -3,8 +3,8 @@ provider "azurerm" {
 }
 
 locals {
-  db_connection_options = "?sslmode=require"
-  vaultName             = "${var.product}-${var.env}"
+  db_connection_options  = "?sslmode=require"
+  vaultName              = "${var.product}-${var.env}"
 }
 
 module "pcq-db" {
@@ -31,17 +31,20 @@ module "pcq" {
   subscription                    = "${var.subscription}"
   common_tags                     = "${var.common_tags}"
   appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
+  is_frontend = false
 
   app_settings = {
     // db
-    PCQ_DB_PORT         = "${module.pcq-db.postgresql_listen_port}"
-    PCQ_DB_USERNAME     = "${module.pcq-db.user_name}"
-    PCQ_DB_PASSWORD     = "${module.pcq-db.postgresql_password}"
-    PCQ_DB_NAME         = "${module.pcq-db.postgresql_database}"
-    PCQ_DB_CONN_OPTIONS = "${local.db_connection_options}"
+    PCQ_DB_PORT                   = "${module.pcq-db.postgresql_listen_port}"
+    PCQ_DB_USERNAME               = "${module.pcq-db.user_name}"
+    PCQ_DB_PASSWORD               = "${module.pcq-db.postgresql_password}"
+    PCQ_DB_NAME                   = "${module.pcq-db.postgresql_database}"
+    PCQ_DB_CONN_OPTIONS           = "${local.db_connection_options}"
     FLYWAY_USER                   = "${module.pcq-db.user_name}"
     FLYWAY_PASSWORD               = "${module.pcq-db.postgresql_password}"
     FLYWAY_NOOP_STRATEGY          = "true"
+    
+    ENABLE_DB_MIGRATE             = "false"
   }
 }
 
@@ -49,6 +52,10 @@ data "azurerm_key_vault" "key_vault" {
   name                = "${local.vaultName}"
   resource_group_name = "${local.vaultName}"
 }
+  
+////////////////////////////////
+// Populate Vault with DB info
+////////////////////////////////
 
 resource "azurerm_key_vault_secret" "POSTGRES-USER" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
