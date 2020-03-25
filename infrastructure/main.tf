@@ -70,7 +70,7 @@ resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
 resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-DATABASE"
-  value        = "${module.pcq-db.postgresql_database}"
+  value        = "${module.pcq-db.database_name}"
 }
 
 # Copy postgres password for flyway migration
