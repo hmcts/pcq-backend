@@ -27,7 +27,7 @@ module "pcq" {
   product                         = "${var.product}-${var.component}"
   location                        = "${var.location}"
   env                             = "${var.env}"
-  java_container_version          = "11.0"
+  java_container_version          = "9.0"
   subscription                    = "${var.subscription}"
   common_tags                     = "${var.common_tags}"
   appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
