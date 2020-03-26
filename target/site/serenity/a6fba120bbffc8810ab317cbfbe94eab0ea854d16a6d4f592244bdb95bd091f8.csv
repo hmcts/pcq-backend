@@ -1,5 +1,5 @@
 "Story","Title","Result","Date","Stability","Duration (s)"
 "Create pcq request test","Create pcq answers success","SUCCESS","2020-03-24T08:14:32.769701Z[Europe/London]","0.0","0.72"
-"Create pcq request test","Create pcq answers success without case","SUCCESS","2020-03-26T09:57:01.716739Z[Europe/London]","0.0","0.03"
-"Create pcq request test","Create pcq answers success with case","SUCCESS","2020-03-26T09:57:01.748927Z[Europe/London]","0.0","0.03"
-"Create pcq request test","Test controller internal error","SUCCESS","2020-03-26T09:57:01.777591Z[Europe/London]","0.0","0.05"
+"Create pcq request test","Create pcq answers success without case","SUCCESS","2020-03-26T16:48:55.56509Z[Europe/London]","0.0","0.04"
+"Create pcq request test","Create pcq answers success with case","SUCCESS","2020-03-26T16:48:55.605307Z[Europe/London]","0.0","0.03"
+"Create pcq request test","Test controller internal error","SUCCESS","2020-03-26T16:48:55.639832Z[Europe/London]","0.0","0.06"

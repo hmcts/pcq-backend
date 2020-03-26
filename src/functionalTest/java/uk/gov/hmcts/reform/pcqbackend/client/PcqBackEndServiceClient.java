@@ -1,15 +1,17 @@
 package uk.gov.hmcts.reform.pcqbackend.client;
 
-import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
+import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 
 import java.util.Map;
 
+import static net.serenitybdd.rest.SerenityRest.given;
+import static net.serenitybdd.rest.SerenityRest.with;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -32,7 +34,7 @@ public class PcqBackEndServiceClient {
 
     @SuppressWarnings("PMD.LawOfDemeter")
     public String getWelcomePage() {
-        return RestAssured
+        return SerenityRest
             .get(pcqBackEndApiUrl)
             .then()
             .statusCode(HttpStatus.OK.value())
@@ -44,7 +46,7 @@ public class PcqBackEndServiceClient {
 
     @SuppressWarnings("PMD.LawOfDemeter")
     public String getHealthPage() {
-        return RestAssured
+        return SerenityRest
             .get(pcqBackEndApiUrl + "/health")
             .then()
             .statusCode(HttpStatus.OK.value())
@@ -174,7 +176,7 @@ public class PcqBackEndServiceClient {
 
 
     private RequestSpecification withUnauthenticatedRequest() {
-        return RestAssured.given()
+        return given()
             .relaxedHTTPSValidation()
             .baseUri(pcqBackEndApiUrl)
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
@@ -182,7 +184,7 @@ public class PcqBackEndServiceClient {
     }
 
     public RequestSpecification getMultipleAuthHeaders() {
-        return RestAssured.with()
+        return with()
             .relaxedHTTPSValidation()
             .baseUri(pcqBackEndApiUrl)
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
