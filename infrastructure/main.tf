@@ -5,7 +5,7 @@ provider "azurerm" {
 locals {
   db_connection_options  = "?sslmode=require"
   vault_name             = "${var.product}-${var.env}"
-  asp_name               = "${var.product}"
+  asp_name               = "${var.product}-${var.env}"
 }
 
 module "pcq-db" {
@@ -28,13 +28,13 @@ module "pcq" {
   product                         = "${var.product}-${var.component}"
   location                        = "${var.location}"
   env                             = "${var.env}"
-  java_container_version          = "10.0"
+  java_container_version          = "9.0"
   subscription                    = "${var.subscription}"
   common_tags                     = "${var.common_tags}"
   appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
   is_frontend                     = "false"
-  asp_name                        = "${local.asp_name}-${var.env}"
-  asp_rg                          = "${local.asp_name}-${var.env}"
+  asp_name                        = "${local.asp_name}"
+  asp_rg                          = "${local.asp_name}"
 
   app_settings = {
     // db
