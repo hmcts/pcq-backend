@@ -10,6 +10,11 @@ variable "location" {
   default = "UK South"
 }
 
+variable "location_db" {
+  type    = "string"
+  default = "UK South"
+}
+
 variable "deployment_namespace" {}
 
 variable "env" {}
@@ -35,4 +40,9 @@ variable "appinsights_location" {
   type        = "string"
   default     = "West Europe"
   description = "Location for Application Insights"
+}
+
+variable "appinsights_instrumentation_key" {
+  description = "Instrumentation key of the App Insights instance this webapp should use. Module will create own App Insights resource if this is not provided"
+  default     = ""
 }
