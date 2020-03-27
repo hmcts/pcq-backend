@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testsuite errors="0" failures="0" name="uk.gov.hmcts.reform.pcqbackend.controllers.UpdatePcqRequestTest" skipped="0" tests="1" time="0.8" timestamp="2020-03-24 09:18:21"><testcase classname="uk.gov.hmcts.reform.pcqbackend.controllers.UpdatePcqRequestTest" name="Update dob provided success"/></testsuite>

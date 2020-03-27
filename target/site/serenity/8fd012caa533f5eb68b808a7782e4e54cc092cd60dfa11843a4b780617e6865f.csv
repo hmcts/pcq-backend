@@ -1,5 +1,0 @@
-"Story","Title","Result","Date","Stability","Duration (s)"
-"Create pcq request test","Create pcq answers success","SUCCESS","2020-03-24T08:14:32.769701Z[Europe/London]","0.0","0.72"
-"Create pcq request test","Create pcq answers success without case","SUCCESS","2020-03-27T13:04:01.48679Z[Europe/London]","0.0","0.04"
-"Create pcq request test","Create pcq answers success with case","SUCCESS","2020-03-27T13:04:01.53202Z[Europe/London]","0.0","0.04"
-"Create pcq request test","Test controller internal error","SUCCESS","2020-03-27T13:04:01.570029Z[Europe/London]","0.0","0.07"

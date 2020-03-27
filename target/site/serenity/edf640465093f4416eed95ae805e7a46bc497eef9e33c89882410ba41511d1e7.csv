@@ -1,3 +1,0 @@
-"Story","Title","Result","Date","Stability","Duration (s)"
-"Endpoint security test","Should allow unauthenticated requests to health check and return 200 response code","SUCCESS","2020-03-27T13:05:16.217095Z[Europe/London]","0.0","0.15"
-"Endpoint security test","Should allow unauthenticated requests to welcome message and return 200 response code","SUCCESS","2020-03-27T13:05:16.371755Z[Europe/London]","0.0","0.02"
