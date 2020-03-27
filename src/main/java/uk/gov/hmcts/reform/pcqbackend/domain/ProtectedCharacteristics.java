@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 
 
 @Entity(name = "protected_characteristics")
@@ -22,6 +23,7 @@ public class ProtectedCharacteristics implements Serializable {
     public static final long serialVersionUID = 5428747L;
 
     @Id
+    @NotEmpty
     private String pcqId;
 
     @Column(name = "CASE_ID")

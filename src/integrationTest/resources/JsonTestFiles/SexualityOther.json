@@ -1,0 +1,22 @@
+{
+  "pcqId": "UPDATE-INTEG-TEST",
+  "ccdCaseId": "CCD-Case-2",
+  "partyId": "23",
+  "channel": 1,
+  "completedDate": "2020-03-05T09:13:46.000Z",
+  "serviceId": "PROBATE",
+  "actor": "RESPONDENT",
+  "versionNo": 1,
+  "pcqAnswers": {
+    "dob_provided": 1,
+    "dob": "1985-01-01T00:00:00.000Z",
+    "language_main": 0,
+    "language_other": "TestLanguage",
+    "english_language_level": 3,
+    "sex": null,
+    "gender_different": 2,
+    "gender_other": "TestGender",
+    "sexuality": 4,
+    "sexuality_other": "OtherSexuality"
+  }
+}

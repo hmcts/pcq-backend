@@ -1,13 +1,15 @@
 {
-  "pcqId": "Integ-Test-1",
+  "pcqId": "T1234",
   "ccdCaseId": null,
   "partyId": "23",
   "channel": 1,
-  "completedDate": "2020-03-05T09:13:45.000Z",
+  "completedDate": "2020-03-05T09:13:45",
   "serviceId": "PROBATE",
   "actor": "DEFENDANT",
   "versionNo": 1,
   "pcqAnswers": {
-    "dob_provided": 1
+    "dob_provided": 1,
+    "dob": "1970-01-01T00:00:00.000Z",
+    "language_main": null
   }
 }
