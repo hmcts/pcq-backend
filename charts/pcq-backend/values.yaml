@@ -5,7 +5,7 @@ java:
   keyVaults:
     pcq:
       secrets:
-        - backend-POSTGRES-PASS
+        - pcq-backend-POSTGRES-PASS
         - flyway-password
         - AppInsightsInstrumentationKey
   environment:
