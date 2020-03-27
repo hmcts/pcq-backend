@@ -8,7 +8,6 @@ buildscript {
 }
 
 plugins {
-  id 'java'
   id 'application'
   id 'checkstyle'
   id 'pmd'
