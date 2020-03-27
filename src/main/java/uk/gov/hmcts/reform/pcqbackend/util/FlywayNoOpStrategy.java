@@ -1,4 +1,4 @@
-package util;
+package uk.gov.hmcts.reform.pcqbackend.util;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;

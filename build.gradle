@@ -154,9 +154,7 @@ pitest {
   junit5PluginVersion = '0.12'
   targetClasses = ['uk.gov.hmcts.reform.pcqbackend.*']
   excludedClasses = [
-    'uk.gov.hmcts.reform.pcqbackend.configuration.*',
-    'uk.gov.hmcts.reform.pcqbackend.controller.*',
-    'uk.gov.hmcts.reform.pcqbackend.Application'
+    'uk.gov.hmcts.reform.pcqbackend.utils.*'
   ]
   threads = 10
   enableDefaultIncrementalAnalysis = true
