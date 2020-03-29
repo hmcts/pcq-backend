@@ -7,9 +7,13 @@ properties([
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.GradleBuilder
+
 def type = "java"
 def product = "pcq"
 def component = "backend"
+
+GradleBuilder builder = new GradleBuilder(this, product)
 
 withPipeline(type, product, component) {
 
