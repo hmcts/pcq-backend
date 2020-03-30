@@ -3,7 +3,13 @@ java:
   ingressHost: pcq-backend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   aadIdentityName: pcq
   environment:
-    FLYWAY_NOOP_STRATEGY: "false"
+    PCQ_DB_NAME: pcq
+    PCQ_DB_USERNAME: pcquser@pcq-backend-{{ .Values.global.environment }}
+    PCQ_DB_HOST: pcq-backend-{{ .Values.global.environment }}.postgres.database.azure.com
+    PCQ_DB_PORT: "5432"
+    FLYWAY_URL: jdbc:postgresql://pcq-backend-{{ .Values.global.environment }}.postgres.database.azure.com:5432/pcq?sslmode=require
+    FLYWAY_USER: pcquser@pcq-backend-{{ .Values.global.environment }}
+    FLYWAY_NOOP_STRATEGY: "true"
   keyVaults:
     pcq:
       secrets:
