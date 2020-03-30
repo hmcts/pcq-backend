@@ -13,7 +13,7 @@ java:
   keyVaults:
     pcq:
       secrets:
-        - pcq-backend-POSTGRES-PASS
+        - backend-POSTGRES-PASS
         - flyway-password
         - AppInsightsInstrumentationKey
   image: 'hmctspublic.azurecr.io/pcq/pcq-backend:latest'
