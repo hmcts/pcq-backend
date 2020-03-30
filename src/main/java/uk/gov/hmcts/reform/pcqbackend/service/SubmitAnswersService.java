@@ -51,7 +51,7 @@ public class SubmitAnswersService {
         try {
 
             //Step 1. Check the request contains the required header content.
-            coRelationId = validateRequestHeader(headers);
+            coRelationId = ConversionUtil.validateRequestHeader(headers);
             coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
             log.info("Co-Relation Id : {} - submitAnswers API call invoked.", coRelationId);
 
@@ -157,18 +157,6 @@ public class SubmitAnswersService {
             .findById(pcqId);
 
         return protectedCharacteristics.orElse(null);
-
-    }
-
-    private String validateRequestHeader(List<String> requestHeaders) throws InvalidRequestException {
-
-        // Validate that the request contains the required Header values.
-        if (requestHeaders == null || requestHeaders.isEmpty()) {
-            throw new InvalidRequestException("Invalid Request. Expecting required header - Co-Relation Id -"
-                                                  + " in the request.", HttpStatus.BAD_REQUEST);
-        }
-
-        return requestHeaders.get(0);
 
     }
 
