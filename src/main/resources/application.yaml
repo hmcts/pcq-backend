@@ -29,7 +29,6 @@ api-version-number: 1
 spring:
   application:
     name: Protected Characteristics Questions
-
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
@@ -71,8 +70,6 @@ spring:
 
 #  flyway.enabled: true
 #    flyway.locations: classpath:db/migration,classpath:db/postgres
-
-
 flyway:
   noop:
     strategy: "false"

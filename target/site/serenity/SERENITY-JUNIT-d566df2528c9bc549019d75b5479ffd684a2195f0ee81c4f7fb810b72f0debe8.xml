@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testsuite errors="0" failures="0" name="uk.gov.hmcts.reform.pcqbackend.controllers.CreatePcqAnswersTest" skipped="0" tests="1" time="2.14" timestamp="2020-03-25 02:14:58"><testcase classname="uk.gov.hmcts.reform.pcqbackend.controllers.CreatePcqAnswersTest" name="Create pcq answers without case id"/></testsuite>

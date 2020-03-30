@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testsuite errors="0" failures="0" name="uk.gov.hmcts.reform.pcqbackend.controllers.PcqAnswersErrorResponseTest" skipped="0" tests="1" time="2.52" timestamp="2020-03-25 03:28:35"><testcase classname="uk.gov.hmcts.reform.pcqbackend.controllers.PcqAnswersErrorResponseTest" name="Invalid version"/></testsuite>

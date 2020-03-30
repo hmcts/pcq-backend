@@ -1,1 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><testsuite errors="0" failures="0" name="uk.gov.hmcts.reform.pcqbackend.controllers.CreatePcqRequestTest" skipped="0" tests="1" time="0.72" timestamp="2020-03-24 08:14:32"><testcase classname="uk.gov.hmcts.reform.pcqbackend.controllers.CreatePcqRequestTest" name="Create pcq answers success"/></testsuite>

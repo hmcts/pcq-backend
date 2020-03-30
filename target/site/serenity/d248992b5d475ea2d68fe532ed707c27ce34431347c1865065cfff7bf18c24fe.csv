@@ -1,5 +1,0 @@
-"Story","Title","Result","Date","Stability","Duration (s)"
-"Pcq answers error response test","Invalid json request","SUCCESS","2020-03-26T16:51:26.510583Z[Europe/London]","0.0","0.19"
-"Pcq answers error response test","Stale pcq answers","SUCCESS","2020-03-26T16:51:26.708637Z[Europe/London]","0.0","0.14"
-"Pcq answers error response test","Invalid version","SUCCESS","2020-03-26T16:51:26.853489Z[Europe/London]","0.0","0.08"
-"Pcq answers error response test","Un recoverable error test","SUCCESS","2020-03-26T16:51:26.936751Z[Europe/London]","0.0","0.09"
