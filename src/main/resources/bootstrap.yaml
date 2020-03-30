@@ -6,3 +6,4 @@ spring:
       paths: /mnt/secrets/pcq
       aliases:
         backend-POSTGRES-PASS: PCQ_DB_PASSWORD
+        flyway-password: flyway.password
