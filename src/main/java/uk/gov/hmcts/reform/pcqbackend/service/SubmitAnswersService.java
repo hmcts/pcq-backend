@@ -46,7 +46,7 @@ public class SubmitAnswersService {
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(List<String> headers, PcqAnswerRequest answerRequest) {
-        int pcqId = answerRequest.getPcqId();
+        String pcqId = answerRequest.getPcqId();
         String coRelationId = "";
         try {
 
@@ -71,8 +71,8 @@ public class SubmitAnswersService {
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record created.",
-                         coRelationId);
+                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record submitted "
+                             + "for creation.", coRelationId);
 
             } else {
                 // Update the PCQ Record.
@@ -107,6 +107,7 @@ public class SubmitAnswersService {
                     createCharacteristics.getOtherDisabilityDetails(),
                     createCharacteristics.getDisabilityNone(),
                     createCharacteristics.getPregnancy(),
+                    createCharacteristics.getCompletedDate(),
                     createCharacteristics.getPcqId(),
                     createCharacteristics.getCompletedDate());
 
@@ -116,8 +117,8 @@ public class SubmitAnswersService {
                                                                  environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
-                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record saved.",
-                             coRelationId);
+                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
+                                 + "submitted for Update.", coRelationId);
                 }
             }
 
@@ -150,7 +151,7 @@ public class SubmitAnswersService {
                                       environment.getProperty("api-error-messages.created"));
     }
 
-    public ProtectedCharacteristics getProtectedCharacteristicsById(int pcqId) {
+    public ProtectedCharacteristics getProtectedCharacteristicsById(String pcqId) {
         log.info("getAnswer API invoked");
         Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
             .findById(pcqId);

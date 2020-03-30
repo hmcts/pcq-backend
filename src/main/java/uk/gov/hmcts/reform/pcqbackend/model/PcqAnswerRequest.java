@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pcqbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.io.Serializable;
 
 /**
@@ -9,8 +11,9 @@ public class PcqAnswerRequest implements Serializable {
 
     public static final long serialVersionUID = 4328743L;
 
-    private int pcqId;
+    private String pcqId;
 
+    @JsonProperty("ccdCaseId")
     private String caseId;
 
     private String partyId;
@@ -19,9 +22,9 @@ public class PcqAnswerRequest implements Serializable {
 
     private String completedDate;
 
-    private int serviceId;
+    private String serviceId;
 
-    private int actor;
+    private String actor;
 
     private int versionNo;
 
@@ -31,7 +34,7 @@ public class PcqAnswerRequest implements Serializable {
         // Intentionally left blank.
     }
 
-    public PcqAnswerRequest(int pcqId) {
+    public PcqAnswerRequest(String pcqId) {
 
         this.pcqId = pcqId;
     }
@@ -68,19 +71,19 @@ public class PcqAnswerRequest implements Serializable {
         this.completedDate = completedDate;
     }
 
-    public int getServiceId() {
+    public String getServiceId() {
         return serviceId;
     }
 
-    public void setServiceId(int serviceId) {
+    public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
 
-    public int getActor() {
+    public String getActor() {
         return actor;
     }
 
-    public void setActor(int actor) {
+    public void setActor(String actor) {
         this.actor = actor;
     }
 
@@ -100,11 +103,11 @@ public class PcqAnswerRequest implements Serializable {
         this.pcqAnswers = pcqAnswers;
     }
 
-    public int getPcqId() {
+    public String getPcqId() {
         return pcqId;
     }
 
-    public void setPcqId(int pcqId) {
+    public void setPcqId(String pcqId) {
         this.pcqId = pcqId;
     }
 }

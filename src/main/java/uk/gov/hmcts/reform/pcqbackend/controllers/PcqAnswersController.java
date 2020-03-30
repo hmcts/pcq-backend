@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,15 +60,20 @@ public class PcqAnswersController {
         @ApiResponse(code = 202, message = "Request valid but stale.", response = SubmitResponse.class),
         @ApiResponse(code = 400, message = "Request failed schema validation.", response = SubmitResponse.class),
         @ApiResponse(code = 403, message = "Version number mismatch.", response = SubmitResponse.class),
-        @ApiResponse(code = 500, message = "General/Un-recoverable error.", response = SubmitResponse.class),
-        @ApiResponse(code = 503, message = "Database down/un-available.", response = SubmitResponse.class)
+        @ApiResponse(code = 500, message = "General/Un-recoverable error.", response = SubmitResponse.class)
     })
     @ResponseBody
     public ResponseEntity<Object> submitAnswers(@RequestHeader HttpHeaders headers,
                                                 @RequestBody PcqAnswerRequest answerRequest) {
 
-        return submitAnswersService.processPcqAnswers(headers.get(environment.getProperty(
-            "api-required-header-keys.co-relationid")), answerRequest);
+        try {
+            return submitAnswersService.processPcqAnswers(headers.get(
+                environment.getProperty("api-required-header-keys.co-relationid")), answerRequest);
+        } catch (Exception e) {
+            log.error("submitAnswers API call failed due to error - {}", e.getMessage(), e);
+            return ConversionUtil.generateResponseEntity(answerRequest.getPcqId(), HttpStatus.INTERNAL_SERVER_ERROR,
+                                                         environment.getProperty("api-error-messages.internal_error"));
+        }
 
     }
 
@@ -84,7 +90,7 @@ public class PcqAnswersController {
         ),
         @ApiResponse(
             code = 400,
-            message = "An invalid email was provided"
+            message = "An invalid id was provided"
         ),
         @ApiResponse(
             code = 404,
@@ -96,7 +102,7 @@ public class PcqAnswersController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public ResponseEntity<PcqAnswerResponse> getAnswersByPcqId(@PathVariable("pcqId") @NotBlank int pcqId) {
+    public ResponseEntity<PcqAnswerResponse> getAnswersByPcqId(@PathVariable("pcqId") @NotBlank String pcqId) {
 
         ProtectedCharacteristics protectedCharacteristics = submitAnswersService
             .getProtectedCharacteristicsById(pcqId);

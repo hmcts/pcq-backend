@@ -9,21 +9,22 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-@Repository
-public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, Integer> {
+@Repository()
+public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String> {
 
     @SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.UseObjectForClearerAPI"})
     @Modifying(clearAutomatically = true)
-    @Query(value = "update Protected_Characteristics p set p.dob_provided = ?, p.dob = ?, "
-        + "p.language_main = ?, p.language_other = ?, p.english_language_level = ?, "
-        + "p.sex = ?, p.gender_different = ?, p.gender_other = ?, p.sexuality = ?, "
-        + "p.sexuality_other = ?, p.marriage = ?, p.ethnicity, p.ethnicity_other = ?, "
-        + "p.religion = ?, p.religion_other = ?, p.disability_conditions = ?, "
-        + "p.disability_impact = ?, p.disability_vision = ?, p.disability_hearing = ?, "
-        + "p.disability_mobility = ?, p.disability_dexterity = ?, p.disability_learning = ?, "
-        + "p.disability_memory = ?, p.disability_mental_health = ?, p.disability_stamina = ?, "
-        + "p.disability_social = ?, p.disability_other = ?, p.disability_condition_other = ?, "
-        + "p.disability_none = ?, p.pregnancy = ? where p.pcq_id = ? and p.completed_date < ?", nativeQuery = true)
+    @Query("UPDATE protected_characteristics p SET p.dobProvided = ?1, p.dateOfBirth = ?2, "
+        + "p.mainLanguage = ?3, p.otherLanguage = ?4, p.englishLanguageLevel = ?5, "
+        + "p.sex = ?6, p.genderDifferent = ?7, p.otherGender = ?8, p.sexuality = ?9, "
+        + "p.otherSexuality = ?10, p.marriage = ?11, p.ethnicity = ?12, p.otherEthnicity = ?13, "
+        + "p.religion = ?14, p.otherReligion = ?15, p.disabilityConditions = ?16, "
+        + "p.disabilityImpact = ?17, p.disabilityVision = ?18, p.disabilityHearing = ?19, "
+        + "p.disabilityMobility = ?20, p.disabilityDexterity = ?21, p.disabilityLearning = ?22, "
+        + "p.disabilityMemory = ?23, p.disabilityMentalHealth = ?24, p.disabilityStamina = ?25, "
+        + "p.disabilitySocial = ?26, p.disabilityOther = ?27, p.otherDisabilityDetails = ?28, "
+        + "p.disabilityNone = ?29, p.pregnancy = ?30, p.completedDate = ?31 WHERE p.pcqId = ?32 "
+        + "and p.completedDate < ?33")
     int updateCharacteristics(Integer dobProvided, Date dateOfBirth, Integer mainLanguage, String otherLanguage,
                               Integer englishLanguageLevel, Integer sex, Integer genderDifferent, String otherGender,
                               Integer sexuality, String otherSexuality, Integer marriage, Integer ethnicity,
@@ -33,5 +34,5 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
                               Integer disabilityLearning, Integer disabilityMemory, Integer disabilityMentalHealth,
                               Integer disabilityStamina, Integer disabilitySocial, Integer disabilityOther,
                               String otherDisabilityDetails, Integer disabilityNone, Integer pregnancy,
-                              Integer pcqId, Timestamp completedDate);
+                              Timestamp completedDateNew, String pcqId, Timestamp completedDate);
 }
