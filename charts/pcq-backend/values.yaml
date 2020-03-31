@@ -17,4 +17,4 @@ java:
         - backend-POSTGRES-PASS
         - flyway-password
         - AppInsightsInstrumentationKey
-  image: 'hmctspublic.azurecr.io/pcq/pcq-backend:latest'
+  image: 'hmctspublic.azurecr.io/pcq/backend:latest'
