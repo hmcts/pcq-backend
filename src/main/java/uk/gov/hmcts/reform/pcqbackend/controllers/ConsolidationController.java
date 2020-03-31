@@ -77,8 +77,8 @@ public class ConsolidationController {
 
         try {
 
-            List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase
-                (headers.get(environment.getProperty("api-required-header-keys.co-relationid")));
+            List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
+                headers.get(environment.getProperty("api-required-header-keys.co-relationid")));
 
             return ConversionUtil.generatePcqWithoutCaseResponse(protectedCharacteristicsList, HttpStatus.OK,
                                                                  environment.getProperty(

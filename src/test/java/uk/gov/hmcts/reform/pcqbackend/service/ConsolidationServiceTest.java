@@ -47,6 +47,8 @@ public class ConsolidationServiceTest {
     private static final String NUMBER_OF_DAYS_PROPERTY = "api-config-params.number_of_days_limit";
     private static final String TEST_PCQ_ID = "T1234";
     private static final String TEST_CASE_ID = "CCD112";
+    private static final String ERROR_MSG_1 = "Number of rows returned are incorrect.";
+    private static final String ERROR_MSG_2 = "Method should not return null";
 
     @BeforeEach
     public void setUp() {
@@ -57,15 +59,13 @@ public class ConsolidationServiceTest {
     public void testNoHeadersGetRequest() {
 
         try {
-            List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
-                null);
+            consolidationService.getPcqsWithoutCase(null);
             fail("The method should have thrown InvalidRequestException");
         } catch (InvalidRequestException ive) {
             assertEquals("Invalid Request. Expecting required header - Co-Relation Id - in the request.",
                          ive.getMessage(), "Exception message not matching");
             assertEquals(HttpStatus.BAD_REQUEST, ive.getErrorCode(), "Http Status Code not matching");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
@@ -84,8 +84,8 @@ public class ConsolidationServiceTest {
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
 
-            assertNotNull(protectedCharacteristicsList, "Method should not return null");
-            assertEquals(3, protectedCharacteristicsList.size(), "Number of rows returned are incorrect.");
+            assertNotNull(protectedCharacteristicsList, ERROR_MSG_2);
+            assertEquals(3, protectedCharacteristicsList.size(), ERROR_MSG_1);
             assertListContents(targetList, protectedCharacteristicsList);
 
 
@@ -111,8 +111,8 @@ public class ConsolidationServiceTest {
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
 
-            assertNotNull(protectedCharacteristicsList, "Method should not return null");
-            assertEquals(1, protectedCharacteristicsList.size(), "Number of rows returned are incorrect.");
+            assertNotNull(protectedCharacteristicsList, ERROR_MSG_2);
+            assertEquals(1, protectedCharacteristicsList.size(), ERROR_MSG_1);
             assertListContents(targetList, protectedCharacteristicsList);
 
 
@@ -138,8 +138,8 @@ public class ConsolidationServiceTest {
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
 
-            assertNotNull(protectedCharacteristicsList, "Method should not return null");
-            assertEquals(0, protectedCharacteristicsList.size(), "Number of rows returned are incorrect.");
+            assertNotNull(protectedCharacteristicsList, ERROR_MSG_2);
+            assertEquals(0, protectedCharacteristicsList.size(), ERROR_MSG_1);
             assertListContents(targetList, protectedCharacteristicsList);
 
 
@@ -157,16 +157,15 @@ public class ConsolidationServiceTest {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
 
         try {
-
-            List<ProtectedCharacteristics> targetList = generateTargetList(0);
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(null);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
 
-            assertNotNull(protectedCharacteristicsList, "Method should not return null");
-            assertEquals(0, protectedCharacteristicsList.size(), "Number of rows returned are incorrect.");
+            assertNotNull(protectedCharacteristicsList, ERROR_MSG_2);
+            assertEquals(0, protectedCharacteristicsList.size(), ERROR_MSG_1);
+            List<ProtectedCharacteristics> targetList = generateTargetList(0);
             assertListContents(targetList, protectedCharacteristicsList);
 
 
@@ -193,8 +192,7 @@ public class ConsolidationServiceTest {
             assertNotNull(submitResponse, RESPONSE_BODY_NULL_MSG);
             assertEquals(400, responseEntity.getStatusCodeValue(), "Expected 400 status code");
             assertEquals(TEST_PCQ_ID, submitResponse.getPcqId(), "PCQ Ids not matching");
-            assertEquals(HttpStatus.BAD_REQUEST.value(), Integer.parseInt(submitResponse.getResponseStatusCode()),
-                         "Status code not matching");
+            assertEquals("400", submitResponse.getResponseStatusCode(), "Status code not matching");
             assertEquals(INVALID_ERROR, submitResponse.getResponseStatus(), "Unexpected error message");
 
 
@@ -221,8 +219,7 @@ public class ConsolidationServiceTest {
             assertNotNull(submitResponse, RESPONSE_BODY_NULL_MSG);
             assertEquals(200, responseEntity.getStatusCodeValue(), "Expected 200 status code");
             assertEquals(TEST_PCQ_ID, submitResponse.getPcqId(), "PCQ Ids not matching");
-            assertEquals(HttpStatus.OK.value(), Integer.parseInt(submitResponse.getResponseStatusCode()),
-                         "Status code not matching");
+            assertEquals("200", submitResponse.getResponseStatusCode(),"Status code not matching");
             assertEquals(UPDATED_MSG, submitResponse.getResponseStatus(), "Unexpected success message");
 
 
@@ -249,8 +246,7 @@ public class ConsolidationServiceTest {
             assertNotNull(submitResponse, RESPONSE_BODY_NULL_MSG);
             assertEquals(400, responseEntity.getStatusCodeValue(), "Expected 400 status code");
             assertEquals(TEST_PCQ_ID, submitResponse.getPcqId(), "PCQ Ids not matching");
-            assertEquals(HttpStatus.BAD_REQUEST.value(), Integer.parseInt(submitResponse.getResponseStatusCode()),
-                         "Status code not matching");
+            assertEquals("400", submitResponse.getResponseStatusCode(), "Status code not matching");
             assertEquals(INVALID_ERROR, submitResponse.getResponseStatus(), "Unexpected success message");
 
 
@@ -269,11 +265,12 @@ public class ConsolidationServiceTest {
         return headerList;
     }
 
+    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
     public static List<ProtectedCharacteristics> generateTargetList(int rowCount) {
         List<ProtectedCharacteristics> targetList = new ArrayList<>(rowCount);
         for (int i = 0; i < rowCount; i++) {
             ProtectedCharacteristics targetObj = new ProtectedCharacteristics();
-            targetObj.setPcqId("TEST - "+i);
+            targetObj.setPcqId("TEST - " + i);
             targetList.add(targetObj);
         }
 

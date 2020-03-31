@@ -20,6 +20,9 @@ public class PcqWithoutCaseResponse implements Serializable {
     private String responseStatusCode;
 
     public String[] getPcqId() {
+        if (pcqId == null) {
+            return null;
+        }
         return Arrays.copyOf(pcqId, pcqId.length);
     }
 

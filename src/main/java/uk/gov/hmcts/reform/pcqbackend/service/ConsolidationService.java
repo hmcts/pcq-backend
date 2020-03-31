@@ -39,12 +39,12 @@ public class ConsolidationService {
         String coRelationId = ConversionUtil.validateRequestHeader(headers);
         log.info("Co-Relation Id : {} - getPcqsWithoutCase service invoked", coRelationId);
 
-        List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository.
-            findByCaseIdIsNullAndCompletedDateGreaterThan(
+        List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository
+            .findByCaseIdIsNullAndCompletedDateGreaterThan(
             ConversionUtil.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
                 "api-config-params.number_of_days_limit")))));
 
-        if(returnList == null) {
+        if (returnList == null) {
             return new ArrayList<>();
         }
 
