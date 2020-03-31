@@ -514,7 +514,6 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Ethnicity.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-
             runAnswerUpdates(answerRequest);
             assertLogsForKeywords();
 

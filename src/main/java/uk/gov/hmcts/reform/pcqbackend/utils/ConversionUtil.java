@@ -209,7 +209,6 @@ public final class ConversionUtil {
         for (ProtectedCharacteristics protectedCharacteristics : pcqIds) {
             pcqIdArray.add(protectedCharacteristics.getPcqId());
         }
-
         pcqWithoutCaseResponse.setPcqId(pcqIdArray.toArray(new String[0]));
         pcqWithoutCaseResponse.setResponseStatus(message);
         pcqWithoutCaseResponse.setResponseStatusCode(String.valueOf(code.value()));

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 
 import java.util.HashMap;
@@ -38,6 +39,14 @@ public class PcqBackEndClient {
         return getRequest(APP_BASE_PATH + "/getAnswer/{pcqId}", pcqId);
     }
 
+    public Map<String, Object> getPcqWithoutCase() {
+        return getRequest(APP_BASE_PATH + "/consolidation/pcqWithoutCase");
+    }
+
+    public Map<String, Object> addCaseForPcq(String pcqId, String caseId) {
+        return putRequest(APP_BASE_PATH + "/consolidation/addCaseForPCQ/" + pcqId, caseId);
+    }
+
     @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private <T> Map<String, Object> postRequest(String uriPath, T requestBody) {
 
@@ -50,6 +59,31 @@ public class PcqBackEndClient {
                 uriPath,
                 request,
                 Map.class);
+
+        } catch (RestClientResponseException ex) {
+            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("response_body", ex.getResponseBodyAsString());
+            return getResponse(statusAndBody);
+        }
+
+        return getResponse(responseEntity);
+    }
+
+    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    private <T> Map<String, Object> putRequest(String uriPath, Object... params) {
+
+        HttpEntity<T> request = new HttpEntity<>(getS2sTokenHeaders());
+        ResponseEntity<Map> responseEntity = null;
+        //adding the query params to the URL
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + prdApiPort + uriPath)
+            .queryParam("caseId", params[0]);
+        try {
+
+            responseEntity = restTemplate.exchange(uriBuilder.toUriString(),
+                                                     HttpMethod.PUT,
+                                                     request,
+                                                     Map.class);
 
         } catch (RestClientResponseException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
