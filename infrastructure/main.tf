@@ -22,6 +22,35 @@ module "pcq-db" {
   common_tags            = "${var.common_tags}"
   subscription           = "${var.subscription}"
 }
+  
+module "pcq" {
+  source                          = "git@github.com:hmcts/cnp-module-webapp?ref=master"
+  product                         = "${var.product}-${var.component}"
+  location                        = "${var.location}"
+  env                             = "${var.env}"
+  java_container_version          = "9.0"
+  subscription                    = "${var.subscription}"
+  common_tags                     = "${var.common_tags}"
+  appinsights_instrumentation_key = "${var.appinsights_instrumentation_key}"
+  is_frontend                     = "false"
+  asp_name                        = "${var.product}-${var.env}"
+  asp_rg                          = "${var.product}-${var.env}"
+  enable_ase                      = "false"
+  
+  app_settings = {
+    // db
+    PCQ_DB_HOST                   = "${module.pcq-db.host_name}"
+    PCQ_DB_PORT                   = "${module.pcq-db.postgresql_listen_port}"
+    PCQ_DB_USERNAME               = "${module.pcq-db.user_name}"
+    PCQ_DB_PASSWORD               = "${module.pcq-db.postgresql_password}"
+    PCQ_DB_NAME                   = "${module.pcq-db.postgresql_database}"
+    PCQ_DB_CONN_OPTIONS           = "${local.db_connection_options}"
+    FLYWAY_URL                    = "jdbc:postgresql://${module.pcq-db.host_name}:${module.pcq-db.postgresql_listen_port}/${module.pcq-db.postgresql_database}${local.db_connection_options}"
+    FLYWAY_USER                   = "${module.pcq-db.user_name}"
+    FLYWAY_PASSWORD               = "${module.pcq-db.postgresql_password}"
+    FLYWAY_NOOP_STRATEGY          = "true"
+  }
+}
 
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.vault_name}"
