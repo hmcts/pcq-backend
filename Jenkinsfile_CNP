@@ -7,13 +7,39 @@ properties([
 
 @Library("Infrastructure")
 
+import uk.gov.hmcts.contino.GradleBuilder
+
 def type = "java"
 def product = "pcq"
 def component = "backend"
 
+def secrets = [
+  'pcq-${env}': [
+    secret('backend-POSTGRES-PASS', 'PCQ_DB_PASSWORD')
+  ]
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [ $class: 'AzureKeyVaultSecret',
+    secretType: 'Secret',
+    name: secretName,
+    version: '',
+    envVariable: envVar
+  ]
+}
+
+GradleBuilder builder = new GradleBuilder(this, product)
+
 withPipeline(type, product, component) {
-  installCharts()
+
+  after('test') {
+    builder.gradle('integration')
+  }
+  enableDbMigration('pcq')
   enableSlackNotifications('#pcq-builds')
+  enableAksStagingDeployment()
+  loadVaultSecrets(secrets)
+  installCharts()
   disableLegacyDeployment()
 
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"

@@ -1,0 +1,9 @@
+spring:
+  cloud:
+    propertiesvolume:
+      enabled: true
+      prefixed: false
+      paths: /mnt/secrets/pcq
+      aliases:
+        backend-POSTGRES-PASS: PCQ_DB_PASSWORD
+        flyway-password: flyway.password

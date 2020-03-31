@@ -15,28 +15,28 @@ public class PcqAnswerResponse implements Serializable {
 
     public static final long serialVersionUID = 1328743L;
 
-    @JsonProperty("pcq_id")
-    private int pcqId;
+    @JsonProperty("pcqId")
+    private String pcqId;
 
-    @JsonProperty("case_id")
+    @JsonProperty("ccdCaseId")
     private String caseId;
 
-    @JsonProperty("party_id")
+    @JsonProperty("partyId")
     private String partyId;
 
     @JsonProperty("channel")
     private Integer channel;
 
-    @JsonProperty("completed_date")
+    @JsonProperty("completedDate")
     private String completedDate;
 
-    @JsonProperty("service_id")
-    private Integer serviceId;
+    @JsonProperty("serviceId")
+    private String serviceId;
 
     @JsonProperty("actor")
-    private Integer actor;
+    private String actor;
 
-    @JsonProperty("version_number")
+    @JsonProperty("versionNo")
     private Integer versionNo;
 
     private PcqAnswers pcqAnswers;
