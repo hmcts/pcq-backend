@@ -18,3 +18,8 @@ java:
     postgresqlUsername: pcquser
     postgresqlPassword: pcqpass
     postgresqlDatabase: pcq
+
+spring:
+  cloud:
+    config:
+      enabled: false
