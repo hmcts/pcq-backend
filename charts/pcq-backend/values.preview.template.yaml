@@ -15,6 +15,6 @@ java:
 
   postgresql:
     enabled: true
-    #postgresqlUsername: pcquser
-    #postgresqlPassword: pcqpass
+    postgresqlUsername: pcquser
+    postgresqlPassword: pcqpass
     postgresqlDatabase: pcq
