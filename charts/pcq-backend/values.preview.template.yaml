@@ -19,7 +19,7 @@ java:
     postgresqlPassword: pcqpass
     postgresqlDatabase: pcq
 
-spring:
-  cloud:
-    config:
-      enabled: false
+  spring:
+    cloud:
+      config:
+        enabled: false
