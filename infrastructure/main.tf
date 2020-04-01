@@ -3,9 +3,13 @@ provider "azurerm" {
 }
 
 locals {
-  db_connection_options  = "?sslmode=require"
-  vault_name             = "${var.product}-${var.env}"
-  asp_name               = "${var.product}-${var.env}"
+  is_preview               = "${(var.env == "preview" || var.env == "spreview")}"
+  preview_vault_name       = "${var.product}-aat"
+  non_preview_vault_name   = "${var.product}-${var.env}"
+  vault_name               = "${local.is_preview ? local.preview_vault_name : local.non_preview_vault_name}"
+  asp_name                 = "${var.product}-${var.env}"
+
+  db_connection_options    = "?sslmode=require"
 }
 
 module "pcq-db" {
@@ -22,12 +26,12 @@ module "pcq-db" {
   common_tags            = "${var.common_tags}"
   subscription           = "${var.subscription}"
 }
-  
+
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.vault_name}"
   resource_group_name = "${local.vault_name}"
 }
-  
+
 ////////////////////////////////
 // Populate Vault with DB info
 ////////////////////////////////
@@ -43,7 +47,7 @@ resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   name         = "${var.component}-POSTGRES-PASS"
   value        = "${module.pcq-db.postgresql_password}"
 }
-  
+
 resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-HOST"
