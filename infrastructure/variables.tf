@@ -2,6 +2,10 @@ variable "product" {
   default = "pcq"
 }
 
+variable "raw_product" {
+  default = "pcq" // jenkins-library overrides product for PRs and adds e.g. pr-55-pcq
+}
+
 variable "component" {
   default = "backend"
 }

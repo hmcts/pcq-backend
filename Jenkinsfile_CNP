@@ -42,14 +42,6 @@ withPipeline(type, product, component) {
   installCharts()
   disableLegacyDeployment()
 
-  onPR() {
-    env.PCQ_DB_PASSWORD = "pcqpass"
-  }
-
-  onNonPR() {
-    loadVaultSecrets(secrets)
-  }
-
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
 
   after('test') {

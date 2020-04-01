@@ -4,7 +4,7 @@ provider "azurerm" {
 
 locals {
   is_preview               = "${(var.env == "preview" || var.env == "spreview")}"
-  preview_vault_name       = "${var.product}-aat"
+  preview_vault_name       = "${var.raw_product}-aat"
   non_preview_vault_name   = "${var.product}-${var.env}"
   vault_name               = "${local.is_preview ? local.preview_vault_name : local.non_preview_vault_name}"
   asp_name                 = "${var.product}-${var.env}"
