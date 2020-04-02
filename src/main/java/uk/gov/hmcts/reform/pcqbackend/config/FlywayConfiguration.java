@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import util.FlywayNoOpStrategy;
+import uk.gov.hmcts.reform.pcqbackend.util.FlywayNoOpStrategy;
 
 @AutoConfigureAfter({
     DataSourceAutoConfiguration.class,
