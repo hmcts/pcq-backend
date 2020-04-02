@@ -27,5 +27,5 @@ withNightlyPipeline(type, product, component) {
   enableMutationTest()
   enableFullFunctionalTest()
 
-  // enableSecurityScan()
+  enableSecurityScan()
 }
