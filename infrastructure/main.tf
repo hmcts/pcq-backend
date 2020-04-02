@@ -22,7 +22,7 @@ module "pcq-db" {
   common_tags            = "${var.common_tags}"
   subscription           = "${var.subscription}"
 }
-
+  
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.vault_name}"
   resource_group_name = "${local.vault_name}"

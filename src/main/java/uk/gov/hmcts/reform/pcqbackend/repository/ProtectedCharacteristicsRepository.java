@@ -8,6 +8,7 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Repository()
 public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String> {
@@ -35,4 +36,10 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
                               Integer disabilityStamina, Integer disabilitySocial, Integer disabilityOther,
                               String otherDisabilityDetails, Integer disabilityNone, Integer pregnancy,
                               Timestamp completedDateNew, String pcqId, Timestamp completedDate);
+
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE protected_characteristics p SET p.caseId = ?1 WHERE p.pcqId = ?2")
+    int updateCase(String caseId, String pcqId);
+
+    List<ProtectedCharacteristics> findByCaseIdIsNullAndCompletedDateGreaterThan(Timestamp completedDate);
 }
