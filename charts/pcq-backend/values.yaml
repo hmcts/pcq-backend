@@ -14,7 +14,7 @@ java:
     pcq:
       resourceGroup: pcq
       secrets:
-        - backend-POSTGRES-PASS
-        - flyway-password
-        - AppInsightsInstrumentationKey
+        backend-POSTGRES-PASS: PCQ_DB_PASSWORD
+        flyway-password: FLYWAY_PASSWORD
+        AppInsightsInstrumentationKey
   image: 'hmctspublic.azurecr.io/pcq/backend:latest'
