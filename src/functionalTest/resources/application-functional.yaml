@@ -14,6 +14,7 @@ management:
 api-error-messages:
   bad_request: Invalid Request
   created: Successfully created
+  updated: Successfully updated
   accepted: Success
   internal_error: Unknown error occurred
 api-required-header-keys:
@@ -21,6 +22,8 @@ api-required-header-keys:
 api-schema-file:
     submitanswer-schema: JsonSchema/submitAnswersSchema.json
 api-version-number: 1
+api-config-params:
+  number_of_days_limit: 90
 
 #Application specific unit test properties
 unit-test:

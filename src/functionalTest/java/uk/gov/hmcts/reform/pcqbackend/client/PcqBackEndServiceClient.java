@@ -174,6 +174,35 @@ public class PcqBackEndServiceClient {
         return response.body().as(Map.class);
     }
 
+    public Map<String, Object> getAnswerRecordWithoutCase(HttpStatus status) {
+
+        Response response = getMultipleAuthHeaders()
+            .get("pcq/backend/consolidation/pcqWithoutCase")
+            .andReturn();
+        response.then()
+            .assertThat()
+            .statusCode(status.value());
+
+        if (status == HttpStatus.UNAUTHORIZED) {
+            return null;
+        }
+        return response.body().as(Map.class);
+    }
+
+    public Map<String, Object> addCaseForPcq(String pcqId, String caseId, HttpStatus status) {
+        Response response = getMultipleAuthHeadersWithQueryParams("caseId", caseId)
+            .put("pcq/backend/consolidation/addCaseForPCQ/" + pcqId)
+            .andReturn();
+        response.then()
+            .assertThat()
+            .statusCode(status.value());
+
+        if (status == HttpStatus.UNAUTHORIZED) {
+            return null;
+        }
+        return response.body().as(Map.class);
+    }
+
 
     private RequestSpecification withUnauthenticatedRequest() {
         return given()
@@ -190,6 +219,16 @@ public class PcqBackEndServiceClient {
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
             .header(AUTHORIZATION_HEADER, "FUNC-TEST-PCQ");
+    }
+
+    public RequestSpecification getMultipleAuthHeadersWithQueryParams(String paramName, String paramValue) {
+        return with()
+            .relaxedHTTPSValidation()
+            .baseUri(pcqBackEndApiUrl)
+            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
+            .header(AUTHORIZATION_HEADER, "FUNC-TEST-PCQ")
+            .queryParam(paramName, paramValue);
     }
 
 }
