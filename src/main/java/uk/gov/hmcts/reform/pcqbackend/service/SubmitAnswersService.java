@@ -51,7 +51,7 @@ public class SubmitAnswersService {
         try {
 
             //Step 1. Check the request contains the required header content.
-            coRelationId = validateRequestHeader(headers);
+            coRelationId = ConversionUtil.validateRequestHeader(headers);
             coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
             log.info("Co-Relation Id : {} - submitAnswers API call invoked.", coRelationId);
 
@@ -71,8 +71,8 @@ public class SubmitAnswersService {
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record created.",
-                         coRelationId);
+                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record submitted "
+                             + "for creation.", coRelationId);
 
             } else {
                 // Update the PCQ Record.
@@ -117,8 +117,8 @@ public class SubmitAnswersService {
                                                                  environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
-                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characterstic Record saved.",
-                             coRelationId);
+                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
+                                 + "submitted for Update.", coRelationId);
                 }
             }
 
@@ -157,18 +157,6 @@ public class SubmitAnswersService {
             .findById(pcqId);
 
         return protectedCharacteristics.orElse(null);
-
-    }
-
-    private String validateRequestHeader(List<String> requestHeaders) throws InvalidRequestException {
-
-        // Validate that the request contains the required Header values.
-        if (requestHeaders == null || requestHeaders.isEmpty()) {
-            throw new InvalidRequestException("Invalid Request. Expecting required header - Co-Relation Id -"
-                                                  + " in the request.", HttpStatus.BAD_REQUEST);
-        }
-
-        return requestHeaders.get(0);
 
     }
 

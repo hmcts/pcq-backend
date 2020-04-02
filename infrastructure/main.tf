@@ -22,7 +22,7 @@ module "pcq-db" {
   common_tags            = "${var.common_tags}"
   subscription           = "${var.subscription}"
 }
-
+  
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.vault_name}"
   resource_group_name = "${local.vault_name}"
@@ -34,31 +34,31 @@ data "azurerm_key_vault" "key_vault" {
 
 resource "azurerm_key_vault_secret" "POSTGRES-USER" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "${var.product}-POSTGRES-USER"
+  name         = "${var.component}-POSTGRES-USER"
   value        = "${module.pcq-db.user_name}"
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "${var.product}-POSTGRES-PASS"
+  name         = "${var.component}-POSTGRES-PASS"
   value        = "${module.pcq-db.postgresql_password}"
 }
   
 resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "${var.product}-POSTGRES-HOST"
+  name         = "${var.component}-POSTGRES-HOST"
   value        = "${module.pcq-db.host_name}"
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "${var.product}-POSTGRES-PORT"
+  name         = "${var.component}-POSTGRES-PORT"
   value        = "${module.pcq-db.postgresql_listen_port}"
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
-  name         = "${var.product}-POSTGRES-DATABASE"
+  name         = "${var.component}-POSTGRES-DATABASE"
   value        = "${module.pcq-db.postgresql_database}"
 }
 

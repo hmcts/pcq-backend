@@ -328,10 +328,9 @@ public class PcqAnswersControllerTest {
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
     public void testInvalidRequestForMissingHeader()  {
-        String pcqId = TEST_PCQ_ID;
 
         try {
-            String jsonStringRequest = asJsonString(new PcqAnswerRequest(pcqId));
+            String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
