@@ -238,7 +238,7 @@ dependencies {
   def withoutSpringCloudContext = {
     exclude group: 'org.springframework.cloud', module: 'spring-cloud-context'
   }
-  
+
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-web-services'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
@@ -246,7 +246,7 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
-  
+
   compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4', withoutSpringCloudContext
 
   compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
@@ -264,6 +264,8 @@ dependencies {
 
   compile group: "com.networknt", name: "json-schema-validator", version: "1.0.31"
   compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+  compile group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
 
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
