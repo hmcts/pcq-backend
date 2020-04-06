@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
+import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
@@ -471,7 +471,7 @@ public class PcqAnswersControllerTest {
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
 
-            assertThrows(EmptyResultDataAccessException.class, () -> pcqAnswersController.getAnswersByPcqId(pcqId));
+            assertThrows(DataNotFoundException.class, () -> pcqAnswersController.getAnswersByPcqId(pcqId));
 
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
 

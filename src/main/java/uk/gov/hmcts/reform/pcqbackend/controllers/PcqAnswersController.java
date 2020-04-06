@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
+import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
@@ -108,7 +108,7 @@ public class PcqAnswersController {
             .getProtectedCharacteristicsById(pcqId);
 
         if (protectedCharacteristics == null) {
-            throw new EmptyResultDataAccessException(1);
+            throw new DataNotFoundException();
         }
 
         return ResponseEntity
