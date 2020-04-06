@@ -32,7 +32,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         throws ServletException, IOException {
 
         String header = request.getHeader(jwtConfiguration.getHeader());
-        if (header == null || ! header.startsWith(jwtConfiguration.getPrefix())) {
+        if (header == null || !header.startsWith(jwtConfiguration.getPrefix())) {
             log.info("JwtTokenFilter - No header found");
             filterChain.doFilter(request, response);
             return;
@@ -55,6 +55,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     .collect(Collectors.toList())
                 );
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                log.info("JwtTokenFilter - Authentication Success");
             }
 
         } catch (Exception e) {

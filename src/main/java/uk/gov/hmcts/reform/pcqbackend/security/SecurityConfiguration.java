@@ -45,7 +45,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
             .antMatchers("/pcq/backend/getAnswer/**").permitAll()
-            .antMatchers("/pcq/backend/submitAnswers**").authenticated()
-            .antMatchers("/pcq/backend/consolidation/**").permitAll();
+            .antMatchers("/pcq/backend/consolidation/**").permitAll()
+            .antMatchers("/pcq/backend/submitAnswers**").authenticated();
     }
 }

@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Getter
 public class JwtConfiguration {
 
-    @Value("${security.jwt.header:Authorization}")
+    @Value("${security.jwt.header}")
     private String header;
 
-    @Value("${security.jwt.prefix:Bearer }")
+    @Value("${security.jwt.prefix}")
     private String prefix;
 
     @Value("${security.jwt.secret:JwtSecretKey}")
