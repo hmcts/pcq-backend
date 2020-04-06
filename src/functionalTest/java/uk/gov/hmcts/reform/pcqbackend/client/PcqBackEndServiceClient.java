@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pcqbackend.client;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import static net.serenitybdd.rest.SerenityRest.given;
@@ -19,17 +24,20 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "PMD.AvoidDuplicateLiterals"})
 public class PcqBackEndServiceClient {
 
-    private static final String AUTHORIZATION_HEADER = "X-Correlation-Id";
+    private static final String CO_RELATION_HEADER = "X-Correlation-Id";
     private static final String SUBMIT_ANSWERS_URL = "/pcq/backend/submitAnswers";
     private static final String INFO_MSG_CONSTANT_1 = "Update answers record response: ";
 
     private final String pcqBackEndApiUrl;
+    private final String jwtSecretKey;
 
-    public PcqBackEndServiceClient(String pcqBackEndApiUrl) {
+    public PcqBackEndServiceClient(String pcqBackEndApiUrl, String jwtSecretKey) {
+
         this.pcqBackEndApiUrl = pcqBackEndApiUrl;
+        this.jwtSecretKey = jwtSecretKey;
     }
 
     @SuppressWarnings("PMD.LawOfDemeter")
@@ -58,7 +66,7 @@ public class PcqBackEndServiceClient {
 
 
     public Map<String, Object> createAnswersRecord(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -90,7 +98,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> updateAnswersRecord(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -107,7 +115,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> staleAnswersNotRecorded(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -124,7 +132,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> invalidJSonRecord(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -141,7 +149,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> invalidVersion(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -158,7 +166,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> unRecoverableError(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -176,14 +184,14 @@ public class PcqBackEndServiceClient {
 
     public Map<String, Object> getAnswerRecordWithoutCase(HttpStatus status) {
 
-        Response response = getMultipleAuthHeaders()
+        Response response = getCoRelationHeaders()
             .get("pcq/backend/consolidation/pcqWithoutCase")
             .andReturn();
         response.then()
             .assertThat()
             .statusCode(status.value());
 
-        if (status == HttpStatus.UNAUTHORIZED) {
+        if (status == HttpStatus.UNAUTHORIZED || status == INTERNAL_SERVER_ERROR) {
             return null;
         }
         return response.body().as(Map.class);
@@ -212,13 +220,23 @@ public class PcqBackEndServiceClient {
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE);
     }
 
-    public RequestSpecification getMultipleAuthHeaders() {
+    public RequestSpecification getMultipleAuthHeaders(String secretKey) {
         return with()
             .relaxedHTTPSValidation()
             .baseUri(pcqBackEndApiUrl)
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
-            .header(AUTHORIZATION_HEADER, "FUNC-TEST-PCQ");
+            .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ")
+            .header("Authorization", "Bearer " + generateTestToken(secretKey));
+    }
+
+    public RequestSpecification getCoRelationHeaders() {
+        return with()
+            .relaxedHTTPSValidation()
+            .baseUri(pcqBackEndApiUrl)
+            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
+            .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ");
     }
 
     public RequestSpecification getMultipleAuthHeadersWithQueryParams(String paramName, String paramValue) {
@@ -227,8 +245,22 @@ public class PcqBackEndServiceClient {
             .baseUri(pcqBackEndApiUrl)
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
-            .header(AUTHORIZATION_HEADER, "FUNC-TEST-PCQ")
+            .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ")
             .queryParam(paramName, paramValue);
+    }
+
+    private String generateTestToken(String secretKey) {
+        List<String> authorities = new ArrayList<>();
+        long currentTime = System.currentTimeMillis();
+        authorities.add("TEST_AUTHORITY");
+
+        return Jwts.builder()
+            .setSubject("TEST")
+            .claim("authorities", authorities)
+            .setIssuedAt(new Date(currentTime))
+            .setExpiration(new Date(currentTime + 500_000))  // in milliseconds
+            .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
+            .compact();
     }
 
 }

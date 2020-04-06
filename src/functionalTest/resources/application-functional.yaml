@@ -1,4 +1,5 @@
 targetInstance: ${TEST_URL:http://localhost:4550}
+jwt_test_secret: ${JWT_SECRET:JwtSecretKey}
 
 management:
   endpoint:
@@ -29,6 +30,11 @@ api-config-params:
 unit-test:
   api-urls:
     submit_answer: /pcq/backend/submitAnswers
+security:
+  jwt:
+    header: Authorization
+    prefix: Bearer
+
 
 
 #If you use a database then uncomment below lines and update db properties accordingly

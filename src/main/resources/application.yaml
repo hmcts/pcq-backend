@@ -26,6 +26,12 @@ api-version-number: 1
 api-config-params:
   number_of_days_limit: 90
 
+security:
+  jwt:
+    header: Authorization
+    prefix: Bearer
+    secret: ${JWT_SECRET:JwtSecretKey}
+
 
 #If you use a database then uncomment below lines and update db properties accordingly
 

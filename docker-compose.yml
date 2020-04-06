@@ -26,6 +26,8 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pcq-database:5432/${PCQ_DB_NAME}
       - SPRING_DATASOURCE_USERNAME=${PCQ_DB_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${PCQ_DB_PASSWORD}
+      # JWT configuration
+      - JWT_SECRET=${JWT_SECRET}
     ports:
       - $SERVER_PORT:$SERVER_PORT
     depends_on:

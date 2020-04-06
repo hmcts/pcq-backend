@@ -1,6 +1,8 @@
 package uk.gov.hmcts.reform.pcqbackend.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +14,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -73,7 +78,7 @@ public class PcqBackEndClient {
     @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private <T> Map<String, Object> putRequest(String uriPath, Object... params) {
 
-        HttpEntity<T> request = new HttpEntity<>(getS2sTokenHeaders());
+        HttpEntity<T> request = new HttpEntity<>(getCoRelationTokenHeaders());
         ResponseEntity<Map> responseEntity = null;
         //adding the query params to the URL
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + prdApiPort + uriPath)
@@ -101,7 +106,7 @@ public class PcqBackEndClient {
         ResponseEntity<Map> responseEntity = null;
 
         try {
-            HttpEntity<?> request = new HttpEntity<>(getS2sTokenHeaders());
+            HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());
             responseEntity = restTemplate
                 .exchange("http://localhost:" + prdApiPort + uriPath,
                           HttpMethod.GET,
@@ -148,8 +153,29 @@ public class PcqBackEndClient {
         HttpHeaders headers = new HttpHeaders();
         //headers.setContentType(APPLICATION_JSON);
         headers.add("X-Correlation-Id", "INTEG-TEST-PCQ");
+        headers.add("Authorization", "Bearer " + generateTestToken());
         return headers;
     }
 
+    private HttpHeaders getCoRelationTokenHeaders() {
 
+        HttpHeaders headers = new HttpHeaders();
+        //headers.setContentType(APPLICATION_JSON);
+        headers.add("X-Correlation-Id", "INTEG-TEST-PCQ");
+        return headers;
+    }
+
+    private String generateTestToken() {
+        List<String> authorities = new ArrayList<>();
+        long currentTime = System.currentTimeMillis();
+        authorities.add("TEST_AUTHORITY");
+
+        return Jwts.builder()
+            .setSubject("TEST")
+            .claim("authorities", authorities)
+            .setIssuedAt(new Date(currentTime))
+            .setExpiration(new Date(currentTime + 500_000))  // in milliseconds
+            .signWith(SignatureAlgorithm.HS256, "JwtSecretKey".getBytes())
+            .compact();
+    }
 }

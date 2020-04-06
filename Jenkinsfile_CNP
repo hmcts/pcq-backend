@@ -15,7 +15,8 @@ def component = "backend"
 
 def secrets = [
   'pcq-${env}': [
-    secret('backend-POSTGRES-PASS', 'PCQ_DB_PASSWORD')
+    secret('backend-POSTGRES-PASS', 'PCQ_DB_PASSWORD'),
+    secret( 'jwt-secret', 'JWT_SECRET')
   ]
 ]
 
