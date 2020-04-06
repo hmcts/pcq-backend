@@ -40,7 +40,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
         String token = header.replace(jwtConfiguration.getPrefix(), "");
         try {
-
+            log.info("JWT Secret " + jwtConfiguration.getSecret());
             Claims claims = Jwts.parser()
                 .setSigningKey(jwtConfiguration.getSecret().getBytes())
                 .parseClaimsJws(token)
