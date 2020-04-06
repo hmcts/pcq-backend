@@ -1,4 +1,5 @@
 targetInstance: ${TEST_URL:http://localhost:4550}
+jwt_test_secret: ${JWT_SECRET:JwtSecretKey}
 
 management:
   endpoint:
@@ -33,6 +34,7 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
+
 
 
 #If you use a database then uncomment below lines and update db properties accordingly

@@ -32,9 +32,12 @@ public class PcqBackEndServiceClient {
     private static final String INFO_MSG_CONSTANT_1 = "Update answers record response: ";
 
     private final String pcqBackEndApiUrl;
+    private final String jwtSecretKey;
 
-    public PcqBackEndServiceClient(String pcqBackEndApiUrl) {
+    public PcqBackEndServiceClient(String pcqBackEndApiUrl, String jwtSecretKey) {
+
         this.pcqBackEndApiUrl = pcqBackEndApiUrl;
+        this.jwtSecretKey = jwtSecretKey;
     }
 
     @SuppressWarnings("PMD.LawOfDemeter")
@@ -63,7 +66,7 @@ public class PcqBackEndServiceClient {
 
 
     public Map<String, Object> createAnswersRecord(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -95,7 +98,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> updateAnswersRecord(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -112,7 +115,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> staleAnswersNotRecorded(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -129,7 +132,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> invalidJSonRecord(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -146,7 +149,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> invalidVersion(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -163,7 +166,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> unRecoverableError(PcqAnswerRequest answerRequest) {
-        Response response = getMultipleAuthHeaders()
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
             .andReturn();
@@ -217,14 +220,14 @@ public class PcqBackEndServiceClient {
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE);
     }
 
-    public RequestSpecification getMultipleAuthHeaders() {
+    public RequestSpecification getMultipleAuthHeaders(String secretKey) {
         return with()
             .relaxedHTTPSValidation()
             .baseUri(pcqBackEndApiUrl)
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
             .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ")
-            .header("Authorization", "Bearer " + generateTestToken());
+            .header("Authorization", "Bearer " + generateTestToken(secretKey));
     }
 
     public RequestSpecification getCoRelationHeaders() {
@@ -246,7 +249,7 @@ public class PcqBackEndServiceClient {
             .queryParam(paramName, paramValue);
     }
 
-    private String generateTestToken() {
+    private String generateTestToken(String secretKey) {
         List<String> authorities = new ArrayList<>();
         long currentTime = System.currentTimeMillis();
         authorities.add("TEST_AUTHORITY");
@@ -256,7 +259,7 @@ public class PcqBackEndServiceClient {
             .claim("authorities", authorities)
             .setIssuedAt(new Date(currentTime))
             .setExpiration(new Date(currentTime + 500_000))  // in milliseconds
-            .signWith(SignatureAlgorithm.HS256, "JwtSecretKey".getBytes())
+            .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
             .compact();
     }
 

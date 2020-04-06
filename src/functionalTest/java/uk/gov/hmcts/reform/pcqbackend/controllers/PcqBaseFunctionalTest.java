@@ -37,6 +37,9 @@ public abstract class PcqBaseFunctionalTest {
     @Value("${targetInstance}")
     protected String pcqBackEndApiUrl;
 
+    @Value("${jwt_test_secret}")
+    protected String jwtSecretKey;
+
     protected PcqBackEndServiceClient pcqBackEndServiceClient;
 
     protected RequestSpecification bearerToken;
@@ -49,7 +52,7 @@ public abstract class PcqBaseFunctionalTest {
         /* SerenityRest.proxy("proxyout.reform.hmcts.net", 8080);
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
-        pcqBackEndServiceClient = new PcqBackEndServiceClient(pcqBackEndApiUrl);
+        pcqBackEndServiceClient = new PcqBackEndServiceClient(pcqBackEndApiUrl, jwtSecretKey);
     }
 
 
