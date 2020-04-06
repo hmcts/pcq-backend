@@ -92,7 +92,7 @@ public class PcqAnswersErrorResponseTest extends PcqBaseFunctionalTest {
 
             //Check that the record has not been created.
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                answerRequest.getPcqId(), HttpStatus.INTERNAL_SERVER_ERROR);
+                answerRequest.getPcqId(), HttpStatus.NOT_FOUND);
 
             assertNotNull("Get Response is null", validateGetResponse);
 
@@ -117,7 +117,7 @@ public class PcqAnswersErrorResponseTest extends PcqBaseFunctionalTest {
 
             //Check that the record has not been created.
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                answerRequest.getPcqId(), HttpStatus.INTERNAL_SERVER_ERROR);
+                answerRequest.getPcqId(), HttpStatus.NOT_FOUND);
 
             assertNotNull("Get Response is null", validateGetResponse);
 
