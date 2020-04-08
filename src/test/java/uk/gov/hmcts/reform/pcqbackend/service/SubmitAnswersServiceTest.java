@@ -325,7 +325,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
-        when(environment.getProperty("security.db.backend-encryption-key")).thenReturn("ThisIsATestKeyForEncryption");
+        when(environment.getProperty("security.db.backend-encryption-key")).thenReturn(null);
         String pcqId = TEST_PCQ_ID;
 
         try {
@@ -335,8 +335,6 @@ public class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenThrow(
-                IllegalStateException.class);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
