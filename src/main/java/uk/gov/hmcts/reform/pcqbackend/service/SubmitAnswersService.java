@@ -73,7 +73,6 @@ public class SubmitAnswersService {
 
                 //Encrypt the partyId.
                 String dbEncryptionKey = environment.getProperty("security.db.backend-encryption-key");
-                log.info("Encrypting partyId using key {}", dbEncryptionKey);
                 String encryptedPartyId = ConversionUtil.encryptWithKey(createCharacteristics.getPartyId(),
                                                                         dbEncryptionKey);
                 createCharacteristics.setPartyId(encryptedPartyId);
