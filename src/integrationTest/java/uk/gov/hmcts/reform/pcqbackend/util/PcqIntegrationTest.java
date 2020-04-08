@@ -1,10 +1,12 @@
 package uk.gov.hmcts.reform.pcqbackend.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
@@ -23,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Configuration
+@Slf4j
 public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
 
     public static final String CO_RELATION_ID_FOR_TEST = "INTEG-TEST-PCQ";
@@ -40,6 +43,9 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
 
     @Autowired
     protected ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+
+    @Autowired
+    protected Environment environment;
 
     protected PcqBackEndClient pcqBackEndClient;
 
@@ -69,13 +75,15 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
     }
 
     @SuppressWarnings("PMD.ConfusingTernary")
-    public static void checkAssertionsOnResponse(ProtectedCharacteristics protectedCharacteristics,
-                                                 PcqAnswerRequest answerRequest) {
+    protected void checkAssertionsOnResponse(ProtectedCharacteristics protectedCharacteristics,
+                                          PcqAnswerRequest answerRequest) {
         assertEquals("PCQId not matching", protectedCharacteristics.getPcqId(), answerRequest.getPcqId());
         assertEquals("CaseId not matching", protectedCharacteristics.getCaseId(),
                      answerRequest.getCaseId());
-        assertEquals("PartyId not matching", protectedCharacteristics.getPartyId(),
-                     answerRequest.getPartyId());
+        log.info("Encrypted party id is " + protectedCharacteristics.getPartyId());
+        assertEquals("PartyId not matching", answerRequest.getPartyId(),
+                     ConversionUtil.decrypt(protectedCharacteristics.getPartyId(), environment
+                         .getProperty("security.db.backend-encryption-key")));
         assertEquals("Channel not matching", protectedCharacteristics.getChannel().intValue(),
                      answerRequest.getChannel());
         assertEquals("ServiceId not matching", protectedCharacteristics.getServiceId(),

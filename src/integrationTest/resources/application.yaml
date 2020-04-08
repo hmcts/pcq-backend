@@ -34,6 +34,8 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
+  db:
+    backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:

@@ -8,3 +8,4 @@ spring:
         backend-POSTGRES-PASS: ${PCQ_DB_PASSWORD:PCQ_DB_PASSWORD}
         flyway-password: flyway.password
         jwt-secret: ${JWT_SECRET:JWT_SECRET}
+        backend-encryption-key: ${DB_ENCRYPTION_KEY:DB_ENCRYPTION_KEY}

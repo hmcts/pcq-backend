@@ -1,5 +1,6 @@
 targetInstance: ${TEST_URL:http://localhost:4550}
 jwt_test_secret: ${JWT_SECRET:JwtSecretKey}
+backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
 
 management:
   endpoint:

@@ -266,7 +266,7 @@ dependencies {
   compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   compile group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
-
+  compile group: "org.bouncycastle", name: "bcpg-jdk15on", version: "1.65"
 
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
   testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit

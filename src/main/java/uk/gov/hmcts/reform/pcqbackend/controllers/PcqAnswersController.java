@@ -113,7 +113,9 @@ public class PcqAnswersController {
 
         return ResponseEntity
             .status(200)
-            .body(ConversionUtil.getPcqResponseFromDomain(protectedCharacteristics));
+            .body(ConversionUtil.getPcqResponseFromDomain(protectedCharacteristics,
+                                                          environment.getProperty(
+                                                              "security.db.backend-encryption-key")));
 
     }
 

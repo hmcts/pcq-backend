@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.security.Security;
 import javax.servlet.http.HttpServletResponse;
 
 @Configuration
@@ -47,5 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/pcq/backend/getAnswer/**").permitAll()
             .antMatchers("/pcq/backend/consolidation/**").permitAll()
             .antMatchers("/pcq/backend/submitAnswers**").authenticated();
+
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
     }
 }
