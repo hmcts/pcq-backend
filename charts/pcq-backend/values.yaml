@@ -16,6 +16,7 @@ java:
       secrets:
         - backend-POSTGRES-PASS
         - jwt-secret
+        - backend-encryption-key
         - flyway-password
         - AppInsightsInstrumentationKey
   image: 'hmctspublic.azurecr.io/pcq/backend:latest'

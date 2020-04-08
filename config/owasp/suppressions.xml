@@ -2003,4 +2003,11 @@
     <sha1>95d3232e8c631c978357d5b35abfebe25b197424</sha1>
     <cpe>cpe:/a:postgresql:postgresql</cpe>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: bcpg-jdk15on-1.65.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.bouncycastle/bcpg\-jdk15on@.*$</packageUrl>
+    <cve>CVE-2005-0366</cve>
+  </suppress>
 </suppressions>
