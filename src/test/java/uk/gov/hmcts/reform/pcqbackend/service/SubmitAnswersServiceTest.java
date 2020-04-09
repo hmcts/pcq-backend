@@ -320,7 +320,7 @@ public class SubmitAnswersServiceTest {
 
     }
 
-    @Test
+    /*@Test
     public void testIllegalStateError() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
@@ -350,7 +350,7 @@ public class SubmitAnswersServiceTest {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
-    }
+    }*/
 
     @Test
     public void testGetProtectedCharacteristicsPositive() {

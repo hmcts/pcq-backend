@@ -46,7 +46,8 @@ public final class ConversionUtil {
 
         answerResponse.setPcqId(protectedCharacteristics.getPcqId());
         answerResponse.setCaseId(protectedCharacteristics.getCaseId());
-        answerResponse.setPartyId(decrypt(protectedCharacteristics.getPartyId(), encryptionKey));
+        //answerResponse.setPartyId(decrypt(protectedCharacteristics.getPartyId(), encryptionKey));
+        answerResponse.setPartyId(protectedCharacteristics.getPartyId());
         answerResponse.setChannel(protectedCharacteristics.getChannel());
         if (protectedCharacteristics.getCompletedDate() != null) {
             answerResponse.setCompletedDate(convertTimeStampToString(protectedCharacteristics.getCompletedDate()));

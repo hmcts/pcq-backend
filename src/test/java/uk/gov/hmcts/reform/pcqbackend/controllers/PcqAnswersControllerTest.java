@@ -465,7 +465,7 @@ public class PcqAnswersControllerTest {
      * This method tests the getAnswer API when it is called with all valid parameters but application
      * has un-recoverable error. The response status code will be 500.
      */
-    @DisplayName("Should return with an 500 error code for test Get Answer Found")
+    /*@DisplayName("Should return with an 500 error code for test Get Answer Found")
     @Test
     public void testGetAnswerFoundInternalError()  {
 
@@ -499,7 +499,7 @@ public class PcqAnswersControllerTest {
             verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
         }
 
-    }
+    }*/
 
     /**
      * This method tests the getAnswer API when it is called with all valid parameters and the database

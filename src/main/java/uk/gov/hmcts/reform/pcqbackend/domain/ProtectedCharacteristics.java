@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -29,6 +30,10 @@ public class ProtectedCharacteristics implements Serializable {
     @Column(name = "CASE_ID")
     private String caseId;
 
+    @ColumnTransformer(
+        read =  "pgp_sym_decrypt(decode(party_id, 'base64'), '${encryption.key}')",
+        write = "encode(pgp_sym_encrypt(?, '${encryption.key}'), 'base64')"
+    )
     @Column(name = "PARTY_ID")
     private String partyId;
 

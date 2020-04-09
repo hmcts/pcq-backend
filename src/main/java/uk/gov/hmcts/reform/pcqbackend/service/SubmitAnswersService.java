@@ -45,7 +45,8 @@ public class SubmitAnswersService {
         this.environment = environment;
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength"})
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
+        "PMD.UnusedLocalVariable"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
@@ -73,9 +74,9 @@ public class SubmitAnswersService {
 
                 //Encrypt the partyId.
                 String dbEncryptionKey = environment.getProperty("security.db.backend-encryption-key");
-                String encryptedPartyId = ConversionUtil.encryptWithKey(createCharacteristics.getPartyId(),
-                                                                        dbEncryptionKey);
-                createCharacteristics.setPartyId(encryptedPartyId);
+                //String encryptedPartyId = ConversionUtil.encryptWithKey(createCharacteristics.getPartyId(),
+                //                                                        dbEncryptionKey);
+                //createCharacteristics.setPartyId(encryptedPartyId);
 
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);

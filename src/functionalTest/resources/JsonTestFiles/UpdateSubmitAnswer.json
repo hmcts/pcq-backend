@@ -1,10 +1,10 @@
 {
   "pcqId": "UPDATE-FUNC-TEST",
   "ccdCaseId": null,
-  "partyId": "23",
+  "partyId": "test@test2.com",
   "channel": 1,
   "completedDate": "2020-03-05T09:13:46.000Z",
-  "serviceId": "PROBATE",
+  "serviceId": "PROBATE_TEST",
   "actor": "DEFENDANT",
   "versionNo": 1,
   "pcqAnswers": {
