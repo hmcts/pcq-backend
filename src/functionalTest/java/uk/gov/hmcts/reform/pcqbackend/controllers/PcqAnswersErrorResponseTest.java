@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
 @ActiveProfiles("functional")
@@ -92,9 +92,9 @@ public class PcqAnswersErrorResponseTest extends PcqBaseFunctionalTest {
 
             //Check that the record has not been created.
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                answerRequest.getPcqId(), HttpStatus.UNAUTHORIZED);
+                answerRequest.getPcqId(), HttpStatus.NOT_FOUND);
 
-            assertNull("Get Response is not null", validateGetResponse);
+            assertNotNull("Get Response is null", validateGetResponse);
 
         } catch (IOException e) {
             log.error(IO_EXCEPTION_MSG, e);
@@ -117,9 +117,9 @@ public class PcqAnswersErrorResponseTest extends PcqBaseFunctionalTest {
 
             //Check that the record has not been created.
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                answerRequest.getPcqId(), HttpStatus.UNAUTHORIZED);
+                answerRequest.getPcqId(), HttpStatus.NOT_FOUND);
 
-            assertNull("Get Response is not null", validateGetResponse);
+            assertNotNull("Get Response is null", validateGetResponse);
 
         } catch (IOException e) {
             log.error(IO_EXCEPTION_MSG, e);

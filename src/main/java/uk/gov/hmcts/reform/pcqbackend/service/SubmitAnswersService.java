@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -30,6 +31,7 @@ import javax.transaction.Transactional;
 
 @Slf4j
 @Service
+@Getter
 public class SubmitAnswersService {
 
     Environment environment;
@@ -51,7 +53,7 @@ public class SubmitAnswersService {
         try {
 
             //Step 1. Check the request contains the required header content.
-            coRelationId = validateRequestHeader(headers);
+            coRelationId = ConversionUtil.validateRequestHeader(headers);
             coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
             log.info("Co-Relation Id : {} - submitAnswers API call invoked.", coRelationId);
 
@@ -68,6 +70,13 @@ public class SubmitAnswersService {
 
             ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
+
+                //Encrypt the partyId.
+                String dbEncryptionKey = environment.getProperty("security.db.backend-encryption-key");
+                String encryptedPartyId = ConversionUtil.encryptWithKey(createCharacteristics.getPartyId(),
+                                                                        dbEncryptionKey);
+                createCharacteristics.setPartyId(encryptedPartyId);
+
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
@@ -135,7 +144,7 @@ public class SubmitAnswersService {
             );
             return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
                                           environment.getProperty("api-error-messages.bad_request"));
-        } catch (IOException ioe) {
+        } catch (IOException | IllegalStateException ioe) {
             log.error("Co-Relation Id : {} - submitAnswers API call failed "
                           + "due to error - {}", coRelationId, ioe.getMessage());
             return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
@@ -157,18 +166,6 @@ public class SubmitAnswersService {
             .findById(pcqId);
 
         return protectedCharacteristics.orElse(null);
-
-    }
-
-    private String validateRequestHeader(List<String> requestHeaders) throws InvalidRequestException {
-
-        // Validate that the request contains the required Header values.
-        if (requestHeaders == null || requestHeaders.isEmpty()) {
-            throw new InvalidRequestException("Invalid Request. Expecting required header - Co-Relation Id -"
-                                                  + " in the request.", HttpStatus.BAD_REQUEST);
-        }
-
-        return requestHeaders.get(0);
 
     }
 

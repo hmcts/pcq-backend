@@ -14,10 +14,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.pcqbackend.client.PcqBackEndServiceClient;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -34,6 +37,9 @@ public abstract class PcqBaseFunctionalTest {
     @Value("${targetInstance}")
     protected String pcqBackEndApiUrl;
 
+    @Value("${jwt_test_secret}")
+    protected String jwtSecretKey;
+
     protected PcqBackEndServiceClient pcqBackEndServiceClient;
 
     protected RequestSpecification bearerToken;
@@ -46,7 +52,7 @@ public abstract class PcqBaseFunctionalTest {
         /* SerenityRest.proxy("proxyout.reform.hmcts.net", 8080);
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
-        pcqBackEndServiceClient = new PcqBackEndServiceClient(pcqBackEndApiUrl);
+        pcqBackEndServiceClient = new PcqBackEndServiceClient(pcqBackEndApiUrl, jwtSecretKey);
     }
 
 
@@ -153,6 +159,13 @@ public abstract class PcqBaseFunctionalTest {
     protected String generateUuid() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
+    }
+
+    protected String updateCompletedDate(String completedDateStr) {
+        Timestamp completedTime = ConversionUtil.getTimeFromString(completedDateStr);
+        Calendar calendar = Calendar.getInstance();
+        completedTime.setTime(calendar.getTimeInMillis());
+        return ConversionUtil.convertTimeStampToString(completedTime);
     }
 
 }

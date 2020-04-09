@@ -1,4 +1,6 @@
 targetInstance: ${TEST_URL:http://localhost:4550}
+jwt_test_secret: ${JWT_SECRET:JwtSecretKey}
+backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
 
 management:
   endpoint:
@@ -14,6 +16,7 @@ management:
 api-error-messages:
   bad_request: Invalid Request
   created: Successfully created
+  updated: Successfully updated
   accepted: Success
   internal_error: Unknown error occurred
 api-required-header-keys:
@@ -21,11 +24,18 @@ api-required-header-keys:
 api-schema-file:
     submitanswer-schema: JsonSchema/submitAnswersSchema.json
 api-version-number: 1
+api-config-params:
+  number_of_days_limit: 90
 
 #Application specific unit test properties
 unit-test:
   api-urls:
     submit_answer: /pcq/backend/submitAnswers
+security:
+  jwt:
+    header: Authorization
+    prefix: Bearer
+
 
 
 #If you use a database then uncomment below lines and update db properties accordingly

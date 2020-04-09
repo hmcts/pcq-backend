@@ -16,6 +16,7 @@ import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsReposit
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.security.Security;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -69,7 +70,9 @@ public class SubmitAnswersServiceTest {
 
     @BeforeEach
     public void setUp() {
+
         MockitoAnnotations.initMocks(this);
+        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
     }
 
 
@@ -148,6 +151,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
+        when(environment.getProperty("security.db.backend-encryption-key")).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
         try {
@@ -287,6 +291,7 @@ public class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
+        when(environment.getProperty("security.db.backend-encryption-key")).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
         try {
@@ -298,6 +303,38 @@ public class SubmitAnswersServiceTest {
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenThrow(
                 NullPointerException.class);
+
+            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
+                                                                                           pcqAnswerRequest);
+
+            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+            Object responseMap = responseEntity.getBody();
+            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            assertEquals(500, responseEntity.getStatusCodeValue(), "Expected 500 status code");
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    @Test
+    public void testIllegalStateError() {
+        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
+        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
+        when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
+        when(environment.getProperty("security.db.backend-encryption-key")).thenReturn(null);
+        String pcqId = TEST_PCQ_ID;
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+
+            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);

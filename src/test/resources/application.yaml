@@ -27,7 +27,10 @@ api-version-number: 1
 unit-test:
   api-urls:
     submit_answer: /pcq/backend/submitAnswers
-
+security:
+  jwt:
+    header: Authorization
+    prefix: Bearer
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:

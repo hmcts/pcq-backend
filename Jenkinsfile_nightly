@@ -17,6 +17,23 @@ def type = "java"
 def product = "pcq"
 def component = "backend"
 
+def secrets = [
+  'pcq-${env}': [
+    secret('backend-POSTGRES-PASS', 'PCQ_DB_PASSWORD'),
+    secret( 'jwt-secret', 'JWT_SECRET'),
+    secret('backend-encryption-key', 'DB_ENCRYPTION_KEY')
+  ]
+]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+  [ $class: 'AzureKeyVaultSecret',
+    secretType: 'Secret',
+    name: secretName,
+    version: '',
+    envVariable: envVar
+  ]
+}
+
 withNightlyPipeline(type, product, component) {
 
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
@@ -27,5 +44,5 @@ withNightlyPipeline(type, product, component) {
   enableMutationTest()
   enableFullFunctionalTest()
 
-  // enableSecurityScan()
+  enableSecurityScan()
 }
