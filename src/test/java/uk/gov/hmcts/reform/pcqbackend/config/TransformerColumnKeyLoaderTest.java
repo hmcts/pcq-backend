@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,6 +36,7 @@ public class TransformerColumnKeyLoaderTest {
 
     private static final String PROPERTY_NAME_1 = "security.db.backend-encryption-key";
     private static final String PROPERTY_NAME_2 = "backend-encryption-key";
+    private static final String PROPERTY_NAME_3 = "security.db.encryption-disabled";
     private static final String ENCRYPTION_KEY = "Unit_Test_Key";
     private static final String ANNOTATION_ASSERT_MSG = "Annotation is not correct";
     private static final String FIELD_NAME = "partyId";
@@ -59,10 +61,11 @@ public class TransformerColumnKeyLoaderTest {
     }
 
     @Test
-    public void testAnnotationUpdated() throws NoSuchFieldException {
+    public void testAnnotationUpdatedWithEncryption() throws NoSuchFieldException {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
 
         transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
 
@@ -86,10 +89,39 @@ public class TransformerColumnKeyLoaderTest {
     }
 
     @Test
+    public void testAnnotationUpdatedWithoutEncryption() throws NoSuchFieldException {
+
+        transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics2.class);
+        when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("Yes");
+
+        transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
+
+        Field field = ProtectedCharacteristics.class.getDeclaredField(FIELD_NAME);
+        ColumnTransformer columnTransformer = field.getDeclaredAnnotation(ColumnTransformer.class);
+        assertFalse(columnTransformer.read().contains(ENCRYPTION_KEY), ANNOTATION_ASSERT_MSG);
+        assertFalse(columnTransformer.write().contains(ENCRYPTION_KEY), ANNOTATION_ASSERT_MSG);
+
+        field = TestProtectedCharacteristics2.class.getDeclaredField(FIELD_NAME);
+        columnTransformer = field.getDeclaredAnnotation(ColumnTransformer.class);
+        assertEquals("party_id", columnTransformer.read(), ANNOTATION_ASSERT_MSG);
+        assertEquals("?", columnTransformer.write(), ANNOTATION_ASSERT_MSG);
+
+        verify(mockApplicationPreparedEvent, times(1)).getApplicationContext();
+        verify(mockApplicationContext, times(1)).getEnvironment();
+        verify(mockEnvironment, times(1)).getPropertySources();
+        verify(mockPropertySource, times(1)).containsProperty(PROPERTY_NAME_1);
+        verify(mockEnvironment, times(1)).getProperty(PROPERTY_NAME_1);
+
+
+    }
+
+    @Test
     public void testAnnotationUpdatedAlternativeProperty() throws NoSuchFieldException {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_2)).thenReturn(true);
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
 
         transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
 
@@ -116,6 +148,7 @@ public class TransformerColumnKeyLoaderTest {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(RandomTestClass.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
 
         try {
             transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
@@ -142,6 +175,7 @@ public class TransformerColumnKeyLoaderTest {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(RandomTestClass2.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
 
         try {
             transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
