@@ -36,7 +36,7 @@ public class TransformerColumnKeyLoaderTest {
 
     private static final String PROPERTY_NAME_1 = "security.db.backend-encryption-key";
     private static final String PROPERTY_NAME_2 = "backend-encryption-key";
-    private static final String PROPERTY_NAME_3 = "security.db.encryption-disabled";
+    private static final String PROPERTY_NAME_3 = "security.db.encryption-enabled";
     private static final String ENCRYPTION_KEY = "Unit_Test_Key";
     private static final String ANNOTATION_ASSERT_MSG = "Annotation is not correct";
     private static final String FIELD_NAME = "partyId";
@@ -65,7 +65,7 @@ public class TransformerColumnKeyLoaderTest {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
-        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("Yes");
 
         transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
 
@@ -93,7 +93,7 @@ public class TransformerColumnKeyLoaderTest {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics2.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
-        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("Yes");
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
 
         transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
 
@@ -121,7 +121,7 @@ public class TransformerColumnKeyLoaderTest {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_2)).thenReturn(true);
-        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("Yes");
 
         transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);
 
@@ -148,7 +148,7 @@ public class TransformerColumnKeyLoaderTest {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(RandomTestClass.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
-        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("No");
+        when(mockEnvironment.getProperty(PROPERTY_NAME_3)).thenReturn("Yes");
 
         try {
             transformerColumnKeyLoader.onApplicationEvent(mockApplicationPreparedEvent);

@@ -26,12 +26,12 @@ public class TransformerColumnKeyLoader implements ApplicationListener<Applicati
 
     public static final String KEY_ANNOTATION_PROPERTY = "${encryption.key}";
 
-    private static final String NO_PROPERTY = "No";
+    private static final String YES_PROPERTY = "Yes";
     private static final String READ_PROPERTY = "read";
 
     private String dbEncryptionKey;
 
-    private String encryptionDisabled;
+    private String encryptionEnabled;
 
     private Class<?> clazz;
 
@@ -54,7 +54,7 @@ public class TransformerColumnKeyLoader implements ApplicationListener<Applicati
                 || propertySource.containsProperty("backend-encryption-key")) {
                 log.info("TransformerColumnKeyLoader Properties Found {}", propertySource.getName());
                 this.dbEncryptionKey = environment.getProperty("security.db.backend-encryption-key");
-                this.encryptionDisabled = environment.getProperty("security.db.encryption-disabled");
+                this.encryptionEnabled = environment.getProperty("security.db.encryption-enabled");
                 if (getClazz() == null) {
                     addKey(ProtectedCharacteristics.class);
                 } else {
@@ -100,7 +100,7 @@ public class TransformerColumnKeyLoader implements ApplicationListener<Applicati
             Map<String, Object> memberValues = (Map<String, Object>) memberValuesField.get(handler);
             String oldValueString = memberValues.get(annotationProperty).toString();
             if (oldValueString.contains(TransformerColumnKeyLoader.KEY_ANNOTATION_PROPERTY)) {
-                if (dbEncryptionKey != null && NO_PROPERTY.equals(encryptionDisabled)) {
+                if (dbEncryptionKey != null && YES_PROPERTY.equals(encryptionEnabled)) {
                     log.info("Replaced the values with key {}", dbEncryptionKey);
                     String newValueString = oldValueString.replace(
                         TransformerColumnKeyLoader.KEY_ANNOTATION_PROPERTY, dbEncryptionKey);
