@@ -449,46 +449,6 @@ public class PcqAnswersControllerTest {
     }
 
     /**
-     * This method tests the getAnswer API when it is called with all valid parameters but application
-     * has un-recoverable error. The response status code will be 500.
-     */
-    /*@DisplayName("Should return with an 500 error code for test Get Answer Found")
-    @Test
-    public void testGetAnswerFoundInternalError()  {
-
-        String pcqId = TEST_PCQ_ID;
-        try {
-
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            targetObject.setPartyId(ConversionUtil.encryptWithKey("Test-partyId", TEST_ENCRYPTION_KEY));
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(null);
-
-            ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
-
-            PcqAnswerResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, RESPONSE_NULL_MSG);
-
-
-        } catch (IllegalStateException ise) {
-            assertEquals("Error Decrypting : null", ise.getMessage(), "Not the expected message");
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        } finally {
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
-        }
-
-    }*/
-
-    /**
      * This method tests the getAnswer API when it is called with all valid parameters and the database
      * does not return with a answer record. The response status code will be 404.
      */

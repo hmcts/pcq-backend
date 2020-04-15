@@ -10,7 +10,7 @@ java:
     FLYWAY_URL: jdbc:postgresql://pcq-backend-{{ .Values.global.environment }}.postgres.database.azure.com:5432/pcq?sslmode=require
     FLYWAY_USER: pcquser@pcq-backend-{{ .Values.global.environment }}
     FLYWAY_NOOP_STRATEGY: "false"
-    ENCRYPTION_ENABLED: "Yes"
+    DB_ENCRYPTION_ENABLED: "Yes"
   keyVaults:
     pcq:
       resourceGroup: pcq
