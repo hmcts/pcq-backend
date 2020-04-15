@@ -18,7 +18,6 @@ import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,8 +65,6 @@ public class PcqAnswersControllerTest {
     private static final String SCHEMA_FILE_PROPERTY = "api-schema-file.submitanswer-schema";
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
-    private static final String ENCRYPTION_PROPERTY = "security.db.backend-encryption-key";
-    private static final String TEST_ENCRYPTION_KEY = "ThisIsATestKeyForEncryption";
 
     private static final String TEST_PCQ_ID = "T1234";
 
@@ -112,8 +109,6 @@ public class PcqAnswersControllerTest {
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(TEST_ENCRYPTION_KEY);
 
             ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
@@ -122,7 +117,6 @@ public class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
             verify(protectedCharacteristicsRepository, times(1)).save(any(
                 ProtectedCharacteristics.class));
@@ -401,8 +395,6 @@ public class PcqAnswersControllerTest {
             when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class)))
                 .thenThrow(NullPointerException.class);
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(TEST_ENCRYPTION_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
@@ -413,7 +405,6 @@ public class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
             verify(protectedCharacteristicsRepository, times(1)).save(any(
                 ProtectedCharacteristics.class));
@@ -437,12 +428,9 @@ public class PcqAnswersControllerTest {
 
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
             targetObject.setPcqId(pcqId);
-            targetObject.setPartyId(ConversionUtil.encryptWithKey("Test-partyId", TEST_ENCRYPTION_KEY));
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(TEST_ENCRYPTION_KEY);
 
             ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
 
@@ -453,50 +441,9 @@ public class PcqAnswersControllerTest {
             assertNotNull(actualBody, RESPONSE_NULL_MSG);
 
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
-    }
-
-    /**
-     * This method tests the getAnswer API when it is called with all valid parameters but application
-     * has un-recoverable error. The response status code will be 500.
-     */
-    @DisplayName("Should return with an 500 error code for test Get Answer Found")
-    @Test
-    public void testGetAnswerFoundInternalError()  {
-
-        String pcqId = TEST_PCQ_ID;
-        try {
-
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            targetObject.setPartyId(ConversionUtil.encryptWithKey("Test-partyId", TEST_ENCRYPTION_KEY));
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(null);
-
-            ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
-
-            PcqAnswerResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, RESPONSE_NULL_MSG);
-
-
-        } catch (IllegalStateException ise) {
-            assertEquals("Error Decrypting : null", ise.getMessage(), "Not the expected message");
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        } finally {
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
         }
 
     }

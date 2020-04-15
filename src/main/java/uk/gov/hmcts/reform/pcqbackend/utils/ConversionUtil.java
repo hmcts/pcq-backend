@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
-import org.bouncycastle.openpgp.examples.ByteArrayHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.HtmlUtils;
@@ -14,7 +12,6 @@ import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswers;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -23,7 +20,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,13 +36,12 @@ public final class ConversionUtil {
 
     }
 
-    public static PcqAnswerResponse getPcqResponseFromDomain(ProtectedCharacteristics protectedCharacteristics,
-                                                             String encryptionKey) {
+    public static PcqAnswerResponse getPcqResponseFromDomain(ProtectedCharacteristics protectedCharacteristics) {
         PcqAnswerResponse answerResponse = new PcqAnswerResponse();
 
         answerResponse.setPcqId(protectedCharacteristics.getPcqId());
         answerResponse.setCaseId(protectedCharacteristics.getCaseId());
-        answerResponse.setPartyId(decrypt(protectedCharacteristics.getPartyId(), encryptionKey));
+        answerResponse.setPartyId(protectedCharacteristics.getPartyId());
         answerResponse.setChannel(protectedCharacteristics.getChannel());
         if (protectedCharacteristics.getCompletedDate() != null) {
             answerResponse.setCompletedDate(convertTimeStampToString(protectedCharacteristics.getCompletedDate()));
@@ -233,7 +228,7 @@ public final class ConversionUtil {
 
     }
 
-    public static String encryptWithKey(String message, String encryptionKey) {
+    /*public static String encryptWithKey(String message, String encryptionKey) {
         try {
 
             return Base64.getEncoder().encodeToString(ByteArrayHandler.encrypt(
@@ -256,6 +251,6 @@ public final class ConversionUtil {
         } catch (Exception e) {
             throw new IllegalStateException("Error Decrypting : " + e.getMessage(), e);
         }
-    }
+    }*/
 
 }

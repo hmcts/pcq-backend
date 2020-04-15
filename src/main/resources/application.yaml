@@ -33,6 +33,7 @@ security:
     secret: ${JWT_SECRET:JwtSecretKey}
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
+    encryption-enabled: ${DB_ENCRYPTION_ENABLED:Yes}
 
 
 #If you use a database then uncomment below lines and update db properties accordingly

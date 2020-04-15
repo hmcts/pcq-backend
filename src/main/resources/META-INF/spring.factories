@@ -1,2 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-uk.gov.hmcts.reform.pcqbackend.security.SecurityConfiguration
+org.springframework.context.ApplicationListener=uk.gov.hmcts.reform.pcqbackend.config.TransformerColumnKeyLoader
