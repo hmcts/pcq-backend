@@ -1,6 +1,7 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -34,7 +35,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.JUnit4TestShouldUseTestAnnotation"})
 public class SubmitAnswersServiceTest {
 
 
@@ -320,7 +321,7 @@ public class SubmitAnswersServiceTest {
 
     }
 
-    /*@Test
+    @Ignore
     public void testIllegalStateError() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
@@ -350,7 +351,7 @@ public class SubmitAnswersServiceTest {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
-    }*/
+    }
 
     @Test
     public void testGetProtectedCharacteristicsPositive() {
