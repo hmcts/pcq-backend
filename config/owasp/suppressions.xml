@@ -2003,4 +2003,39 @@
     <sha1>95d3232e8c631c978357d5b35abfebe25b197424</sha1>
     <cpe>cpe:/a:postgresql:postgresql</cpe>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: filters-2.0.235.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.jhlabs/filters@.*$</packageUrl>
+    <cve>CVE-2018-1000840</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jruby-complete-1.7.26.jar (shaded: org.jruby:yecht:1.1)
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.jruby/yecht@.*$</packageUrl>
+    <cve>CVE-2010-1330</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jruby-complete-1.7.26.jar (shaded: org.jruby:yecht:1.1)
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.jruby/yecht@.*$</packageUrl>
+    <cve>CVE-2011-4838</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jruby-complete-1.7.26.jar: jopenssl.jar (shaded: rubygems:jruby-openssl:0.9.16)
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/rubygems/jruby\-openssl@.*$</packageUrl>
+    <cve>CVE-2010-1330</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jruby-complete-1.7.26.jar: jopenssl.jar (shaded: rubygems:jruby-openssl:0.9.16)
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/rubygems/jruby\-openssl@.*$</packageUrl>
+    <cve>CVE-2011-4838</cve>
+  </suppress>
 </suppressions>
