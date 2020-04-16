@@ -205,6 +205,54 @@
   </suppress>
   <suppress>
     <notes><![CDATA[
+   file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-jmx:9.4.12.v20180830)
+   ]]></notes>
+    <sha1>c718f646e88e392fcf87020710e31787847f0145</sha1>
+    <cve>CVE-2019-10241</cve>
+    <cve>CVE-2019-10247</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-security:9.4.12.v20180830)
+   ]]></notes>
+    <sha1>33f42c754e8b0846c6c3c6ae9e612675862c34a7</sha1>
+    <cve>CVE-2019-10241</cve>
+    <cve>CVE-2019-10247</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-server:9.4.12.v20180830)
+   ]]></notes>
+    <sha1>e5127373881b5a577d27f5b57aec2e6c202fd545</sha1>
+    <cve>CVE-2019-10241</cve>
+    <cve>CVE-2019-10247</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-servlet:9.4.12.v20180830)
+   ]]></notes>
+    <sha1>e27578dfa580b1ccff57a14710e7ce2586deed9b</sha1>
+    <cve>CVE-2019-10241</cve>
+    <cve>CVE-2019-10247</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-util:9.4.12.v20180830)
+   ]]></notes>
+    <sha1>1162bea917a234ee2f66bc0a69937dc8b53483a6</sha1>
+    <cve>CVE-2019-10241</cve>
+    <cve>CVE-2019-10247</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-xml:9.4.12.v20180830)
+   ]]></notes>
+    <sha1>0f73b76db79c1ba132cedf4ea08489173ce8226e</sha1>
+    <cve>CVE-2019-10241</cve>
+    <cve>CVE-2019-10247</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
    file name: jruby-complete-1.7.26.jar: bcprov-jdk15on-1.54.jar
    ]]></notes>
     <sha1>1acdedeb89f1d950d67b73d481eb7736df65eedb</sha1>
