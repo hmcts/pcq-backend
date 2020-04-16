@@ -228,29 +228,4 @@ public final class ConversionUtil {
 
     }
 
-    /*public static String encryptWithKey(String message, String encryptionKey) {
-        try {
-
-            return Base64.getEncoder().encodeToString(ByteArrayHandler.encrypt(
-                message.getBytes(StandardCharsets.UTF_8),
-                encryptionKey.toCharArray(),
-                null,
-                SymmetricKeyAlgorithmTags.AES_128,
-                false
-            ));
-
-        } catch (Exception e) {
-            throw new IllegalStateException("Error Encrypting : " + e.getMessage(), e);
-        }
-    }
-
-    public static String decrypt(String pgpArmoredMsg, String symmetricKey) {
-        try {
-            return new String(ByteArrayHandler.decrypt(Base64.getDecoder().decode(pgpArmoredMsg),
-                                                       symmetricKey.toCharArray()));
-        } catch (Exception e) {
-            throw new IllegalStateException("Error Decrypting : " + e.getMessage(), e);
-        }
-    }*/
-
 }

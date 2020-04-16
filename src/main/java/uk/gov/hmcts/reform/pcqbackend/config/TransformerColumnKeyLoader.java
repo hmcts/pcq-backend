@@ -101,7 +101,7 @@ public class TransformerColumnKeyLoader implements ApplicationListener<Applicati
             String oldValueString = memberValues.get(annotationProperty).toString();
             if (oldValueString.contains(TransformerColumnKeyLoader.KEY_ANNOTATION_PROPERTY)) {
                 if (dbEncryptionKey != null && YES_PROPERTY.equals(encryptionEnabled)) {
-                    log.info("Replaced the values with key {}", dbEncryptionKey);
+                    log.info("Replaced the values with the db encryption key");
                     String newValueString = oldValueString.replace(
                         TransformerColumnKeyLoader.KEY_ANNOTATION_PROPERTY, dbEncryptionKey);
                     memberValues.put(annotationProperty, newValueString);
