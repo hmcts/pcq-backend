@@ -195,4 +195,106 @@
     <packageUrl regex="true">^pkg:maven/org\.seleniumhq\.selenium/htmlunit\-driver@.*$</packageUrl>
     <cve>CVE-2020-5529</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jetty-repacked-9.4.12.v20180830.jar (shaded: org.eclipse.jetty:jetty-http:9.4.12.v20180830)
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.eclipse\.jetty/jetty\-http@.*$</packageUrl>
+    <cve>CVE-2019-10241</cve>
+    <cve>CVE-2019-10247</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jruby-complete-1.7.26.jar: bcprov-jdk15on-1.54.jar
+   ]]></notes>
+    <sha1>1acdedeb89f1d950d67b73d481eb7736df65eedb</sha1>
+    <cve>CVE-2016-1000338</cve>
+    <cve>CVE-2016-1000339</cve>
+    <cve>CVE-2016-1000340</cve>
+    <cve>CVE-2016-1000341</cve>
+    <cve>CVE-2016-1000342</cve>
+    <cve>CVE-2016-1000343</cve>
+    <cve>CVE-2016-1000344</cve>
+    <cve>CVE-2016-1000345</cve>
+    <cve>CVE-2016-1000346</cve>
+    <cve>CVE-2016-1000352</cve>
+    <cve>CVE-2016-2427</cve>
+    <cve>CVE-2017-13098</cve>
+    <cve>CVE-2018-1000180</cve>
+    <cve>CVE-2018-1000180</cve>
+    <cve>CVE-2018-1000613</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: jruby-complete-1.7.26.jar: readline.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.jruby/readline@.*$</packageUrl>
+    <cve>CVE-2010-1330</cve>
+    <cve>CVE-2011-4838</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: neko-htmlunit-2.36.0.jar
+   ]]></notes>
+    <sha1>6e999678a3b2813ea71fac4ebc5996b1406e954d</sha1>
+    <cve>CVE-2020-5529</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: openhtmltopdf-jsoup-dom-converter-0.0.1-RC13.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/com\.openhtmltopdf/openhtmltopdf\-jsoup\-dom\-converter@.*$</packageUrl>
+    <cve>CVE-2015-6748</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: pdfbox-2.0.8.jar
+   ]]></notes>
+    <sha1>17bdf273d66f3afe41eedb9d3ab6a7b819c44a0c</sha1>
+    <cve>CVE-2018-11797</cve>
+    <cve>CVE-2018-8036</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: phantomjsdriver-1.4.4.jar
+   ]]></notes>
+    <sha1>e5778e3273f8201bf9e0ff65fb8118f37b84beba</sha1>
+    <cve>CVE-2019-17221</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: selenium-opera-driver-3.141.59.jar
+   ]]></notes>
+    <sha1>6b11ed01182bfd8bb62ddeae34cf9eadd3cfc7ff</sha1>
+    <cve>CVE-2003-1561</cve>
+    <cve>CVE-2008-1761</cve>
+    <cve>CVE-2008-1764</cve>
+    <cve>CVE-2008-3079</cve>
+    <cve>CVE-2008-3172</cve>
+    <cve>CVE-2008-4293</cve>
+    <cve>CVE-2008-4695</cve>
+    <cve>CVE-2008-4696</cve>
+    <cve>CVE-2008-4794</cve>
+    <cve>CVE-2008-4795</cve>
+    <cve>CVE-2008-5679</cve>
+    <cve>CVE-2009-0915</cve>
+    <cve>CVE-2010-5227</cve>
+    <cve>CVE-2015-8960</cve>
+    <cve>CVE-2019-19788</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: xmpbox-2.0.8.jar
+   ]]></notes>
+    <sha1>bcce394a05b96c6155d27e144eb6e359ee7ff6b1</sha1>
+    <cve>CVE-2018-11797</cve>
+    <cve>CVE-2018-8036</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: xstream-1.4.9.jar
+   ]]></notes>
+    <sha1>c43f6e6bfa79b56e04a8898a923c3cf7144dd460</sha1>
+    <cve>CVE-2017-7957</cve>
+  </suppress>
 </suppressions>
