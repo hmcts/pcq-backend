@@ -224,7 +224,6 @@ def versions = [
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '2.9.2',
   restAssured         : '4.2.0',
-  serenityBddVersion  : '2.1.3',
   serenity            : '2.1.13',
   lombok              : '1.18.12',
   gradlePitest        : '1.4.7',
