@@ -179,6 +179,7 @@ pitest {
   ])
 }
 
+
 project.tasks['pitest'].group = "Verification"
 
 sonarqube {
