@@ -41,7 +41,6 @@ withPipeline(type, product, component) {
   enableSlackNotifications('#pcq-builds')
   enableAksStagingDeployment()
   loadVaultSecrets(secrets)
-  installCharts()
   disableLegacyDeployment()
 
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
