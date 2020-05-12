@@ -1,0 +1,5 @@
+java:
+  memoryRequests: "1024Mi"
+  cpuRequests: "500m"
+  memoryLimits: "2048Mi"
+  cpuLimits: "1500m"
