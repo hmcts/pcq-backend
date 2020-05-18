@@ -1,4 +1,8 @@
 java:
+  memoryRequests: "1024Mi"
+  cpuRequests: "500m"
+  memoryLimits: "2048Mi"
+  cpuLimits: "1500m"
   applicationPort: 4550
   ingressHost: pcq-backend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   aadIdentityName: pcq
