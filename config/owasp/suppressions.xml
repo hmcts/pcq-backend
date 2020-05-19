@@ -38,7 +38,6 @@
     <cve>CVE-2020-5407</cve>
     <cve>CVE-2020-5408</cve>
   </suppress>
-
   <suppress>
     <notes><![CDATA[No fix is available]]></notes>
     <gav regex="true">.*security.*</gav>
