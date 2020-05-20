@@ -5,6 +5,7 @@ spring:
       prefixed: false
       paths: /mnt/secrets/pcq
       aliases:
+        AppInsightsInstrumentationKey: azure.application-insights.instrumentation-key
         backend-POSTGRES-PASS: ${PCQ_DB_PASSWORD:PCQ_DB_PASSWORD}
         backend-POSTGRES-USER: ${PCQ_DB_USERNAME:PCQ_DB_USERNAME}
         flyway-password: flyway.password
