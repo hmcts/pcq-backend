@@ -10,6 +10,8 @@ import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +47,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
@@ -68,6 +71,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCase.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
@@ -169,6 +173,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data 3 times in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             answerRequest.setPcqId("INTEG-TEST-11");
@@ -209,6 +214,13 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
         for (int i = 0; i < pcqIdsActual.size(); i++) {
             assertTrue(pcqIdsActual.contains(pcqIds[i]), "Pcq Id not found");
         }
+    }
+
+    protected String updateCompletedDate(String completedDateStr) {
+        Timestamp completedTime = ConversionUtil.getTimeFromString(completedDateStr);
+        Calendar calendar = Calendar.getInstance();
+        completedTime.setTime(calendar.getTimeInMillis());
+        return ConversionUtil.convertTimeStampToString(completedTime);
     }
 
 }
