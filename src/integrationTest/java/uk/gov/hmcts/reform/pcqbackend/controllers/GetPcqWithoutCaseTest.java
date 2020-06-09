@@ -10,8 +10,6 @@ import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -214,13 +212,6 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
         for (int i = 0; i < pcqIdsActual.size(); i++) {
             assertTrue(pcqIdsActual.contains(pcqIds[i]), "Pcq Id not found");
         }
-    }
-
-    protected String updateCompletedDate(String completedDateStr) {
-        Timestamp completedTime = ConversionUtil.getTimeFromString(completedDateStr);
-        Calendar calendar = Calendar.getInstance();
-        completedTime.setTime(calendar.getTimeInMillis());
-        return ConversionUtil.convertTimeStampToString(completedTime);
     }
 
 }
