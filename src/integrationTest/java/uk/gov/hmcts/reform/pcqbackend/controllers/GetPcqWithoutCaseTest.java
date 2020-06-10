@@ -45,6 +45,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
@@ -68,6 +69,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCase.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
@@ -169,6 +171,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data 3 times in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             answerRequest.setPcqId("INTEG-TEST-11");
