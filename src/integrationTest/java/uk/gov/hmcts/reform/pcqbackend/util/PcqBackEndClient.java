@@ -13,12 +13,14 @@ import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
@@ -46,6 +48,10 @@ public class PcqBackEndClient {
 
     public Map<String, Object> getPcqWithoutCase() {
         return getRequest(APP_BASE_PATH + "/consolidation/pcqWithoutCase");
+    }
+
+    public Map<String, Object> getPcqRecordWithoutCase() {
+        return getPcqRecordRequestObject(APP_BASE_PATH + "/consolidation/pcqRecordWithoutCase");
     }
 
     public Map<String, Object> addCaseForPcq(String pcqId, String caseId) {
@@ -123,6 +129,29 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
+    private Map<String, Object> getPcqRecordRequestObject(String uriPath, Object... params) {
+
+        ResponseEntity<PcqRecordWithoutCaseResponse> responseEntity = null;
+
+        try {
+            HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());
+            responseEntity = restTemplate
+                .exchange("http://localhost:" + prdApiPort + uriPath,
+                          HttpMethod.GET,
+                          request,
+                          PcqRecordWithoutCaseResponse.class,
+                          params);
+        } catch (HttpStatusCodeException ex) {
+            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("response_body", ex.getResponseBodyAsString());
+            return statusAndBody;
+        }
+
+        return getResponseObject(responseEntity);
+    }
+
     @SuppressWarnings("unchecked")
     private Map<String, Object> getResponse(ResponseEntity<Map> responseEntity) {
 
@@ -147,6 +176,18 @@ public class PcqBackEndClient {
 
         return response;
     }
+
+    private Map<String, Object> getResponseObject(ResponseEntity<PcqRecordWithoutCaseResponse> responseEntity) {
+
+        Map<String, Object> response = new ConcurrentHashMap<>();
+        response.put("response_body", responseEntity);
+        response.put("http_status", responseEntity.getStatusCode().toString());
+        response.put("headers", responseEntity.getHeaders().toString());
+
+        return response;
+    }
+
+
 
     private HttpHeaders getS2sTokenHeaders() {
 
