@@ -177,11 +177,11 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             PcqAnswerRequest answerRequest2 = cloneAnswerObject(answerRequest,"INTEG-TEST-11", "PROBATE1",
-                                                                "PETITIONER");
+                                                                "APPLICANT");
             pcqBackEndClient.createPcqAnswer(answerRequest2);
 
             PcqAnswerRequest answerRequest3 = cloneAnswerObject(answerRequest, "INTEG-TEST-12", "DIVORCE",
-                                                                "APPLICANT");
+                                                                "PETITIONER");
             pcqBackEndClient.createPcqAnswer(answerRequest3);
 
             //Now call the actual method.

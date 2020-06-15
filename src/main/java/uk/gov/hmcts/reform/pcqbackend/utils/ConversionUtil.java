@@ -229,7 +229,7 @@ public final class ConversionUtil {
 
         List<PcqAnswerResponse> pcqRecordArray = new ArrayList<>(pcqIds.size());
         for (ProtectedCharacteristics protectedCharacteristics : pcqIds) {
-            pcqRecordArray.add(createPcqRecord(protectedCharacteristics));
+            pcqRecordArray.add(createPcqRecordForConsolidationService(protectedCharacteristics));
         }
         pcqRecordWithoutCaseResponse.setPcqRecord(pcqRecordArray.toArray(new PcqAnswerResponse[0]));
         pcqRecordWithoutCaseResponse.setResponseStatus(message);
@@ -250,7 +250,7 @@ public final class ConversionUtil {
 
     }
 
-    private static PcqAnswerResponse createPcqRecord(ProtectedCharacteristics pcqDbRecord) {
+    private static PcqAnswerResponse createPcqRecordForConsolidationService(ProtectedCharacteristics pcqDbRecord) {
         PcqAnswerResponse answerResponse = new PcqAnswerResponse();
         answerResponse.setPcqId(pcqDbRecord.getPcqId());
         answerResponse.setServiceId(pcqDbRecord.getServiceId());
