@@ -169,7 +169,6 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
     @Test
     public void getPcqRecordWithoutCaseMultipleIds() {
         try {
-            //******* DEBUG THIS ON MONDAY *********
 
             //Create the Test Data 3 times in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
@@ -177,12 +176,12 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
-            PcqAnswerRequest answerRequest2 = answerRequest;
-            answerRequest2.setPcqId("INTEG-TEST-11");
+            PcqAnswerRequest answerRequest2 = cloneAnswerObject(answerRequest,"INTEG-TEST-11", "PROBATE1",
+                                                                "PETITIONER");
             pcqBackEndClient.createPcqAnswer(answerRequest2);
 
-            PcqAnswerRequest answerRequest3 = answerRequest;
-            answerRequest3.setPcqId("INTEG-TEST-12");
+            PcqAnswerRequest answerRequest3 = cloneAnswerObject(answerRequest, "INTEG-TEST-12", "DIVORCE",
+                                                                "APPLICANT");
             pcqBackEndClient.createPcqAnswer(answerRequest3);
 
             //Now call the actual method.
@@ -221,6 +220,22 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             assertEquals("Service Id not found", pcqIds[i].getServiceId(), pcqRecordsActual[i].getServiceId());
             assertEquals("Actor not found", pcqIds[i].getActor(), pcqRecordsActual[i].getActor());
         }
+    }
+
+    private PcqAnswerRequest cloneAnswerObject(PcqAnswerRequest originalAnswer, String pcqId, String serviceId,
+                                               String actor) {
+        PcqAnswerRequest clonedAnswer = new PcqAnswerRequest();
+        clonedAnswer.setPcqId(pcqId);
+        clonedAnswer.setPartyId(originalAnswer.getPartyId());
+        clonedAnswer.setCompletedDate(originalAnswer.getCompletedDate());
+        clonedAnswer.setPcqAnswers(originalAnswer.getPcqAnswers());
+        clonedAnswer.setVersionNo(originalAnswer.getVersionNo());
+        clonedAnswer.setActor(actor);
+        clonedAnswer.setServiceId(serviceId);
+        clonedAnswer.setChannel(originalAnswer.getChannel());
+        clonedAnswer.setCaseId(originalAnswer.getCaseId());
+
+        return clonedAnswer;
     }
 
 }
