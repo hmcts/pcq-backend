@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
+import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
@@ -126,6 +127,55 @@ public class ConsolidationController {
             log.error("addCaseForPCQ API call failed due to error - {}", e.getMessage(), e);
             return ConversionUtil.generateSubmitResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                                          environment.getProperty("api-error-messages.internal_error"));
+        }
+
+    }
+
+    @ApiOperation(
+        tags = "Get PCQ Records", value = "Get list of PCQ Record that don't have associated case information.",
+        notes = "This API will be invoked by the Consolidation process to get a list of PCQ records that don’t "
+            + "have an associated case. Any PCQ answer records which are over 90 days old will not be "
+            + "returned in the list. The PCQ Answer response will contain the PCQ Id, Service Id and Actor only."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            code = 200,
+            message = "Request executed successfully. Response will contain the multiple/single PCQ Record(s)/ "
+                + "empty array",
+            response = PcqRecordWithoutCaseResponse.class
+        ),
+        @ApiResponse(code = 400, message = "Missing co-relation Id information in the header."),
+        @ApiResponse(
+            code = 500,
+            message = "Any general application/database un-recoverable error"
+        )
+    })
+    @GetMapping(
+        path = "/pcqRecordWithoutCase",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ResponseEntity<PcqRecordWithoutCaseResponse> getPcqRecordWithoutCase(@RequestHeader HttpHeaders headers) {
+
+        try {
+
+            List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
+                headers.get(environment.getProperty("api-required-header-keys.co-relationid")));
+
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(protectedCharacteristicsList, HttpStatus.OK,
+                                                                 environment.getProperty(
+                                                                     "api-error-messages.accepted"));
+
+        } catch (InvalidRequestException ive) {
+            log.error("getPcqRecordWithoutCase API call failed due to error - {}", ive.getMessage(), ive);
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(null, HttpStatus.BAD_REQUEST,
+                                                                 environment.getProperty(
+                                                                     "api-error-messages.bad_request"));
+        } catch (Exception e) {
+            log.error("getPcqRecordWithoutCase API call failed due to error - {}", e.getMessage(), e);
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(null, HttpStatus.INTERNAL_SERVER_ERROR,
+                                                                 environment.getProperty(
+                                                                     "api-error-messages.internal_error"));
         }
 
     }

@@ -9,6 +9,7 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswers;
+import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
 
@@ -216,6 +217,27 @@ public final class ConversionUtil {
         return new ResponseEntity<>(pcqWithoutCaseResponse, code);
     }
 
+    public static ResponseEntity<PcqRecordWithoutCaseResponse> generatePcqRecordWithoutCaseResponse(
+        List<ProtectedCharacteristics> pcqIds, HttpStatus code, String message) {
+        PcqRecordWithoutCaseResponse pcqRecordWithoutCaseResponse = new PcqRecordWithoutCaseResponse();
+        if (pcqIds == null) {
+            pcqRecordWithoutCaseResponse.setResponseStatus(message);
+            pcqRecordWithoutCaseResponse.setResponseStatusCode(String.valueOf(code.value()));
+
+            return new ResponseEntity<>(pcqRecordWithoutCaseResponse, code);
+        }
+
+        List<PcqAnswerResponse> pcqRecordArray = new ArrayList<>(pcqIds.size());
+        for (ProtectedCharacteristics protectedCharacteristics : pcqIds) {
+            pcqRecordArray.add(createPcqRecordForConsolidationService(protectedCharacteristics));
+        }
+        pcqRecordWithoutCaseResponse.setPcqRecord(pcqRecordArray.toArray(new PcqAnswerResponse[0]));
+        pcqRecordWithoutCaseResponse.setResponseStatus(message);
+        pcqRecordWithoutCaseResponse.setResponseStatusCode(String.valueOf(code.value()));
+
+        return new ResponseEntity<>(pcqRecordWithoutCaseResponse, code);
+    }
+
     public static String validateRequestHeader(List<String> requestHeaders) throws InvalidRequestException {
 
         // Validate that the request contains the required Header values.
@@ -226,6 +248,14 @@ public final class ConversionUtil {
 
         return requestHeaders.get(0);
 
+    }
+
+    private static PcqAnswerResponse createPcqRecordForConsolidationService(ProtectedCharacteristics pcqDbRecord) {
+        PcqAnswerResponse answerResponse = new PcqAnswerResponse();
+        answerResponse.setPcqId(pcqDbRecord.getPcqId());
+        answerResponse.setServiceId(pcqDbRecord.getServiceId());
+        answerResponse.setActor(pcqDbRecord.getActor());
+        return answerResponse;
     }
 
 }
