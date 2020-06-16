@@ -23,5 +23,7 @@
   "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/submitAnswers_POST": "ignore",
   "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/addCaseForPCQ/pcqId_PUT": "ignore",
   "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/getAnswer/pcqId_GET": "ignore",
-  "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/pcqWithoutCase_GET": "ignore"
+  "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/pcqWithoutCase_GET": "ignore",
+  "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/pcqRecordWithoutCase_GET": "ignore"
 }
+
