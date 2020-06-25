@@ -9,6 +9,7 @@ import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -195,6 +196,21 @@ public class PcqBackEndServiceClient {
             return null;
         }
         return response.body().as(Map.class);
+    }
+
+    public PcqRecordWithoutCaseResponse getAnswerRecordsWithoutCase(HttpStatus status) {
+
+        Response response = getCoRelationHeaders()
+            .get("pcq/backend/consolidation/pcqRecordWithoutCase")
+            .andReturn();
+        response.then()
+            .assertThat()
+            .statusCode(status.value());
+
+        if (status == HttpStatus.UNAUTHORIZED || status == INTERNAL_SERVER_ERROR) {
+            return null;
+        }
+        return response.body().as(PcqRecordWithoutCaseResponse.class);
     }
 
     public Map<String, Object> addCaseForPcq(String pcqId, String caseId, HttpStatus status) {
