@@ -13,7 +13,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-  id 'org.springframework.boot' version '2.2.5.RELEASE'
+  id 'org.springframework.boot' version '2.3.0.RELEASE'
   id 'org.owasp.dependencycheck' version '5.3.2.1'
   id 'com.github.ben-manes.versions' version '0.28.0'
   id "info.solidsoft.pitest" version '1.4.8'
@@ -262,6 +262,8 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+
   compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4', withoutSpringCloudContext
 
   compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
@@ -273,7 +275,6 @@ dependencies {
   compile group: 'org.postgresql', name: 'postgresql', version: '42.2.11'
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
 
-  compile group: 'uk.gov.hmcts.reform', name: 'health-spring-boot-starter', version: '0.0.5'
   compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
