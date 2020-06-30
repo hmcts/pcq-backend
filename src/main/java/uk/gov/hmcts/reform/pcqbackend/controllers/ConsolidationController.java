@@ -74,6 +74,7 @@ public class ConsolidationController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
+    @Deprecated (since = "Replaced with API - pcqRecordWithoutCase")
     public ResponseEntity<PcqWithoutCaseResponse> getPcqIdsWithoutCase(@RequestHeader HttpHeaders headers) {
 
         try {

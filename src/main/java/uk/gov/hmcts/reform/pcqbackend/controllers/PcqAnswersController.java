@@ -67,6 +67,10 @@ public class PcqAnswersController {
                                                 @RequestBody PcqAnswerRequest answerRequest) {
 
         try {
+            if (answerRequest.getOptOut() != null && "Y".equals(answerRequest.getOptOut())) {
+                return submitAnswersService.processOptOut(headers.get(
+                    environment.getProperty("api-required-header-keys.co-relationid")), answerRequest);
+            }
             return submitAnswersService.processPcqAnswers(headers.get(
                 environment.getProperty("api-required-header-keys.co-relationid")), answerRequest);
         } catch (Exception e) {
