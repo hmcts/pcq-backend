@@ -376,6 +376,39 @@ public class PcqAnswersControllerTest {
     }
 
     /**
+     * This method tests the submitAnswers API when it is called with invalid OptOut value in the Json.
+     * The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400")
+    @Test
+    public void testRequestForInvalidOptOutValue()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson.json");
+
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
      * This method tests the submitAnswers API when it is called with all valid parameters but the database call
      * returns an exception. The response status code will be 500.
      */

@@ -152,10 +152,23 @@ public class SubmitAnswersService {
 
             //Step 1. Check the request contains the required header content.
             coRelationId = validateAndReturnCorrelationId(headers);
-            log.info("Co-Relation Id : {} - submitAnswers API call invoked.", coRelationId);
+            log.info("Co-Relation Id : {} - submitAnswers API call with OptOut invoked.", coRelationId);
 
             //Step 2. Perform the validations
             performValidations(answerRequest);
+
+            //Step 3. Invoke the delete pcq record method.
+            int resultCount = protectedCharacteristicsRepository.deletePcqRecord(pcqId);
+            if (resultCount == 0) {
+                log.error("Co-Relation Id : {} - submitAnswers API, Opt Out invoked but record does not exist.",
+                          coRelationId);
+                return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
+                                                             environment.getProperty(
+                                                                 "api-error-messages.bad_request"));
+            } else {
+                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
+                             + "submitted for deletion.", coRelationId);
+            }
 
 
         } catch (InvalidRequestException ive) {
@@ -166,8 +179,8 @@ public class SubmitAnswersService {
             return handleInternalErrors(pcqId, coRelationId, ioe);
         }
 
-        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.CREATED,
-                                                     environment.getProperty("api-error-messages.created"));
+        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.OK,
+                                                     environment.getProperty("api-error-messages.accepted"));
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -251,13 +264,13 @@ public class SubmitAnswersService {
                                                      environment.getProperty("api-error-messages.bad_request"));
     }
 
-    private ResponseEntity<Object> handleInternalErrors(String pcqId, String coRelationId, Exception e) {
-        if(e instanceof IOException || e instanceof IllegalStateException) {
+    private ResponseEntity<Object> handleInternalErrors(String pcqId, String coRelationId, Exception except) {
+        if (except instanceof IOException || except instanceof IllegalStateException) {
             log.error("Co-Relation Id : {} - submitAnswers API call failed "
-                          + "due to error - {}", coRelationId, e.getMessage());
+                          + "due to error - {}", coRelationId, except.getMessage());
         } else {
             log.error("Co-Relation Id : {} - submitAnswers API call failed "
-                          + "due to error - {}", coRelationId, e.getMessage(), e);
+                          + "due to error - {}", coRelationId, except.getMessage(), except);
         }
         return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                                      environment.getProperty("api-error-messages.internal_error"));
