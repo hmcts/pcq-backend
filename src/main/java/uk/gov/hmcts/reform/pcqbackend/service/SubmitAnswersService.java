@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
@@ -158,7 +159,7 @@ public class SubmitAnswersService {
             performValidations(answerRequest);
 
             //Step 3. Invoke the delete pcq record method.
-            int resultCount = protectedCharacteristicsRepository.deletePcqRecord(pcqId);
+            int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
             if (resultCount == 0) {
                 log.error("Co-Relation Id : {} - submitAnswers API, Opt Out invoked but record does not exist.",
                           coRelationId);
