@@ -9,7 +9,7 @@ buildscript {
 
 plugins {
   id 'application'
-  id 'checkstyle'
+  id 'uk.gov.hmcts.java' version '0.9.0'
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.9.RELEASE'
@@ -121,13 +121,6 @@ task smoke(type: Test) {
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
-checkstyle {
-  maxWarnings = 0
-  toolVersion = '8.29'
-  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
-  configDir = new File(rootDir, 'config/checkstyle')
-}
-
 pmd {
   toolVersion = "6.18.0"
   sourceSets = [sourceSets.main, sourceSets.test, sourceSets.functionalTest, sourceSets.integrationTest, sourceSets.smokeTest]
@@ -210,9 +203,6 @@ dependencyUpdates.resolutionStrategy {
 
 // https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/configuration.html
 dependencyCheck {
-  // Specifies if the build should be failed if a CVSS score above a specified level is identified.
-  // range of 0-10 fails the build, anything greater and it doesn't fail the build
-  failBuildOnCVSS = System.getProperty('dependencyCheck.failBuild') == 'true' ? 0 : 11
   suppressionFile = 'config/owasp/suppressions.xml'
 }
 
@@ -247,6 +237,22 @@ def versions = [
   pitest              : '1.4.7',
   sonarPitest         : '0.5'
 ]
+
+configurations.all {
+  resolutionStrategy {
+    eachDependency { DependencyResolveDetails details ->
+      if (details.requested.group in ['org.apache.logging.log4j']) {
+        details.useVersion '2.13.2'
+      }
+      if (details.requested.group in ['org.scala-lang']) {
+        details.useVersion '2.12.10'
+      }
+      if (details.requested.group in ['org.apache.tomcat.embed']) {
+        details.useVersion '9.0.37'
+      }
+    }
+  }
+}
 
 dependencies {
   // exclude spring-cloud-context as it is already included in spring-cloud-starter-netflix-hystrix
