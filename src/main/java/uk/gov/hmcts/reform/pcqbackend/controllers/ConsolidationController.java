@@ -75,6 +75,9 @@ public class ConsolidationController {
     )
     @ResponseBody
     @Deprecated (since = "Replaced with API - pcqRecordWithoutCase")
+    /**
+     * @deprecated - Replaced with API - pcqRecordWithoutCase.
+     */
     public ResponseEntity<PcqWithoutCaseResponse> getPcqIdsWithoutCase(@RequestHeader HttpHeaders headers) {
 
         try {

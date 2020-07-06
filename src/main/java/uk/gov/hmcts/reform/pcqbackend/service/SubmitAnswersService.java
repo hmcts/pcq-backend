@@ -35,6 +35,8 @@ import javax.transaction.Transactional;
 @Getter
 public class SubmitAnswersService {
 
+    private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
+
     Environment environment;
 
     ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
@@ -165,7 +167,7 @@ public class SubmitAnswersService {
                           coRelationId);
                 return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
                                                              environment.getProperty(
-                                                                 "api-error-messages.bad_request"));
+                                                                 BAD_REQUEST_ERROR_MSG_KEY));
             } else {
                 log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
                              + "submitted for deletion.", coRelationId);
@@ -250,7 +252,7 @@ public class SubmitAnswersService {
     private ResponseEntity<Object> handleInvalidRequestException(String pcqId, InvalidRequestException ive) {
         log.error(ive.getMessage());
         return ConversionUtil.generateResponseEntity(pcqId, ive.getErrorCode(),
-                                                     environment.getProperty("api-error-messages.bad_request"));
+                                                     environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
     }
 
     private ResponseEntity<Object> handleSchemaValidationException(String pcqId, String coRelationId,
@@ -262,7 +264,7 @@ public class SubmitAnswersService {
             sve.getFormattedError()
         );
         return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
-                                                     environment.getProperty("api-error-messages.bad_request"));
+                                                     environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
     }
 
     private ResponseEntity<Object> handleInternalErrors(String pcqId, String coRelationId, Exception except) {
