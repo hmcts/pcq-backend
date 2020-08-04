@@ -66,7 +66,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
                          validateGetResponse.get("message"));
 
         } catch (IOException e) {
-            log.error("Error during test execution", e);
+            log.error("Error during test execution.", e);
         }
 
     }
