@@ -11,8 +11,6 @@
 <notes><![CDATA[ no fix available ]]></notes>
 <gav regex="true">^org.springframework.security:spring-security-(config|web|core):5\.2\.2\.RELEASE$</gav>
 <cve>CVE-2018-1258</cve>
-<cve>CVE-2020-5407</cve>
-<cve>CVE-2020-5408</cve>
 </suppress>
 <suppress>
 <notes><![CDATA[No fix is available]]></notes>
@@ -23,15 +21,6 @@
 <notes><![CDATA[No fix is available]]></notes>
 <filePath regex="true">.*spring-security-test-5\.2\.2\.RELEASE\.jar</filePath>
 <cve>CVE-2018-1258</cve>
-<cve>CVE-2020-5407</cve>
-<cve>CVE-2020-5408</cve>
-</suppress>
-<suppress>
-<notes><![CDATA[
-   file name: dom4j-2.1.1.jar
-   ]]></notes>
-<packageUrl regex="true">^pkg:maven/org\.dom4j/dom4j@.*$</packageUrl>
-<cve>CVE-2020-10683</cve>
 </suppress>
 <suppress>
 <notes><![CDATA[
@@ -40,4 +29,11 @@
 <packageUrl regex="true">^pkg:maven/org\.postgresql/postgresql@.*$</packageUrl>
 <cve>CVE-2020-13692</cve>
 </suppress>
+  <suppress>
+    <notes><![CDATA[
+   file name: hibernate-core-5.4.15.Final.jar
+   ]]></notes>
+    <packageUrl regex="true">^pkg:maven/org\.hibernate/hibernate\-core@.*$</packageUrl>
+    <cve>CVE-2019-14900</cve>
+  </suppress>
 </suppressions>
