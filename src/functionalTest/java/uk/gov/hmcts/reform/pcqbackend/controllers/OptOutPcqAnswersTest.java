@@ -62,8 +62,6 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
 
             assertEquals("Error value not valid", "Not Found",
                          validateGetResponse.get("error"));
-            assertEquals("Error msg not valid", "No pcq answer record was found with the given id",
-                         validateGetResponse.get("message"));
 
         } catch (IOException e) {
             log.error("Error during test execution.", e);
