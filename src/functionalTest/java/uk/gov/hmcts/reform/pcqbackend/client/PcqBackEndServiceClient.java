@@ -98,7 +98,7 @@ public class PcqBackEndServiceClient {
         return response.body().as(Map.class);
     }
 
-    public Map<String, Object> updateAnswersRecord(PcqAnswerRequest answerRequest) {
+    public Map<String, Object> updateAnswersRecord(PcqAnswerRequest answerRequest, HttpStatus status) {
         Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
@@ -110,7 +110,7 @@ public class PcqBackEndServiceClient {
 
         response.then()
             .assertThat()
-            .statusCode(CREATED.value());
+            .statusCode(status.value());
 
         return response.body().as(Map.class);
     }

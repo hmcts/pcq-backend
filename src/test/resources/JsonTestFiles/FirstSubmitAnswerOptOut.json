@@ -1,0 +1,14 @@
+{
+  "pcqId": "T1234",
+  "ccdCaseId": null,
+  "partyId": "23",
+  "channel": 1,
+  "completedDate": "2020-03-05T09:13:45.000Z",
+  "serviceId": "PROBATE",
+  "actor": "DEFENDANT",
+  "versionNo": 1,
+  "optOut": "Y",
+  "pcqAnswers": {
+    "dob_provided": 1
+  }
+}

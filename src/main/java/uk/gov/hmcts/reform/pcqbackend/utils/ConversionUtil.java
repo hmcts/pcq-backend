@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public final class ConversionUtil {
 
-    private static final String COMPLETED_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+    private static final String COMPLETED_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private static final String DOB_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     private ConversionUtil() {

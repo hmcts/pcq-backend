@@ -70,6 +70,36 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
     }
 
     @Test
+    public void updateDobProvidedSuccessOptOutNull() {
+        // Create an record first.
+        createTestRecord();
+
+        try {
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/UpdateDobProvidedOptOutNull.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
+            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
+            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
+                         response.get(RESPONSE_KEY_3));
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
+                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+
+            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
+            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+            assertLogsForKeywords();
+
+
+        } catch (IOException e) {
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
     public void dobProvidedStateDate() {
         // Create an record first.
         createTestRecord();

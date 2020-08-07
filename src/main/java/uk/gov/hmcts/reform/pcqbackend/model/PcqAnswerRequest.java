@@ -28,6 +28,8 @@ public class PcqAnswerRequest implements Serializable {
 
     private int versionNo;
 
+    private String optOut;
+
     private PcqAnswers pcqAnswers;
 
     public PcqAnswerRequest() {
@@ -109,5 +111,13 @@ public class PcqAnswerRequest implements Serializable {
 
     public void setPcqId(String pcqId) {
         this.pcqId = pcqId;
+    }
+
+    public String getOptOut() {
+        return optOut;
+    }
+
+    public void setOptOut(String optOut) {
+        this.optOut = optOut;
     }
 }

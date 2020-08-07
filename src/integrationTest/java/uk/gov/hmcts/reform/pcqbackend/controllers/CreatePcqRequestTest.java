@@ -31,6 +31,8 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
     public static final String TEST_PCQ_ID = "Integ-Test-1";
     public static final String RESPONSE_UNKNOWN = "Unknown error occurred";
+    private static final String IO_EXCEPTION_MSG = "IOException while executing test";
+    public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code not valid";
 
 
     @Rule
@@ -45,7 +47,7 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
             assertEquals("PCQId not valid", TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals("Response Status Code not valid", HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
             assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
@@ -58,7 +60,7 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
 
 
         } catch (IOException e) {
-            log.error("IOException while executing test", e);
+            log.error(IO_EXCEPTION_MSG, e);
         }
 
 
@@ -73,7 +75,7 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
             assertEquals("PCQId not valid", TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals("Response Status Code not valid", HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
             assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
@@ -86,7 +88,35 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
 
 
         } catch (IOException e) {
-            log.error("IOException while executing test", e);
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+
+
+    }
+
+    @Test
+    public void createPcqAnswersSuccessWithCaseOptOutExplicitNull() {
+        try {
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCaseOptOutNull.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
+            assertEquals("PCQId not valid", TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
+                         response.get(RESPONSE_KEY_3));
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
+                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+
+            assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record Not found");
+            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+            checkLogsForKeywords();
+
+
+        } catch (IOException e) {
+            log.error(IO_EXCEPTION_MSG, e);
         }
 
 
@@ -108,12 +138,12 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
 
-            assertEquals("Response Status Code not valid", null, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, null, response.get(RESPONSE_KEY_2));
 
             checkLogsForKeywords();
 
         } catch (Exception e) {
-            log.error("IOException while executing test", e);
+            log.error(IO_EXCEPTION_MSG, e);
         }
 
     }

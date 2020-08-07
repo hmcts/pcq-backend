@@ -85,6 +85,7 @@ public class PcqAnswersControllerTest {
         when(environment.getProperty("api-version-number")).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
+        when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
     }
 
     /**
@@ -120,6 +121,118 @@ public class PcqAnswersControllerTest {
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
             verify(protectedCharacteristicsRepository, times(1)).save(any(
                 ProtectedCharacteristics.class));
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with NULL in OptOut and that the answers record
+     * is successfully added to the database. The response status code will be 201.
+     */
+    @DisplayName("Should submit the answers when OptOut is NULL successfully and return with 201 response code")
+    @Test
+    public void testSubmitAnswersOptOutNull()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOutNull.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+
+            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).save(any(
+                ProtectedCharacteristics.class));
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with Y in OptOut and that the answers record
+     * is successfully deleted from the database. The response status code will be 200.
+     */
+    @DisplayName("Should delete the answers when OptOut is Y successfully and return with 200 response code")
+    @Test
+    public void testSubmitAnswersOptOutSuccess()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            int resultCount = 1;
+
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(resultCount);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with Y in OptOut and that the answers record
+     * is not deleted from the database. The response status code will be 400.
+     */
+    @DisplayName("Should NOT delete the answers when OptOut is Y and return with 400 response code")
+    @Test
+    public void testSubmitAnswersOptOutRecordNotFound()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            int resultCount = 0;
+
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(resultCount);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -314,6 +427,39 @@ public class PcqAnswersControllerTest {
     }
 
     /**
+     * This method tests the submitAnswers API OptOut operation when it is called with incorrect version number.
+     * The response status code will be 403.
+     */
+    @DisplayName("Should validate the version number for OptOut operation and return with 403 response code")
+    @Test
+    public void testInvalidVersionNumberForOptOut()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
      * This method tests the submitAnswers API when it is called with all valid parameters but the
      * header does not contain the required attribute. The response status code will be 400.
      */
@@ -343,6 +489,36 @@ public class PcqAnswersControllerTest {
     }
 
     /**
+     * This method tests the submitAnswers API when it is called with all OptOut and valid parameters but the
+     * header does not contain the required attribute. The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400 for OptOut")
+    @Test
+    public void testInvalidOptOutRequestForMissingHeader()  {
+
+        try {
+            String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setOptOut("Y");
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = mock(HttpHeaders.class);
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage());
+        }
+
+    }
+
+    /**
      * This method tests the submitAnswers API when it is called with invalid Json.
      * The response status code will be 400.
      */
@@ -352,6 +528,72 @@ public class PcqAnswersControllerTest {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
+
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API OptOut request when it is called with invalid Json.
+     * The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400 for OptOut request")
+    @Test
+    public void testOptOutRequestForInvalidJson()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
+
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with invalid OptOut value in the Json.
+     * The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400 for Invalid OptOut value")
+    @Test
+    public void testRequestForInvalidOptOutValue()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson.json");
 
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
