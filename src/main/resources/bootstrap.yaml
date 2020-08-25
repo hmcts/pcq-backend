@@ -11,3 +11,4 @@ spring:
         flyway-password: flyway.password
         jwt-secret: ${JWT_SECRET:JWT_SECRET}
         backend-encryption-key: ${DB_ENCRYPTION_KEY:DB_ENCRYPTION_KEY}
+        pcq-storage-account-primary-connection-string: ${STORAGE_ACCOUNT_CONNECTION_STRING:STORAGE_ACCOUNT_CONNECTION_STRING}
