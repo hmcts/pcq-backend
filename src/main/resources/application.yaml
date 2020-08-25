@@ -38,12 +38,10 @@ security:
 idam:
   s2s-auth:
     url: ${S2S_URL:http://localhost:4502}
-    secret: ${S2S_SECRET:AAAAAAAAAAAAAAAA}
-    name: ${S2S_NAME:pcq_backend}
 
 storage:
   connection-string: ${STORAGE_ACCOUNT_CONNECTION_STRING:UseDevelopmentStorage=true}
-  blob-pcq-container: ${STORAGE_BLOB_PCQ_CONTAINER:pcq}
+  blob-pcq-container: ${STORAGE_ACCOUNT_PCQ_CONTAINER:pcq}
   sas-token-expiry: ${SAS_TOKEN_EXPIRY:3600}
 
 authorised.services: bulk_scan_processor
@@ -55,9 +53,9 @@ spring:
     name: Protected Characteristics Questions
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5050}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
+    url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
     username: ${PCQ_DB_USERNAME:pcquser}
-    password: ${PCQ_DB_PASSWORD:pcqpass}
+    password: ${PCQ_DB_PASSWORD:}
     properties:
       charSet: UTF-8
     hikari:

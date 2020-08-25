@@ -32,16 +32,19 @@ public class SasTokenService {
     }
 
     public String generateSasToken(String serviceName) {
-        String storageAccountUri = blobServiceClient.getAccountUrl();
-        log.info("SAS Token request received for service {}. Account URI: {}", serviceName, storageAccountUri);
+        String storageAccountName = blobServiceClient.getAccountName();
+        log.info("SAS Token request received for service {}. Account: {}", serviceName, storageAccountName);
 
         try {
-            return blobServiceClient
+            String sasToken = blobServiceClient
                 .getBlobContainerClient(pcqContainer)
                 .generateSas(createSharedAccessPolicy());
+            log.info("Generated SAS Token = {}...", sasToken.substring(0,30));
+            return sasToken;
 
-        } catch (Exception e) {
-            throw new UnableToGenerateSasTokenException(e);
+        } catch (Exception exception) {
+            log.error("Error occured while creating SAS token", exception);
+            throw new UnableToGenerateSasTokenException(exception);
         }
     }
 

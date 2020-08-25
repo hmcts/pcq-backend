@@ -8,7 +8,9 @@
 
 microservice="${1:-bulk_scan_processor}"
 
-curl -X POST \
-  -H "Content-Type: application/json" \
+SAS_TOKEN=`curl -X POST \
+  -H "Content-Type: application/json" --silent \
   -d '{"microservice":"'${microservice}'"}' \
-  http://localhost:4502/testing-support/lease
+  http://localhost:4502/testing-support/lease`
+
+echo "Bearer ${SAS_TOKEN}"

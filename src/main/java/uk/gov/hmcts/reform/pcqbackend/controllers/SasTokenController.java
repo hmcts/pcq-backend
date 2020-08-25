@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
 import uk.gov.hmcts.reform.pcqbackend.model.SasTokenResponse;
 import uk.gov.hmcts.reform.pcqbackend.security.AuthorisedServices;
 import uk.gov.hmcts.reform.pcqbackend.service.AuthService;
@@ -35,7 +36,7 @@ public class SasTokenController {
     private AuthService authService;
 
     @Autowired
-    SasTokenService sasTokenService;
+    private SasTokenService sasTokenService;
 
     @Autowired
     private AuthorisedServices authorisedServices;
@@ -50,35 +51,27 @@ public class SasTokenController {
             code = 200, message = "Successfully generated Storage Account SAS token for BulkScan.",
             response = SasTokenResponse.class
         ),
-        @ApiResponse(code = 401, message = "Request ServiceAuthorization token expired."),
-        @ApiResponse(code = 403, message = "Request failed autentication."),
-        @ApiResponse(code = 404, message = "Service not found."),
-        @ApiResponse(code = 422, message = "The request was malformed.")
+        @ApiResponse(code = 401, message = "ServiceAuthorization header invalid or expired."),
+        @ApiResponse(code = 404, message = "Service or path not found."),
+        @ApiResponse(code = 500, message = "Server error, unable to generate SAS token.")
     })
     @GetMapping(
         path = "/bulkscan",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseBody
-    public ResponseEntity<SasTokenResponse> getBulkScanSasToken(
+    public ResponseEntity<SasTokenResponse> generateBulkScanSasToken(
         @RequestHeader(name = "ServiceAuthorization", required = false) String serviceAuthHeader
     ) {
         String serviceName = authService.authenticate(serviceAuthHeader);
-
-        log.info("ServiceAuthorization Service name: {}", serviceName);
-
-        if (authorisedServices.hasService(serviceName)) {
-            log.info("Service {} has been authorised!", serviceName);
-
-            SasTokenResponse sasTokenResponse = new SasTokenResponse(sasTokenService.generateSasToken("bulkscan"));
-            log.info("Generated SAS Token = {}", sasTokenResponse.getSasToken());
-            return ResponseEntity.ok(sasTokenResponse);
-
-        } else {
+        if (!authorisedServices.hasService(serviceName)) {
             log.info("Service {} has NOT been authorised!", serviceName);
+            throw new InvalidAuthenticationException("Unable to authenticate service request.");
         }
 
-        return null;
+        log.info("Service {} has been authorised!", serviceName);
+        SasTokenResponse sasTokenResponse = new SasTokenResponse(sasTokenService.generateSasToken("bulkscan"));
+        return ResponseEntity.ok(sasTokenResponse);
     }
 
 }
