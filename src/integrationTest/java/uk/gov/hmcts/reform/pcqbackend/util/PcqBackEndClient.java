@@ -58,6 +58,10 @@ public class PcqBackEndClient {
         return putRequest(APP_BASE_PATH + "/consolidation/addCaseForPCQ/" + pcqId, caseId);
     }
 
+    public Map<String, Object> getPcqBlobStorageSasToken(String serviceName) {
+        return getRequestForSasToken(APP_BASE_PATH + "/token/" + serviceName);
+    }
+
     @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private <T> Map<String, Object> postRequest(String uriPath, T requestBody) {
 
@@ -113,6 +117,29 @@ public class PcqBackEndClient {
 
         try {
             HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());
+            responseEntity = restTemplate
+                .exchange("http://localhost:" + prdApiPort + uriPath,
+                          HttpMethod.GET,
+                          request,
+                          Map.class,
+                          params);
+        } catch (HttpStatusCodeException ex) {
+            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("response_body", ex.getResponseBodyAsString());
+            return statusAndBody;
+        }
+
+        return getResponse(responseEntity);
+    }
+
+    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    private Map<String, Object> getRequestForSasToken(String uriPath, Object... params) {
+
+        ResponseEntity<Map> responseEntity = null;
+
+        try {
+            HttpEntity<?> request = new HttpEntity<>(getServiceAuthorisationHeader());
             responseEntity = restTemplate
                 .exchange("http://localhost:" + prdApiPort + uriPath,
                           HttpMethod.GET,
@@ -203,6 +230,13 @@ public class PcqBackEndClient {
         HttpHeaders headers = new HttpHeaders();
         //headers.setContentType(APPLICATION_JSON);
         headers.add("X-Correlation-Id", "INTEG-TEST-PCQ");
+        return headers;
+    }
+
+    private HttpHeaders getServiceAuthorisationHeader() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("ServiceAuthorization", "INTEG-TEST-PCQ");
         return headers;
     }
 

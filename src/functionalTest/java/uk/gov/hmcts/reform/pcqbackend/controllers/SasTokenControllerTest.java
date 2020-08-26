@@ -1,0 +1,85 @@
+package uk.gov.hmcts.reform.pcqbackend.controllers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.core.PathUtility;
+import lombok.extern.slf4j.Slf4j;
+import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import org.assertj.core.util.DateUtil;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.hmcts.reform.pcqbackend.client.BulkScanServiceClient;
+import uk.gov.hmcts.reform.pcqbackend.client.IdamServiceClient;
+
+import java.util.Date;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+
+@RunWith(SpringIntegrationSerenityRunner.class)
+@SpringBootTest
+@ActiveProfiles("functional")
+@Slf4j
+public class SasTokenControllerTest {
+
+    private static final String IO_EXCEPTION_MSG = "Error during test execution";
+
+    @Value("${idam.s2s-auth.name-cs}")
+    protected String s2sName;
+
+    @Value("${idam.s2s-auth.secret-cs}")
+    protected String s2sSecret;
+
+    @Value("${idam.s2s-auth.url}")
+    private String s2sUrl;
+
+    @Value("${targetInstance}")
+    protected String pcqBackEndApiUrl;
+
+    protected IdamServiceClient idamServiceClient;
+
+    protected BulkScanServiceClient bulkScanServiceClient;
+
+    @Before
+    public void setUp() {
+        idamServiceClient = new IdamServiceClient();
+        bulkScanServiceClient = new BulkScanServiceClient();
+    }
+
+    @Test
+    public void testGetSasTokenEndpointSuccess() {
+
+        try {
+            String s2sString = idamServiceClient.s2sSignIn(s2sName, s2sSecret, s2sUrl);
+            assertNotNull("S2S String should contain a value", s2sString);
+
+            String sasTokenResponse = bulkScanServiceClient
+                .fetchTokenResponse(pcqBackEndApiUrl + "/pcq/backend/token/bulkscan", s2sString);
+
+            assertNotNull("SAS Token should contain a value", sasTokenResponse);
+            verifySasTokenProperties(sasTokenResponse);
+
+        } catch (Exception e) {
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+
+    }
+
+    private void verifySasTokenProperties(String sasTokenResponse) throws java.io.IOException, StorageException {
+        final ObjectNode node = new ObjectMapper().readValue(sasTokenResponse, ObjectNode.class);
+        Map<String, String[]> queryParams = PathUtility.parseQueryString(node.get("sas_token").asText());
+
+        Date tokenExpiry = DateUtil.parseDatetime(queryParams.get("se")[0]);
+        assertThat(tokenExpiry).isNotNull();
+        assertThat(queryParams.get("sig")).isNotNull(); //this is a generated hash of the resource string
+        assertThat(queryParams.get("sv")).contains("2019-07-07"); //azure api version is latest
+        assertThat(queryParams.get("sp")).contains("cwl"); //access permissions(create-c,write-w,list-l)
+    }
+
+}
