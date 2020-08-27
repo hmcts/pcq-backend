@@ -53,7 +53,7 @@ public class SasTokenControllerTest extends PcqIntegrationTest {
             Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_BULKSCAN);
 
             //Test the assertions
-            assertEquals(EXPECTED_STATUS_MESSAGE, responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_OK);
+            assertEquals(responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_OK, EXPECTED_STATUS_MESSAGE);
             verifySasTokenProperties(responseMap.get(RESPONSE_SAS_KEY).toString());
 
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class SasTokenControllerTest extends PcqIntegrationTest {
             Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_RANDOM);
 
             //Test the assertions
-            assertEquals(EXPECTED_STATUS_MESSAGE, responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_NOT_FOUND);
+            assertEquals(responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_NOT_FOUND, EXPECTED_STATUS_MESSAGE);
 
         } catch (Exception e) {
             log.error(EXCEPTION_MSG, e);
@@ -88,7 +88,7 @@ public class SasTokenControllerTest extends PcqIntegrationTest {
             Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_BULKSCAN);
 
             //Test the assertions
-            assertEquals(EXPECTED_STATUS_MESSAGE, responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_UNAUTHORISED);
+            assertEquals(responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_UNAUTHORISED, EXPECTED_STATUS_MESSAGE);
 
         } catch (Exception e) {
             log.error(EXCEPTION_MSG, e);
