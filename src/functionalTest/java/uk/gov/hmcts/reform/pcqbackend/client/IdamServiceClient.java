@@ -18,6 +18,11 @@ public class IdamServiceClient {
     @SuppressWarnings("PMD.UseConcurrentHashMap")
     public String s2sSignIn(String s2sName, String s2sSecret, String s2sUrl) {
 
+        log.info("microservice: {}", s2sName);
+        log.info("s2sSecret: {}", s2sSecret);
+        log.info("oneTimePassword: {}", new GoogleAuthenticator().getTotpPassword(s2sSecret));
+        log.info("s2sUrl lease url: {}", s2sUrl + "/lease");
+
         Map<String, Object> params = ImmutableMap.of(
             "microservice", s2sName,
             "oneTimePassword", new GoogleAuthenticator().getTotpPassword(s2sSecret)
