@@ -45,7 +45,7 @@ public class SasTokenControllerFunctionalTest {
     protected String s2sSecret;
 
     @Value("${idam.s2s-auth.url}")
-    private String s2sUrl;
+    protected String s2sUrl;
 
     @Value("${targetInstance}")
     protected String pcqBackEndApiUrl;
@@ -54,7 +54,7 @@ public class SasTokenControllerFunctionalTest {
     protected String storageUrl;
 
     @Value("${storage.blob_pcq_container}")
-    private String storagePcqContainer;
+    protected String storagePcqContainer;
 
 
     protected IdamServiceClient idamServiceClient;
