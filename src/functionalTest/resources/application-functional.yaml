@@ -38,7 +38,7 @@ security:
 
 idam:
   s2s-auth:
-    url: ${TEST_S2S_NAME:http://localhost:4502}
+    url: ${TEST_S2S_URL:http://localhost:4502}
     secret-cs: ${S2S_CS_SECRET:AAAAAAAAAAAAAAAA}
     name-cs: ${S2S_CS_NAME:pcq_consolidation_service}
 

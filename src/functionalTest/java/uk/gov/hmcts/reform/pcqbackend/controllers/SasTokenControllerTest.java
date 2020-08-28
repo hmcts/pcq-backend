@@ -34,7 +34,7 @@ import static org.junit.Assert.assertNotNull;
 @ComponentScan("uk.gov.hmcts.reform.pcqbackend")
 @ActiveProfiles("functional")
 @Slf4j
-public class SasTokenControllerFunctionalTest {
+public class SasTokenControllerTest {
 
     private static final String IO_EXCEPTION_MSG = "Error during test execution";
 
@@ -45,7 +45,7 @@ public class SasTokenControllerFunctionalTest {
     protected String s2sSecret;
 
     @Value("${idam.s2s-auth.url}")
-    protected String s2sUrl;
+    private String s2sUrl;
 
     @Value("${targetInstance}")
     protected String pcqBackEndApiUrl;
@@ -54,8 +54,7 @@ public class SasTokenControllerFunctionalTest {
     protected String storageUrl;
 
     @Value("${storage.blob_pcq_container}")
-    protected String storagePcqContainer;
-
+    private String storagePcqContainer;
 
     protected IdamServiceClient idamServiceClient;
 
