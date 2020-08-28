@@ -46,6 +46,9 @@ storage:
 
 authorised.services: pcq_consolidation_service,bulk_scan_processor
 
+  pcq_consolidation_service
+  pcq_consolidation_service
+
 #If you use a database then uncomment below lines and update db properties accordingly
 
 spring:

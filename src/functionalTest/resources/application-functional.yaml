@@ -44,6 +44,10 @@ idam:
 
 authorised.services: pcq_consolidation_service,bulk_scan_processor
 
+storage:
+  url: ${STORAGE_URL:http://0.0.0.0:10000}
+  blob_pcq_container: ${STORAGE_BLOB_PCQ_CONTAINER:pcq}
+
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
   application:

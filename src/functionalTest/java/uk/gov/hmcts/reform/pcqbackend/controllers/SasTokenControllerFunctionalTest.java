@@ -1,17 +1,22 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.core.PathUtility;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.serenitybdd.rest.SerenityRest;
 import org.assertj.core.util.DateUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pcqbackend.client.BulkScanServiceClient;
 import uk.gov.hmcts.reform.pcqbackend.client.IdamServiceClient;
@@ -23,10 +28,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
+@Configuration
 @SpringBootTest
+@ComponentScan("uk.gov.hmcts.reform.pcqbackend")
 @ActiveProfiles("functional")
 @Slf4j
-public class SasTokenControllerTest {
+public class SasTokenControllerFunctionalTest {
 
     private static final String IO_EXCEPTION_MSG = "Error during test execution";
 
@@ -41,6 +48,13 @@ public class SasTokenControllerTest {
 
     @Value("${targetInstance}")
     protected String pcqBackEndApiUrl;
+
+    @Value("${storage.url}")
+    protected String storageUrl;
+
+    @Value("${storage.blob_pcq_container}")
+    private String storagePcqContainer;
+
 
     protected IdamServiceClient idamServiceClient;
 
@@ -68,7 +82,45 @@ public class SasTokenControllerTest {
         } catch (Exception e) {
             log.error(IO_EXCEPTION_MSG, e);
         }
+    }
 
+    @Test
+    public void testValidateSasTokenAgainstStorageEndpointSuccess() {
+
+        try {
+            String s2sString = idamServiceClient.s2sSignIn(s2sName, s2sSecret, s2sUrl);
+            assertNotNull("S2S String should contain a value", s2sString);
+
+            String sasTokenResponse = bulkScanServiceClient
+                .fetchTokenResponse(pcqBackEndApiUrl + "/pcq/backend/token/bulkscan", s2sString);
+
+            assertNotNull("SAS Token should contain a value", sasTokenResponse);
+            verifySasTokenWithStorageContainer(storageUrl, storagePcqContainer, sasTokenResponse);
+
+        } catch (Exception e) {
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+    }
+
+    @SuppressWarnings("PMD.LawOfDemeter")
+    public void verifySasTokenWithStorageContainer(String storageUrl, String container, String sasTokenResponse)
+        throws JsonProcessingException {
+        final ObjectNode node = new ObjectMapper().readValue(sasTokenResponse, ObjectNode.class);
+
+        log.info("Storage URL = {}", storageUrl + "/" + container + "?comp=list&restype=container&" + node.get("sas_token").asText());
+        String result = SerenityRest
+            .get(storageUrl + "/" + container + "?comp=list&restype=container&" + node.get("sas_token").asText())
+            .then()
+            .statusCode(HttpStatus.OK.value())
+            .and()
+            .extract()
+            .body()
+            .asString();
+
+        log.info("Storage Response = {}", result);
+        assertThat(result).isNotNull();
+        assertThat(result).contains("Blobs");
+        assertThat(result).contains(container);
     }
 
     private void verifySasTokenProperties(String sasTokenResponse) throws java.io.IOException, StorageException {
