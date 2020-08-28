@@ -107,7 +107,8 @@ public class SasTokenControllerFunctionalTest {
         throws JsonProcessingException {
         final ObjectNode node = new ObjectMapper().readValue(sasTokenResponse, ObjectNode.class);
 
-        log.info("Storage URL = {}", storageUrl + "/" + container + "?comp=list&restype=container&" + node.get("sas_token").asText());
+        log.info("Storage URL = {}", storageUrl + "/" + container + "?comp=list&restype=container&"
+            + node.get("sas_token").asText());
         String result = SerenityRest
             .get(storageUrl + "/" + container + "?comp=list&restype=container&" + node.get("sas_token").asText())
             .then()
