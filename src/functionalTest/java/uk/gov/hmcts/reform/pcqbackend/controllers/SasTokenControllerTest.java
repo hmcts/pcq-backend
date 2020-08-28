@@ -10,6 +10,7 @@ import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.serenitybdd.rest.SerenityRest;
 import org.assertj.core.util.DateUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,7 +86,7 @@ public class SasTokenControllerTest {
         }
     }
 
-    @Test
+    @Ignore
     public void testValidateSasTokenAgainstStorageEndpointSuccess() {
 
         try {
