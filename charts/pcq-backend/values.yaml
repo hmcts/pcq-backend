@@ -27,4 +27,5 @@ java:
         - flyway-password
         - AppInsightsInstrumentationKey
         - pcq-storage-account-primary-connection-string
+        - s2s-secret-pcq-consolidation-service
   image: 'hmctspublic.azurecr.io/pcq/backend:latest'

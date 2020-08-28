@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -81,6 +82,7 @@ public class SasTokenControllerFunctionalTest {
 
         } catch (Exception e) {
             log.error(IO_EXCEPTION_MSG, e);
+            fail("Unable to successfully retrieve SAS token: " + e.getMessage());
         }
     }
 
@@ -99,6 +101,7 @@ public class SasTokenControllerFunctionalTest {
 
         } catch (Exception e) {
             log.error(IO_EXCEPTION_MSG, e);
+            fail("Unable to successfully validate SAS token with Blob Storage: " + e.getMessage());
         }
     }
 

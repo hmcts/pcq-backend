@@ -17,8 +17,8 @@ def secrets = [
   'pcq-${env}': [
     secret('backend-POSTGRES-PASS', 'PCQ_DB_PASSWORD'),
     secret('backend-POSTGRES-USER', 'PCQ_DB_USERNAME'),
-    secret( 's2s-secret-pcq-consolidation-service', 'S2S_CS_SECRET'),
-    secret( 'jwt-secret', 'JWT_SECRET'),
+    secret('s2s-secret-pcq-consolidation-service', 'S2S_CS_SECRET'),
+    secret('jwt-secret', 'JWT_SECRET'),
     secret('backend-encryption-key', 'DB_ENCRYPTION_KEY'),
     secret('pcq-storage-account-primary-connection-string', 'STORAGE_ACCOUNT_CONNECTION_STRING')
   ]
