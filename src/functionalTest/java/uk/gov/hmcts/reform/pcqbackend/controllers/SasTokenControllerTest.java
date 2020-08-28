@@ -87,6 +87,7 @@ public class SasTokenControllerTest {
     }
 
     @Ignore
+    @Test
     public void testValidateSasTokenAgainstStorageEndpointSuccess() {
 
         try {
