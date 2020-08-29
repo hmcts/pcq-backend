@@ -1,27 +1,26 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.core.PathUtility;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import net.serenitybdd.rest.SerenityRest;
+import org.apache.commons.io.IOUtils;
 import org.assertj.core.util.DateUtil;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pcqbackend.client.BulkScanServiceClient;
 import uk.gov.hmcts.reform.pcqbackend.client.IdamServiceClient;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
 import java.util.Map;
 
@@ -85,8 +84,7 @@ public class SasTokenControllerTest {
             fail("Unable to successfully retrieve SAS token: " + e.getMessage());
         }
     }
-
-    @Ignore
+    
     @Test
     public void testValidateSasTokenAgainstStorageEndpointSuccess() {
 
@@ -102,24 +100,20 @@ public class SasTokenControllerTest {
 
         } catch (Exception e) {
             log.error(IO_EXCEPTION_MSG, e);
+            fail("Unable to successfully validate SAS token with Blob Storage: " + e.getMessage());
         }
     }
 
     @SuppressWarnings("PMD.LawOfDemeter")
     public void verifySasTokenWithStorageContainer(String storageUrl, String container, String sasTokenResponse)
-        throws JsonProcessingException {
+        throws IOException {
         final ObjectNode node = new ObjectMapper().readValue(sasTokenResponse, ObjectNode.class);
+        String authenticatedString = storageUrl + "/" + container + "?comp=list&restype=container&"
+            + node.get("sas_token").asText();
 
-        log.info("Storage URL = {}", storageUrl + "/" + container + "?comp=list&restype=container&"
-            + node.get("sas_token").asText());
-        String result = SerenityRest
-            .get(storageUrl + "/" + container + "?comp=list&restype=container&" + node.get("sas_token").asText())
-            .then()
-            .statusCode(HttpStatus.OK.value())
-            .and()
-            .extract()
-            .body()
-            .asString();
+        log.info("Storage URL = {}", storageUrl + authenticatedString);
+        URL url = new URL(authenticatedString);
+        String result = IOUtils.toString(url.openStream());
 
         log.info("Storage Response = {}", result);
         assertThat(result).isNotNull();
