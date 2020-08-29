@@ -38,6 +38,8 @@ public class SasTokenControllerTest {
 
     private static final String IO_EXCEPTION_MSG = "Error during test execution";
 
+    private static final String UTF8_ENCODING = "UTF-8";
+
     @Value("${idam.s2s-auth.name-cs}")
     protected String s2sName;
 
@@ -113,7 +115,7 @@ public class SasTokenControllerTest {
 
         log.info("Storage URL = {}", storageUrl + authenticatedString);
         URL url = new URL(authenticatedString);
-        String result = IOUtils.toString(url.openStream());
+        String result = IOUtils.toString(url.openStream(), UTF8_ENCODING);
 
         log.info("Storage Response = {}", result);
         assertThat(result).isNotNull();
