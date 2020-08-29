@@ -84,7 +84,7 @@ public class SasTokenControllerTest {
             fail("Unable to successfully retrieve SAS token: " + e.getMessage());
         }
     }
-    
+
     @Test
     public void testValidateSasTokenAgainstStorageEndpointSuccess() {
 
@@ -121,7 +121,7 @@ public class SasTokenControllerTest {
         assertThat(result).contains(container);
     }
 
-    private void verifySasTokenProperties(String sasTokenResponse) throws java.io.IOException, StorageException {
+    private void verifySasTokenProperties(String sasTokenResponse) throws IOException, StorageException {
         final ObjectNode node = new ObjectMapper().readValue(sasTokenResponse, ObjectNode.class);
         Map<String, String[]> queryParams = PathUtility.parseQueryString(node.get("sas_token").asText());
 
