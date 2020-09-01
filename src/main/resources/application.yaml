@@ -35,6 +35,16 @@ security:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
     encryption-enabled: ${DB_ENCRYPTION_ENABLED:Yes}
 
+idam:
+  s2s-auth:
+    url: ${S2S_URL:http://localhost:4502}
+
+storage:
+  connection-string: ${STORAGE_ACCOUNT_CONNECTION_STRING:UseDevelopmentStorage=true}
+  blob-pcq-container: ${STORAGE_ACCOUNT_PCQ_CONTAINER:pcq}
+  sas-token-expiry: ${SAS_TOKEN_EXPIRY:3600}
+
+authorised.services: pcq_consolidation_service,bulk_scan_processor
 
 #If you use a database then uncomment below lines and update db properties accordingly
 

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientResponseException;
@@ -56,6 +57,10 @@ public class PcqBackEndClient {
 
     public Map<String, Object> addCaseForPcq(String pcqId, String caseId) {
         return putRequest(APP_BASE_PATH + "/consolidation/addCaseForPCQ/" + pcqId, caseId);
+    }
+
+    public Map<String, Object> getPcqBlobStorageSasToken(String serviceName) {
+        return getRequestForSasToken(APP_BASE_PATH + "/token/" + serviceName);
     }
 
     @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
@@ -113,6 +118,29 @@ public class PcqBackEndClient {
 
         try {
             HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());
+            responseEntity = restTemplate
+                .exchange("http://localhost:" + prdApiPort + uriPath,
+                          HttpMethod.GET,
+                          request,
+                          Map.class,
+                          params);
+        } catch (HttpStatusCodeException ex) {
+            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("response_body", ex.getResponseBodyAsString());
+            return statusAndBody;
+        }
+
+        return getResponse(responseEntity);
+    }
+
+    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    private Map<String, Object> getRequestForSasToken(String uriPath, Object... params) {
+
+        ResponseEntity<Map> responseEntity = null;
+
+        try {
+            HttpEntity<?> request = new HttpEntity<>(getServiceAuthorisationHeader());
             responseEntity = restTemplate
                 .exchange("http://localhost:" + prdApiPort + uriPath,
                           HttpMethod.GET,
@@ -187,12 +215,10 @@ public class PcqBackEndClient {
         return response;
     }
 
-
-
     private HttpHeaders getS2sTokenHeaders() {
 
         HttpHeaders headers = new HttpHeaders();
-        //headers.setContentType(APPLICATION_JSON);
+        headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("X-Correlation-Id", "INTEG-TEST-PCQ");
         headers.add("Authorization", "Bearer " + generateTestToken());
         return headers;
@@ -203,6 +229,13 @@ public class PcqBackEndClient {
         HttpHeaders headers = new HttpHeaders();
         //headers.setContentType(APPLICATION_JSON);
         headers.add("X-Correlation-Id", "INTEG-TEST-PCQ");
+        return headers;
+    }
+
+    private HttpHeaders getServiceAuthorisationHeader() {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("ServiceAuthorization", "INTEG-TEST-PCQ");
         return headers;
     }
 

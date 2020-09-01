@@ -31,5 +31,13 @@ services:
     volumes:
       - pcq-database-data:/var/lib/postgresql/data
 
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: "azurite-blob --loose --blobHost 0.0.0.0"
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./test/azurite:/data
+
 volumes:
   pcq-database-data:

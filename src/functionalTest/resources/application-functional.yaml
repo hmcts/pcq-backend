@@ -36,7 +36,17 @@ security:
     header: Authorization
     prefix: Bearer
 
+idam:
+  s2s-auth:
+    url: ${TEST_S2S_URL:http://localhost:4502}
+    secret-cs: ${S2S_CS_SECRET:AAAAAAAAAAAAAAAA}
+    name-cs: ${S2S_CS_NAME:pcq_consolidation_service}
 
+authorised.services: pcq_consolidation_service,bulk_scan_processor
+
+storage:
+  url: ${STORAGE_URL:http://0.0.0.0:10000}
+  blob_pcq_container: ${STORAGE_BLOB_PCQ_CONTAINER:pcq}
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:

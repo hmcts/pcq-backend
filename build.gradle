@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.1")
+    classpath("net.serenity-bdd:serenity-gradle-plugin:2.2.13")
   }
 }
 
@@ -231,11 +231,12 @@ def versions = [
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '2.9.2',
   restAssured         : '4.2.0',
-  serenity            : '2.2.1',
+  serenity            : '2.2.13',
   lombok              : '1.18.12',
   gradlePitest        : '1.4.7',
   pitest              : '1.4.7',
-  sonarPitest         : '0.5'
+  sonarPitest         : '0.5',
+  serviceAuthVersion  : '3.0.0'
 ]
 
 configurations.all {
@@ -269,6 +270,10 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+  implementation group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
+
+  implementation group: 'com.microsoft.azure', name: 'azure-storage', version: '8.6.5'
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.7.0'
 
   compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4', withoutSpringCloudContext
 
@@ -297,6 +302,8 @@ dependencies {
   testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testCompile group: 'org.springframework.security', name: 'spring-security-test'
 
+  testCompile group: 'com.github.tomakehurst', name: 'wiremock', version: '2.19.0'
+
   testCompile group: 'org.pitest', name: 'pitest', version: versions.pitest
   testCompile 'info.solidsoft.gradle.pitest:gradle-pitest-plugin:1.4.8'
   testCompile 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
@@ -309,11 +316,11 @@ dependencies {
   testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.3.0'
   testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.0'
 
-  testCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.13.0'
-  testCompile group: 'org.testcontainers', name: 'postgresql', version: '1.13.0'
+  testCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.14.3'
+  testCompile group: 'org.testcontainers', name: 'postgresql', version: '1.14.3'
 
-  integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.13.0'
-  integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: '1.13.0'
+  integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.14.3'
+  integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: '1.14.3'
 
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
