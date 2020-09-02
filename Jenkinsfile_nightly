@@ -20,8 +20,10 @@ def component = "backend"
 def secrets = [
   'pcq-${env}': [
     secret('backend-POSTGRES-PASS', 'PCQ_DB_PASSWORD'),
+    secret('s2s-secret-pcq-consolidation-service', 'S2S_CS_SECRET'),
     secret('jwt-secret', 'JWT_SECRET'),
-    secret('backend-encryption-key', 'DB_ENCRYPTION_KEY')
+    secret('backend-encryption-key', 'DB_ENCRYPTION_KEY'),
+    secret('pcq-storage-account-primary-connection-string', 'STORAGE_ACCOUNT_CONNECTION_STRING')
   ]
 ]
 
@@ -37,7 +39,9 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 withNightlyPipeline(type, product, component) {
 
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
-  env.S2S_URL_FOR_TESTS = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+  env.TEST_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+  env.STORAGE_URL = "https://pcqsharedaat.blob.core.windows.net"
+
   env.Rules = params.SecurityRules
 
   loadVaultSecrets(secrets)
