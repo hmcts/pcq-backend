@@ -58,7 +58,7 @@ withNightlyPipeline(type, product, component) {
 
   after('fullFunctionalTest') {
     steps.sh 'ls -AlR .'
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'target/**/*'
   }
 
   after('mutationTest') {
