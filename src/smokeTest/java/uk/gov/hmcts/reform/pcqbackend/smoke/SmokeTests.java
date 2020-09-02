@@ -24,6 +24,7 @@ public class SmokeTests {
     private String url;
 
     private static final int HTTP_OK = HttpStatus.OK.value();
+    private static final int HTTP_NOT_FOUND = HttpStatus.NOT_FOUND.value();
 
     RequestSpecification requestSpec;
 
@@ -45,7 +46,7 @@ public class SmokeTests {
             .get(url + "/health")
             .then()
             .statusCode(HTTP_OK);
-        assertTrue("Health endpoint should be HTTP 200 (ok)", okResponse(response));
+        assertResponse("Health endpoint should be HTTP 200 (ok)", response, HTTP_OK);
     }
 
     @Test
@@ -57,11 +58,22 @@ public class SmokeTests {
             .statusCode(HTTP_OK)
             .body("git.commit.id", notNullValue())
             .body("git.commit.time", notNullValue());
-        assertTrue("Info endpoint should be HTTP 200 (ok)", okResponse(response));
+        assertResponse("Info endpoint should be HTTP 200 (ok)", response, HTTP_OK);
     }
 
-    private boolean okResponse(ValidatableResponse response) {
-        ExtractableResponse extractableResponse = response.extract();
-        return extractableResponse.statusCode() == HTTP_OK ? Boolean.TRUE : Boolean.FALSE;
+    @Test
+    public void shouldGetNotFoundStatusFromGetAnswerEndpointForPcqBackend() {
+        ValidatableResponse response = given().spec(requestSpec)
+            .when()
+            .get(url + "/pcq/backend/getAnswer/smoke-test")
+            .then()
+            .statusCode(HTTP_NOT_FOUND);
+        assertResponse("getAnswer endpoint should be HTTP 404 (not found)", response, HTTP_NOT_FOUND);
+    }
+
+    private void assertResponse(String message, ValidatableResponse response, int expectedStatus) {
+        int statusCode = response.extract().statusCode();
+        Boolean asExpected = statusCode == expectedStatus ? Boolean.TRUE : Boolean.FALSE;
+        assertTrue(message, asExpected);
     }
 }
