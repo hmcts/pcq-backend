@@ -273,7 +273,7 @@ dependencies {
   implementation group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2'
 
   implementation group: 'com.microsoft.azure', name: 'azure-storage', version: '8.6.5'
-  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.7.0'
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.8.0'
 
   compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.0.4', withoutSpringCloudContext
 
