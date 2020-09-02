@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.smoke;
 
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.response.ExtractableResponse;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
