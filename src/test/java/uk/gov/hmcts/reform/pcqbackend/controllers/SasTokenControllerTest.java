@@ -40,7 +40,7 @@ public class SasTokenControllerTest {
 
     private static final String SERVICE_AUTH_HEADER = "Bearer XYZ";
     private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
-    private static final String BULK_SCAN_S2S_NAME = "bulk_scan_processor";
+    private static final String REFORM_SCAN_BLOB_ROUTER_S2S_NAME = "reform_scan_blob_router";
     private static final String BULK_SCAN_SERVICE_NAME = "bulkscan";
     private static final String SAS_TOKEN = "SAS/Token/Response";
     private static final String RESPONSE_NULL_MSG = "Response is null";
@@ -66,8 +66,8 @@ public class SasTokenControllerTest {
     public void testGenerateBulkScanSasTokenSuccess()  {
 
         try {
-            when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(BULK_SCAN_S2S_NAME);
-            when(authorisedServices.hasService(BULK_SCAN_S2S_NAME)).thenReturn(true);
+            when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
+            when(authorisedServices.hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME)).thenReturn(true);
             when(sasTokenService.generateSasToken(BULK_SCAN_SERVICE_NAME)).thenReturn(SAS_TOKEN);
 
             ResponseEntity<SasTokenResponse> actual =
@@ -92,13 +92,13 @@ public class SasTokenControllerTest {
     public void testGenerateBulkScanSasTokenAuthorisedException()  {
 
         try {
-            when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(BULK_SCAN_S2S_NAME);
-            when(authorisedServices.hasService(BULK_SCAN_S2S_NAME)).thenReturn(false);
+            when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
+            when(authorisedServices.hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME)).thenReturn(false);
 
             sasTokenController.generateBulkScanSasToken(SERVICE_AUTH_HEADER);
 
         } catch (InvalidAuthenticationException invalidException) {
-            verify(authorisedServices, times(1)).hasService(BULK_SCAN_S2S_NAME);
+            verify(authorisedServices, times(1)).hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
             assertEquals(RESPONSE_MESSAGE_UNAUTHORISED, invalidException.getMessage(),
                          RESPONSE_STATUS_UNAUTHORISED);
 
@@ -116,8 +116,8 @@ public class SasTokenControllerTest {
     public void testUnableToGenerateBulkScanSasTokenException()  {
 
         try {
-            when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(BULK_SCAN_S2S_NAME);
-            when(authorisedServices.hasService(BULK_SCAN_S2S_NAME)).thenReturn(true);
+            when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
+            when(authorisedServices.hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME)).thenReturn(true);
             when(sasTokenService.generateSasToken(BULK_SCAN_SERVICE_NAME))
                 .thenThrow(new UnableToGenerateSasTokenException(
                     new Exception(RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN)));
@@ -125,7 +125,7 @@ public class SasTokenControllerTest {
             sasTokenController.generateBulkScanSasToken(SERVICE_AUTH_HEADER);
 
         } catch (UnableToGenerateSasTokenException unableToGenerateException) {
-            verify(authorisedServices, times(1)).hasService(BULK_SCAN_S2S_NAME);
+            verify(authorisedServices, times(1)).hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
             verify(sasTokenService, times(1)).generateSasToken(BULK_SCAN_SERVICE_NAME);
             assertEquals(RESPONSE_MESSAGE_UNABLE_TO_GENERATE_TOKEN, unableToGenerateException.getCause().getMessage(),
                          RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN);
