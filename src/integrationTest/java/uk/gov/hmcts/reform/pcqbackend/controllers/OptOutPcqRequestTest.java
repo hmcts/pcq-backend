@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.thucydides.core.annotations.WithTag;
+import net.thucydides.core.annotations.WithTags;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
+@WithTags({@WithTag("testType:Integration")})
 public class OptOutPcqRequestTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_1 = "pcqId";
