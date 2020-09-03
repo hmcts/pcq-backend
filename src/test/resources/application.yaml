@@ -41,7 +41,7 @@ storage:
   blob-pcq-container: ${STORAGE_ACCOUNT_PCQ_CONTAINER:pcq}
   sas-token-expiry: ${SAS_TOKEN_EXPIRY:3600}
 
-authorised.services: bulk_scan_processor
+authorised.services: reform_scan_blob_router
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:

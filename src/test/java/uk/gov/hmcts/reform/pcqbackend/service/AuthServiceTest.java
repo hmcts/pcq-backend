@@ -15,8 +15,8 @@ import static org.mockito.Mockito.when;
 
 public class AuthServiceTest {
 
-    private static final String S2S_BULK_SCAN_SERVICE_AUTH = "DFJSDFSDFSDFSDFSDSFS";
-    private static final String S2S_BULK_SCAN_SERVICE_NAME = "bulk_scan_processor";
+    private static final String REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH = "DFJSDFSDFSDFSDFSDSFS";
+    private static final String REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME = "reform_scan_blob_router";
     private static final String IAE_EXCEPTION_MESSAGE = "Missing ServiceAuthorization header";
     private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
 
@@ -34,13 +34,14 @@ public class AuthServiceTest {
 
     @Test
     public void testShouldGetServiceAuthName() {
-        when(authTokenValidator.getServiceName(S2S_BULK_SCAN_SERVICE_AUTH)).thenReturn(S2S_BULK_SCAN_SERVICE_NAME);
+        when(authTokenValidator.getServiceName(REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH))
+            .thenReturn(REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME);
 
         try {
-            String actualServiceName = authService.authenticate(S2S_BULK_SCAN_SERVICE_AUTH);
+            String actualServiceName = authService.authenticate(REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH);
 
             assertNotNull(actualServiceName, "Should be not null");
-            assertEquals(S2S_BULK_SCAN_SERVICE_NAME,
+            assertEquals(REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME,
                           actualServiceName, "Should return authenticated service name");
 
         } catch (Exception e) {

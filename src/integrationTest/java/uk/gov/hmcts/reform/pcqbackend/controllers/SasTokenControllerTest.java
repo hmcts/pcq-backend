@@ -114,7 +114,7 @@ public class SasTokenControllerTest extends PcqIntegrationTest {
                                    .willReturn(aResponse()
                                                    .withHeader(CONTENT_TYPE_HEADER, JSON_RESPONSE)
                                                    .withStatus(200)
-                                                   .withBody("bulk_scan_processor")));
+                                                   .withBody("reform_scan_blob_router")));
     }
 
     private void setupAuthorisationBadAuthStubs() {
