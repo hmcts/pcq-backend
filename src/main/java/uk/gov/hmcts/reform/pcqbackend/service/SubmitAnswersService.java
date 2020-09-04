@@ -7,6 +7,7 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
@@ -36,6 +37,7 @@ import javax.transaction.Transactional;
 public class SubmitAnswersService {
 
     private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
+    private static final int PAPER_CHANNEL = 2;
 
     Environment environment;
 
@@ -230,6 +232,12 @@ public class SubmitAnswersService {
         }
     }
 
+    private void validateDcnNumber(String dcnNumber) throws InvalidRequestException {
+        if (StringUtils.isEmpty(dcnNumber)) {
+            throw new InvalidRequestException("DCN Number is missing", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     private String validateAndReturnCorrelationId(List<String> headers) throws InvalidRequestException {
         String coRelationId = ConversionUtil.validateRequestHeader(headers);
         coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
@@ -246,6 +254,11 @@ public class SubmitAnswersService {
 
         //Step 2. Validate the version number of the request matches the back-end version.
         validateVersionNumber(answerRequest.getVersionNo());
+
+        //Step 3. For paper channel, validate the DCN number.
+        if (PAPER_CHANNEL == answerRequest.getChannel()) {
+            validateDcnNumber(answerRequest.getDcnNumber());
+        }
 
     }
 

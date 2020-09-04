@@ -80,6 +80,10 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
         assertEquals("PCQId not matching", protectedCharacteristics.getPcqId(), answerRequest.getPcqId());
         assertEquals("CaseId not matching", protectedCharacteristics.getCaseId(),
                      answerRequest.getCaseId());
+        assertEquals("DCN Number not matching", protectedCharacteristics.getDcnNumber(),
+                     answerRequest.getDcnNumber());
+        assertEquals("Form Id not matching", protectedCharacteristics.getFormId(),
+                     answerRequest.getFormId());
         //assertEquals("PartyId not matching", answerRequest.getPartyId(),
         //             ConversionUtil.decrypt(protectedCharacteristics.getPartyId(), environment
         //                 .getProperty("security.db.backend-encryption-key")));
