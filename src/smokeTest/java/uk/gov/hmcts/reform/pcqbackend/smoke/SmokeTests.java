@@ -23,7 +23,6 @@ public class SmokeTests {
     private String url;
 
     private static final int HTTP_OK = HttpStatus.OK.value();
-    private static final int HTTP_NOT_FOUND = HttpStatus.NOT_FOUND.value();
 
     RequestSpecification requestSpec;
 
@@ -33,6 +32,7 @@ public class SmokeTests {
         builder.addParam("http.connection.timeout", "60000");
         builder.addParam("http.socket.timeout", "60000");
         builder.addParam("http.connection-manager.timeout", "60000");
+        builder.addHeader("X-Correlation-Id", "correlationid");
         builder.setRelaxedHTTPSValidation();
         requestSpec = builder.build();
     }
@@ -45,7 +45,7 @@ public class SmokeTests {
             .get(url + "/health")
             .then()
             .statusCode(HTTP_OK);
-        assertResponse("Health endpoint should be HTTP 200 (ok)", response, HTTP_OK);
+        assertTrue("Health endpoint should be HTTP 200 (ok)", okResponse(response));
     }
 
     @Test
@@ -57,22 +57,20 @@ public class SmokeTests {
             .statusCode(HTTP_OK)
             .body("git.commit.id", notNullValue())
             .body("git.commit.time", notNullValue());
-        assertResponse("Info endpoint should be HTTP 200 (ok)", response, HTTP_OK);
+        assertTrue("Info endpoint should be HTTP 200 (ok)", okResponse(response));
     }
 
     @Test
-    public void shouldGetNotFoundStatusFromGetAnswerEndpointForPcqBackend() {
+    public void shouldGetOkStatusFromPcqRecordWithoutCaseEndpointForPcqBackend() {
         ValidatableResponse response = given().spec(requestSpec)
             .when()
-            .get(url + "/pcq/backend/getAnswer/smoke-test")
+            .get(url + "/pcq/backend/consolidation/pcqRecordWithoutCase")
             .then()
-            .statusCode(HTTP_NOT_FOUND);
-        assertResponse("getAnswer endpoint should be HTTP 404 (not found)", response, HTTP_NOT_FOUND);
+            .statusCode(HTTP_OK);
+        assertTrue("pcqRecordWithoutCase endpoint should be HTTP 200 (ok)", okResponse(response));
     }
 
-    private void assertResponse(String message, ValidatableResponse response, int expectedStatus) {
-        int statusCode = response.extract().statusCode();
-        Boolean asExpected = statusCode == expectedStatus ? Boolean.TRUE : Boolean.FALSE;
-        assertTrue(message, asExpected);
+    private boolean okResponse(ValidatableResponse response) {
+        return response.extract().statusCode() == HTTP_OK ? Boolean.TRUE : Boolean.FALSE;
     }
 }
