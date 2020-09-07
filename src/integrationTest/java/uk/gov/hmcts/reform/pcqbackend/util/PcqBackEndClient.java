@@ -43,6 +43,10 @@ public class PcqBackEndClient {
         return postRequest(baseUrl + "/submitAnswers", request);
     }
 
+    public Map<String, Object> checkAuthValidation(PcqAnswerRequest request) {
+        return postRequestNoAuthHeader(baseUrl + "/submitAnswers", request);
+    }
+
     public Map<String, Object> findAnswerByPcq(String pcqId) {
         return getRequest(APP_BASE_PATH + "/getAnswer/{pcqId}", pcqId);
     }
@@ -67,6 +71,29 @@ public class PcqBackEndClient {
     private <T> Map<String, Object> postRequest(String uriPath, T requestBody) {
 
         HttpEntity<T> request = new HttpEntity<>(requestBody, getS2sTokenHeaders());
+        ResponseEntity<Map> responseEntity = null;
+
+        try {
+
+            responseEntity = restTemplate.postForEntity(
+                uriPath,
+                request,
+                Map.class);
+
+        } catch (RestClientResponseException ex) {
+            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("response_body", ex.getResponseBodyAsString());
+            return getResponse(statusAndBody);
+        }
+
+        return getResponse(responseEntity);
+    }
+
+    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    private <T> Map<String, Object> postRequestNoAuthHeader(String uriPath, T requestBody) {
+
+        HttpEntity<T> request = new HttpEntity<>(requestBody, getCoRelationTokenHeaders());
         ResponseEntity<Map> responseEntity = null;
 
         try {

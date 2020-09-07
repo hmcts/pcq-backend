@@ -18,11 +18,13 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
+@SuppressWarnings({"PMD.TooManyMethods"})
 public class PaperChannelTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_1 = "pcqId";
@@ -32,6 +34,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
     public static final String HTTP_CREATED = "201";
     public static final String HTTP_BAD_REQUEST = "400";
     public static final String HTTP_INVALID_REQUEST = "403";
+    public static final String HTTP_UNAUTHORISED = "401";
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
     public static final String TEST_PCQ_ID = "Integ-Test-1";
@@ -64,6 +67,29 @@ public class PaperChannelTest extends PcqIntegrationTest {
             assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
             checkLogsForKeywords();
+
+
+        } catch (IOException e) {
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
+    public void authorisationValidationTest() {
+        try {
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswer.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Map<String, Object> response = pcqBackEndClient.checkAuthValidation(answerRequest);
+            assertNull(response.get(RESPONSE_KEY_1), PCQ_ID_INVALID_MSG);
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_UNAUTHORISED, response.get("http_status"));
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
+                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+
+            assertTrue(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
 
 
         } catch (IOException e) {

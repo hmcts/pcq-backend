@@ -75,8 +75,9 @@ public class SubmitAnswersService {
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record submitted "
-                             + "for creation.", coRelationId);
+                log.info("Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, "
+                             + "Protected Characteristic Record submitted for creation.", coRelationId,
+                         createCharacteristics.getChannel(), createCharacteristics.getServiceId());
 
             } else {
                 // Update the PCQ Record.
@@ -121,8 +122,9 @@ public class SubmitAnswersService {
                                                                  environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
-                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
-                                 + "submitted for Update.", coRelationId);
+                    log.info("Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, "
+                                 + "Protected Characteristic Record submitted for Update.", coRelationId,
+                             createCharacteristics.getChannel(), createCharacteristics.getServiceId());
                 }
             }
 
@@ -171,8 +173,9 @@ public class SubmitAnswersService {
                                                              environment.getProperty(
                                                                  BAD_REQUEST_ERROR_MSG_KEY));
             } else {
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
-                             + "submitted for deletion.", coRelationId);
+                log.info("Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, "
+                             + "Protected Characteristic Record submitted for deletion.", coRelationId,
+                         answerRequest.getChannel(), answerRequest.getServiceId());
             }
 
 
