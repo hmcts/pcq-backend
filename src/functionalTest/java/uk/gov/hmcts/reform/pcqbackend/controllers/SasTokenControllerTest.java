@@ -130,7 +130,7 @@ public class SasTokenControllerTest {
         Date tokenExpiry = DateUtil.parseDatetime(queryParams.get("se")[0]);
         assertThat(tokenExpiry).isNotNull();
         assertThat(queryParams.get("sig")).isNotNull(); //this is a generated hash of the resource string
-        assertThat(queryParams.get("sv")).contains("2019-07-07"); //azure api version is latest
+        assertThat(queryParams.get("sv")).contains("2019-12-12"); //azure api version is latest
         assertThat(queryParams.get("sp")).contains("cwl"); //access permissions(create-c,write-w,list-l)
     }
 
