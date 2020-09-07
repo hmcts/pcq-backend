@@ -6,6 +6,8 @@ import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.core.PathUtility;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.thucydides.core.annotations.WithTag;
+import net.thucydides.core.annotations.WithTags;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.util.DateUtil;
 import org.junit.Before;
@@ -29,6 +31,7 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
+@WithTags({@WithTag("testType:Functional")})
 @Configuration
 @SpringBootTest
 @ComponentScan("uk.gov.hmcts.reform.pcqbackend")
