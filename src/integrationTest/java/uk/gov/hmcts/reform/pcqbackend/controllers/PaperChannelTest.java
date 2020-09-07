@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -116,6 +117,50 @@ public class PaperChannelTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+            checkLogsForKeywords();
+
+
+        } catch (IOException e) {
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
+    public void duplicateDcnRecordNotCreated() {
+        try {
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnAllAnswers.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
+            assertEquals(PCQ_ID_INVALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_MSG, RESPONSE_CREATED_MSG,
+                         response.get(RESPONSE_KEY_3));
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
+                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+
+            assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
+            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+            checkLogsForKeywords();
+
+            // Try to submit another record with same DCN number
+            String newPcqId = UUID.randomUUID().toString();
+            answerRequest.setPcqId(newPcqId);
+            response = pcqBackEndClient.createPcqAnswer(answerRequest);
+            Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
+            assertEquals(PCQ_ID_INVALID_MSG, newPcqId, responseBody.get(RESPONSE_KEY_1));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_BAD_REQUEST, responseBody.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_MSG, RESPONSE_INVALID_MSG,
+                         responseBody.get(RESPONSE_KEY_3));
+
+            protectedCharacteristicsOptional =
+                protectedCharacteristicsRepository.findById(newPcqId);
+
+            assertTrue(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
+
             checkLogsForKeywords();
 
 

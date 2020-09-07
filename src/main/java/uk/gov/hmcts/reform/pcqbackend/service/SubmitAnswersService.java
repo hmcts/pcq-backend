@@ -239,6 +239,13 @@ public class SubmitAnswersService {
         if (StringUtils.isEmpty(dcnNumber)) {
             throw new InvalidRequestException("DCN Number is missing", HttpStatus.BAD_REQUEST);
         }
+        // Check whether a record already exists.
+        List<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
+            .findByDcnNumber(dcnNumber);
+        if (!protectedCharacteristics.isEmpty()) {
+            throw new InvalidRequestException("Record already exists for Dcn Number- " + dcnNumber,
+                                              HttpStatus.BAD_REQUEST);
+        }
     }
 
     private String validateAndReturnCorrelationId(List<String> headers) throws InvalidRequestException {

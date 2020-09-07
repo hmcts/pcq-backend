@@ -180,6 +180,38 @@ public class SubmitAnswersServiceTest {
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnMissing.json");
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
+                                                                                       pcqAnswerRequest);
+
+            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+            Object responseMap = responseEntity.getBody();
+            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            assertEquals(400, responseEntity.getStatusCodeValue(),STATUS_CODE_400_MSG);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    @Test
+    public void testRecordAlreadyExistsPaperChannel() {
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
+        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
+        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerPaperChannel.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
+            protectedCharacteristicsList.add(targetObject);
+            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class)))
+                .thenReturn(protectedCharacteristicsList);
+
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                        pcqAnswerRequest);
 
@@ -294,6 +326,10 @@ public class SubmitAnswersServiceTest {
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+
+            List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
+            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class)))
+                .thenReturn(protectedCharacteristicsList);
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);

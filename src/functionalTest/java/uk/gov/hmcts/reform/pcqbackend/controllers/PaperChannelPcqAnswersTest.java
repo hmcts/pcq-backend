@@ -37,6 +37,7 @@ public class PaperChannelPcqAnswersTest extends PcqBaseFunctionalTest {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswer.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(generateUuid());
+            answerRequest.setDcnNumber("DCN_" + generateUuid());
             Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
             assertEquals("Response Status Code not valid", HTTP_CREATED, response.get(RESPONSE_KEY_2));
