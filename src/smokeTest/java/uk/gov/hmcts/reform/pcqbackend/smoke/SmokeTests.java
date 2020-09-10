@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.smoke;
 
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.response.ExtractableResponse;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import org.junit.Before;
@@ -33,6 +32,7 @@ public class SmokeTests {
         builder.addParam("http.connection.timeout", "60000");
         builder.addParam("http.socket.timeout", "60000");
         builder.addParam("http.connection-manager.timeout", "60000");
+        builder.addHeader("X-Correlation-Id", "correlationid");
         builder.setRelaxedHTTPSValidation();
         requestSpec = builder.build();
     }
@@ -60,8 +60,17 @@ public class SmokeTests {
         assertTrue("Info endpoint should be HTTP 200 (ok)", okResponse(response));
     }
 
+    @Test
+    public void shouldGetOkStatusFromPcqRecordWithoutCaseEndpointForPcqBackend() {
+        ValidatableResponse response = given().spec(requestSpec)
+            .when()
+            .get(url + "/pcq/backend/consolidation/pcqRecordWithoutCase")
+            .then()
+            .statusCode(HTTP_OK);
+        assertTrue("pcqRecordWithoutCase endpoint should be HTTP 200 (ok)", okResponse(response));
+    }
+
     private boolean okResponse(ValidatableResponse response) {
-        ExtractableResponse extractableResponse = response.extract();
-        return extractableResponse.statusCode() == HTTP_OK ? Boolean.TRUE : Boolean.FALSE;
+        return response.extract().statusCode() == HTTP_OK ? Boolean.TRUE : Boolean.FALSE;
     }
 }
