@@ -152,7 +152,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
             response = pcqBackEndClient.createPcqAnswer(answerRequest);
             Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
             assertEquals(PCQ_ID_INVALID_MSG, newPcqId, responseBody.get(RESPONSE_KEY_1));
-            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_BAD_REQUEST, responseBody.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, "409", responseBody.get(RESPONSE_KEY_2));
             assertEquals(RESPONSE_STATUS_MSG, RESPONSE_INVALID_MSG,
                          responseBody.get(RESPONSE_KEY_3));
 

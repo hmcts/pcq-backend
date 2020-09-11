@@ -212,14 +212,14 @@ public class SubmitAnswersServiceTest {
             when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class)))
                 .thenReturn(protectedCharacteristicsList);
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
+            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                        pcqAnswerRequest);
 
             assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCodeValue(),STATUS_CODE_400_MSG);
+            assertEquals(409, responseEntity.getStatusCodeValue(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {

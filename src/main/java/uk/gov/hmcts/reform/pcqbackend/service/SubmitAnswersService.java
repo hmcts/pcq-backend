@@ -244,7 +244,7 @@ public class SubmitAnswersService {
             .findByDcnNumber(dcnNumber);
         if (!protectedCharacteristics.isEmpty()) {
             throw new InvalidRequestException("Record already exists for Dcn Number- " + dcnNumber,
-                                              HttpStatus.BAD_REQUEST);
+                                              HttpStatus.CONFLICT);
         }
     }
 
