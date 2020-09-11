@@ -4,7 +4,7 @@
 
 ## Purpose
 
-This is the Protected Characterstics Back-End application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service
+This is the Protected Characteristics Back-End application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service
 
 ## What's inside
 
