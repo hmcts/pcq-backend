@@ -38,6 +38,7 @@ public class SubmitAnswersService {
 
     private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
     private static final int PAPER_CHANNEL = 2;
+    private static final String INFO_LOG_MSG = "Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, ";
 
     Environment environment;
 
@@ -75,7 +76,7 @@ public class SubmitAnswersService {
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, "
+                log.info(INFO_LOG_MSG
                              + "Protected Characteristic Record submitted for creation.", coRelationId,
                          createCharacteristics.getChannel(), createCharacteristics.getServiceId());
 
@@ -122,7 +123,7 @@ public class SubmitAnswersService {
                                                                  environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
-                    log.info("Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, "
+                    log.info(INFO_LOG_MSG
                                  + "Protected Characteristic Record submitted for Update.", coRelationId,
                              createCharacteristics.getChannel(), createCharacteristics.getServiceId());
                 }
@@ -173,7 +174,7 @@ public class SubmitAnswersService {
                                                              environment.getProperty(
                                                                  BAD_REQUEST_ERROR_MSG_KEY));
             } else {
-                log.info("Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, "
+                log.info(INFO_LOG_MSG
                              + "Protected Characteristic Record submitted for deletion.", coRelationId,
                          answerRequest.getChannel(), answerRequest.getServiceId());
             }
