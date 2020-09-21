@@ -4,7 +4,7 @@
   "partyId": "23",
   "channel": 1,
   "completedDate": "2020-03-05T09:13:45.000Z",
-  "serviceId": "PROBATE",
+  "serviceId": "PROBATE_TEST",
   "actor": "DEFENDANT",
   "versionNo": 1,
   "pcqAnswers": {

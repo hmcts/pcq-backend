@@ -2,6 +2,8 @@ package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.thucydides.core.annotations.WithTag;
+import net.thucydides.core.annotations.WithTags;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
+@WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings("PMD.LinguisticNaming")
 public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
 
@@ -45,6 +48,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
@@ -68,6 +72,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCase.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
@@ -169,6 +174,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             //Create the Test Data 3 times in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             answerRequest.setPcqId("INTEG-TEST-11");

@@ -1,10 +1,10 @@
 {
   "pcqId": "T1234",
   "ccdCaseId": null,
-  "partyId": "23",
+  "partyId": "test@test1.com",
   "channel": 1,
   "completedDate": "2020-03-05T09:13:45",
-  "serviceId": "PROBATE",
+  "serviceId": "PROBATE_TEST",
   "actor": "DEFENDANT",
   "versionNo": 1,
   "pcqAnswers": {

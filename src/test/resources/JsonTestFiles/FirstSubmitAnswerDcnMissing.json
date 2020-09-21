@@ -1,0 +1,14 @@
+{
+  "pcqId": "T1234",
+  "formId": "PCQ-A",
+  "ccdCaseId": null,
+  "partyId": "PaperChannel",
+  "channel": 2,
+  "completedDate": "2020-03-05T09:13:45.000Z",
+  "serviceId": "PROBATE",
+  "actor": "UNKNOWN",
+  "versionNo": 1,
+  "pcqAnswers": {
+    "dob_provided": 1
+  }
+}

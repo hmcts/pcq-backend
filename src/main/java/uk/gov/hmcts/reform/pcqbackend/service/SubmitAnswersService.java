@@ -7,12 +7,14 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
@@ -34,6 +36,10 @@ import javax.transaction.Transactional;
 @Getter
 public class SubmitAnswersService {
 
+    private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
+    private static final int PAPER_CHANNEL = 2;
+    private static final String INFO_LOG_MSG = "Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, ";
+
     Environment environment;
 
     ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
@@ -45,7 +51,8 @@ public class SubmitAnswersService {
         this.environment = environment;
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength"})
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
+        "PMD.UnusedLocalVariable"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
@@ -53,35 +60,25 @@ public class SubmitAnswersService {
         try {
 
             //Step 1. Check the request contains the required header content.
-            coRelationId = ConversionUtil.validateRequestHeader(headers);
-            coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
+            coRelationId = validateAndReturnCorrelationId(headers);
             log.info("Co-Relation Id : {} - submitAnswers API call invoked.", coRelationId);
 
-            //Step 2. Validate the request body against the JSON Schema.
-            validateRequestAgainstSchema(answerRequest, environment
-                .getProperty("api-schema-file.submitanswer-schema"));
+            //Step 2. Perform the validations
+            performValidations(answerRequest);
 
-            //Step 3. Validate the version number of the request matches the back-end version.
-            validateVersionNumber(answerRequest.getVersionNo());
-
-            //Step 4. Check whether record exists in database for the pcqId.
+            //Step 3. Check whether record exists in database for the pcqId.
             Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
                 .findById(answerRequest.getPcqId());
 
             ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
 
-                //Encrypt the partyId.
-                String dbEncryptionKey = environment.getProperty("security.db.backend-encryption-key");
-                String encryptedPartyId = ConversionUtil.encryptWithKey(createCharacteristics.getPartyId(),
-                                                                        dbEncryptionKey);
-                createCharacteristics.setPartyId(encryptedPartyId);
-
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record submitted "
-                             + "for creation.", coRelationId);
+                log.info(INFO_LOG_MSG
+                             + "Protected Characteristic Record submitted for creation.", coRelationId,
+                         createCharacteristics.getChannel(), createCharacteristics.getServiceId());
 
             } else {
                 // Update the PCQ Record.
@@ -126,34 +123,18 @@ public class SubmitAnswersService {
                                                                  environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
-                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
-                                 + "submitted for Update.", coRelationId);
+                    log.info(INFO_LOG_MSG
+                                 + "Protected Characteristic Record submitted for Update.", coRelationId,
+                             createCharacteristics.getChannel(), createCharacteristics.getServiceId());
                 }
             }
 
         } catch (InvalidRequestException ive) {
-            log.error(ive.getMessage());
-            return ConversionUtil.generateResponseEntity(pcqId, ive.getErrorCode(),
-                                          environment.getProperty("api-error-messages.bad_request"));
+            return handleInvalidRequestException(pcqId, ive);
         } catch (SchemaValidationException sve) {
-            log.error(
-                "Co-Relation Id : {} - submitAnswers API failed schema validations. "
-                    + "Detailed error message as follows \n {}",
-                coRelationId,
-                sve.getFormattedError()
-            );
-            return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
-                                          environment.getProperty("api-error-messages.bad_request"));
-        } catch (IOException | IllegalStateException ioe) {
-            log.error("Co-Relation Id : {} - submitAnswers API call failed "
-                          + "due to error - {}", coRelationId, ioe.getMessage());
-            return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
-                                          environment.getProperty("api-error-messages.internal_error"));
-        } catch (Exception e) {
-            log.error("Co-Relation Id : {} - submitAnswers API call failed "
-                          + "due to error - {}", coRelationId, e.getMessage(), e);
-            return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
-                                          environment.getProperty("api-error-messages.internal_error"));
+            return handleSchemaValidationException(pcqId, coRelationId, sve);
+        } catch (Exception ioe) {
+            return handleInternalErrors(pcqId, coRelationId, ioe);
         }
 
         return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.CREATED,
@@ -167,6 +148,48 @@ public class SubmitAnswersService {
 
         return protectedCharacteristics.orElse(null);
 
+    }
+
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
+        "PMD.UnusedLocalVariable"})
+    @Transactional
+    public ResponseEntity<Object> processOptOut(List<String> headers, PcqAnswerRequest answerRequest) {
+        String pcqId = answerRequest.getPcqId();
+        String coRelationId = "";
+        try {
+
+            //Step 1. Check the request contains the required header content.
+            coRelationId = validateAndReturnCorrelationId(headers);
+            log.info("Co-Relation Id : {} - submitAnswers API call with OptOut invoked.", coRelationId);
+
+            //Step 2. Perform the validations
+            performValidations(answerRequest);
+
+            //Step 3. Invoke the delete pcq record method.
+            int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
+            if (resultCount == 0) {
+                log.error("Co-Relation Id : {} - submitAnswers API, Opt Out invoked but record does not exist.",
+                          coRelationId);
+                return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
+                                                             environment.getProperty(
+                                                                 BAD_REQUEST_ERROR_MSG_KEY));
+            } else {
+                log.info(INFO_LOG_MSG
+                             + "Protected Characteristic Record submitted for deletion.", coRelationId,
+                         answerRequest.getChannel(), answerRequest.getServiceId());
+            }
+
+
+        } catch (InvalidRequestException ive) {
+            return handleInvalidRequestException(pcqId, ive);
+        } catch (SchemaValidationException sve) {
+            return handleSchemaValidationException(pcqId, coRelationId, sve);
+        } catch (Exception ioe) {
+            return handleInternalErrors(pcqId, coRelationId, ioe);
+        }
+
+        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.OK,
+                                                     environment.getProperty("api-error-messages.accepted"));
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
@@ -211,6 +234,73 @@ public class SubmitAnswersService {
             "api-version-number")))) {
             throw new InvalidRequestException("Version number mis-match", HttpStatus.FORBIDDEN);
         }
+    }
+
+    private void validateDcnNumber(String dcnNumber) throws InvalidRequestException {
+        if (StringUtils.isEmpty(dcnNumber)) {
+            throw new InvalidRequestException("DCN Number is missing", HttpStatus.BAD_REQUEST);
+        }
+        // Check whether a record already exists.
+        List<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
+            .findByDcnNumber(dcnNumber);
+        if (!protectedCharacteristics.isEmpty()) {
+            throw new InvalidRequestException("Record already exists for Dcn Number- " + dcnNumber,
+                                              HttpStatus.CONFLICT);
+        }
+    }
+
+    private String validateAndReturnCorrelationId(List<String> headers) throws InvalidRequestException {
+        String coRelationId = ConversionUtil.validateRequestHeader(headers);
+        coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
+
+        return coRelationId;
+    }
+
+    private void performValidations(PcqAnswerRequest answerRequest) throws IOException, SchemaValidationException,
+        InvalidRequestException {
+
+        //Step 1. Validate the request body against the JSON Schema.
+        validateRequestAgainstSchema(answerRequest, environment
+            .getProperty("api-schema-file.submitanswer-schema"));
+
+        //Step 2. Validate the version number of the request matches the back-end version.
+        validateVersionNumber(answerRequest.getVersionNo());
+
+        //Step 3. For paper channel, validate the DCN number.
+        if (PAPER_CHANNEL == answerRequest.getChannel()) {
+            validateDcnNumber(answerRequest.getDcnNumber());
+        }
+
+    }
+
+    private ResponseEntity<Object> handleInvalidRequestException(String pcqId, InvalidRequestException ive) {
+        log.error(ive.getMessage());
+        return ConversionUtil.generateResponseEntity(pcqId, ive.getErrorCode(),
+                                                     environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
+    }
+
+    private ResponseEntity<Object> handleSchemaValidationException(String pcqId, String coRelationId,
+                                                                   SchemaValidationException sve) {
+        log.error(
+            "Co-Relation Id : {} - submitAnswers API failed schema validations. "
+                + "Detailed error message as follows \n {}",
+            coRelationId,
+            sve.getFormattedError()
+        );
+        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
+                                                     environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
+    }
+
+    private ResponseEntity<Object> handleInternalErrors(String pcqId, String coRelationId, Exception except) {
+        if (except instanceof IOException || except instanceof IllegalStateException) {
+            log.error("Co-Relation Id : {} - submitAnswers API call failed "
+                          + "due to error - {}", coRelationId, except.getMessage());
+        } else {
+            log.error("Co-Relation Id : {} - submitAnswers API call failed "
+                          + "due to error - {}", coRelationId, except.getMessage(), except);
+        }
+        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
+                                                     environment.getProperty("api-error-messages.internal_error"));
     }
 
 }

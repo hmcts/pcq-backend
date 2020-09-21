@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.utils;
 
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.bcpg.SymmetricKeyAlgorithmTags;
-import org.bouncycastle.openpgp.examples.ByteArrayHandler;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.HtmlUtils;
@@ -11,10 +9,10 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswers;
+import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.PcqWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
 
-import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -23,7 +21,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,21 +29,22 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public final class ConversionUtil {
 
-    private static final String COMPLETED_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
+    private static final String COMPLETED_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
     private static final String DOB_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     private ConversionUtil() {
 
     }
 
-    public static PcqAnswerResponse getPcqResponseFromDomain(ProtectedCharacteristics protectedCharacteristics,
-                                                             String encryptionKey) {
+    public static PcqAnswerResponse getPcqResponseFromDomain(ProtectedCharacteristics protectedCharacteristics) {
         PcqAnswerResponse answerResponse = new PcqAnswerResponse();
 
         answerResponse.setPcqId(protectedCharacteristics.getPcqId());
+        answerResponse.setDcnNumber(protectedCharacteristics.getDcnNumber());
+        answerResponse.setFormId(protectedCharacteristics.getFormId());
         answerResponse.setCaseId(protectedCharacteristics.getCaseId());
-        answerResponse.setPartyId(decrypt(protectedCharacteristics.getPartyId(), encryptionKey));
+        answerResponse.setPartyId(protectedCharacteristics.getPartyId());
         answerResponse.setChannel(protectedCharacteristics.getChannel());
         if (protectedCharacteristics.getCompletedDate() != null) {
             answerResponse.setCompletedDate(convertTimeStampToString(protectedCharacteristics.getCompletedDate()));
@@ -120,6 +118,16 @@ public final class ConversionUtil {
     public static ProtectedCharacteristics convertJsonToDomain(PcqAnswerRequest pcqAnswerRequest) {
         ProtectedCharacteristics protectedCharacteristics = new ProtectedCharacteristics();
         protectedCharacteristics.setPcqId(pcqAnswerRequest.getPcqId());
+        if (pcqAnswerRequest.getDcnNumber() == null) {
+            protectedCharacteristics.setDcnNumber(pcqAnswerRequest.getDcnNumber());
+        } else {
+            protectedCharacteristics.setDcnNumber(HtmlUtils.htmlEscape(pcqAnswerRequest.getDcnNumber()));
+        }
+        if (pcqAnswerRequest.getFormId() == null) {
+            protectedCharacteristics.setFormId(pcqAnswerRequest.getFormId());
+        } else {
+            protectedCharacteristics.setFormId(HtmlUtils.htmlEscape(pcqAnswerRequest.getFormId()));
+        }
         protectedCharacteristics.setActor(pcqAnswerRequest.getActor());
         protectedCharacteristics.setCaseId(pcqAnswerRequest.getCaseId());
         protectedCharacteristics.setChannel(pcqAnswerRequest.getChannel());
@@ -221,6 +229,27 @@ public final class ConversionUtil {
         return new ResponseEntity<>(pcqWithoutCaseResponse, code);
     }
 
+    public static ResponseEntity<PcqRecordWithoutCaseResponse> generatePcqRecordWithoutCaseResponse(
+        List<ProtectedCharacteristics> pcqIds, HttpStatus code, String message) {
+        PcqRecordWithoutCaseResponse pcqRecordWithoutCaseResponse = new PcqRecordWithoutCaseResponse();
+        if (pcqIds == null) {
+            pcqRecordWithoutCaseResponse.setResponseStatus(message);
+            pcqRecordWithoutCaseResponse.setResponseStatusCode(String.valueOf(code.value()));
+
+            return new ResponseEntity<>(pcqRecordWithoutCaseResponse, code);
+        }
+
+        List<PcqAnswerResponse> pcqRecordArray = new ArrayList<>(pcqIds.size());
+        for (ProtectedCharacteristics protectedCharacteristics : pcqIds) {
+            pcqRecordArray.add(createPcqRecordForConsolidationService(protectedCharacteristics));
+        }
+        pcqRecordWithoutCaseResponse.setPcqRecord(pcqRecordArray.toArray(new PcqAnswerResponse[0]));
+        pcqRecordWithoutCaseResponse.setResponseStatus(message);
+        pcqRecordWithoutCaseResponse.setResponseStatusCode(String.valueOf(code.value()));
+
+        return new ResponseEntity<>(pcqRecordWithoutCaseResponse, code);
+    }
+
     public static String validateRequestHeader(List<String> requestHeaders) throws InvalidRequestException {
 
         // Validate that the request contains the required Header values.
@@ -233,29 +262,13 @@ public final class ConversionUtil {
 
     }
 
-    public static String encryptWithKey(String message, String encryptionKey) {
-        try {
-
-            return Base64.getEncoder().encodeToString(ByteArrayHandler.encrypt(
-                message.getBytes(StandardCharsets.UTF_8),
-                encryptionKey.toCharArray(),
-                null,
-                SymmetricKeyAlgorithmTags.AES_128,
-                false
-            ));
-
-        } catch (Exception e) {
-            throw new IllegalStateException("Error Encrypting : " + e.getMessage(), e);
-        }
-    }
-
-    public static String decrypt(String pgpArmoredMsg, String symmetricKey) {
-        try {
-            return new String(ByteArrayHandler.decrypt(Base64.getDecoder().decode(pgpArmoredMsg),
-                                                       symmetricKey.toCharArray()));
-        } catch (Exception e) {
-            throw new IllegalStateException("Error Decrypting : " + e.getMessage(), e);
-        }
+    private static PcqAnswerResponse createPcqRecordForConsolidationService(ProtectedCharacteristics pcqDbRecord) {
+        PcqAnswerResponse answerResponse = new PcqAnswerResponse();
+        answerResponse.setPcqId(pcqDbRecord.getPcqId());
+        answerResponse.setServiceId(pcqDbRecord.getServiceId());
+        answerResponse.setActor(pcqDbRecord.getActor());
+        answerResponse.setDcnNumber(pcqDbRecord.getDcnNumber());
+        return answerResponse;
     }
 
 }

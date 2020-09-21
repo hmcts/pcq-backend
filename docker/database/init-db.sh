@@ -20,6 +20,10 @@ psql -v ON_ERROR_STOP=1 --username postgres --set USERNAME=$PCQ_DB_USERNAME --se
     ALTER SCHEMA public OWNER TO :USERNAME;
 EOSQL
 
+psql -v ON_ERROR_STOP=1 --username postgres --set USERNAME=$PCQ_DB_USERNAME --set PASSWORD=$PCQ_DB_PASSWORD <<-EOSQL
+  CREATE EXTENSION IF NOT EXISTS pgcrypto;
+EOSQL
+
 psql -v ON_ERROR_STOP=1 --username $PCQ_DB_USERNAME $PCQ_DB_NAME <<-EOSQL
   CREATE TABLE protected_characteristics (
    pcq_id TEXT PRIMARY KEY,

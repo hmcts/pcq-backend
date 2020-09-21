@@ -4,7 +4,7 @@
 
 ## Purpose
 
-This is the Protected Characterstics Back-End application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service
+This is the Protected Characteristics Back-End application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service
 
 ## What's inside
 
@@ -14,88 +14,13 @@ The application exposes health endpoint (http://localhost:4550/health).
 
 The application uses the following plugins:
 
-  * checkstyle
-
-    https://docs.gradle.org/current/userguide/checkstyle_plugin.html
-
-    Performs code style checks on Java source files using Checkstyle and generates reports from these checks.
-    The checks are included in gradle's *check* task (you can run them by executing `./gradlew check` command).
-
-  * pmd
-
-    https://docs.gradle.org/current/userguide/pmd_plugin.html
-
-    Performs static code analysis to finds common programming flaws. Included in gradle `check` task.
-
-
-  * jacoco
-
-    https://docs.gradle.org/current/userguide/jacoco_plugin.html
-
-    Provides code coverage metrics for Java code via integration with JaCoCo.
-    You can create the report by running the following command:
-
-    ```bash
-      ./gradlew jacocoTestReport
-    ```
-
-    The report will be created in build/reports subdirectory in your project directory.
-
-  * io.spring.dependency-management
-
-    https://github.com/spring-gradle-plugins/dependency-management-plugin
-
-    Provides Maven-like dependency management. Allows you to declare dependency management
-    using `dependency 'groupId:artifactId:version'`
-    or `dependency group:'group', name:'name', version:version'`.
-
-  * org.springframework.boot
-
-    http://projects.spring.io/spring-boot/
-
-    Reduces the amount of work needed to create a Spring application
-
-  * org.owasp.dependencycheck
-
-    https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/index.html
-
-    Provides monitoring of the project's dependent libraries and creating a report
-    of known vulnerable components that are included in the build. To run it
-    execute `gradle dependencyCheck` command.
-
-  * com.github.ben-manes.versions
-
-    https://github.com/ben-manes/gradle-versions-plugin
-
-    Provides a task to determine which dependencies have updates. Usage:
-
-    ```bash
-      ./gradlew dependencyUpdates -Drevision=release
-    ```
-
-## Setup
-
-Located in `./bin/init.sh`. Simply run and follow the explanation how to execute it.
-
-### Database
-
-To run the pcq-database, execute docker-compose:
-
-```
-    docker-compose -f docker-compose.yml up pcq-database
-```
-
-To add the table definitions you'll need to execute the migrate script:
-
-```
-    ./gradlew -Pflyway.user=pcquser -Pflyway.password=pcqpass -Pflyway.url=jdbc:postgresql://0.0.0.0:5050/pcq flywayMigrate
-```
-
-## Notes
-
-Since Spring Boot 2.1 bean overriding is disabled. If you want to enable it you will need to set `spring.main.allow-bean-definition-overriding` to `true`.
-
-JUnit 5 is now enabled by default in the project. Please refrain from using JUnit4 and use the next generation
+  * checkstyle https://docs.gradle.org/current/userguide/checkstyle_plugin.html
+  * pmd https://docs.gradle.org/current/userguide/pmd_plugin.html
+  * jacoco https://docs.gradle.org/current/userguide/jacoco_plugin.html
+  * io.spring.dependency-management https://github.com/spring-gradle-plugins/dependency-management-plugin
+  * org.springframework.boot http://projects.spring.io/spring-boot/
+  * org.owasp.dependencycheck https://jeremylong.github.io/DependencyCheck/dependency-check-gradle/index.html
+  * com.github.ben-manes.versions https://github.com/ben-manes/gradle-versions-plugin
 
 ## Building and deploying the application
 
@@ -105,76 +30,122 @@ The project uses [Gradle](https://gradle.org) as a build tool. It already contai
 `./gradlew` wrapper script, so there's no need to install gradle.
 
 To build the project execute the following command:
-
 ```bash
   ./gradlew build
 ```
 
 ### Running the application
 
-Create the image of the application by executing the following command:
-
-```bash
-  ./gradlew assemble
+To run the PostgreSQL 11 PCQ database, execute docker-compose to build the database from the postgreSQL docker image:
+```
+  docker-compose -f docker-compose.yml up pcq-database
 ```
 
-Create docker image:
+To run the PCQ Backend application, execute the gradle run command - this also adds the PCQ schema to the database.
+```
+  ./gradlew run
+```
 
+Finally to use the pcq-backend application, you'll need to add the encryption package to PostgreSQL.
+Using your favourite SQL client run the following from the PCQ database. See .env file for dev database password.
+ ```
+  psql -h 0.0.0.0 -p 5050 -d pcq -u pcquser
+  CREATE EXTENSION IF NOT EXISTS pgcrypto;
+ ```
+
+#### Environment variables
+
+The `.env` file has a list of the environment variables in use by the pcq-backend and pcq-database components. These are as follows:
+* PCQ_DB_NAME
+* PCQ_DB_HOST
+* PCQ_DB_PORT
+* PCQ_DB_USERNAME
+* PCQ_DB_PASSWORD
+* FLYWAY_URL
+* FLYWAY_USER
+* FLYWAY_PASSWORD
+* FLYWAY_NOOP_STRATEGY
+* JWT_SECRET
+* DB_ENCRYPTION_KEY
+
+There is no need to export these values if pcq-backend repo is checked out.
+If another service is using the pcq-backend application, the emnvironment values are available through a batch script:
+```bash
+  source ./bin/set-pcq-docker-env.sh
+```
+
+#### Manually building the PCQ Database using Flyway
+
+The pcq-backend application will automatically create the PCQ database definitions from the flyway scripts included in the build.
+However if you would like to add the table definitions manually you'll need to execute the gradle migrate script:
+```
+  ./gradlew -Pflyway.user=pcquser -Pflyway.password=pcqpass -Pflyway.url=jdbc:postgresql://0.0.0.0:5050/pcq flywayMigrate
+```
+
+## Running the application in Docker
+
+### Build docker image
+
+Create docker image:
 ```bash
   docker-compose build
 ```
 
-Run the distribution (created in `build/install/pcq-backend` directory)
+Bring the database and pcq-backend application up in Docker.
 by executing the following command:
-
 ```bash
   docker-compose up
 ```
+
+az login
+az acr login --name hmctspublic --subscription DCD-CNP-Prod
 
 This will start the API container exposing the application's port
 (set to `4550` in this template app).
 
 In order to test if the application is up, you can call its health endpoint:
-
 ```bash
   curl http://localhost:4550/health
 ```
 
 You should get a response similar to this:
-
 ```
   {"status":"UP","diskSpace":{"status":"UP","total":249644974080,"free":137188298752,"threshold":10485760}}
 ```
 
-### Alternative script to run application
+### Notes:
 
-To skip all the setting up and building, just execute the following command:
+### Accessing Azure Container Repository
 
+Run the following to install the azure and kubernetes command-line tools
 ```bash
-./bin/run-in-docker.sh
+  brew install azure-cli
+  az acs kubernetes install-cli
+```
+login to azure - you'll not need hmctsprivate access for PCQ.
+```bash
+  az login (will open a browser to login)
+  az acr login --name hmctspublic --subscription DCD-CNP-Prod
+  az acr login --name hmctsprivate --subscription DCD-CNP-Prod
 ```
 
-For more information:
+#### Removing old docker images
 
+Old containers can be removed by executing the following command:
 ```bash
-./bin/run-in-docker.sh -h
+  docker rm $(docker ps -a -q)
 ```
-
-Script includes bare minimum environment variables necessary to start api instance. Whenever any variable is changed or any other script regarding docker image/container build, the suggested way to ensure all is cleaned up properly is by this command:
-
+You may need to forcibly remove any relevant images by executing the following command:
 ```bash
-docker-compose rm
+  docker rmi $(docker images -q)
 ```
-
-It clears stopped containers correctly. Might consider removing clutter of images too, especially the ones fiddled with:
-
+Finally you can remove all volumes - not this rmoves all existing database values:
 ```bash
-docker images
-
-docker image rm <image-id>
+  docker volume rm $(docker volume ls -q)
 ```
 
 There is no need to remove postgres and java or similar core images.
+
 
 ## Hystrix
 

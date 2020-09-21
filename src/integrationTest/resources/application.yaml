@@ -37,6 +37,13 @@ security:
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
 
+storage:
+  connection-string: ${STORAGE_ACCOUNT_CONNECTION_STRING:UseDevelopmentStorage=true}
+  blob-pcq-container: ${STORAGE_ACCOUNT_PCQ_CONTAINER:pcq}
+  sas-token-expiry: ${SAS_TOKEN_EXPIRY:3600}
+
+authorised.services: reform_scan_blob_router
+
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
   application:
@@ -64,7 +71,7 @@ spring:
     hibernate:
       ddl-auto: none
   flyway:
-    locations: classpath:db/migration
+    locations: classpath:db/migration,classpath:db/integtest
 
 flyway:
   noop:

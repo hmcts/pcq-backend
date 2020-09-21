@@ -6,6 +6,8 @@ import io.restassured.parsing.Parser;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.thucydides.core.annotations.WithTag;
+import net.thucydides.core.annotations.WithTags;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
+@WithTags({@WithTag("testType:Functional")})
 @ComponentScan("uk.gov.hmcts.reform.pcqbackend")
 @TestPropertySource("classpath:application-functional.yaml")
 @Slf4j
@@ -75,6 +78,8 @@ public abstract class PcqBaseFunctionalTest {
     protected void checkAssertionsOnResponse(Map<String, Object> responseMap,
                                              PcqAnswerRequest answerRequest) {
         assertEquals("PCQId not matching", responseMap.get("pcqId"), answerRequest.getPcqId());
+        assertEquals("DCN Number not matching", responseMap.get("dcnNumber"), answerRequest.getDcnNumber());
+        assertEquals("Form Id not matching", responseMap.get("formId"), answerRequest.getFormId());
         assertEquals("CaseId not matching", responseMap.get("ccdCaseId"),
                      answerRequest.getCaseId());
         assertEquals("PartyId not matching", responseMap.get("partyId"),

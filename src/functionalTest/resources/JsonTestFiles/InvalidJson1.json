@@ -3,7 +3,7 @@
   "ccdCaseId": "C1-Test12",
   "channel": 1,
   "completedDate": "112",
-  "serviceId": "PROBATE",
+  "serviceId": "PROBATE_TEST",
   "actor": "DEFENDANT",
   "versionNo": 1,
   "pcqAnswers": {
