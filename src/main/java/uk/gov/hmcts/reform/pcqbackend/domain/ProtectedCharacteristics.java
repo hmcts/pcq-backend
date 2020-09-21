@@ -27,6 +27,12 @@ public class ProtectedCharacteristics implements Serializable {
     @NotEmpty
     private String pcqId;
 
+    @Column(name = "DCN_NUMBER")
+    private String dcnNumber;
+
+    @Column(name = "FORM_ID")
+    private String formId;
+
     @Column(name = "CASE_ID")
     private String caseId;
 

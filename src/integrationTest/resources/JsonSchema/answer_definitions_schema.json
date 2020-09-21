@@ -20,7 +20,7 @@
         "language_main": {
           "id": "#language_main",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ -1, 0, 1, 2, null ]
         },
         "language_other": {
           "id": "#language_other",
@@ -30,17 +30,17 @@
         "english_language_level": {
           "id": "#english_language_level",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, 3, 4, null ]
+          "enum": [ -1, 0, 1, 2, 3, 4, null ]
         },
         "sex": {
           "id": "#sex",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ -1, 0, 1, 2, null ]
         },
         "gender_different": {
           "id": "#gender_different",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ -1, 0, 1, 2, null ]
         },
         "gender_other": {
           "id": "#gender_other",
@@ -49,7 +49,7 @@
         "sexuality": {
           "id": "#sexuality",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, 3, 4, null ]
+          "enum": [ -1, 0, 1, 2, 3, 4, null ]
         },
         "sexuality_other": {
           "id": "#sexuality_other",
@@ -58,12 +58,12 @@
         "marriage": {
           "id": "#marriage",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ -1, 0, 1, 2, null ]
         },
         "ethnicity": {
           "id": "#ethnicity",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, null ]
+          "enum": [ -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, null ]
         },
         "ethnicity_other": {
           "id": "#ethnicity_other",
@@ -72,7 +72,7 @@
         "religion": {
           "id": "#religion",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, 3, 4, 5, 6, 7, 8, null ]
+          "enum": [ -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, null ]
         },
         "religion_other": {
           "id": "#religion_other",
@@ -81,12 +81,12 @@
         "disability_conditions": {
           "id": "#disability_conditions",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ -1, 0, 1, 2, null ]
         },
         "disability_impact": {
           "id": "#disability_impact",
           "type": [ "integer", "null" ],
-          "enum": [ 0, 1, 2, 3, null ]
+          "enum": [ -1, 0, 1, 2, 3, null ]
         },
         "disability_vision": {
           "id": "#disability_vision",
@@ -150,7 +150,7 @@
         "pregnancy": {
           "id": "#pregnancy",
           "type": ["integer", "null"],
-          "enum": [ 0, 1, 2, null ]
+          "enum": [ -1, 0, 1, 2, null ]
         }
       },
       "additionalProperties": false

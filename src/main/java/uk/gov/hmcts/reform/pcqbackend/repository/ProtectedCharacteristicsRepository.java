@@ -46,4 +46,6 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM protected_characteristics p WHERE p.pcqId = ?1")
     int deletePcqRecord(String pcqId);
+
+    List<ProtectedCharacteristics> findByDcnNumber(String dcnNumber);
 }

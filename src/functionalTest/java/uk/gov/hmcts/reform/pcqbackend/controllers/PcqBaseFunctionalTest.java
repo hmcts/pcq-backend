@@ -78,6 +78,8 @@ public abstract class PcqBaseFunctionalTest {
     protected void checkAssertionsOnResponse(Map<String, Object> responseMap,
                                              PcqAnswerRequest answerRequest) {
         assertEquals("PCQId not matching", responseMap.get("pcqId"), answerRequest.getPcqId());
+        assertEquals("DCN Number not matching", responseMap.get("dcnNumber"), answerRequest.getDcnNumber());
+        assertEquals("Form Id not matching", responseMap.get("formId"), answerRequest.getFormId());
         assertEquals("CaseId not matching", responseMap.get("ccdCaseId"),
                      answerRequest.getCaseId());
         assertEquals("PartyId not matching", responseMap.get("partyId"),

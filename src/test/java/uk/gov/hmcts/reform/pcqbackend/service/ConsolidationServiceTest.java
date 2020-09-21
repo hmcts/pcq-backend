@@ -271,6 +271,7 @@ public class ConsolidationServiceTest {
         for (int i = 0; i < rowCount; i++) {
             ProtectedCharacteristics targetObj = new ProtectedCharacteristics();
             targetObj.setPcqId("TEST - " + i);
+            targetObj.setDcnNumber("DCN - " + i);
             targetList.add(targetObj);
         }
 
@@ -281,6 +282,8 @@ public class ConsolidationServiceTest {
                                           List<ProtectedCharacteristics> actualList) {
         for (int i = 0; i < targetList.size(); i++) {
             assertEquals(targetList.get(i).getPcqId(), actualList.get(i).getPcqId(), "Pcq Id is not matching");
+            assertEquals(targetList.get(i).getDcnNumber(), actualList.get(i).getDcnNumber(),
+                         "DCN Number not matching");
         }
     }
 

@@ -41,6 +41,8 @@ public final class ConversionUtil {
         PcqAnswerResponse answerResponse = new PcqAnswerResponse();
 
         answerResponse.setPcqId(protectedCharacteristics.getPcqId());
+        answerResponse.setDcnNumber(protectedCharacteristics.getDcnNumber());
+        answerResponse.setFormId(protectedCharacteristics.getFormId());
         answerResponse.setCaseId(protectedCharacteristics.getCaseId());
         answerResponse.setPartyId(protectedCharacteristics.getPartyId());
         answerResponse.setChannel(protectedCharacteristics.getChannel());
@@ -116,6 +118,16 @@ public final class ConversionUtil {
     public static ProtectedCharacteristics convertJsonToDomain(PcqAnswerRequest pcqAnswerRequest) {
         ProtectedCharacteristics protectedCharacteristics = new ProtectedCharacteristics();
         protectedCharacteristics.setPcqId(pcqAnswerRequest.getPcqId());
+        if (pcqAnswerRequest.getDcnNumber() == null) {
+            protectedCharacteristics.setDcnNumber(pcqAnswerRequest.getDcnNumber());
+        } else {
+            protectedCharacteristics.setDcnNumber(HtmlUtils.htmlEscape(pcqAnswerRequest.getDcnNumber()));
+        }
+        if (pcqAnswerRequest.getFormId() == null) {
+            protectedCharacteristics.setFormId(pcqAnswerRequest.getFormId());
+        } else {
+            protectedCharacteristics.setFormId(HtmlUtils.htmlEscape(pcqAnswerRequest.getFormId()));
+        }
         protectedCharacteristics.setActor(pcqAnswerRequest.getActor());
         protectedCharacteristics.setCaseId(pcqAnswerRequest.getCaseId());
         protectedCharacteristics.setChannel(pcqAnswerRequest.getChannel());
@@ -255,6 +267,7 @@ public final class ConversionUtil {
         answerResponse.setPcqId(pcqDbRecord.getPcqId());
         answerResponse.setServiceId(pcqDbRecord.getServiceId());
         answerResponse.setActor(pcqDbRecord.getActor());
+        answerResponse.setDcnNumber(pcqDbRecord.getDcnNumber());
         return answerResponse;
     }
 

@@ -13,6 +13,10 @@ public class PcqAnswerRequest implements Serializable {
 
     private String pcqId;
 
+    private String dcnNumber;
+
+    private String formId;
+
     @JsonProperty("ccdCaseId")
     private String caseId;
 
@@ -119,5 +123,21 @@ public class PcqAnswerRequest implements Serializable {
 
     public void setOptOut(String optOut) {
         this.optOut = optOut;
+    }
+
+    public String getDcnNumber() {
+        return dcnNumber;
+    }
+
+    public void setDcnNumber(String dcnNumber) {
+        this.dcnNumber = dcnNumber;
+    }
+
+    public String getFormId() {
+        return formId;
+    }
+
+    public void setFormId(String formId) {
+        this.formId = formId;
     }
 }

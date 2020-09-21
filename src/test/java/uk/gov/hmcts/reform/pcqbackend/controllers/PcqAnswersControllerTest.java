@@ -169,6 +169,45 @@ public class PcqAnswersControllerTest {
     }
 
     /**
+     * This method tests the submitAnswers API when it is called for paper channel and that the answers record
+     * is successfully added to the database. The response status code will be 201.
+     */
+    @DisplayName("Should submit the answers for the paper channel successfully and return with 201 response code")
+    @Test
+    public void testSubmitAnswersPaperChannel()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerPaperChannel.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+
+            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).save(any(
+                ProtectedCharacteristics.class));
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
      * This method tests the submitAnswers API when it is called with Y in OptOut and that the answers record
      * is successfully deleted from the database. The response status code will be 200.
      */
@@ -233,6 +272,73 @@ public class PcqAnswersControllerTest {
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called for paper channel and that the answers record
+     * is not created in the database. The response status code will be 400.
+     */
+    @DisplayName("Should NOT create the answers for missing DCN Number in paper channel and return with "
+        + "400 response code")
+    @Test
+    public void testSubmitAnswersPaperChannelMissingDcnNumber()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnMissing.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called for paper channel and that the answers record
+     * is not created in the database. The response status code will be 400.
+     */
+    @DisplayName("Should NOT create the answers for empty DCN Number in paper channel and return with "
+        + "400 response code")
+    @Test
+    public void testSubmitAnswersPaperChannelEmptyDcnNumber()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnEmpty.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);

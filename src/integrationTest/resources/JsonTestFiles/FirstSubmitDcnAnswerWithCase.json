@@ -1,0 +1,15 @@
+{
+  "pcqId": "Integ-Test-1",
+  "dcnNumber": "DCN-Test-2",
+  "formId": "EQ1",
+  "ccdCaseId": "CCD-12345",
+  "partyId": "PAPER_CHANNEL",
+  "channel": 2,
+  "completedDate": "2020-03-05T09:13:45.000Z",
+  "serviceId": "PROBATE",
+  "actor": "UNKNOWN",
+  "versionNo": 1,
+  "pcqAnswers": {
+    "dob_provided": 1
+  }
+}
