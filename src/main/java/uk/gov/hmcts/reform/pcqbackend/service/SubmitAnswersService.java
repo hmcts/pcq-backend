@@ -7,6 +7,7 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.ValidationMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
@@ -36,6 +37,8 @@ import javax.transaction.Transactional;
 public class SubmitAnswersService {
 
     private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
+    private static final int PAPER_CHANNEL = 2;
+    private static final String INFO_LOG_MSG = "Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, ";
 
     Environment environment;
 
@@ -73,8 +76,9 @@ public class SubmitAnswersService {
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.save(createCharacteristics);
 
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record submitted "
-                             + "for creation.", coRelationId);
+                log.info(INFO_LOG_MSG
+                             + "Protected Characteristic Record submitted for creation.", coRelationId,
+                         createCharacteristics.getChannel(), createCharacteristics.getServiceId());
 
             } else {
                 // Update the PCQ Record.
@@ -119,8 +123,9 @@ public class SubmitAnswersService {
                                                                  environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
-                    log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
-                                 + "submitted for Update.", coRelationId);
+                    log.info(INFO_LOG_MSG
+                                 + "Protected Characteristic Record submitted for Update.", coRelationId,
+                             createCharacteristics.getChannel(), createCharacteristics.getServiceId());
                 }
             }
 
@@ -169,8 +174,9 @@ public class SubmitAnswersService {
                                                              environment.getProperty(
                                                                  BAD_REQUEST_ERROR_MSG_KEY));
             } else {
-                log.info("Co-Relation Id : {} - submitAnswers API, Protected Characteristic Record "
-                             + "submitted for deletion.", coRelationId);
+                log.info(INFO_LOG_MSG
+                             + "Protected Characteristic Record submitted for deletion.", coRelationId,
+                         answerRequest.getChannel(), answerRequest.getServiceId());
             }
 
 
@@ -230,6 +236,19 @@ public class SubmitAnswersService {
         }
     }
 
+    private void validateDcnNumber(String dcnNumber) throws InvalidRequestException {
+        if (StringUtils.isEmpty(dcnNumber)) {
+            throw new InvalidRequestException("DCN Number is missing", HttpStatus.BAD_REQUEST);
+        }
+        // Check whether a record already exists.
+        List<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
+            .findByDcnNumber(dcnNumber);
+        if (!protectedCharacteristics.isEmpty()) {
+            throw new InvalidRequestException("Record already exists for Dcn Number- " + dcnNumber,
+                                              HttpStatus.CONFLICT);
+        }
+    }
+
     private String validateAndReturnCorrelationId(List<String> headers) throws InvalidRequestException {
         String coRelationId = ConversionUtil.validateRequestHeader(headers);
         coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
@@ -246,6 +265,11 @@ public class SubmitAnswersService {
 
         //Step 2. Validate the version number of the request matches the back-end version.
         validateVersionNumber(answerRequest.getVersionNo());
+
+        //Step 3. For paper channel, validate the DCN number.
+        if (PAPER_CHANNEL == answerRequest.getChannel()) {
+            validateDcnNumber(answerRequest.getDcnNumber());
+        }
 
     }
 

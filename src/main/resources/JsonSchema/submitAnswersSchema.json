@@ -19,6 +19,16 @@
       "type": "string",
       "title": "The PCQ Identifier"
     },
+    "dcnNumber": {
+      "id": "#dcnNumber",
+      "type": ["string", "null"],
+      "title": "The DCN number from the paper PCQ"
+    },
+    "formId": {
+      "id": "#formId",
+      "type": ["string", "null"],
+      "title": "The form classification from the paper PCQ"
+    },
     "ccdCaseId": {
       "id": "#ccdCaseId",
       "type": ["string", "null"],

@@ -39,6 +39,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
     private static final String ASSERT_MESSAGE_STATUS_CODE = "Response Status Code not valid";
     private static final int DAYS_LIMIT = 90;
     private static final String JSON_FILE = "JsonTestFiles/FirstSubmitAnswer.json";
+    private static final String JSON_DCN_FILE = "JsonTestFiles/FirstSubmitDcnAnswer.json";
 
     @Rule
     public OutputCaptureRule capture = new OutputCaptureRule();
@@ -49,6 +50,30 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
 
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
+            pcqBackEndClient.createPcqAnswer(answerRequest);
+
+            //Now call the actual method.
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
+
+            //Test the assertions
+            assertTestForSuccess(responseMap, 1, answerRequest);
+            checkLogsForKeywords();
+
+
+        } catch (Exception e) {
+            log.error(EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
+    public void getDcnRecordWithoutCaseSingleRecord() {
+        try {
+
+            //Create the Test Data in the database.
+            String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
             pcqBackEndClient.createPcqAnswer(answerRequest);
@@ -92,11 +117,61 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
     }
 
     @Test
+    public void getDcnRecordWithoutCaseRecordNotFound() {
+        try {
+
+            //Create the Test Data in the database.
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswerWithCase.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
+            pcqBackEndClient.createPcqAnswer(answerRequest);
+
+            //Now call the actual method.
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
+
+            //Test the assertions
+            assertTestForSuccess(responseMap, 0, answerRequest);
+            checkLogsForKeywords();
+
+
+        } catch (Exception e) {
+            log.error(EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
     public void getPcqRecordWithoutCaseCompletedDatePastBoundary() {
         try {
 
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //Update the completed date to be in the past.
+            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+                DAYS_LIMIT + 1)));
+            pcqBackEndClient.createPcqAnswer(answerRequest);
+
+            //Now call the actual method.
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
+
+            //Test the assertions
+            assertTestForSuccess(responseMap, 0, answerRequest);
+            checkLogsForKeywords();
+
+
+        } catch (Exception e) {
+            log.error(EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
+    public void getDcnRecordWithoutCaseCompletedDatePastBoundary() {
+        try {
+
+            //Create the Test Data in the database.
+            String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
             answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
@@ -144,11 +219,63 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
     }
 
     @Test
+    public void getDcnRecordWithoutCaseCompletedDateOnBoundary() {
+        try {
+
+            //Create the Test Data in the database.
+            String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //Update the completed date to be in the past.
+            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+                DAYS_LIMIT)));
+            pcqBackEndClient.createPcqAnswer(answerRequest);
+
+            //Now call the actual method.
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
+
+            //Test the assertions
+            assertTestForSuccess(responseMap, 0, answerRequest);
+            checkLogsForKeywords();
+
+
+        } catch (Exception e) {
+            log.error(EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
     public void getPcqRecordWithoutCaseCompletedDatePreBoundary() {
         try {
 
             //Create the Test Data in the database.
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //Update the completed date to be in the past.
+            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+                DAYS_LIMIT - 1)));
+            pcqBackEndClient.createPcqAnswer(answerRequest);
+
+            //Now call the actual method.
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
+
+            //Test the assertions
+            assertTestForSuccess(responseMap, 1, answerRequest);
+            checkLogsForKeywords();
+
+
+        } catch (Exception e) {
+            log.error(EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
+    public void getDcnRecordWithoutCaseCompletedDatePreBoundary() {
+        try {
+
+            //Create the Test Data in the database.
+            String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
             answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
@@ -180,11 +307,43 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             PcqAnswerRequest answerRequest2 = cloneAnswerObject(answerRequest,"INTEG-TEST-11", "PROBATE1",
-                                                                "APPLICANT");
+                                                                "APPLICANT", null);
             pcqBackEndClient.createPcqAnswer(answerRequest2);
 
             PcqAnswerRequest answerRequest3 = cloneAnswerObject(answerRequest, "INTEG-TEST-12", "DIVORCE",
-                                                                "PETITIONER");
+                                                                "PETITIONER", null);
+            pcqBackEndClient.createPcqAnswer(answerRequest3);
+
+            //Now call the actual method.
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
+
+            //Test the assertions
+            assertTestForSuccess(responseMap, 3, answerRequest, answerRequest2, answerRequest3);
+            checkLogsForKeywords();
+
+
+        } catch (Exception e) {
+            log.error(EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
+    public void getDcnRecordWithoutCaseMultipleIds() {
+        try {
+
+            //Create the Test Data 3 times in the database.
+            String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
+            pcqBackEndClient.createPcqAnswer(answerRequest);
+
+            PcqAnswerRequest answerRequest2 = cloneAnswerObject(answerRequest,"INTEG-TEST-11", "PROBATE",
+                                                                "UNKNOWN", "DCN-TEST-11");
+            pcqBackEndClient.createPcqAnswer(answerRequest2);
+
+            PcqAnswerRequest answerRequest3 = cloneAnswerObject(answerRequest, "INTEG-TEST-12", "PROBATE",
+                                                                "UNKNOWN", "DCN-TEST-12");
             pcqBackEndClient.createPcqAnswer(answerRequest3);
 
             //Now call the actual method.
@@ -222,13 +381,16 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             assertEquals("Pcq Id not found", pcqIds[i].getPcqId(), pcqRecordsActual[i].getPcqId());
             assertEquals("Service Id not found", pcqIds[i].getServiceId(), pcqRecordsActual[i].getServiceId());
             assertEquals("Actor not found", pcqIds[i].getActor(), pcqRecordsActual[i].getActor());
+            assertEquals("DCN Number found", pcqIds[i].getDcnNumber(), pcqRecordsActual[i].getDcnNumber());
         }
     }
 
     private PcqAnswerRequest cloneAnswerObject(PcqAnswerRequest originalAnswer, String pcqId, String serviceId,
-                                               String actor) {
+                                               String actor, String dcnNumber) {
         PcqAnswerRequest clonedAnswer = new PcqAnswerRequest();
         clonedAnswer.setPcqId(pcqId);
+        clonedAnswer.setDcnNumber(dcnNumber);
+        clonedAnswer.setFormId(originalAnswer.getFormId());
         clonedAnswer.setPartyId(originalAnswer.getPartyId());
         clonedAnswer.setCompletedDate(originalAnswer.getCompletedDate());
         clonedAnswer.setPcqAnswers(originalAnswer.getPcqAnswers());

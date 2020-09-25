@@ -536,7 +536,7 @@ public class ConsolidationControllerTest {
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
             assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqRecord(), "Pcq Record are not null");
+            assertNotNull(actualBody.getPcqRecord(), "Pcq Record are null");
             assertArrayContents(targetList, actualBody.getPcqRecord());
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
@@ -623,7 +623,7 @@ public class ConsolidationControllerTest {
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
             assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNull(actualBody.getPcqRecord(), "Pcq Records are null");
+            assertNull(actualBody.getPcqRecord(), "Pcq Records are not null");
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
             assertArrayContents(targetList, actualBody.getPcqRecord());
 
@@ -661,6 +661,7 @@ public class ConsolidationControllerTest {
             targetObj.setPcqId("TEST - " + i);
             targetObj.setServiceId("TEST_SERVICE_" + i);
             targetObj.setActor("TEST_ACTOR_" + i);
+            targetObj.setDcnNumber("DCN_NUMBER_" + i);
             targetList.add(targetObj);
         }
 
@@ -680,6 +681,8 @@ public class ConsolidationControllerTest {
             assertEquals(targetList.get(i).getPcqId(), actualList[i].getPcqId(), "Pcq Id is not matching");
             assertEquals(targetList.get(i).getServiceId(), actualList[i].getServiceId(), "Service Id is not matching");
             assertEquals(targetList.get(i).getActor(), actualList[i].getActor(), "Actor is not matching");
+            assertEquals(targetList.get(i).getDcnNumber(), actualList[i].getDcnNumber(),
+                         "DCN Number is not matching");
         }
     }
 
