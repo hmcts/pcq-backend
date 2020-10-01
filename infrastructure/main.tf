@@ -1,5 +1,5 @@
 provider "azurerm" {
-  version = "=1.33.1"
+  features {}
 }
 
 locals {
@@ -22,12 +22,12 @@ module "pcq-db" {
   common_tags            = "${var.common_tags}"
   subscription           = "${var.subscription}"
 }
-  
+
 data "azurerm_key_vault" "key_vault" {
   name                = "${local.vault_name}"
   resource_group_name = "${local.vault_name}"
 }
-  
+
 ////////////////////////////////
 // Populate Vault with DB info
 ////////////////////////////////
@@ -43,7 +43,7 @@ resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   name         = "${var.component}-POSTGRES-PASS"
   value        = "${module.pcq-db.postgresql_password}"
 }
-  
+
 resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
   key_vault_id = "${data.azurerm_key_vault.key_vault.id}"
   name         = "${var.component}-POSTGRES-HOST"
