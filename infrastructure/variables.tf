@@ -31,10 +31,6 @@ variable "common_tags" {
   type = map(string)
 }
 
-variable "managed_identity_object_id" {
-  default = ""
-}
-
 variable "appinsights_location" {
   default     = "West Europe"
   description = "Location for Application Insights"
