@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -565,38 +564,6 @@ class SubmitAnswersServiceTest {
                 NullPointerException.class);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
-                                                                                           pcqAnswerRequest);
-
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
-
-            Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(500, responseEntity.getStatusCodeValue(), "Expected 500 status code");
-
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
-    }
-
-    @Ignore
-    void testIllegalStateError() {
-        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
-        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
-        when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn(null);
-        String pcqId = TEST_PCQ_ID;
-
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
-
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
             assertNotNull(responseEntity, RESPONSE_NULL_MSG);

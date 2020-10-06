@@ -22,13 +22,13 @@ import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import javax.transaction.Transactional;
 
 
 @Slf4j
@@ -292,13 +292,9 @@ public class SubmitAnswersService {
     }
 
     private ResponseEntity<Object> handleInternalErrors(String pcqId, String coRelationId, Exception except) {
-        if (except instanceof IOException || except instanceof IllegalStateException) {
-            log.error("Co-Relation Id : {} - submitAnswers API call failed "
-                          + "due to error - {}", coRelationId, except.getMessage());
-        } else {
-            log.error("Co-Relation Id : {} - submitAnswers API call failed "
-                          + "due to error - {}", coRelationId, except.getMessage(), except);
-        }
+
+        log.error("Co-Relation Id : {} - submitAnswers API call failed "
+                      + "due to error - {}", coRelationId, except.getMessage(), except);
         return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                                      environment.getProperty("api-error-messages.internal_error"));
     }

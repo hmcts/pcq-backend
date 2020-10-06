@@ -65,6 +65,18 @@ class PcqAnswersControllerTest {
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
 
+    private static final String FIRST_SUBMIT_ANSWER_FILENAME = "JsonTestFiles/FirstSubmitAnswer.json";
+    private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerOptOutNull.json";
+    private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME
+        =  "JsonTestFiles/FirstSubmitAnswerOptOut.json";
+    private static final String FIRST_SUBMIT_ANSWER_PAPER_CHANNEL_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerPaperChannel.json";
+    private static final String FIRST_SUBMIT_ANSWER_DCN_MISSING_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerDcnMissing.json";
+    private static final String FIRST_SUBMIT_ANSWER_DCN_EMPTY_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerDcnEmpty.json";
+
     private static final String TEST_PCQ_ID = "T1234";
 
     @BeforeEach
@@ -97,7 +109,7 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -137,7 +149,7 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOutNull.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -177,7 +189,7 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerPaperChannel.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_PAPER_CHANNEL_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
@@ -216,7 +228,7 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -252,7 +264,7 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -288,7 +300,7 @@ class PcqAnswersControllerTest {
     void testSubmitAnswersPaperChannelMissingDcnNumber()  {
 
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnMissing.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_MISSING_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
@@ -321,7 +333,7 @@ class PcqAnswersControllerTest {
     void testSubmitAnswersPaperChannelEmptyDcnNumber()  {
 
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnEmpty.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_EMPTY_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
 
