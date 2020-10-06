@@ -11,7 +11,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class AuthorisedServicesTest {
+class AuthorisedServicesTest {
 
     private static final String FIELD_NAME = "authorisedServicesList";
     private static final String VALID_AUTHORISED_SERVICE = "reform_scan_blob_router";
@@ -23,19 +23,19 @@ public class AuthorisedServicesTest {
     private AuthorisedServices authorisedServices;
 
     @BeforeEach
-    public void setUp() throws IllegalAccessException {
+    void setUp() throws IllegalAccessException {
         authorisedServices = new AuthorisedServices();
         List<String> list = Arrays.asList(VALID_AUTHORISED_SERVICE);
         FieldUtils.writeField(authorisedServices, FIELD_NAME, list, true);
     }
 
     @Test
-    public void testKnownAuthorisedServiceSuccess() {
+    void testKnownAuthorisedServiceSuccess() {
         assertTrue(authorisedServices.hasService(VALID_AUTHORISED_SERVICE), AUTHORISED_SERVICE_SUCCESS);
     }
 
     @Test
-    public void testUnknownAuthorisedService() {
+    void testUnknownAuthorisedService() {
         assertFalse(authorisedServices.hasService(INVALID_AUTHORISED_SERVICE), AUTHORISED_SERVICE_FAILURE);
     }
 }

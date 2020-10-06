@@ -27,8 +27,8 @@ import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
-import java.util.List;
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 
 
 /**
@@ -43,6 +43,11 @@ import javax.validation.constraints.NotBlank;
     + "case record and add case information to a PCQ record in the database. "
     + "The API will be invoked by the Consolidation service.")
 public class ConsolidationController {
+
+    private static final String CO_RELATIONID_PROPERTY_NAME = "api-required-header-keys.co-relationid";
+    private static final String ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME = "api-error-messages.accepted";
+    private static final String BAD_REQUEST_ERROR_MESSAGE_PROPERTY_NAME = "api-error-messages.bad_request";
+    private static final String INTERNAL_ERROR_MESSAGE_PROPERTY_NAME = "api-error-messages.internal_error";
 
     @Autowired
     private Environment environment;
@@ -73,32 +78,32 @@ public class ConsolidationController {
         path = "/pcqWithoutCase",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
-    @Deprecated (since = "Replaced with API - pcqRecordWithoutCase")
     /**
      * @deprecated - Replaced with API - pcqRecordWithoutCase.
      */
+    @ResponseBody
+    @Deprecated(since = "Replaced with API - pcqRecordWithoutCase")
     public ResponseEntity<PcqWithoutCaseResponse> getPcqIdsWithoutCase(@RequestHeader HttpHeaders headers) {
 
         try {
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
-                headers.get(environment.getProperty("api-required-header-keys.co-relationid")));
+                headers.get(environment.getProperty(CO_RELATIONID_PROPERTY_NAME)));
 
             return ConversionUtil.generatePcqWithoutCaseResponse(protectedCharacteristicsList, HttpStatus.OK,
                                                                  environment.getProperty(
-                                                                     "api-error-messages.accepted"));
+                                                                     ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME));
 
         } catch (InvalidRequestException ive) {
             log.error("getPcqIdsWithoutCase API call failed due to error - {}", ive.getMessage(), ive);
             return ConversionUtil.generatePcqWithoutCaseResponse(null, HttpStatus.BAD_REQUEST,
                                                                  environment.getProperty(
-                                                                     "api-error-messages.bad_request"));
+                                                                     BAD_REQUEST_ERROR_MESSAGE_PROPERTY_NAME));
         } catch (Exception e) {
             log.error("getPcqIdsWithoutCase API call failed due to error - {}", e.getMessage(), e);
             return ConversionUtil.generatePcqWithoutCaseResponse(null, HttpStatus.INTERNAL_SERVER_ERROR,
                                                                environment.getProperty(
-                                                                   "api-error-messages.internal_error"));
+                                                                   INTERNAL_ERROR_MESSAGE_PROPERTY_NAME));
         }
 
     }
@@ -126,11 +131,11 @@ public class ConsolidationController {
 
         try {
             return consolidationService.updateCaseId(headers.get(environment.getProperty(
-                "api-required-header-keys.co-relationid")),pcqId, caseId);
+                CO_RELATIONID_PROPERTY_NAME)),pcqId, caseId);
         } catch (Exception e) {
             log.error("addCaseForPCQ API call failed due to error - {}", e.getMessage(), e);
             return ConversionUtil.generateSubmitResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
-                                                         environment.getProperty("api-error-messages.internal_error"));
+                                                         environment.getProperty(INTERNAL_ERROR_MESSAGE_PROPERTY_NAME));
         }
 
     }
@@ -162,24 +167,23 @@ public class ConsolidationController {
     public ResponseEntity<PcqRecordWithoutCaseResponse> getPcqRecordWithoutCase(@RequestHeader HttpHeaders headers) {
 
         try {
-
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
-                headers.get(environment.getProperty("api-required-header-keys.co-relationid")));
+                headers.get(environment.getProperty(CO_RELATIONID_PROPERTY_NAME)));
 
             return ConversionUtil.generatePcqRecordWithoutCaseResponse(protectedCharacteristicsList, HttpStatus.OK,
                                                                  environment.getProperty(
-                                                                     "api-error-messages.accepted"));
+                                                                     ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME));
 
         } catch (InvalidRequestException ive) {
             log.error("getPcqRecordWithoutCase API call failed due to error - {}", ive.getMessage(), ive);
             return ConversionUtil.generatePcqRecordWithoutCaseResponse(null, HttpStatus.BAD_REQUEST,
                                                                  environment.getProperty(
-                                                                     "api-error-messages.bad_request"));
+                                                                     BAD_REQUEST_ERROR_MESSAGE_PROPERTY_NAME));
         } catch (Exception e) {
             log.error("getPcqRecordWithoutCase API call failed due to error - {}", e.getMessage(), e);
             return ConversionUtil.generatePcqRecordWithoutCaseResponse(null, HttpStatus.INTERNAL_SERVER_ERROR,
                                                                  environment.getProperty(
-                                                                     "api-error-messages.internal_error"));
+                                                                     INTERNAL_ERROR_MESSAGE_PROPERTY_NAME));
         }
 
     }

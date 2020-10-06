@@ -36,17 +36,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.JUnit4TestShouldUseTestAnnotation"})
-public class SubmitAnswersServiceTest {
-
-
-    @Mock
-    Environment environment;
+class SubmitAnswersServiceTest {
 
     @Mock
-    ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+    private Environment environment;
+
+    @Mock
+    private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @InjectMocks
-    SubmitAnswersService submitAnswersService;
+    private SubmitAnswersService submitAnswersService;
 
 
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
@@ -74,7 +73,7 @@ public class SubmitAnswersServiceTest {
     private static final String DB_ENCRYPTION_KEY = "security.db.backend-encryption-key";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         MockitoAnnotations.initMocks(this);
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
@@ -82,7 +81,7 @@ public class SubmitAnswersServiceTest {
 
 
     @Test
-    public void testNoHeaders() {
+    void testNoHeaders() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
         try {
@@ -103,7 +102,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testNoHeadersProcessOptOut() {
+    void testNoHeadersProcessOptOut() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
         try {
@@ -124,7 +123,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testInvalidJson() {
+    void testInvalidJson() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
 
@@ -148,7 +147,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testInvalidJsonProcessOptOut() {
+    void testInvalidJsonProcessOptOut() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
 
@@ -172,7 +171,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testInvalidPaperChannel() {
+    void testInvalidPaperChannel() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
@@ -197,7 +196,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testRecordAlreadyExistsPaperChannel() {
+    void testRecordAlreadyExistsPaperChannel() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
@@ -229,7 +228,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testInvalidVersion() {
+    void testInvalidVersion() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
@@ -254,7 +253,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testInvalidVersionProcessOptOut() {
+    void testInvalidVersionProcessOptOut() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
@@ -279,7 +278,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testSubmitFirstTime() {
+    void testSubmitFirstTime() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
@@ -313,7 +312,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testSubmitPaperChannel() {
+    void testSubmitPaperChannel() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
@@ -351,7 +350,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testOptOutSuccess() {
+    void testOptOutSuccess() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
@@ -381,7 +380,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testOptOutFailRecordNotFound() {
+    void testOptOutFailRecordNotFound() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
@@ -412,7 +411,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testSubmitSecondTime() {
+    void testSubmitSecondTime() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
@@ -465,7 +464,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testStaleCompletedDate() {
+    void testStaleCompletedDate() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
@@ -518,7 +517,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testInternalError() {
+    void testInternalError() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
@@ -552,7 +551,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testInternalErrorForOptOut() {
+    void testInternalErrorForOptOut() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
@@ -582,7 +581,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Ignore
-    public void testIllegalStateError() {
+    void testIllegalStateError() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
@@ -614,7 +613,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testGetProtectedCharacteristicsPositive() {
+    void testGetProtectedCharacteristicsPositive() {
         String pcqId = TEST_PCQ_ID;
 
         try {
@@ -639,7 +638,7 @@ public class SubmitAnswersServiceTest {
     }
 
     @Test
-    public void testGetProtectedCharacteristicsNegative() {
+    void testGetProtectedCharacteristicsNegative() {
         String pcqId = TEST_PCQ_ID;
 
         try {

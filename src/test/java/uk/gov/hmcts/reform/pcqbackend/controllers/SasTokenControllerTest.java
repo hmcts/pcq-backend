@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-public class SasTokenControllerTest {
+class SasTokenControllerTest {
 
     @InjectMocks
     private SasTokenController sasTokenController;
@@ -52,7 +52,7 @@ public class SasTokenControllerTest {
     private static final String RESPONSE_HAS_CORRECT_OUTPUT = "Response is showing correct output.";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.sasTokenController = new SasTokenController();
         MockitoAnnotations.initMocks(this);
     }
@@ -63,7 +63,7 @@ public class SasTokenControllerTest {
      */
     @DisplayName("Should return a SAS token with a HTTP Status code of 200")
     @Test
-    public void testGenerateBulkScanSasTokenSuccess()  {
+    void testGenerateBulkScanSasTokenSuccess()  {
 
         try {
             when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
@@ -89,7 +89,7 @@ public class SasTokenControllerTest {
      */
     @DisplayName("Should return an error when service authorisation fails")
     @Test
-    public void testGenerateBulkScanSasTokenAuthorisedException()  {
+    void testGenerateBulkScanSasTokenAuthorisedException()  {
 
         try {
             when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
@@ -113,7 +113,7 @@ public class SasTokenControllerTest {
      */
     @DisplayName("Should return an error when SAS token generation fails")
     @Test
-    public void testUnableToGenerateBulkScanSasTokenException()  {
+    void testUnableToGenerateBulkScanSasTokenException()  {
 
         try {
             when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);

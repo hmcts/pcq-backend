@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.when;
 
 @Slf4j
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
-public class ConsolidationControllerTest {
+class ConsolidationControllerTest {
 
     private ConsolidationController consolidationController;
 
@@ -65,9 +65,11 @@ public class ConsolidationControllerTest {
     private static final String EXPECTED_NOT_FOUND_MSG = "Expected 400 status code";
     private static final String HTTP_NOT_FOUND = "400";
     private static final String EXPECTED_400_MSG = "Expected 400 status";
+    private static final String EXPECTED_EMPTY_PCQIDS_MSG = "Expected empty pcqIds array";
+    private static final String EXPECTED_EMPTY_PCQRCORDS_MSG = "Expected empty pcqRecords array";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         this.environment = mock(Environment.class);
         this.protectedCharacteristicsRepository = mock(ProtectedCharacteristicsRepository.class);
         ConsolidationService consolidationService = new ConsolidationService(
@@ -89,7 +91,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    public void testGetPcqWithoutCaseForMissingHeader()  {
+    void testGetPcqWithoutCaseForMissingHeader()  {
 
         try {
 
@@ -121,7 +123,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 200 and multiple pcq ids")
     @Test
-    public void testGetPcqWithoutCaseMultipleIds()  {
+    void testGetPcqWithoutCaseMultipleIds()  {
 
         try {
 
@@ -144,6 +146,7 @@ public class ConsolidationControllerTest {
             assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
             assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
             assertNotNull(actualBody.getPcqId(), "PcqIds are null");
+            assertTrue(actualBody.getPcqId().length > 0, "PcqIds has at least 1 entry");
             assertArrayContents(targetList, actualBody.getPcqId());
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
@@ -164,7 +167,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 200 and single pcq id")
     @Test
-    public void testGetPcqWithoutCaseSingleId()  {
+    void testGetPcqWithoutCaseSingleId()  {
 
         try {
 
@@ -206,7 +209,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 200 and no pcq ids")
     @Test
-    public void testGetPcqWithoutCaseNoPcqIds()  {
+    void testGetPcqWithoutCaseNoPcqIds()  {
 
         try {
 
@@ -249,7 +252,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Unrecoverable Request error code 500 and no pcq ids")
     @Test
-    public void testGetPcqWithoutCaseInternalError()  {
+    void testGetPcqWithoutCaseInternalError()  {
 
         try {
 
@@ -270,7 +273,8 @@ public class ConsolidationControllerTest {
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
             assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNull(actualBody.getPcqId(), "PcqIds are null");
+            assertEquals(0, actualBody.getPcqId().length, EXPECTED_EMPTY_PCQIDS_MSG);
+
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
             assertArrayContents(targetList, actualBody.getPcqId());
 
@@ -292,7 +296,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    public void testAddCaseForPcqForMissingHeader()  {
+    void testAddCaseForPcqForMissingHeader()  {
 
         try {
 
@@ -325,7 +329,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 200 for successful add operation")
     @Test
-    public void testAddCaseForPcqSuccess()  {
+    void testAddCaseForPcqSuccess()  {
 
         try {
 
@@ -362,7 +366,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 400 for un-successful add operation")
     @Test
-    public void testAddCaseForPcqFailure()  {
+    void testAddCaseForPcqFailure()  {
 
         try {
 
@@ -399,7 +403,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Internal Server Request error code 500 for un-successful add operation")
     @Test
-    public void testAddCaseForPcqInternalServerError()  {
+    void testAddCaseForPcqInternalServerError()  {
 
         try {
 
@@ -436,7 +440,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    public void testGetPcqRecordWithoutCaseForMissingHeader()  {
+    void testGetPcqRecordWithoutCaseForMissingHeader()  {
 
         try {
 
@@ -469,7 +473,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 200 and multiple pcq records")
     @Test
-    public void testGetPcqRecordWithoutCaseMultipleIds()  {
+    void testGetPcqRecordWithoutCaseMultipleIds()  {
 
         try {
 
@@ -513,7 +517,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 200 and single pcq record")
     @Test
-    public void testGetPcqRecordWithoutCaseSingleId()  {
+    void testGetPcqRecordWithoutCaseSingleId()  {
 
         try {
 
@@ -557,7 +561,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Success Request error code 200 and no pcq ids")
     @Test
-    public void testGetPcqRecordWithoutCaseNoPcqRecords()  {
+    void testGetPcqRecordWithoutCaseNoPcqRecords()  {
 
         try {
 
@@ -601,7 +605,7 @@ public class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Unrecoverable Request error code 500 and no pcq ids")
     @Test
-    public void testGetPcqRecordWithoutCaseInternalError()  {
+    void testGetPcqRecordWithoutCaseInternalError()  {
 
         try {
 
@@ -623,7 +627,7 @@ public class ConsolidationControllerTest {
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
             assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNull(actualBody.getPcqRecord(), "Pcq Records are not null");
+            assertEquals(0, actualBody.getPcqRecord().length, EXPECTED_EMPTY_PCQRCORDS_MSG);
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
             assertArrayContents(targetList, actualBody.getPcqRecord());
 

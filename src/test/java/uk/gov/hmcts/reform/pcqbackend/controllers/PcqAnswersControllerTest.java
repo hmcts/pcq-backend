@@ -43,10 +43,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-
 @Slf4j
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
-public class PcqAnswersControllerTest {
+class PcqAnswersControllerTest {
 
     private PcqAnswersController pcqAnswersController;
 
@@ -69,7 +68,7 @@ public class PcqAnswersControllerTest {
     private static final String TEST_PCQ_ID = "T1234";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         this.environment = mock(Environment.class);
         this.protectedCharacteristicsRepository = mock(ProtectedCharacteristicsRepository.class);
@@ -94,7 +93,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should submit the answers successfully and return with 201 response code")
     @Test
-    public void testSubmitAnswersFirstTime()  {
+    void testSubmitAnswersFirstTime()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -134,7 +133,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should submit the answers when OptOut is NULL successfully and return with 201 response code")
     @Test
-    public void testSubmitAnswersOptOutNull()  {
+    void testSubmitAnswersOptOutNull()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -174,7 +173,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should submit the answers for the paper channel successfully and return with 201 response code")
     @Test
-    public void testSubmitAnswersPaperChannel()  {
+    void testSubmitAnswersPaperChannel()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -213,7 +212,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should delete the answers when OptOut is Y successfully and return with 200 response code")
     @Test
-    public void testSubmitAnswersOptOutSuccess()  {
+    void testSubmitAnswersOptOutSuccess()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -249,7 +248,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should NOT delete the answers when OptOut is Y and return with 400 response code")
     @Test
-    public void testSubmitAnswersOptOutRecordNotFound()  {
+    void testSubmitAnswersOptOutRecordNotFound()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -286,7 +285,7 @@ public class PcqAnswersControllerTest {
     @DisplayName("Should NOT create the answers for missing DCN Number in paper channel and return with "
         + "400 response code")
     @Test
-    public void testSubmitAnswersPaperChannelMissingDcnNumber()  {
+    void testSubmitAnswersPaperChannelMissingDcnNumber()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnMissing.json");
@@ -319,7 +318,7 @@ public class PcqAnswersControllerTest {
     @DisplayName("Should NOT create the answers for empty DCN Number in paper channel and return with "
         + "400 response code")
     @Test
-    public void testSubmitAnswersPaperChannelEmptyDcnNumber()  {
+    void testSubmitAnswersPaperChannelEmptyDcnNumber()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnEmpty.json");
@@ -352,7 +351,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should update the answers successfully and return with 201 response code")
     @Test
-    public void testSubmitAnswersSecondTime()  {
+    void testSubmitAnswersSecondTime()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -428,7 +427,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should not update the database and return with 202 response code")
     @Test
-    public void testCompletedDateStale()  {
+    void testCompletedDateStale()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -505,7 +504,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should validate the version number and return with 403 response code")
     @Test
-    public void testInvalidVersionNumber()  {
+    void testInvalidVersionNumber()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
@@ -538,7 +537,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should validate the version number for OptOut operation and return with 403 response code")
     @Test
-    public void testInvalidVersionNumberForOptOut()  {
+    void testInvalidVersionNumberForOptOut()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
@@ -571,7 +570,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    public void testInvalidRequestForMissingHeader()  {
+    void testInvalidRequestForMissingHeader()  {
 
         try {
             String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
@@ -600,7 +599,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400 for OptOut")
     @Test
-    public void testInvalidOptOutRequestForMissingHeader()  {
+    void testInvalidOptOutRequestForMissingHeader()  {
 
         try {
             String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
@@ -630,7 +629,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    public void testRequestForInvalidJson()  {
+    void testRequestForInvalidJson()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
@@ -663,7 +662,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400 for OptOut request")
     @Test
-    public void testOptOutRequestForInvalidJson()  {
+    void testOptOutRequestForInvalidJson()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
@@ -696,7 +695,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400 for Invalid OptOut value")
     @Test
-    public void testRequestForInvalidOptOutValue()  {
+    void testRequestForInvalidOptOutValue()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson.json");
@@ -729,7 +728,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an 500 error code")
     @Test
-    public void testInternalError()  {
+    void testInternalError()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -769,7 +768,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an 200 error code")
     @Test
-    public void testGetAnswerFound()  {
+    void testGetAnswerFound()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -802,7 +801,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an 404 error code")
     @Test
-    public void testGetAnswerNotFound()  {
+    void testGetAnswerNotFound()  {
 
         String pcqId = TEST_PCQ_ID;
         try {

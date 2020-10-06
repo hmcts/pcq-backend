@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
-public class AuthServiceTest {
+class AuthServiceTest {
 
     private static final String REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH = "DFJSDFSDFSDFSDFSDSFS";
     private static final String REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME = "reform_scan_blob_router";
@@ -27,13 +27,13 @@ public class AuthServiceTest {
     private AuthTokenValidator authTokenValidator;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
         this.authService = new AuthService(authTokenValidator);
     }
 
     @Test
-    public void testShouldGetServiceAuthName() {
+    void testShouldGetServiceAuthName() {
         when(authTokenValidator.getServiceName(REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH))
             .thenReturn(REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME);
 
@@ -50,7 +50,7 @@ public class AuthServiceTest {
     }
 
     @Test
-    public void testShouldErrorIfServiceNotAuthenticated() {
+    void testShouldErrorIfServiceNotAuthenticated() {
         try {
             authService.authenticate(null);
             fail("The method should have thrown InvalidAuthenticationException");

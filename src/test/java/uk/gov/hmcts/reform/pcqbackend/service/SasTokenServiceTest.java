@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public class SasTokenServiceTest {
+class SasTokenServiceTest {
 
     private static final String BLOB_DEV_CONNECTION_STRING = "UseDevelopmentStorage=true";
 
@@ -26,7 +26,7 @@ public class SasTokenServiceTest {
     private SasTokenService sasTokenService;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
             .connectionString(BLOB_DEV_CONNECTION_STRING)
             .buildClient();
@@ -35,7 +35,7 @@ public class SasTokenServiceTest {
     }
 
     @Test
-    public void testGenerateSasTokenSuccess() {
+    void testGenerateSasTokenSuccess() {
         try {
             String actualSasToken = sasTokenService.generateSasToken("bulkscan");
             assertNotNull(actualSasToken, NOT_NULL_MESSAGE);

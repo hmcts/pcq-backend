@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,10 +26,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-public class JwtTokenFilterTest {
+class JwtTokenFilterTest {
 
-    JwtTokenFilter jwtTokenFilter;
-    JwtConfiguration jwtConfiguration;
+    private JwtTokenFilter jwtTokenFilter;
+    private JwtConfiguration jwtConfiguration;
 
     private static final String AUTH_NOT_NULL = "Authentication is not null";
     private static final String AUTH_NULL = "Authentication is null";
@@ -39,13 +39,13 @@ public class JwtTokenFilterTest {
     private static final String SECRET_KEY = "Filter-Test-Key-1";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         jwtConfiguration = mock(JwtConfiguration.class);
         jwtTokenFilter = new JwtTokenFilter(jwtConfiguration);
     }
 
     @Test
-    public void testNoHeaders() {
+    void testNoHeaders() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
@@ -63,7 +63,7 @@ public class JwtTokenFilterTest {
     }
 
     @Test
-    public void testEmptyAuthHeader() {
+    void testEmptyAuthHeader() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
@@ -86,7 +86,7 @@ public class JwtTokenFilterTest {
     }
 
     @Test
-    public void testAuthSuccess() {
+    void testAuthSuccess() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
@@ -115,7 +115,7 @@ public class JwtTokenFilterTest {
     }
 
     @Test
-    public void testAuthFailure() {
+    void testAuthFailure() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
