@@ -71,10 +71,9 @@ public class PcqBackEndClient {
     private <T> Map<String, Object> postRequest(String uriPath, T requestBody) {
 
         HttpEntity<T> request = new HttpEntity<>(requestBody, getS2sTokenHeaders());
-        ResponseEntity<Map> responseEntity = null;
+        ResponseEntity<Map> responseEntity;
 
         try {
-
             responseEntity = restTemplate.postForEntity(
                 uriPath,
                 request,
@@ -94,7 +93,7 @@ public class PcqBackEndClient {
     private <T> Map<String, Object> postRequestNoAuthHeader(String uriPath, T requestBody) {
 
         HttpEntity<T> request = new HttpEntity<>(requestBody, getCoRelationTokenHeaders());
-        ResponseEntity<Map> responseEntity = null;
+        ResponseEntity<Map> responseEntity;
 
         try {
 
@@ -117,7 +116,7 @@ public class PcqBackEndClient {
     private <T> Map<String, Object> putRequest(String uriPath, Object... params) {
 
         HttpEntity<T> request = new HttpEntity<>(getCoRelationTokenHeaders());
-        ResponseEntity<Map> responseEntity = null;
+        ResponseEntity<Map> responseEntity;
         //adding the query params to the URL
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + prdApiPort + uriPath)
             .queryParam("caseId", params[0]);
@@ -141,7 +140,7 @@ public class PcqBackEndClient {
     @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> getRequest(String uriPath, Object... params) {
 
-        ResponseEntity<Map> responseEntity = null;
+        ResponseEntity<Map> responseEntity;
 
         try {
             HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());
@@ -164,7 +163,7 @@ public class PcqBackEndClient {
     @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> getRequestForSasToken(String uriPath, Object... params) {
 
-        ResponseEntity<Map> responseEntity = null;
+        ResponseEntity<Map> responseEntity;
 
         try {
             HttpEntity<?> request = new HttpEntity<>(getServiceAuthorisationHeader());
@@ -187,7 +186,7 @@ public class PcqBackEndClient {
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> getPcqRecordRequestObject(String uriPath, Object... params) {
 
-        ResponseEntity<PcqRecordWithoutCaseResponse> responseEntity = null;
+        ResponseEntity<PcqRecordWithoutCaseResponse> responseEntity;
 
         try {
             HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());

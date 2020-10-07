@@ -25,16 +25,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ConsolidationServiceTest {
+class ConsolidationServiceTest {
 
     @Mock
-    Environment environment;
+    private Environment environment;
 
     @Mock
-    ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+    private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @InjectMocks
-    ConsolidationService consolidationService;
+    private ConsolidationService consolidationService;
 
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
     private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
@@ -51,12 +51,12 @@ public class ConsolidationServiceTest {
     private static final String ERROR_MSG_2 = "Method should not return null";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void testNoHeadersGetRequest() {
+    void testNoHeadersGetRequest() {
 
         try {
             consolidationService.getPcqsWithoutCase(null);
@@ -72,7 +72,7 @@ public class ConsolidationServiceTest {
     }
 
     @Test
-    public void testPcqWithoutCaseReturnMultipleIds() {
+    void testPcqWithoutCaseReturnMultipleIds() {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
 
         try {
@@ -99,7 +99,7 @@ public class ConsolidationServiceTest {
     }
 
     @Test
-    public void testPcqWithoutCaseReturnSingleId() {
+    void testPcqWithoutCaseReturnSingleId() {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
 
         try {
@@ -126,7 +126,7 @@ public class ConsolidationServiceTest {
     }
 
     @Test
-    public void testPcqWithoutCaseReturnEmptyList() {
+    void testPcqWithoutCaseReturnEmptyList() {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
 
         try {
@@ -153,7 +153,7 @@ public class ConsolidationServiceTest {
     }
 
     @Test
-    public void testPcqWithoutCaseReturnNullList() {
+    void testPcqWithoutCaseReturnNullList() {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
 
         try {
@@ -179,7 +179,7 @@ public class ConsolidationServiceTest {
     }
 
     @Test
-    public void testNoHeadersUpdateCase() {
+    void testNoHeadersUpdateCase() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
         try {
@@ -205,7 +205,7 @@ public class ConsolidationServiceTest {
     }
 
     @Test
-    public void testUpdateCaseSuccess() {
+    void testUpdateCaseSuccess() {
         try {
             when(environment.getProperty(UPDATE_MSG_PROPERTY)).thenReturn(UPDATED_MSG);
             when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(1);
@@ -232,7 +232,7 @@ public class ConsolidationServiceTest {
     }
 
     @Test
-    public void testUpdateCaseNoRecordsFound() {
+    void testUpdateCaseNoRecordsFound() {
         try {
             when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
             when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(0);
