@@ -281,7 +281,7 @@ dependencies {
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.2.RELEASE'
   compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
-  compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.5'
+  compile group: 'org.flywaydb', name: 'flyway-core', version: '7.0.1'
   compile group: 'org.postgresql', name: 'postgresql', version: '42.2.11'
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
 
