@@ -15,10 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
@@ -119,8 +120,8 @@ public class SubmitAnswersService {
 
                 if (resultCount == 0) {
                     log.error("Co-Relation Id : {} - submitAnswers API, Completed Date is in the past.", coRelationId);
-                    return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
-                                                                 environment.getProperty(
+                    return PcqUtils.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
+                                                           environment.getProperty(
                                                                      "api-error-messages.accepted"));
                 } else {
                     log.info(INFO_LOG_MSG
@@ -137,7 +138,7 @@ public class SubmitAnswersService {
             return handleInternalErrors(pcqId, coRelationId, ioe);
         }
 
-        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.CREATED,
+        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.CREATED,
                                       environment.getProperty("api-error-messages.created"));
     }
 
@@ -170,7 +171,7 @@ public class SubmitAnswersService {
             if (resultCount == 0) {
                 log.error("Co-Relation Id : {} - submitAnswers API, Opt Out invoked but record does not exist.",
                           coRelationId);
-                return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
+                return PcqUtils.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
                                                              environment.getProperty(
                                                                  BAD_REQUEST_ERROR_MSG_KEY));
             } else {
@@ -188,7 +189,7 @@ public class SubmitAnswersService {
             return handleInternalErrors(pcqId, coRelationId, ioe);
         }
 
-        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.OK,
+        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
                                                      environment.getProperty("api-error-messages.accepted"));
     }
 
@@ -275,7 +276,7 @@ public class SubmitAnswersService {
 
     private ResponseEntity<Object> handleInvalidRequestException(String pcqId, InvalidRequestException ive) {
         log.error(ive.getMessage());
-        return ConversionUtil.generateResponseEntity(pcqId, ive.getErrorCode(),
+        return PcqUtils.generateResponseEntity(pcqId, ive.getErrorCode(),
                                                      environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
     }
 
@@ -287,7 +288,7 @@ public class SubmitAnswersService {
             coRelationId,
             sve.getFormattedError()
         );
-        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
+        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
                                                      environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
     }
 
@@ -295,7 +296,7 @@ public class SubmitAnswersService {
 
         log.error("Co-Relation Id : {} - submitAnswers API call failed "
                       + "due to error - {}", coRelationId, except.getMessage(), except);
-        return ConversionUtil.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
+        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                                      environment.getProperty("api-error-messages.internal_error"));
     }
 

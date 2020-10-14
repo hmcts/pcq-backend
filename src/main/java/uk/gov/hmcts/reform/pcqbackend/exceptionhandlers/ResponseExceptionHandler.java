@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import uk.gov.hmcts.reform.authorisation.exceptions.InvalidTokenException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.UnableToGenerateSasTokenException;
-import uk.gov.hmcts.reform.pcqbackend.model.ErrorResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.ErrorResponse;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.ResponseEntity.status;

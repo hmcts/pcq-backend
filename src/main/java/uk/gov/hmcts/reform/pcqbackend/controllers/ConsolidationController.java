@@ -19,11 +19,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
@@ -134,7 +135,7 @@ public class ConsolidationController {
                 CO_RELATIONID_PROPERTY_NAME)),pcqId, caseId);
         } catch (Exception e) {
             log.error("addCaseForPCQ API call failed due to error - {}", e.getMessage(), e);
-            return ConversionUtil.generateSubmitResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
+            return PcqUtils.generateSubmitResponseEntity(pcqId, HttpStatus.INTERNAL_SERVER_ERROR,
                                                          environment.getProperty(INTERNAL_ERROR_MESSAGE_PROPERTY_NAME));
         }
 

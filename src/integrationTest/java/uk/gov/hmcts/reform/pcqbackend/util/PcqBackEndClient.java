@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -13,13 +11,11 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -28,6 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class PcqBackEndClient {
 
     private static final String APP_BASE_PATH = "/pcq/backend";
+    private static final String SUBJECT = "TEST";
+    private static final String TEST_AUTHORITIES = "TEST_AUTHORITY";
+    private static final String SECRET_KEY = "JwtSecretKey";
 
     private final int prdApiPort;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -246,7 +245,8 @@ public class PcqBackEndClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("X-Correlation-Id", "INTEG-TEST-PCQ");
-        headers.add("Authorization", "Bearer " + generateTestToken());
+        headers.add("Authorization", "Bearer "
+            + PcqUtils.generateAuthorizationToken(SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
         return headers;
     }
 
@@ -263,19 +263,5 @@ public class PcqBackEndClient {
         HttpHeaders headers = new HttpHeaders();
         headers.add("ServiceAuthorization", "INTEG-TEST-PCQ");
         return headers;
-    }
-
-    private String generateTestToken() {
-        List<String> authorities = new ArrayList<>();
-        long currentTime = System.currentTimeMillis();
-        authorities.add("TEST_AUTHORITY");
-
-        return Jwts.builder()
-            .setSubject("TEST")
-            .claim("authorities", authorities)
-            .setIssuedAt(new Date(currentTime))
-            .setExpiration(new Date(currentTime + 500_000))  // in milliseconds
-            .signWith(SignatureAlgorithm.HS256, "JwtSecretKey".getBytes())
-            .compact();
     }
 }

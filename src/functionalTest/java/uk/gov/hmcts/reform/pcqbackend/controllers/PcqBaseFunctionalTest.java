@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import io.restassured.specification.RequestSpecification;
@@ -12,15 +11,11 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.client.PcqBackEndServiceClient;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
@@ -56,22 +51,6 @@ public abstract class PcqBaseFunctionalTest {
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
         pcqBackEndServiceClient = new PcqBackEndServiceClient(pcqBackEndApiUrl, jwtSecretKey);
-    }
-
-
-    /**
-     * Obtains a JSON String from a JSON file in the classpath (Resources directory).
-     * @param fileName - The name of the Json file from classpath.
-     * @return - JSON String from the file.
-     * @throws IOException - If there is any issue when reading from the file.
-     */
-    protected String jsonStringFromFile(String fileName) throws IOException {
-        File resource = new ClassPathResource(fileName).getFile();
-        return new String(Files.readAllBytes(resource.toPath()));
-    }
-
-    protected PcqAnswerRequest jsonObjectFromString(String jsonString) throws IOException {
-        return new ObjectMapper().readValue(jsonString, PcqAnswerRequest.class);
     }
 
     @SuppressWarnings({"unchecked", "PMD.ConfusingTernary"})
@@ -167,10 +146,10 @@ public abstract class PcqBaseFunctionalTest {
     }
 
     protected String updateCompletedDate(String completedDateStr) {
-        Timestamp completedTime = ConversionUtil.getTimeFromString(completedDateStr);
+        Timestamp completedTime = PcqUtils.getTimeFromString(completedDateStr);
         Calendar calendar = Calendar.getInstance();
         completedTime.setTime(calendar.getTimeInMillis());
-        return ConversionUtil.convertTimeStampToString(completedTime);
+        return PcqUtils.convertTimeStampToString(completedTime);
     }
 
 }

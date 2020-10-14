@@ -10,10 +10,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
 
@@ -30,6 +30,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeader;
 
 @Slf4j
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
@@ -648,13 +649,6 @@ class ConsolidationControllerTest {
         mockHeader.set("HTTP_X-Correlation-Id", CO_RELATION_ID_FOR_TEST);
 
         return mockHeader;
-    }
-
-    public static List<String> getTestHeader() {
-        List<String> headerList =  new ArrayList<>();
-        headerList.add(CO_RELATION_ID_FOR_TEST);
-
-        return headerList;
     }
 
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")

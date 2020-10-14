@@ -20,11 +20,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
@@ -78,8 +79,8 @@ public class PcqAnswersController {
                 environment.getProperty("api-required-header-keys.co-relationid")), answerRequest);
         } catch (Exception e) {
             log.error("submitAnswers API call failed due to error - {}", e.getMessage(), e);
-            return ConversionUtil.generateResponseEntity(answerRequest.getPcqId(), HttpStatus.INTERNAL_SERVER_ERROR,
-                                                         environment.getProperty("api-error-messages.internal_error"));
+            return PcqUtils.generateResponseEntity(answerRequest.getPcqId(), HttpStatus.INTERNAL_SERVER_ERROR,
+                                                   environment.getProperty("api-error-messages.internal_error"));
         }
 
     }

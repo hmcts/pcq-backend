@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.UnableToGenerateSasTokenException;
-import uk.gov.hmcts.reform.pcqbackend.model.SasTokenResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.SasTokenResponse;
 import uk.gov.hmcts.reform.pcqbackend.security.AuthorisedServices;
 import uk.gov.hmcts.reform.pcqbackend.service.AuthService;
 import uk.gov.hmcts.reform.pcqbackend.service.SasTokenService;

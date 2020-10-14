@@ -6,32 +6,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswers;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswers;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqWithoutCaseResponse;
 
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.time.Clock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+
+import static uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils.convertDateToString;
+import static uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils.convertTimeStampToString;
+import static uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils.getDateFromString;
+import static uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils.getTimeFromString;
 
 @Slf4j
 public final class ConversionUtil {
-
-
-    private static final String COMPLETED_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-    private static final String DOB_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 
     private ConversionUtil() {
 
@@ -94,27 +84,6 @@ public final class ConversionUtil {
         return answerResponse;
     }
 
-    public static String convertTimeStampToString(Timestamp timestamp) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(COMPLETED_DATE_FORMAT, Locale.UK);
-        return dateFormat.format(timestamp);
-    }
-
-    public static String convertDateToString(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DOB_FORMAT, Locale.UK);
-        return dateFormat.format(date);
-    }
-
-    public static ResponseEntity<Object> generateResponseEntity(String pcqId, HttpStatus code, String message) {
-
-        Map<String, Object> responseMap = new ConcurrentHashMap<>();
-        responseMap.put("pcqId", HtmlUtils.htmlEscape(pcqId));
-        responseMap.put("responseStatus", message);
-        responseMap.put("responseStatusCode", String.valueOf(code.value()));
-
-        return new ResponseEntity<>(responseMap, code);
-
-    }
-
     public static ProtectedCharacteristics convertJsonToDomain(PcqAnswerRequest pcqAnswerRequest) {
         ProtectedCharacteristics protectedCharacteristics = new ProtectedCharacteristics();
         protectedCharacteristics.setPcqId(pcqAnswerRequest.getPcqId());
@@ -174,37 +143,6 @@ public final class ConversionUtil {
         }
 
         return protectedCharacteristics;
-    }
-
-    public static Timestamp getTimeFromString(String timeStampStr) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(COMPLETED_DATE_FORMAT);
-        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(timeStampStr));
-
-        return Timestamp.valueOf(localDateTime);
-    }
-
-    public static Date getDateFromString(String dateStr) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DOB_FORMAT);
-        LocalDate localDate = LocalDate.from(formatter.parse(dateStr));
-        return Date.valueOf(localDate);
-    }
-
-    public static Timestamp getDateTimeInPast(long numberOfDays) {
-        LocalDateTime currentDateTime = LocalDateTime.now(Clock.systemUTC());
-
-        return Timestamp.valueOf(currentDateTime.minusDays(numberOfDays));
-    }
-
-    public static ResponseEntity<SubmitResponse> generateSubmitResponseEntity(String pcqId, HttpStatus code,
-                                                                        String message) {
-
-        SubmitResponse submitResponse = new SubmitResponse();
-        submitResponse.setPcqId(pcqId);
-        submitResponse.setResponseStatus(message);
-        submitResponse.setResponseStatusCode(String.valueOf(code.value()));
-
-        return new ResponseEntity<>(submitResponse, code);
-
     }
 
     public static ResponseEntity<PcqWithoutCaseResponse> generatePcqWithoutCaseResponse(List<ProtectedCharacteristics>

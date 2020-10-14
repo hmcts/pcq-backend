@@ -1,26 +1,20 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.security.Security;
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +27,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeader;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.JUnit4TestShouldUseTestAnnotation"})
 class SubmitAnswersServiceTest {
@@ -45,9 +42,6 @@ class SubmitAnswersServiceTest {
 
     @InjectMocks
     private SubmitAnswersService submitAnswersService;
-
-
-    private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
 
     private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
 
@@ -422,8 +416,8 @@ class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             int resultCount = 1;
             int dobProvided = 1;
-            Date testDob = new Date(getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
-            Timestamp testTimeStamp = getTimeFromString("2020-03-05T09:13:45.000Z");
+            Date testDob = new Date(PcqUtils.getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -475,8 +469,8 @@ class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             int resultCount = 0;
             int dobProvided = 1;
-            Date testDob = new Date(getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
-            Timestamp testTimeStamp = getTimeFromString("2020-03-05T09:13:45.000Z");
+            Date testDob = new Date(PcqUtils.getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -624,37 +618,6 @@ class SubmitAnswersServiceTest {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
-    }
-
-
-    /**
-     * Obtains a JSON String from a JSON file in the classpath (Resources directory).
-     * @param fileName - The name of the Json file from classpath.
-     * @return - JSON String from the file.
-     * @throws IOException - If there is any issue when reading from the file.
-     */
-    public static String jsonStringFromFile(String fileName) throws IOException {
-        File resource = new ClassPathResource(fileName).getFile();
-        return new String(Files.readAllBytes(resource.toPath()));
-    }
-
-    public static PcqAnswerRequest jsonObjectFromString(String jsonString) throws IOException {
-        return new ObjectMapper().readValue(jsonString, PcqAnswerRequest.class);
-    }
-
-    public static List<String> getTestHeader() {
-        List<String> headerList =  new ArrayList<>();
-        headerList.add(CO_RELATION_ID_FOR_TEST);
-
-        return headerList;
-    }
-
-    private Timestamp getTimeFromString(String timeStr) {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse(timeStr));
-
-        return Timestamp.valueOf(localDateTime);
     }
 
 }

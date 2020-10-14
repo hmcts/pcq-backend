@@ -8,10 +8,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +21,8 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Functional")})
@@ -73,7 +75,7 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
             //Create 3rd record in database with a completed date past the limit.
             String thirdUuid = generateUuid();
             answerRequest.setPcqId(thirdUuid);
-            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT + 1)));
 
             response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
