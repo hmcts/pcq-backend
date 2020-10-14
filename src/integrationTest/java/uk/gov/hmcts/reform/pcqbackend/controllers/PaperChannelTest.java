@@ -351,7 +351,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
 
         try {
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidVersionForPaper.json");
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionForPaper.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
