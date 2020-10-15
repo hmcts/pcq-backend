@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -24,6 +19,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils.generateAuthorizationToken;
 
 @Slf4j
 class JwtTokenFilterTest {
@@ -37,6 +33,8 @@ class JwtTokenFilterTest {
     private static final String EXCEPTION_IO_MSG = "IOException thrown while test execution ";
     private static final String TOKEN_PREFIX = "Bearer ";
     private static final String SECRET_KEY = "Filter-Test-Key-1";
+    private static final String SUBJECT = "TEST";
+    private static final String TEST_AUTHORITIES = "TEST_AUTHORITY";
 
     @BeforeEach
     void setUp() {
@@ -91,8 +89,8 @@ class JwtTokenFilterTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
 
-        when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn("Bearer "
-                                                                                 + generateTestToken());
+        when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn(
+            "Bearer " + generateAuthorizationToken(JwtTokenFilterTest.SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
         when(jwtConfiguration.getPrefix()).thenReturn(TOKEN_PREFIX);
         when(jwtConfiguration.getSecret()).thenReturn(SECRET_KEY);
 
@@ -120,8 +118,8 @@ class JwtTokenFilterTest {
         HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
 
-        when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn("Bearer "
-                                                                                 + generateTestToken());
+        when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn(
+            "Bearer " + generateAuthorizationToken(JwtTokenFilterTest.SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
         when(jwtConfiguration.getPrefix()).thenReturn(TOKEN_PREFIX);
         when(jwtConfiguration.getSecret()).thenReturn("Invalid Key");
 
@@ -135,20 +133,5 @@ class JwtTokenFilterTest {
         }
 
         verify(mockRequest, times(1)).getHeader(jwtConfiguration.getHeader());
-    }
-
-    @SuppressWarnings("PMD.LawOfDemeter")
-    private String generateTestToken() {
-        List<String> authorities = new ArrayList<>();
-        long currentTime = System.currentTimeMillis();
-        authorities.add("TEST_AUTHORITY");
-
-        return Jwts.builder()
-            .setSubject("TEST")
-            .claim("authorities", authorities)
-            .setIssuedAt(new Date(currentTime))
-            .setExpiration(new Date(currentTime + 500_000))  // in milliseconds
-            .signWith(SignatureAlgorithm.HS256, JwtTokenFilterTest.SECRET_KEY.getBytes())
-            .compact();
     }
 }

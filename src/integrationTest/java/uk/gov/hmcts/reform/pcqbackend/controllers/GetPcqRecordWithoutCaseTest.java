@@ -9,17 +9,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.http.ResponseEntity;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -148,7 +150,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
-            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT + 1)));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
@@ -174,7 +176,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
-            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT + 1)));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
@@ -200,7 +202,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
-            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT)));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
@@ -226,7 +228,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
-            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT)));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
@@ -252,7 +254,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile(JSON_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
-            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT - 1)));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
@@ -278,7 +280,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
             String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //Update the completed date to be in the past.
-            answerRequest.setCompletedDate(ConversionUtil.convertTimeStampToString(ConversionUtil.getDateTimeInPast(
+            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT - 1)));
             pcqBackEndClient.createPcqAnswer(answerRequest);
 

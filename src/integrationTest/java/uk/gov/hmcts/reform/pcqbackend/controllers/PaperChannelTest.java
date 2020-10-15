@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 
 import java.io.IOException;
@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
@@ -349,7 +351,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
 
         try {
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidVersionForPaper.json");
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionForPaper.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);

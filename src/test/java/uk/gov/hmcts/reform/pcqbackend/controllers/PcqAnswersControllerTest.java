@@ -8,29 +8,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.security.Security;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,6 +35,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeader;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @Slf4j
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
@@ -375,7 +371,7 @@ class PcqAnswersControllerTest {
             int resultCount = 1;
             int dobProvided = 1;
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = getTimeFromString();
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -451,7 +447,7 @@ class PcqAnswersControllerTest {
             int resultCount = 0;
             int dobProvided = 1;
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = getTimeFromString();
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -842,42 +838,12 @@ class PcqAnswersControllerTest {
         return  new ObjectMapper().writeValueAsString(obj);
     }
 
-    /**
-     * Obtains a JSON String from a JSON file in the classpath (Resources directory).
-     * @param fileName - The name of the Json file from classpath.
-     * @return - JSON String from the file.
-     * @throws IOException - If there is any issue when reading from the file.
-     */
-    public static String jsonStringFromFile(String fileName) throws IOException {
-        File resource = new ClassPathResource(fileName).getFile();
-        return new String(Files.readAllBytes(resource.toPath()));
-    }
-
-    public static PcqAnswerRequest jsonObjectFromString(String jsonString) throws IOException {
-        return new ObjectMapper().readValue(jsonString, PcqAnswerRequest.class);
-    }
-
-    public static List<String> getTestHeader() {
-        List<String> headerList =  new ArrayList<>();
-        headerList.add(CO_RELATION_ID_FOR_TEST);
-
-        return headerList;
-    }
 
     private HttpHeaders getMockHeader() {
         HttpHeaders mockHeader = mock(HttpHeaders.class);
         mockHeader.set("HTTP_X-Correlation-Id", CO_RELATION_ID_FOR_TEST);
 
         return mockHeader;
-    }
-
-
-    private Timestamp getTimeFromString() {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse("2020-03-05T09:13:45.000Z"));
-
-        return Timestamp.valueOf(localDateTime);
     }
 
 }

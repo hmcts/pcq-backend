@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
-import uk.gov.hmcts.reform.pcqbackend.model.SasTokenResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.SasTokenResponse;
 import uk.gov.hmcts.reform.pcqbackend.security.AuthorisedServices;
 import uk.gov.hmcts.reform.pcqbackend.service.AuthService;
 import uk.gov.hmcts.reform.pcqbackend.service.SasTokenService;
