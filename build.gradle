@@ -284,7 +284,7 @@ dependencies {
   compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.5'
-  compile group: 'org.postgresql', name: 'postgresql', version: '42.2.11'
+  compile group: 'org.postgresql', name: 'postgresql', version: '42.2.17'
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
 
   compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
