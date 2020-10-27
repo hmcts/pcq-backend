@@ -31,6 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -113,7 +115,8 @@ class PcqAnswersControllerTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -126,7 +129,7 @@ class PcqAnswersControllerTest {
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).save(any(
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
                 ProtectedCharacteristics.class));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
@@ -153,7 +156,7 @@ class PcqAnswersControllerTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -166,7 +169,7 @@ class PcqAnswersControllerTest {
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).save(any(
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
                 ProtectedCharacteristics.class));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
@@ -192,7 +195,7 @@ class PcqAnswersControllerTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -205,7 +208,7 @@ class PcqAnswersControllerTest {
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).save(any(
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
                 ProtectedCharacteristics.class));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
@@ -747,8 +750,8 @@ class PcqAnswersControllerTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class)))
-                .thenThrow(NullPointerException.class);
+            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository).persist(any(
+                ProtectedCharacteristics.class));
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -761,7 +764,7 @@ class PcqAnswersControllerTest {
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).save(any(
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
                 ProtectedCharacteristics.class));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {

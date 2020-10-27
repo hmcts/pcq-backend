@@ -11,7 +11,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository()
-public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String> {
+public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String>,
+    ProtectedCharacteristicsRepositoryCustom {
 
     @SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.UseObjectForClearerAPI"})
     @Modifying(clearAutomatically = true)

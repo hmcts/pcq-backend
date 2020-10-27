@@ -24,9 +24,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeader;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
@@ -286,7 +288,7 @@ class SubmitAnswersServiceTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
@@ -324,7 +326,7 @@ class SubmitAnswersServiceTest {
                 .thenReturn(protectedCharacteristicsList);
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
@@ -518,15 +520,16 @@ class SubmitAnswersServiceTest {
         String pcqId = TEST_PCQ_ID;
 
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            targetObject.setPcqId(pcqId);
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenThrow(
-                NullPointerException.class);
+            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository).persist(targetObject);
 
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 

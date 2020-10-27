@@ -75,7 +75,7 @@ public class SubmitAnswersService {
             if (protectedCharacteristics.isEmpty()) {
 
                 // Create the new PCQ Answers record.
-                protectedCharacteristicsRepository.save(createCharacteristics);
+                protectedCharacteristicsRepository.persist(createCharacteristics);
 
                 log.info(INFO_LOG_MSG
                              + "Protected Characteristic Record submitted for creation.", coRelationId,
