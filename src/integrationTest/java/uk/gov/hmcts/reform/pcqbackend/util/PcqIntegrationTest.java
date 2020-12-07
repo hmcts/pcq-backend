@@ -7,15 +7,12 @@ import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Map;
@@ -59,31 +56,21 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
         protectedCharacteristicsRepository.deleteAll();
     }
 
-    /**
-     * Obtains a JSON String from a JSON file in the classpath (Resources directory).
-     * @param fileName - The name of the Json file from classpath.
-     * @return - JSON String from the file.
-     * @throws IOException - If there is any issue when reading from the file.
-     */
-    public static String jsonStringFromFile(String fileName) throws IOException {
-        File resource = new ClassPathResource(fileName).getFile();
-        return new String(Files.readAllBytes(resource.toPath()));
-    }
-
-    public static PcqAnswerRequest jsonObjectFromString(String jsonString) throws IOException {
-        return new ObjectMapper().readValue(jsonString, PcqAnswerRequest.class);
-    }
-
     @SuppressWarnings("PMD.ConfusingTernary")
     protected void checkAssertionsOnResponse(ProtectedCharacteristics protectedCharacteristics,
                                           PcqAnswerRequest answerRequest) {
         assertEquals("PCQId not matching", protectedCharacteristics.getPcqId(), answerRequest.getPcqId());
         assertEquals("CaseId not matching", protectedCharacteristics.getCaseId(),
                      answerRequest.getCaseId());
-        log.info("Encrypted party id is " + protectedCharacteristics.getPartyId());
+        assertEquals("DCN Number not matching", protectedCharacteristics.getDcnNumber(),
+                     answerRequest.getDcnNumber());
+        assertEquals("Form Id not matching", protectedCharacteristics.getFormId(),
+                     answerRequest.getFormId());
+        //assertEquals("PartyId not matching", answerRequest.getPartyId(),
+        //             ConversionUtil.decrypt(protectedCharacteristics.getPartyId(), environment
+        //                 .getProperty("security.db.backend-encryption-key")));
         assertEquals("PartyId not matching", answerRequest.getPartyId(),
-                     ConversionUtil.decrypt(protectedCharacteristics.getPartyId(), environment
-                         .getProperty("security.db.backend-encryption-key")));
+                     protectedCharacteristics.getPartyId());
         assertEquals("Channel not matching", protectedCharacteristics.getChannel().intValue(),
                      answerRequest.getChannel());
         assertEquals("ServiceId not matching", protectedCharacteristics.getServiceId(),
@@ -95,7 +82,7 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
         assertEquals("DobProvided not matching", protectedCharacteristics.getDobProvided(),
                      answerRequest.getPcqAnswers().getDobProvided());
         if (protectedCharacteristics.getDateOfBirth() != null) {
-            assertEquals("Dob not matching", ConversionUtil.convertDateToString(protectedCharacteristics
+            assertEquals("Dob not matching", PcqUtils.convertDateToString(protectedCharacteristics
                                                                                     .getDateOfBirth()),
                          answerRequest.getPcqAnswers().getDob()
             );
@@ -175,10 +162,10 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
     }
 
     protected String updateCompletedDate(String completedDateStr) {
-        Timestamp completedTime = ConversionUtil.getTimeFromString(completedDateStr);
+        Timestamp completedTime = PcqUtils.getTimeFromString(completedDateStr);
         Calendar calendar = Calendar.getInstance();
         completedTime.setTime(calendar.getTimeInMillis());
-        return ConversionUtil.convertTimeStampToString(completedTime);
+        return PcqUtils.convertTimeStampToString(completedTime);
     }
 
     @SuppressWarnings("unchecked")

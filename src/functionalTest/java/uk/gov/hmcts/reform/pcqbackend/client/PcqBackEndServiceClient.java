@@ -1,18 +1,15 @@
 package uk.gov.hmcts.reform.pcqbackend.client;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.rest.SerenityRest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 import static net.serenitybdd.rest.SerenityRest.given;
@@ -30,6 +27,8 @@ public class PcqBackEndServiceClient {
     private static final String CO_RELATION_HEADER = "X-Correlation-Id";
     private static final String SUBMIT_ANSWERS_URL = "/pcq/backend/submitAnswers";
     private static final String INFO_MSG_CONSTANT_1 = "Update answers record response: ";
+    private static final String SUBJECT = "TEST";
+    private static final String TEST_AUTHORITIES = "TEST_AUTHORITY";
 
     private final String pcqBackEndApiUrl;
     private final String jwtSecretKey;
@@ -97,7 +96,7 @@ public class PcqBackEndServiceClient {
         return response.body().as(Map.class);
     }
 
-    public Map<String, Object> updateAnswersRecord(PcqAnswerRequest answerRequest) {
+    public Map<String, Object> updateAnswersRecord(PcqAnswerRequest answerRequest, HttpStatus status) {
         Response response = getMultipleAuthHeaders(jwtSecretKey)
             .body(answerRequest)
             .post(SUBMIT_ANSWERS_URL)
@@ -109,7 +108,7 @@ public class PcqBackEndServiceClient {
 
         response.then()
             .assertThat()
-            .statusCode(CREATED.value());
+            .statusCode(status.value());
 
         return response.body().as(Map.class);
     }
@@ -197,6 +196,21 @@ public class PcqBackEndServiceClient {
         return response.body().as(Map.class);
     }
 
+    public PcqRecordWithoutCaseResponse getAnswerRecordsWithoutCase(HttpStatus status) {
+
+        Response response = getCoRelationHeaders()
+            .get("pcq/backend/consolidation/pcqRecordWithoutCase")
+            .andReturn();
+        response.then()
+            .assertThat()
+            .statusCode(status.value());
+
+        if (status == HttpStatus.UNAUTHORIZED || status == INTERNAL_SERVER_ERROR) {
+            return null;
+        }
+        return response.body().as(PcqRecordWithoutCaseResponse.class);
+    }
+
     public Map<String, Object> addCaseForPcq(String pcqId, String caseId, HttpStatus status) {
         Response response = getMultipleAuthHeadersWithQueryParams("caseId", caseId)
             .put("pcq/backend/consolidation/addCaseForPCQ/" + pcqId)
@@ -227,7 +241,8 @@ public class PcqBackEndServiceClient {
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
             .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ")
-            .header("Authorization", "Bearer " + generateTestToken(secretKey));
+            .header("Authorization", "Bearer "
+                + PcqUtils.generateAuthorizationToken(secretKey, SUBJECT, TEST_AUTHORITIES));
     }
 
     public RequestSpecification getCoRelationHeaders() {
@@ -247,20 +262,6 @@ public class PcqBackEndServiceClient {
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
             .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ")
             .queryParam(paramName, paramValue);
-    }
-
-    private String generateTestToken(String secretKey) {
-        List<String> authorities = new ArrayList<>();
-        long currentTime = System.currentTimeMillis();
-        authorities.add("TEST_AUTHORITY");
-
-        return Jwts.builder()
-            .setSubject("TEST")
-            .claim("authorities", authorities)
-            .setIssuedAt(new Date(currentTime))
-            .setExpiration(new Date(currentTime + 500_000))  // in milliseconds
-            .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
-            .compact();
     }
 
 }

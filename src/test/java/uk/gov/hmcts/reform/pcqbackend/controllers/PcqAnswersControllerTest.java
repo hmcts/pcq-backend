@@ -8,30 +8,22 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.security.Security;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,15 +31,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeader;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @Slf4j
 @SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
-public class PcqAnswersControllerTest {
+class PcqAnswersControllerTest {
 
     private PcqAnswersController pcqAnswersController;
 
@@ -66,13 +62,23 @@ public class PcqAnswersControllerTest {
     private static final String SCHEMA_FILE_PROPERTY = "api-schema-file.submitanswer-schema";
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
-    private static final String ENCRYPTION_PROPERTY = "security.db.backend-encryption-key";
-    private static final String TEST_ENCRYPTION_KEY = "ThisIsATestKeyForEncryption";
+
+    private static final String FIRST_SUBMIT_ANSWER_FILENAME = "JsonTestFiles/FirstSubmitAnswer.json";
+    private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerOptOutNull.json";
+    private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME
+        =  "JsonTestFiles/FirstSubmitAnswerOptOut.json";
+    private static final String FIRST_SUBMIT_ANSWER_PAPER_CHANNEL_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerPaperChannel.json";
+    private static final String FIRST_SUBMIT_ANSWER_DCN_MISSING_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerDcnMissing.json";
+    private static final String FIRST_SUBMIT_ANSWER_DCN_EMPTY_FILENAME
+        = "JsonTestFiles/FirstSubmitAnswerDcnEmpty.json";
 
     private static final String TEST_PCQ_ID = "T1234";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         this.environment = mock(Environment.class);
         this.protectedCharacteristicsRepository = mock(ProtectedCharacteristicsRepository.class);
@@ -88,6 +94,7 @@ public class PcqAnswersControllerTest {
         when(environment.getProperty("api-version-number")).thenReturn("1");
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
+        when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
     }
 
     /**
@@ -96,11 +103,11 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should submit the answers successfully and return with 201 response code")
     @Test
-    public void testSubmitAnswersFirstTime()  {
+    void testSubmitAnswersFirstTime()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -108,12 +115,11 @@ public class PcqAnswersControllerTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class))).thenReturn(targetObject);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(TEST_ENCRYPTION_KEY);
 
             ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
@@ -122,10 +128,227 @@ public class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).save(any(
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
                 ProtectedCharacteristics.class));
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with NULL in OptOut and that the answers record
+     * is successfully added to the database. The response status code will be 201.
+     */
+    @DisplayName("Should submit the answers when OptOut is NULL successfully and return with 201 response code")
+    @Test
+    void testSubmitAnswersOptOutNull()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+
+            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
+                ProtectedCharacteristics.class));
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called for paper channel and that the answers record
+     * is successfully added to the database. The response status code will be 201.
+     */
+    @DisplayName("Should submit the answers for the paper channel successfully and return with 201 response code")
+    @Test
+    void testSubmitAnswersPaperChannel()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_PAPER_CHANNEL_FILENAME);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+
+            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
+                ProtectedCharacteristics.class));
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with Y in OptOut and that the answers record
+     * is successfully deleted from the database. The response status code will be 200.
+     */
+    @DisplayName("Should delete the answers when OptOut is Y successfully and return with 200 response code")
+    @Test
+    void testSubmitAnswersOptOutSuccess()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            int resultCount = 1;
+
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(resultCount);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with Y in OptOut and that the answers record
+     * is not deleted from the database. The response status code will be 400.
+     */
+    @DisplayName("Should NOT delete the answers when OptOut is Y and return with 400 response code")
+    @Test
+    void testSubmitAnswersOptOutRecordNotFound()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            int resultCount = 0;
+
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(resultCount);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called for paper channel and that the answers record
+     * is not created in the database. The response status code will be 400.
+     */
+    @DisplayName("Should NOT create the answers for missing DCN Number in paper channel and return with "
+        + "400 response code")
+    @Test
+    void testSubmitAnswersPaperChannelMissingDcnNumber()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_MISSING_FILENAME);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called for paper channel and that the answers record
+     * is not created in the database. The response status code will be 400.
+     */
+    @DisplayName("Should NOT create the answers for empty DCN Number in paper channel and return with "
+        + "400 response code")
+    @Test
+    void testSubmitAnswersPaperChannelEmptyDcnNumber()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_EMPTY_FILENAME);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -139,7 +362,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should update the answers successfully and return with 201 response code")
     @Test
-    public void testSubmitAnswersSecondTime()  {
+    void testSubmitAnswersSecondTime()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -151,7 +374,7 @@ public class PcqAnswersControllerTest {
             int resultCount = 1;
             int dobProvided = 1;
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = getTimeFromString();
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -215,7 +438,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should not update the database and return with 202 response code")
     @Test
-    public void testCompletedDateStale()  {
+    void testCompletedDateStale()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -227,7 +450,7 @@ public class PcqAnswersControllerTest {
             int resultCount = 0;
             int dobProvided = 1;
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = getTimeFromString();
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
@@ -292,10 +515,43 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should validate the version number and return with 403 response code")
     @Test
-    public void testInvalidVersionNumber()  {
+    void testInvalidVersionNumber()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API OptOut operation when it is called with incorrect version number.
+     * The response status code will be 403.
+     */
+    @DisplayName("Should validate the version number for OptOut operation and return with 403 response code")
+    @Test
+    void testInvalidVersionNumberForOptOut()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
@@ -325,11 +581,41 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    public void testInvalidRequestForMissingHeader()  {
+    void testInvalidRequestForMissingHeader()  {
 
         try {
             String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = mock(HttpHeaders.class);
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage());
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with all OptOut and valid parameters but the
+     * header does not contain the required attribute. The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400 for OptOut")
+    @Test
+    void testInvalidOptOutRequestForMissingHeader()  {
+
+        try {
+            String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            answerRequest.setOptOut("Y");
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = mock(HttpHeaders.class);
@@ -354,10 +640,76 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    public void testRequestForInvalidJson()  {
+    void testRequestForInvalidJson()  {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
+
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API OptOut request when it is called with invalid Json.
+     * The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400 for OptOut request")
+    @Test
+    void testOptOutRequestForInvalidJson()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
+
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the submitAnswers API when it is called with invalid OptOut value in the Json.
+     * The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400 for Invalid OptOut value")
+    @Test
+    void testRequestForInvalidOptOutValue()  {
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson.json");
 
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
@@ -387,7 +739,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an 500 error code")
     @Test
-    public void testInternalError()  {
+    void testInternalError()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -398,11 +750,9 @@ public class PcqAnswersControllerTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.save(any(ProtectedCharacteristics.class)))
-                .thenThrow(NullPointerException.class);
+            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository).persist(any(
+                ProtectedCharacteristics.class));
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(TEST_ENCRYPTION_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
@@ -413,9 +763,8 @@ public class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).save(any(
+            verify(protectedCharacteristicsRepository, times(1)).persist(any(
                 ProtectedCharacteristics.class));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
@@ -430,19 +779,16 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an 200 error code")
     @Test
-    public void testGetAnswerFound()  {
+    void testGetAnswerFound()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
 
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
             targetObject.setPcqId(pcqId);
-            targetObject.setPartyId(ConversionUtil.encryptWithKey("Test-partyId", TEST_ENCRYPTION_KEY));
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
             when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(TEST_ENCRYPTION_KEY);
 
             ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
 
@@ -453,50 +799,9 @@ public class PcqAnswersControllerTest {
             assertNotNull(actualBody, RESPONSE_NULL_MSG);
 
             verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
-    }
-
-    /**
-     * This method tests the getAnswer API when it is called with all valid parameters but application
-     * has un-recoverable error. The response status code will be 500.
-     */
-    @DisplayName("Should return with an 500 error code for test Get Answer Found")
-    @Test
-    public void testGetAnswerFoundInternalError()  {
-
-        String pcqId = TEST_PCQ_ID;
-        try {
-
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            targetObject.setPartyId(ConversionUtil.encryptWithKey("Test-partyId", TEST_ENCRYPTION_KEY));
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(environment.getProperty(ENCRYPTION_PROPERTY))
-                .thenReturn(null);
-
-            ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
-
-            PcqAnswerResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, RESPONSE_NULL_MSG);
-
-
-        } catch (IllegalStateException ise) {
-            assertEquals("Error Decrypting : null", ise.getMessage(), "Not the expected message");
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        } finally {
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(environment, times(1)).getProperty(ENCRYPTION_PROPERTY);
         }
 
     }
@@ -507,7 +812,7 @@ public class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an 404 error code")
     @Test
-    public void testGetAnswerNotFound()  {
+    void testGetAnswerNotFound()  {
 
         String pcqId = TEST_PCQ_ID;
         try {
@@ -536,42 +841,12 @@ public class PcqAnswersControllerTest {
         return  new ObjectMapper().writeValueAsString(obj);
     }
 
-    /**
-     * Obtains a JSON String from a JSON file in the classpath (Resources directory).
-     * @param fileName - The name of the Json file from classpath.
-     * @return - JSON String from the file.
-     * @throws IOException - If there is any issue when reading from the file.
-     */
-    public static String jsonStringFromFile(String fileName) throws IOException {
-        File resource = new ClassPathResource(fileName).getFile();
-        return new String(Files.readAllBytes(resource.toPath()));
-    }
-
-    public static PcqAnswerRequest jsonObjectFromString(String jsonString) throws IOException {
-        return new ObjectMapper().readValue(jsonString, PcqAnswerRequest.class);
-    }
-
-    public static List<String> getTestHeader() {
-        List<String> headerList =  new ArrayList<>();
-        headerList.add(CO_RELATION_ID_FOR_TEST);
-
-        return headerList;
-    }
 
     private HttpHeaders getMockHeader() {
         HttpHeaders mockHeader = mock(HttpHeaders.class);
         mockHeader.set("HTTP_X-Correlation-Id", CO_RELATION_ID_FOR_TEST);
 
         return mockHeader;
-    }
-
-
-    private Timestamp getTimeFromString() {
-        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
-        LocalDateTime localDateTime = LocalDateTime.from(formatter.parse("2020-03-05T09:13:45.000Z"));
-
-        return Timestamp.valueOf(localDateTime);
     }
 
 }

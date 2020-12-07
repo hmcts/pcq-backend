@@ -11,7 +11,6 @@ variable "location" {
 }
 
 variable "location_db" {
-  type    = "string"
   default = "UK South"
 }
 
@@ -29,15 +28,10 @@ variable "jenkins_AAD_objectId" {
 variable "subscription" {}
 
 variable "common_tags" {
-  type = "map"
-}
-
-variable "managed_identity_object_id" {
-  default = ""
+  type = map(string)
 }
 
 variable "appinsights_location" {
-  type        = "string"
   default     = "West Europe"
   description = "Location for Application Insights"
 }

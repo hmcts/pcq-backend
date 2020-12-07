@@ -33,7 +33,18 @@ security:
     secret: ${JWT_SECRET:JwtSecretKey}
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
+    encryption-enabled: ${DB_ENCRYPTION_ENABLED:Yes}
 
+idam:
+  s2s-auth:
+    url: ${S2S_URL:http://localhost:4502}
+
+storage:
+  connection-string: ${STORAGE_ACCOUNT_CONNECTION_STRING:UseDevelopmentStorage=true}
+  blob-pcq-container: ${STORAGE_ACCOUNT_PCQ_CONTAINER:pcq}
+  sas-token-expiry: ${SAS_TOKEN_EXPIRY:3600}
+
+authorised.services: pcq_consolidation_service,reform_scan_blob_router
 
 #If you use a database then uncomment below lines and update db properties accordingly
 
@@ -44,7 +55,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
     username: ${PCQ_DB_USERNAME:pcquser}
-    password: ${PCQ_DB_PASSWORD:pcqpass}
+    password: ${PCQ_DB_PASSWORD:}
     properties:
       charSet: UTF-8
     hikari:

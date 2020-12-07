@@ -20,11 +20,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerResponse;
-import uk.gov.hmcts.reform.pcqbackend.model.SubmitResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
@@ -43,6 +44,8 @@ import javax.validation.constraints.NotBlank;
     + "The API will be invoked by the PCQ front-end service.")
 public class PcqAnswersController {
 
+    private static final String OPT_OUT_FLAG = "Y";
+
     @Autowired
     private SubmitAnswersService submitAnswersService;
 
@@ -56,6 +59,7 @@ public class PcqAnswersController {
         notes = "This API will create a new record in the database for the given PCQId where none exists "
         + "and will update an existing record with the answers as submitted by the users")
     @ApiResponses({
+        @ApiResponse(code = 200, message = "Operation completed successfully.", response = SubmitResponse.class),
         @ApiResponse(code = 201, message = "Successfully saved to database.", response = SubmitResponse.class),
         @ApiResponse(code = 202, message = "Request valid but stale.", response = SubmitResponse.class),
         @ApiResponse(code = 400, message = "Request failed schema validation.", response = SubmitResponse.class),
@@ -67,12 +71,16 @@ public class PcqAnswersController {
                                                 @RequestBody PcqAnswerRequest answerRequest) {
 
         try {
+            if (answerRequest.getOptOut() != null && OPT_OUT_FLAG.equals(answerRequest.getOptOut())) {
+                return submitAnswersService.processOptOut(headers.get(
+                    environment.getProperty("api-required-header-keys.co-relationid")), answerRequest);
+            }
             return submitAnswersService.processPcqAnswers(headers.get(
                 environment.getProperty("api-required-header-keys.co-relationid")), answerRequest);
         } catch (Exception e) {
             log.error("submitAnswers API call failed due to error - {}", e.getMessage(), e);
-            return ConversionUtil.generateResponseEntity(answerRequest.getPcqId(), HttpStatus.INTERNAL_SERVER_ERROR,
-                                                         environment.getProperty("api-error-messages.internal_error"));
+            return PcqUtils.generateResponseEntity(answerRequest.getPcqId(), HttpStatus.INTERNAL_SERVER_ERROR,
+                                                   environment.getProperty("api-error-messages.internal_error"));
         }
 
     }
@@ -113,9 +121,7 @@ public class PcqAnswersController {
 
         return ResponseEntity
             .status(200)
-            .body(ConversionUtil.getPcqResponseFromDomain(protectedCharacteristics,
-                                                          environment.getProperty(
-                                                              "security.db.backend-encryption-key")));
+            .body(ConversionUtil.getPcqResponseFromDomain(protectedCharacteristics));
 
     }
 

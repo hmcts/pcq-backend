@@ -11,7 +11,8 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Repository()
-public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String> {
+public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String>,
+    ProtectedCharacteristicsRepositoryCustom {
 
     @SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.UseObjectForClearerAPI"})
     @Modifying(clearAutomatically = true)
@@ -42,4 +43,10 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
     int updateCase(String caseId, String pcqId);
 
     List<ProtectedCharacteristics> findByCaseIdIsNullAndCompletedDateGreaterThan(Timestamp completedDate);
+
+    @Modifying(clearAutomatically = true)
+    @Query("DELETE FROM protected_characteristics p WHERE p.pcqId = ?1")
+    int deletePcqRecord(String pcqId);
+
+    List<ProtectedCharacteristics> findByDcnNumber(String dcnNumber);
 }

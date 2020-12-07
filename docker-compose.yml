@@ -4,24 +4,8 @@ services:
   pcq-backend:
     build:
       context: .
-      args:
-        - http_proxy
-        - https_proxy
-        - no_proxy
-    image: hmctspublic.azurecr.io/spring-boot/template
+    image: hmctspublic.azurecr.io/pcq/backend
     environment:
-      # these environment variables are used by java-logging library
-      - ROOT_APPENDER
-      - JSON_CONSOLE_PRETTY_PRINT
-      - ROOT_LOGGING_LEVEL
-      - REFORM_SERVICE_TYPE
-      - REFORM_SERVICE_NAME
-      - REFORM_TEAM
-      - REFORM_ENVIRONMENT
-      - LOGBACK_DATE_FORMAT
-      - LOGBACK_REQUIRE_THREAD
-      - LOGBACK_REQUIRE_ALERT_LEVEL=false
-      - LOGBACK_REQUIRE_ERROR_CODE=false
       # database configuration
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pcq-database:5432/${PCQ_DB_NAME}
       - SPRING_DATASOURCE_USERNAME=${PCQ_DB_USERNAME}
@@ -43,9 +27,42 @@ services:
       POSTGRES_PASSWORD: ${PCQ_DB_PASSWORD}
       POSTGRES_DB: ${PCQ_DB_NAME}
     ports:
-      - 5050:5432
+      - 5052:5432
     volumes:
       - pcq-database-data:/var/lib/postgresql/data
+
+  pcq-frontend:
+    image: hmctspublic.azurecr.io/pcq/frontend
+    environment:
+      - LAUNCHDARKLY_KEY=sdk-e97f48f2-0492-43fe-b881-12695a051846
+      - PCQ_BACKEND_ENABLED=true
+      - PCQ_BACKEND_URL=http://pcq-backend:4550
+    ports:
+      - 4000:4000
+    depends_on:
+      - pcq-backend
+ 
+  service-auth-provider-api:
+    image: hmctspublic.azurecr.io/rpe/service-auth-provider:latest
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      SERVER_PORT: 8080
+      JWT_KEY: wThK0f0/lh3FlxFcL4xUWDMI5C1J9KyQBgXV4wseh1e5J1uYJIjvTvArHxQDrYoHJ23xFxjHkOnvNbR5dXRoxA==
+      MICROSERVICEKEYS_PCQ_CONSOLIDATION_SERVICE: "AAAAAAAAAAAAAAAA"
+      TESTING_SUPPORT_ENABLED: "true"
+    ports:
+      - 4502:8080
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite
+    command: "azurite-blob --loose --blobHost 0.0.0.0"
+    ports:
+      - "10000:10000"
+    volumes:
+      - ./test/azurite:/data
 
 volumes:
   pcq-database-data:

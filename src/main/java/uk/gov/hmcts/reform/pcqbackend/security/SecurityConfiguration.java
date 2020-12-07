@@ -28,6 +28,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                    "/swagger-resources/**",
                                    "/health",
                                    "/health/liveness",
+                                   "/health/readiness",
                                    "/v2/api-docs/**",
                                    "/info",
                                    "/favicon.ico",
@@ -47,6 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/pcq/backend/getAnswer/**").permitAll()
             .antMatchers("/pcq/backend/consolidation/**").permitAll()
+            .antMatchers("/pcq/backend/token/**").permitAll()
             .antMatchers("/pcq/backend/submitAnswers**").authenticated();
 
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());

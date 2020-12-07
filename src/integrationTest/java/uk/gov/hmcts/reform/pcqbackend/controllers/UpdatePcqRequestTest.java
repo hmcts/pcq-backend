@@ -2,13 +2,15 @@ package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import net.thucydides.core.annotations.WithTag;
+import net.thucydides.core.annotations.WithTags;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcqbackend.model.PcqAnswers;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswers;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 
 import java.io.IOException;
@@ -20,9 +22,12 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
+import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
+@WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings({"PMD.TooManyMethods"})
 public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
@@ -47,6 +52,36 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
         try {
 
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/UpdateDobProvided.json");
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
+            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
+            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
+                         response.get(RESPONSE_KEY_3));
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
+                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+
+            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
+            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+            assertLogsForKeywords();
+
+
+        } catch (IOException e) {
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+
+    }
+
+    @Test
+    public void updateDobProvidedSuccessOptOutNull() {
+        // Create an record first.
+        createTestRecord();
+
+        try {
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/UpdateDobProvidedOptOutNull.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
