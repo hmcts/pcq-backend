@@ -27,9 +27,34 @@ services:
       POSTGRES_PASSWORD: ${PCQ_DB_PASSWORD}
       POSTGRES_DB: ${PCQ_DB_NAME}
     ports:
-      - 5050:5432
+      - 5052:5432
     volumes:
       - pcq-database-data:/var/lib/postgresql/data
+
+  pcq-frontend:
+    image: hmctspublic.azurecr.io/pcq/frontend
+    environment:
+      - LAUNCHDARKLY_KEY=sdk-e97f48f2-0492-43fe-b881-12695a051846
+      - PCQ_BACKEND_ENABLED=true
+      - PCQ_BACKEND_URL=http://pcq-backend:4550
+    ports:
+      - 4000:4000
+    depends_on:
+      - pcq-backend
+ 
+  service-auth-provider-api:
+    image: hmctspublic.azurecr.io/rpe/service-auth-provider:latest
+    healthcheck:
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    environment:
+      SERVER_PORT: 8080
+      JWT_KEY: wThK0f0/lh3FlxFcL4xUWDMI5C1J9KyQBgXV4wseh1e5J1uYJIjvTvArHxQDrYoHJ23xFxjHkOnvNbR5dXRoxA==
+      MICROSERVICEKEYS_PCQ_CONSOLIDATION_SERVICE: "AAAAAAAAAAAAAAAA"
+      TESTING_SUPPORT_ENABLED: "true"
+    ports:
+      - 4502:8080
 
   azurite:
     image: mcr.microsoft.com/azure-storage/azurite
