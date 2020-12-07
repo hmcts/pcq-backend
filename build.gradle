@@ -275,7 +275,7 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
-
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
   implementation(group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '3.1.2') {
     force = true
   }
@@ -291,8 +291,6 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.3.5.RELEASE'
   compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.2.RELEASE'
   compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
-
-  implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
   compile group: 'org.flywaydb', name: 'flyway-core', version: '6.5.5'
   compile group: 'org.postgresql', name: 'postgresql', version: '42.2.11'
