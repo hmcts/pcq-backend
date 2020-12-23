@@ -15,6 +15,8 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
@@ -29,9 +31,6 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @SuppressWarnings("PMD.LinguisticNaming")
 public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
 
-    public static final String RESPONSE_KEY_1 = "pcqRecord";
-    public static final String RESPONSE_KEY_2 = "responseStatusCode";
-    public static final String RESPONSE_KEY_3 = "responseStatus";
     public static final String HTTP_OK = "200";
     public static final String RESPONSE_SUCCESS_MSG = "Success";
     public static final String EXCEPTION_MSG = "Exception while executing test";
@@ -368,7 +367,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
                    "Co-Relation Id was not logged in log files.");
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "PMD.DataflowAnomalyAnalysis"})
     private void assertTestForSuccess(Map<String, Object> responseMap, int recordsExpected,
                                       PcqAnswerRequest... pcqIds) {
         ResponseEntity<PcqRecordWithoutCaseResponse> response = (ResponseEntity<PcqRecordWithoutCaseResponse>)
@@ -379,11 +378,26 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
         PcqAnswerResponse[] pcqRecordsActual = response.getBody().getPcqRecord();
         assertEquals("Pcq Records size not matching", recordsExpected, pcqRecordsActual.length);
 
+        List<String> actualPcqIds = new ArrayList<>(pcqRecordsActual.length);
+        List<String> actualServiceIds = new ArrayList<>(pcqRecordsActual.length);
+        List<String> actualActors = new ArrayList<>(pcqRecordsActual.length);
+        List<String> actualDcnNumbers = new ArrayList<>(pcqRecordsActual.length);
+
         for (int i = 0; i < pcqRecordsActual.length; i++) {
-            assertEquals("Pcq Id not found", pcqIds[i].getPcqId(), pcqRecordsActual[i].getPcqId());
-            assertEquals("Service Id not found", pcqIds[i].getServiceId(), pcqRecordsActual[i].getServiceId());
-            assertEquals("Actor not found", pcqIds[i].getActor(), pcqRecordsActual[i].getActor());
-            assertEquals("DCN Number found", pcqIds[i].getDcnNumber(), pcqRecordsActual[i].getDcnNumber());
+            actualPcqIds.set(i, pcqRecordsActual[i].getPcqId());
+            actualServiceIds.set(i, pcqRecordsActual[i].getServiceId());
+            actualActors.set(i, pcqRecordsActual[i].getActor());
+            actualDcnNumbers.set(i, pcqRecordsActual[i].getDcnNumber());
+        }
+
+        if (recordsExpected > 0) {
+
+            for (PcqAnswerRequest pcqId : pcqIds) {
+                assertTrue(actualPcqIds.contains(pcqId.getPcqId()), "Pcq Id not found");
+                assertTrue(actualServiceIds.contains(pcqId.getServiceId()), "Service Id not found");
+                assertTrue(actualActors.contains(pcqId.getActor()), "Actor not found");
+                assertTrue(actualDcnNumbers.contains(pcqId.getDcnNumber()), "DCN Number not found");
+            }
         }
     }
 
