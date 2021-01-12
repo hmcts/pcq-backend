@@ -22,13 +22,6 @@
 <filePath regex="true">.*spring-security-test-5\.2\.2\.RELEASE\.jar</filePath>
 <cve>CVE-2018-1258</cve>
 </suppress>
-<suppress>
-<notes><![CDATA[
-   file name: postgresql-42.2.11.jar
-   ]]></notes>
-<packageUrl regex="true">^pkg:maven/org\.postgresql/postgresql@.*$</packageUrl>
-<cve>CVE-2020-13692</cve>
-</suppress>
   <suppress>
     <notes><![CDATA[
             CVE is a json vulnerability for Node projects. False positive reported at https://github.com/jeremylong/DependencyCheck/issues/2794
