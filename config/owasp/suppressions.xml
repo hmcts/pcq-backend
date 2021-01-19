@@ -1,32 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
-<suppress until="2030-01-01">
-<notes><![CDATA[
-     Suppressing as it's a false positive (see: https://pivotal.io/security/cve-2018-1258)
-   ]]></notes>
-<gav regex="true">^org\.springframework\.security:spring-security-crypto:5.2.[0-2].RELEASE</gav>
-<cpe>cpe:/a:pivotal_software:spring_security</cpe>
-<cve>CVE-2018-1258</cve>
-</suppress>
-<suppress>
-<notes><![CDATA[ no fix available ]]></notes>
-<gav regex="true">^org.springframework.security:spring-security-(config|web|core):5\.2\.2\.RELEASE$</gav>
-<cve>CVE-2018-1258</cve>
-</suppress>
-<suppress>
-<notes><![CDATA[No fix is available]]></notes>
-<gav regex="true">.*security.*</gav>
-<cve>CVE-2018-1258</cve>
-</suppress>
-<suppress>
-<notes><![CDATA[No fix is available]]></notes>
-<filePath regex="true">.*spring-security-test-5\.2\.2\.RELEASE\.jar</filePath>
-<cve>CVE-2018-1258</cve>
-</suppress>
-  <suppress>
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+  <suppress until="2030-01-01">
     <notes><![CDATA[
-            CVE is a json vulnerability for Node projects. False positive reported at https://github.com/jeremylong/DependencyCheck/issues/2794
+         Suppressing as it's a false positive (see: https://pivotal.io/security/cve-2018-1258)
         ]]></notes>
-    <cve>CVE-2020-10663</cve>
-    <cve>CVE-2020-7712</cve>
+    <filePath regex="true">.*spring-security-(config|crypto|web|test|core)-5\.3\.6\.RELEASE\.jar</filePath>
+    <cpe>cpe:/a:pivotal_software:spring_security</cpe>
+    <cve>CVE-2018-1258</cve>
   </suppress>
 </suppressions>

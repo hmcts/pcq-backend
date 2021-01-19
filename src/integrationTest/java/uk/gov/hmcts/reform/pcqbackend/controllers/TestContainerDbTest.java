@@ -21,7 +21,7 @@ public class TestContainerDbTest {
     public static final String DOCKER_IMAGE_PG_11_ALPINE = "postgres:11-alpine";
 
     @ClassRule
-    public static final PostgreSQLContainer postgresContainer = new PostgreSQLContainer<>(DOCKER_IMAGE_PG_11_ALPINE);
+    public static PostgreSQLContainer postgresContainer = new PostgreSQLContainer<>(DOCKER_IMAGE_PG_11_ALPINE);
 
     @BeforeClass
     @SuppressWarnings({"PMD.JUnit4TestShouldUseBeforeAnnotation"})
