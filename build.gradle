@@ -237,7 +237,8 @@ def versions = [
   gradlePitest        : '1.4.7',
   pitest              : '1.4.7',
   sonarPitest         : '0.5',
-  serviceAuthVersion  : '3.0.0'
+  serviceAuthVersion  : '3.0.0',
+  testcontainers      : '1.15.1'
 ]
 
 configurations.all {
@@ -328,11 +329,11 @@ dependencies {
   testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.3.0'
   testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.0'
 
-  testCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.15.1'
-  testCompile group: 'org.testcontainers', name: 'postgresql', version: '1.15.1'
+  testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+  testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
-  integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: '1.15.1'
-  integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: '1.15.1'
+  integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+  integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
   integrationTestCompile sourceSets.main.runtimeClasspath
   integrationTestCompile sourceSets.test.runtimeClasspath
