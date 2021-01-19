@@ -48,6 +48,9 @@ withPipeline(type, product, component) {
   loadVaultSecrets(secrets)
   disableLegacyDeployment()
 
+  enableMutationTest()
+  enableSecurityScan()
+
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
 
   after('test') {
@@ -95,6 +98,14 @@ withPipeline(type, product, component) {
     ]
 
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/site/serenity/**/*'
+  }
+
+  after('securityScan') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
+  }
+
+  after('mutationTest') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
   }
 
 }
