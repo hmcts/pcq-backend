@@ -17,7 +17,7 @@ public class SasTokenService {
 
     private final BlobServiceClient blobServiceClient;
 
-    private static final String PERMISSION_CREATE_READ_WRITE_LIST = "crwl";
+    private static final String PERMISSION_CREATE_READ_WRITE_LIST = "rcwl";
 
     @Value("${storage.blob-pcq-container}")
     private String pcqContainer;
