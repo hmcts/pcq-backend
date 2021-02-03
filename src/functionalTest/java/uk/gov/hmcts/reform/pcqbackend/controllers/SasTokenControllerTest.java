@@ -134,7 +134,7 @@ public class SasTokenControllerTest {
         assertThat(tokenExpiry).isNotNull();
         assertThat(queryParams.get("sig")).isNotNull(); //this is a generated hash of the resource string
         assertThat(queryParams.get("sv")).contains("2019-12-12"); //azure api version is latest
-        assertThat(queryParams.get("sp")).contains("cwl"); //access permissions(create-c,write-w,list-l)
+        assertThat(queryParams.get("sp")).contains("crwl"); //access permissions(create-c,read-r,write-w,list-l)
     }
 
 }
