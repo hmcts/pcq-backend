@@ -17,7 +17,7 @@ public class SasTokenService {
 
     private final BlobServiceClient blobServiceClient;
 
-    private static final String PERMISSION_CREATE_WRITE_LIST = "cwl";
+    private static final String PERMISSION_CREATE_READ_WRITE_LIST = "rcwl";
 
     @Value("${storage.blob-pcq-container}")
     private String pcqContainer;
@@ -51,7 +51,7 @@ public class SasTokenService {
     private BlobServiceSasSignatureValues createSharedAccessPolicy() {
         return new BlobServiceSasSignatureValues(
             OffsetDateTime.now(ZoneOffset.UTC).plusSeconds(sasTokenExpiryInSeconds),
-            BlobContainerSasPermission.parse(PERMISSION_CREATE_WRITE_LIST)
+            BlobContainerSasPermission.parse(PERMISSION_CREATE_READ_WRITE_LIST)
         );
     }
 
