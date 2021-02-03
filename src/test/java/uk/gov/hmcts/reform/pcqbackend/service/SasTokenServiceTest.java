@@ -53,6 +53,6 @@ class SasTokenServiceTest {
         assertThat(queryParams.get("sig")).isNotNull();//this is a generated hash of the resource string
         assertThat(queryParams.get("se")[0]).startsWith(currentDate);//the expiry date/time for the signature
         assertThat(queryParams.get("sv")).contains("2019-12-12");//azure api version is latest
-        assertThat(queryParams.get("sp")).contains("cwl");//access permissions(create-c,write-w,list-l)
+        assertThat(queryParams.get("sp")).contains("rcwl");//access permissions(read-r,create-c,write-w,list-l)
     }
 }
