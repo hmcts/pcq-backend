@@ -78,7 +78,7 @@ public class SubmitAnswersService {
                 protectedCharacteristicsRepository.persist(createCharacteristics);
 
                 log.info(INFO_LOG_MSG
-                             + "Protected Characteristic Record submitted for creation.", coRelationId,
+                             + "Protected Characteristic Questions Record submitted for creation.", coRelationId,
                          createCharacteristics.getChannel(), createCharacteristics.getServiceId());
 
             } else {
