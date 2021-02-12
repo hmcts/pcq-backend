@@ -15,7 +15,8 @@ import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Locale;
 import java.util.Map;
 
@@ -42,6 +43,7 @@ public class SasTokenControllerTest extends PcqIntegrationTest {
     private static final String EXPECTED_STATUS_OK = "200 OK";
     private static final String EXPECTED_STATUS_UNAUTHORISED = "401";
     private static final String EXPECTED_STATUS_NOT_FOUND = "404";
+    private static final int SAS_TOKEN_EXPIRY = 3600;
 
     @Rule
     public WireMockRule wireMockServer = new WireMockRule(WireMockConfiguration.options().port(4554));
@@ -100,7 +102,8 @@ public class SasTokenControllerTest extends PcqIntegrationTest {
 
     private void verifySasTokenProperties(String tokenResponse) throws java.io.IOException, StorageException {
         Map<String, String[]> queryParams = PathUtility.parseQueryString(tokenResponse);
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+            .format(OffsetDateTime.now(ZoneOffset.UTC).plusSeconds(SAS_TOKEN_EXPIRY));
 
         assertThat(queryParams.get("sig")).isNotNull();//this is a generated hash of the resource string
         assertThat(queryParams.get("se")[0]).startsWith(currentDate);//the expiry date/time for the signature
