@@ -302,7 +302,7 @@ dependencies {
   compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
-  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.43"
+  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.48"
   compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   compile group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
