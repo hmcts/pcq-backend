@@ -352,7 +352,7 @@ dependencies {
   testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
   testCompile group: 'io.rest-assured', name: 'xml-path', version: '4.3.0'
-  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.0'
+  testCompile group: 'io.rest-assured', name: 'json-path', version: '4.3.3'
 
   testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
