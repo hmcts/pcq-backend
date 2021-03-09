@@ -4,16 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
+import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
@@ -205,7 +206,7 @@ public class SubmitAnswersService {
         JsonNode jsonNode = mapper.readTree(jsonString);
 
         //Generate the JSON Schema object from the schema file in the classpath.
-        JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance();
+        JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
         try (InputStream inputStream = new ClassPathResource(schemaFileName).getInputStream()) {
             JsonSchema jsonSchema = jsonSchemaFactory.getSchema(inputStream);
 
@@ -237,7 +238,7 @@ public class SubmitAnswersService {
     }
 
     private void validateDcnNumber(String dcnNumber) throws InvalidRequestException {
-        if (StringUtils.isEmpty(dcnNumber)) {
+        if (ObjectUtils.isEmpty(dcnNumber)) {
             throw new InvalidRequestException("DCN Number is missing", HttpStatus.BAD_REQUEST);
         }
         // Check whether a record already exists.
