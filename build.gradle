@@ -153,7 +153,7 @@ project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 pitest {
   pitestVersion.set('1.4.11')
-  junit5PluginVersion.set('0.11')
+  junit5PluginVersion.set('0.12')
   targetClasses = ['uk.gov.hmcts.reform.pcqbackend.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.pcqbackend.utils.*'
@@ -363,10 +363,11 @@ dependencies {
   testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
   testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
-  testImplementation group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
-  testImplementation group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
-  testImplementation group: 'io.rest-assured', name: 'kotlin-extensions', version: versions.restAssured
-  
+  testCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
+  testCompile group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
+  testCompile group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
+  testCompile group: 'io.rest-assured', name: 'kotlin-extensions', version: versions.restAssured
+
   testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
