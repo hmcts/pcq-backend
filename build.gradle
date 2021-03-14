@@ -271,7 +271,7 @@ def versions = [
   gradlePitest        : '1.6.0',
   pitest              : '1.6.3',
   sonarPitest         : '0.5',
-  serviceAuthVersion  : '3.0.0',
+  serviceAuthVersion  : '4.0.0',
   testcontainers      : '1.15.1'
 ]
 
@@ -316,7 +316,7 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE'
 
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-  implementation(group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: '4.0.0') {
+  implementation(group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: versions.serviceAuthVersion) {
     force = true
   }
 
@@ -363,9 +363,10 @@ dependencies {
   testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
   testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
-  testCompile group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
-  testCompile group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
-
+  testImplementation group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
+  testImplementation group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
+  testImplementation group: 'io.rest-assured', name: 'kotlin-extensions', version: versions.restAssured
+  
   testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
