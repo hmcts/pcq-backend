@@ -257,7 +257,7 @@ def versions = [
   reformLogging       : '5.1.1',
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '3.0.0',
-  restAssured         : '3.3.0',
+  restAssured         : '4.3.3',
   serenity            : '2.3.31',
   lombok              : '1.18.12',
   gradlePitest        : '1.6.0',
@@ -355,8 +355,7 @@ dependencies {
   testImplementation group: 'net.serenity-bdd', name: 'serenity-rest-assured', version: versions.serenity
   testImplementation group: 'net.serenity-bdd', name: 'serenity-spring', version: versions.serenity
 
-  testImplementation group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
-  testImplementation group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
+  testImplementation group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
 
   testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
@@ -372,11 +371,8 @@ dependencies {
   functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
   functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
-  smokeTestCompile group: 'io.rest-assured', name: 'rest-assured', version: versions.restAssured
-  smokeTestCompile group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
-  smokeTestCompile group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
-  smokeTestRuntime group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
-  smokeTestRuntime group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
+  smokeTestCompile group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
+  smokeTestRuntime group: 'io.rest-assured', name: 'rest-assured-all', version: versions.restAssured
 
   smokeTestCompile sourceSets.main.runtimeClasspath
   smokeTestCompile sourceSets.test.runtimeClasspath
