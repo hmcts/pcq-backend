@@ -257,7 +257,7 @@ def versions = [
   reformLogging       : '5.1.1',
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '3.0.0',
-  restAssured         : '4.2.0',
+  restAssured         : '3.3.0',
   serenity            : '2.3.31',
   lombok              : '1.18.12',
   gradlePitest        : '1.6.0',
