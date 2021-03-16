@@ -12,9 +12,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.client.PcqBackEndServiceClient;
-import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 
 import java.sql.Timestamp;
 import java.util.Calendar;

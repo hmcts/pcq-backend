@@ -19,18 +19,17 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
-import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
-import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
+import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
+import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
+import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-
 
 /**
  * Controller for the Consolidation service API calls.
