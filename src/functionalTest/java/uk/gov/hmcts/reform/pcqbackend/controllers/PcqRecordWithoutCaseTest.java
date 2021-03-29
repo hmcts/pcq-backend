@@ -62,7 +62,11 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             String secondUuid = generateUuid();
+            answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(secondUuid);
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
@@ -72,8 +76,12 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             //Create 3rd record in database with a completed date past the limit.
             String thirdUuid = generateUuid();
+            answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(thirdUuid);
             answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT + 1)));
@@ -84,10 +92,12 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             //Now call the pcqWithoutCaseAPI
             PcqRecordWithoutCaseResponse getResponse = pcqBackEndServiceClient.getAnswerRecordsWithoutCase(
                 HttpStatus.OK);
-
 
             assertEquals(STATUS_CODE_INVALID_MSG, HTTP_OK, getResponse.getResponseStatusCode());
             assertEquals(STATUS_INVALID_MSG, RESPONSE_SUCCESS_MSG, getResponse.getResponseStatus());
@@ -101,7 +111,6 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
             assertTrue("First PCQ Id should have been picked up", pcqIdsInResponse.contains(firstUuid));
             assertTrue("Second PCQ Id should have been picked up", pcqIdsInResponse.contains(secondUuid));
             assertFalse("Third PCQ Id should not have been picked up", pcqIdsInResponse.contains(thirdUuid));
-
 
         } catch (IOException e) {
             log.error("Error during test execution", e);

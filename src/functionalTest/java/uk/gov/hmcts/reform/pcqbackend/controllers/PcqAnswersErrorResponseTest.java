@@ -55,6 +55,9 @@ public class PcqAnswersErrorResponseTest extends PcqBaseFunctionalTest {
             assertEquals(ASSERT_RESPONSE_STATUS_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             //Update the record but don't change the completed date.
             jsonStringRequest = jsonStringFromFile("JsonTestFiles/StaleSubmitAnswer.json");
             PcqAnswerRequest updateAnswerRequest = jsonObjectFromString(jsonStringRequest);

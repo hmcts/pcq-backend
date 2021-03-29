@@ -53,6 +53,9 @@ public class AddCaseForPcqTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             //Now call the addPcqForCase API.
             response = pcqBackEndServiceClient.addCaseForPcq(firstUuid, TEST_CASE_ID, HttpStatus.OK);
 

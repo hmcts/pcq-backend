@@ -39,6 +39,7 @@ public class SubmitAnswersService {
 
     private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
     private static final int PAPER_CHANNEL = 2;
+    private static final String OPTOUT_YES = "Y";
     private static final String INFO_LOG_MSG = "Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, ";
 
     Environment environment;
@@ -268,10 +269,10 @@ public class SubmitAnswersService {
         validateVersionNumber(answerRequest.getVersionNo());
 
         //Step 3. For paper channel, validate the DCN number.
-        if (PAPER_CHANNEL == answerRequest.getChannel()) {
+        if (PAPER_CHANNEL == answerRequest.getChannel()
+            && (answerRequest.getOptOut() == null || !answerRequest.getOptOut().equalsIgnoreCase(OPTOUT_YES))) {
             validateDcnNumber(answerRequest.getDcnNumber());
         }
-
     }
 
     private ResponseEntity<Object> handleInvalidRequestException(String pcqId, InvalidRequestException ive) {

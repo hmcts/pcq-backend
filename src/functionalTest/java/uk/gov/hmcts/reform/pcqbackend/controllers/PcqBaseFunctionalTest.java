@@ -7,18 +7,22 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
 import net.thucydides.core.annotations.WithTag;
 import net.thucydides.core.annotations.WithTags;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.client.PcqBackEndServiceClient;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -42,6 +46,8 @@ public abstract class PcqBaseFunctionalTest {
 
     protected RequestSpecification bearerToken;
 
+    protected List<PcqAnswerRequest> clearTestPcqAnswers = new ArrayList<>();
+
     @Before
     public void setUp() {
         RestAssured.useRelaxedHTTPSValidation();
@@ -51,6 +57,13 @@ public abstract class PcqBaseFunctionalTest {
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
         pcqBackEndServiceClient = new PcqBackEndServiceClient(pcqBackEndApiUrl, jwtSecretKey);
+    }
+
+    @After
+    public void afterTest() {
+        for (PcqAnswerRequest pcqAnswerRequest : clearTestPcqAnswers) {
+            pcqBackEndServiceClient.deleteAnswersRecord(pcqAnswerRequest, HttpStatus.OK);
+        }
     }
 
     @SuppressWarnings({"unchecked", "PMD.ConfusingTernary"})
