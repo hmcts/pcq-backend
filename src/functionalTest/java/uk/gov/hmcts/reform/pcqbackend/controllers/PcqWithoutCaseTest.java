@@ -59,7 +59,11 @@ public class PcqWithoutCaseTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             String secondUuid = generateUuid();
+            answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(secondUuid);
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
@@ -69,8 +73,12 @@ public class PcqWithoutCaseTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             //Create 3rd record in database with a completed date past the limit.
             String thirdUuid = generateUuid();
+            answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(thirdUuid);
             answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
                 DAYS_LIMIT + 1)));
@@ -80,6 +88,9 @@ public class PcqWithoutCaseTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
+
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
 
             //Now call the pcqWithoutCaseAPI
             response = pcqBackEndServiceClient.getAnswerRecordWithoutCase(HttpStatus.OK);

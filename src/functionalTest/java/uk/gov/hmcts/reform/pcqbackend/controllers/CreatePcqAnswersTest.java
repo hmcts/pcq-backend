@@ -47,6 +47,9 @@ public class CreatePcqAnswersTest extends PcqBaseFunctionalTest {
             assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
                 answerRequest.getPcqId(), HttpStatus.OK);
 
@@ -72,6 +75,9 @@ public class CreatePcqAnswersTest extends PcqBaseFunctionalTest {
             assertEquals("Response Status Code not valid", HTTP_CREATED, response.get(RESPONSE_KEY_2));
             assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
+
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
 
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
                 answerRequest.getPcqId(), HttpStatus.OK);

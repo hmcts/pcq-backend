@@ -57,6 +57,9 @@ public class UpdatePcqAnswersTest extends PcqBaseFunctionalTest {
             assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            //Prepare for clearing down.
+            clearTestPcqAnswers.add(answerRequest);
+
             //Get the record
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
                 updateAnswerRequest.getPcqId(), HttpStatus.OK);
