@@ -116,7 +116,7 @@ public class SasTokenControllerTest {
         String authenticatedString = storageUrl + "/" + container + "?comp=list&restype=container&"
             + node.get("sas_token").asText();
 
-        log.info("Storage URL = {}", storageUrl + authenticatedString);
+        log.info("Storage URL = {}", authenticatedString);
         URL url = new URL(authenticatedString);
         String result = IOUtils.toString(url.openStream(), UTF8_ENCODING);
 
