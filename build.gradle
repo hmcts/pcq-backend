@@ -3,7 +3,7 @@ buildscript {
     jcenter()
   }
   dependencies {
-    classpath("net.serenity-bdd:serenity-gradle-plugin:2.3.31")
+    classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.24")
   }
 }
 
@@ -270,7 +270,7 @@ def versions = [
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '3.0.0',
   restAssured         : '4.2.0',
-  serenity            : '2.3.31',
+  serenity            : '2.4.24',
   lombok              : '1.18.12',
   gradlePitest        : '1.6.0',
   pitest              : '1.6.3',
