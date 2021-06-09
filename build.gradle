@@ -276,7 +276,8 @@ def versions = [
   pitest              : '1.6.3',
   sonarPitest         : '0.5',
   serviceAuthVersion  : '4.0.0',
-  testcontainers      : '1.15.1'
+  testcontainers      : '1.15.1',
+  springFramework     : '5.3.7'
 ]
 
 configurations.all {
@@ -314,6 +315,20 @@ dependencies {
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
+
+  implementation group: 'org.springframework', name:'spring-aop', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-aspects', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-beans', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-context', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-core', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-expression', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-jcl', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-jdbc', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-orm', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-oxm', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-tx', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-web', version: versions.springFramework
+  implementation group: 'org.springframework', name:'spring-webmvc', version: versions.springFramework
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: '3.0.1'
