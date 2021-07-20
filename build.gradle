@@ -283,8 +283,7 @@ def versions = [
   sonarPitest         : '0.5',
   serviceAuthVersion  : '4.0.0',
   testcontainers      : '1.15.1',
-  springFramework     : '5.3.7',
-  fortifyClient       : '1.0.1'
+  springFramework     : '5.3.7'
 ]
 
 configurations.all {
@@ -397,7 +396,7 @@ dependencies {
   testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
-  testCompile group: 'com.github.hmcts', name: 'fortify-client', version: versions.fortifyClient
+  testCompile 'com.github.hmcts:fortify-client:1.2.0:all'
 
   integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
