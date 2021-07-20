@@ -122,6 +122,12 @@ task smoke(type: Test) {
   classpath = sourceSets.smokeTest.runtimeClasspath
 }
 
+task fortifyScan(type: JavaExec)  {
+  main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+  classpath += sourceSets.test.runtimeClasspath
+  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+}
+
 checkstyle {
   maxWarnings = 0
   toolVersion = '8.29'
@@ -256,8 +262,8 @@ dependencyManagement {
 
 repositories {
   mavenLocal()
-  jcenter()
   mavenCentral()
+  jcenter()
   maven {
     url 'https://jitpack.io'
   }
@@ -277,7 +283,8 @@ def versions = [
   sonarPitest         : '0.5',
   serviceAuthVersion  : '4.0.0',
   testcontainers      : '1.15.1',
-  springFramework     : '5.3.7'
+  springFramework     : '5.3.7',
+  fortifyClient       : '1.0.1'
 ]
 
 configurations.all {
@@ -290,7 +297,7 @@ configurations.all {
         details.useVersion '2.12.10'
       }
       if (details.requested.group in ['org.apache.tomcat.embed']) {
-        details.useVersion '9.0.43'
+        details.useVersion '9.0.50'
       }
       if (details.requested.group in ['org.hibernate']) {
         details.useVersion '5.4.25.Final'
@@ -389,6 +396,8 @@ dependencies {
 
   testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
+
+  testCompile group: 'com.github.hmcts', name: 'fortify-client', version: versions.fortifyClient
 
   integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
