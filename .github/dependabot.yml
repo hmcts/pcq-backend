@@ -1,0 +1,119 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: org.flywaydb:flyway-core
+    versions:
+    - 7.5.2
+    - 7.5.3
+    - 7.5.4
+    - 7.6.0
+    - 7.7.0
+    - 7.7.1
+    - 7.7.2
+    - 7.7.3
+    - 7.8.0
+    - 7.8.1
+  - dependency-name: com.gorylenko.gradle-git-properties
+    versions:
+    - 2.2.4
+    - 2.3.0
+  - dependency-name: org.flywaydb.flyway
+    versions:
+    - 7.5.2
+    - 7.5.3
+    - 7.5.4
+    - 7.6.0
+    - 7.7.0
+    - 7.7.1
+    - 7.7.2
+    - 7.7.3
+    - 7.8.0
+    - 7.8.1
+  - dependency-name: org.postgresql:postgresql
+    versions:
+    - 42.2.19
+  - dependency-name: uk.gov.hmcts.java
+    versions:
+    - 0.12.6
+    - 0.12.7
+  - dependency-name: com.azure:azure-core-http-netty
+    versions:
+    - 1.9.0
+  - dependency-name: io.netty:netty-transport-native-unix-common
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-transport-native-kqueue
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-transport-native-epoll
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-transport
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-resolver
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-handler-proxy
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-handler
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-common
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-codec-socks
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-codec-http2
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-codec-http
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-codec
+    versions:
+    - 4.1.60.Final
+  - dependency-name: io.netty:netty-buffer
+    versions:
+    - 4.1.60.Final
+  - dependency-name: info.solidsoft.pitest
+    versions:
+    - 1.5.2
+    - 1.6.0
+  - dependency-name: net.serenity-bdd:serenity-gradle-plugin
+    versions:
+    - 2.3.12
+    - 2.3.13
+    - 2.3.31
+  - dependency-name: org.springframework.boot
+    versions:
+    - 2.4.2
+    - 2.4.3
+  - dependency-name: io.rest-assured:xml-path
+    versions:
+    - 4.3.3
+  - dependency-name: io.rest-assured:json-path
+    versions:
+    - 4.3.3
+  - dependency-name: org.sonarqube
+    versions:
+    - 3.1.1
+  - dependency-name: org.springframework.cloud:spring-cloud-starter-netflix-hystrix
+    versions:
+    - 2.2.6.RELEASE
+    - 2.2.7.RELEASE
+  - dependency-name: com.networknt:json-schema-validator
+    versions:
+    - 1.0.47
+    - 1.0.48
+    - 1.0.49
+  - dependency-name: io.freefair.lombok
+    versions:
+    - 5.3.0
