@@ -25,8 +25,8 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "p.disabilityMobility = ?20, p.disabilityDexterity = ?21, p.disabilityLearning = ?22, "
         + "p.disabilityMemory = ?23, p.disabilityMentalHealth = ?24, p.disabilityStamina = ?25, "
         + "p.disabilitySocial = ?26, p.disabilityOther = ?27, p.otherDisabilityDetails = ?28, "
-        + "p.disabilityNone = ?29, p.pregnancy = ?30, p.completedDate = ?31 WHERE p.pcqId = ?32 "
-        + "and p.completedDate < ?33")
+        + "p.disabilityNone = ?29, p.pregnancy = ?30, p.completedDate = ?31, p.optOut = ?32 "
+        +  "WHERE p.pcqId = ?33 and p.completedDate < ?34")
     int updateCharacteristics(Integer dobProvided, Date dateOfBirth, Integer mainLanguage, String otherLanguage,
                               Integer englishLanguageLevel, Integer sex, Integer genderDifferent, String otherGender,
                               Integer sexuality, String otherSexuality, Integer marriage, Integer ethnicity,
@@ -36,7 +36,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
                               Integer disabilityLearning, Integer disabilityMemory, Integer disabilityMentalHealth,
                               Integer disabilityStamina, Integer disabilitySocial, Integer disabilityOther,
                               String otherDisabilityDetails, Integer disabilityNone, Integer pregnancy,
-                              Timestamp completedDateNew, String pcqId, Timestamp completedDate);
+                              Timestamp completedDateNew, Boolean optOut, String pcqId, Timestamp completedDate);
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE protected_characteristics p SET p.caseId = ?1 WHERE p.pcqId = ?2")
