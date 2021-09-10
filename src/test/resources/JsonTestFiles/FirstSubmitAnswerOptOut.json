@@ -9,5 +9,6 @@
   "versionNo": 1,
   "optOut": "Y",
   "pcqAnswers": {
+    "dob_provided": 1
   }
 }

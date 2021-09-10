@@ -169,13 +169,13 @@ public class SubmitAnswersService {
             Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
                 .findById(answerRequest.getPcqId());
 
-            ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
+                ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
 
                 // Create the new PCQ Answers record with optOut as false.
                 protectedCharacteristicsRepository.persist(createCharacteristics);
                 log.info(INFO_LOG_MSG
-                             + "Protected Char Questions Record submitted for creation with optOut false.",
+                             + "Protected Char Questions Record submitted for creation with optOut true.",
                      coRelationId,
                          createCharacteristics.getChannel(), createCharacteristics.getServiceId());
 
@@ -214,7 +214,7 @@ public class SubmitAnswersService {
                                                                    null,
                                                                    null,
                                                                    completedDateNow,
-                                                                   createCharacteristics.getOptOut(),
+                                                                   true,
                                                                    answerRequest.getPcqId(),
                                                                    completedDateNow
                 );
@@ -229,7 +229,7 @@ public class SubmitAnswersService {
                 } else {
                     log.info(INFO_LOG_MSG
                                  + "Protected Char Record submitted for Update with optOut true.", coRelationId,
-                             createCharacteristics.getChannel(), createCharacteristics.getServiceId()
+                             answerRequest.getChannel(), answerRequest.getServiceId()
                     );
                 }
             }
