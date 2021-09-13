@@ -77,7 +77,7 @@ public final class ConversionUtil {
         pcqAnswers.setDisabilityConditionOther(protectedCharacteristics.getOtherDisabilityDetails());
         pcqAnswers.setDisabilityNone(protectedCharacteristics.getDisabilityNone());
         pcqAnswers.setPregnancy(protectedCharacteristics.getPregnancy());
-
+        pcqAnswers.setOptOut(protectedCharacteristics.getOptOut());
         answerResponse.setPcqAnswers(pcqAnswers);
 
 
