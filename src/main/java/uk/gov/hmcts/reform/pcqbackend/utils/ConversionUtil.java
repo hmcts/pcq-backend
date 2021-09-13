@@ -77,7 +77,7 @@ public final class ConversionUtil {
         pcqAnswers.setDisabilityConditionOther(protectedCharacteristics.getOtherDisabilityDetails());
         pcqAnswers.setDisabilityNone(protectedCharacteristics.getDisabilityNone());
         pcqAnswers.setPregnancy(protectedCharacteristics.getPregnancy());
-
+        pcqAnswers.setOptOut(protectedCharacteristics.getOptOut());
         answerResponse.setPcqAnswers(pcqAnswers);
 
 
@@ -104,6 +104,7 @@ public final class ConversionUtil {
         protectedCharacteristics.setPartyId(pcqAnswerRequest.getPartyId());
         protectedCharacteristics.setServiceId(pcqAnswerRequest.getServiceId());
         protectedCharacteristics.setVersionNumber(pcqAnswerRequest.getVersionNo());
+        protectedCharacteristics.setOptOut("Y".equals(pcqAnswerRequest.getOptOut()) ? true : false);
 
         PcqAnswers pcqAnswers = pcqAnswerRequest.getPcqAnswers();
         if (pcqAnswers != null) {
@@ -139,6 +140,7 @@ public final class ConversionUtil {
             protectedCharacteristics.setOtherDisabilityDetails(pcqAnswers.getDisabilityConditionOther());
             protectedCharacteristics.setDisabilityNone(pcqAnswers.getDisabilityNone());
             protectedCharacteristics.setPregnancy(pcqAnswers.getPregnancy());
+
 
         }
 

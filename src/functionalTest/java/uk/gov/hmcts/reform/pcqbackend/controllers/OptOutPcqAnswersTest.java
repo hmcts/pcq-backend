@@ -32,6 +32,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
     public static final String RESPONSE_OK_MSG = "Success";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
+    public static final String RESPONSE_VALID_STATUS_CODE = "Response Status Code valid";
 
     @Test
     public void optOutPcqAnswers() {
@@ -44,8 +45,8 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
             answerRequest.setPcqId(generateUuid());
             Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-            assertEquals("Response Status Code not valid", HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
+            assertEquals(RESPONSE_VALID_STATUS_CODE, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals("Response Status valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
             //invoke the submitAnswers to Opt Out the record.
@@ -55,18 +56,16 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
             //Use the same PCQ ID as above
             optOutAnswerRequest.setPcqId(answerRequest.getPcqId());
 
-            response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.OK);
+            response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.CREATED);
 
-            assertEquals("Response Status Code not valid", HTTP_OK, response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status not valid", RESPONSE_OK_MSG,
+            assertEquals(RESPONSE_VALID_STATUS_CODE, "201", response.get(RESPONSE_KEY_2));
+            assertEquals("Response Status valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
             //Get the record
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                optOutAnswerRequest.getPcqId(), HttpStatus.NOT_FOUND);
-
-            assertEquals("Error value not valid", "Not Found",
-                         validateGetResponse.get("error"));
+                optOutAnswerRequest.getPcqId(), HttpStatus.OK);
+            checkOptOutOnResponse(validateGetResponse);
 
         } catch (IOException e) {
             log.error("Error during test execution.", e);
@@ -75,21 +74,24 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
     }
 
     @Test
-    public void optOutPcqAnswersRecordNotFound() {
+    public void optOutPcqAnswersRecordFoundWithOptOutTrue() {
 
         try {
 
-            //Don't create a record, directly invoke the OptOut request.
+            //create a record with optOut as true.
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutSubmitAnswer.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(generateUuid());
 
             Map<String, Object> response = pcqBackEndServiceClient.updateAnswersRecord(answerRequest,
-                                                                                       HttpStatus.BAD_REQUEST);
+                                                                                       HttpStatus.CREATED);
 
-            assertEquals("Response Status Code not valid", HTTP_BAD_REQUEST, response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status not valid", RESPONSE_INVALID_MSG,
-                         response.get(RESPONSE_KEY_3));
+            assertEquals(RESPONSE_VALID_STATUS_CODE, "201", response.get(RESPONSE_KEY_2));
+
+            //Get the record
+            Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
+                answerRequest.getPcqId(), HttpStatus.OK);
+            checkOptOutOnResponse(validateGetResponse);
 
         } catch (IOException e) {
             log.error("Error during test execution", e);
