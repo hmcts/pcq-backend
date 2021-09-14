@@ -71,6 +71,8 @@ class SubmitAnswersServiceTest {
 
     private static final String CREATED_MESSAGE_PROPERTY = "api-error-messages.created";
 
+    private static final String UPDATED_MESSAGE_PROPERTY = "api-error-messages.updated";
+
     @BeforeEach
     void setUp() {
 
@@ -403,6 +405,7 @@ class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Success");
+        when(environment.getProperty(UPDATED_MESSAGE_PROPERTY)).thenReturn("Updated");
         String pcqId = TEST_PCQ_ID;
 
         try {
@@ -441,7 +444,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCodeValue(), "Expected 201 status code");
+            assertEquals(200, responseEntity.getStatusCodeValue(), "Expected 200 status code");
 
 
         } catch (Exception e) {

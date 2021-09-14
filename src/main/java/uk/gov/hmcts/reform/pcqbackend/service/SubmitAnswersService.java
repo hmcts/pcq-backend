@@ -229,8 +229,9 @@ public class SubmitAnswersService {
                 } else {
                     log.info(INFO_LOG_MSG
                                  + "Protected Char Record submitted for Update with optOut true.", coRelationId,
-                             answerRequest.getChannel(), answerRequest.getServiceId()
-                    );
+                             answerRequest.getChannel(), answerRequest.getServiceId());
+                    return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
+                                                           environment.getProperty("api-error-messages.updated"));
                 }
             }
 

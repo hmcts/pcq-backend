@@ -30,6 +30,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
     public static final String HTTP_OK = "200";
     public static final String HTTP_BAD_REQUEST = "400";
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
+    public static final String RESPONSE_UPDATED_MSG = "Successfully updated";
     public static final String RESPONSE_OK_MSG = "Success";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
     public static final String RESPONSE_VALID_STATUS_CODE = "Response Status Code valid";
@@ -56,10 +57,10 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
             //Use the same PCQ ID as above
             optOutAnswerRequest.setPcqId(answerRequest.getPcqId());
 
-            response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.CREATED);
+            response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.OK);
 
-            assertEquals(RESPONSE_VALID_STATUS_CODE, "201", response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status valid", RESPONSE_CREATED_MSG,
+            assertEquals(RESPONSE_VALID_STATUS_CODE, "200", response.get(RESPONSE_KEY_2));
+            assertEquals("Response Status valid", RESPONSE_UPDATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
             //Get the record

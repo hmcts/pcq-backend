@@ -32,10 +32,10 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
     public static final String RESPONSE_KEY_1 = "pcqId";
     public static final String RESPONSE_KEY_2 = "responseStatusCode";
     public static final String RESPONSE_KEY_3 = "responseStatus";
-    public static final String HTTP_ACCEPTED = "200";
+    public static final String HTTP_OK = "200";
     public static final String HTTP_BAD_REQUEST = "400";
     public static final String HTTP_CREATED = "201";
-    public static final String RESPONSE_ACCEPTED_MSG = "Success";
+    public static final String RESPONSE_UPDATED_MSG = "Successfully updated";
     public static final String TEST_PCQ_ID = "UPDATE-INTEG-TEST";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
     public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code valid";
@@ -89,8 +89,8 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
             assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(RESPONSE_STATUS_MSG, RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_OK, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_MSG, RESPONSE_UPDATED_MSG, response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
                 protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
