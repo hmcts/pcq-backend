@@ -42,7 +42,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
     @Query("UPDATE protected_characteristics p SET p.caseId = ?1 WHERE p.pcqId = ?2")
     int updateCase(String caseId, String pcqId);
 
-    List<ProtectedCharacteristics> findByCaseIdIsNullAndCompletedDateGreaterThan(Timestamp completedDate);
+    List<ProtectedCharacteristics> findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(Timestamp completedDate);
 
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM protected_characteristics p WHERE p.pcqId = ?1")
