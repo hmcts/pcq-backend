@@ -60,7 +60,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
             response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.OK);
 
             assertEquals(RESPONSE_VALID_STATUS_CODE, "200", response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status not valid", RESPONSE_UPDATED_MSG,
+            assertEquals("Response Status not valid", RESPONSE_OK_MSG,
                          response.get(RESPONSE_KEY_3));
 
             //Get the record
