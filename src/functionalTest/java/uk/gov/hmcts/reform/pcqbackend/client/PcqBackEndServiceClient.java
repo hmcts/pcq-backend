@@ -29,7 +29,7 @@ public class PcqBackEndServiceClient {
     private static final String INFO_MSG_CONSTANT_1 = "Update answers record response: ";
     private static final String SUBJECT = "TEST";
     private static final String TEST_AUTHORITIES = "TEST_AUTHORITY";
-    private static final String TEST_OPTOUT_YES = "Y";
+    //private static final String TEST_OPTOUT_YES = "Y";
 
     private final String pcqBackEndApiUrl;
     private final String jwtSecretKey;
@@ -114,9 +114,18 @@ public class PcqBackEndServiceClient {
         return response.body().as(Map.class);
     }
 
-    public Map<String, Object> deleteAnswersRecord(PcqAnswerRequest answerRequest, HttpStatus status) {
-        answerRequest.setOptOut(TEST_OPTOUT_YES);
-        return updateAnswersRecord(answerRequest, status);
+    public Map<String, Object> deleteAnswersRecord(String pcqId, HttpStatus status) {
+        Response response = getMultipleAuthHeaders(jwtSecretKey)
+            .delete("pcq/backend/deletePcqRecord/" + pcqId)
+            .andReturn();
+        response.then()
+            .assertThat()
+            .statusCode(status.value());
+
+        if (status == HttpStatus.UNAUTHORIZED) {
+            return null;
+        }
+        return response.body().as(Map.class);
     }
 
     public Map<String, Object> staleAnswersNotRecorded(PcqAnswerRequest answerRequest) {

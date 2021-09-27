@@ -65,7 +65,8 @@ public abstract class PcqBaseFunctionalTest {
         for (PcqAnswerRequest pcqAnswerRequest : clearTestPcqAnswers) {
             /* Changing Status code as per code at the moment ,
             this need to change when we have correct method to delete answer Record*/
-            pcqBackEndServiceClient.deleteAnswersRecord(pcqAnswerRequest, HttpStatus.ACCEPTED);
+            String pcqId = pcqAnswerRequest.getPcqId();
+            pcqBackEndServiceClient.deleteAnswersRecord(pcqId, HttpStatus.OK);
         }
     }
 

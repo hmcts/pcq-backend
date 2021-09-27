@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
+import uk.gov.hmcts.reform.pcqbackend.service.DeleteService;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 
 import java.security.Security;
@@ -86,7 +87,12 @@ class PcqAnswersControllerTest {
             protectedCharacteristicsRepository,
             environment
         );
-        this.pcqAnswersController = new PcqAnswersController(submitAnswersService, environment);
+        DeleteService deleteService = new DeleteService(
+            protectedCharacteristicsRepository,
+            environment
+        );
+
+        this.pcqAnswersController = new PcqAnswersController(submitAnswersService, deleteService,environment);
         MockitoAnnotations.initMocks(this);
 
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);

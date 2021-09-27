@@ -50,6 +50,10 @@ public class PcqBackEndClient {
         return getRequest(APP_BASE_PATH + "/getAnswer/{pcqId}", pcqId);
     }
 
+    public Map<String, Object> deletePcqRecord(String pcqId) {
+        return deleteRequest(APP_BASE_PATH + "/deletePcqRecord/{pcqId}", pcqId);
+    }
+
     public Map<String, Object> getPcqWithoutCase() {
         return getRequest(APP_BASE_PATH + "/consolidation/pcqWithoutCase");
     }
@@ -263,5 +267,27 @@ public class PcqBackEndClient {
         HttpHeaders headers = new HttpHeaders();
         headers.add("ServiceAuthorization", "INTEG-TEST-PCQ");
         return headers;
+    }
+
+    private Map<String, Object> deleteRequest(String uriPath, Object... params) {
+
+        ResponseEntity<Map> responseEntity;
+
+        try {
+            HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());
+            responseEntity = restTemplate
+                .exchange("http://localhost:" + prdApiPort + uriPath,
+                          HttpMethod.DELETE,
+                          request,
+                          Map.class,
+                          params);
+        } catch (HttpStatusCodeException ex) {
+            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("response_body", ex.getResponseBodyAsString());
+            return statusAndBody;
+        }
+
+        return getResponse(responseEntity);
     }
 }
