@@ -148,4 +148,7 @@ public class ProtectedCharacteristics implements Serializable {
     @Column(name = "PREGNANCY")
     private Integer pregnancy;
 
+    @Column(name = "OPT_OUT")
+    private Boolean optOut;
+
 }

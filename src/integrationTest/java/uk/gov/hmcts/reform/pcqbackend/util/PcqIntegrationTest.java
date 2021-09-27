@@ -37,6 +37,7 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
     public static final String TEST_PCQ_ID = "UPDATE-INTEG-TEST";
     public static final String STATUS_CODE_INVALID_MSG = "Response Status Code not valid";
     public static final String STATUS_INVALID_MSG = "Response Status not valid";
+    public static final String PCQ_VALID_MSG = "PCQId valid";
 
     @Autowired
     protected ProtectedCharacteristicsRepository protectedCharacteristicsRepository;

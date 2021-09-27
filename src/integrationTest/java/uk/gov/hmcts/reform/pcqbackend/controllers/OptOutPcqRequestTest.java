@@ -32,15 +32,18 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
     public static final String RESPONSE_KEY_1 = "pcqId";
     public static final String RESPONSE_KEY_2 = "responseStatusCode";
     public static final String RESPONSE_KEY_3 = "responseStatus";
-    public static final String HTTP_ACCEPTED = "200";
+    public static final String HTTP_OK = "200";
     public static final String HTTP_BAD_REQUEST = "400";
-    public static final String RESPONSE_ACCEPTED_MSG = "Success";
+    public static final String HTTP_CREATED = "201";
+    public static final String RESPONSE_UPDATED_MSG = "Successfully updated";
     public static final String TEST_PCQ_ID = "UPDATE-INTEG-TEST";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
-    public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code not valid";
+    public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code valid";
+    public static final String RESPONSE_STATUS_MSG = "Response Status valid";
     public static final String RESPONSE_KEY_4 = "response_body";
     private static final String TEST_DUP_PCQ_ID = "UPDATE-DUP-INTEG-TEST";
     private static final String IO_EXCEPTION_MSG = "IOException while executing test";
+    public static final String RESPONSE_CREATED_MSG = "Successfully created";
 
 
     @Rule
@@ -86,14 +89,13 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
             assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_ACCEPTED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_ACCEPTED_MSG,
-                         response.get(RESPONSE_KEY_3));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_OK, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_MSG, RESPONSE_UPDATED_MSG, response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
                 protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
 
-            assertTrue(protectedCharacteristicsOptional.isEmpty(), "Pcq Record Not Deleted");
+            assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record exist");
             checkLogsForKeywords();
 
 
@@ -113,16 +115,16 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
-            assertEquals("PCQId not valid", TEST_PCQ_ID, responseBody.get(RESPONSE_KEY_1));
-            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_BAD_REQUEST, responseBody.get(RESPONSE_KEY_2));
-            assertEquals("Response Status not valid", RESPONSE_INVALID_MSG,
-                         responseBody.get(RESPONSE_KEY_3));
+            //Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
+            assertEquals(PCQ_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
+            assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_STATUS_MSG, RESPONSE_CREATED_MSG,
+                         response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
                 protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
 
-            assertTrue(protectedCharacteristicsOptional.isEmpty(), "Record found");
+            assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record found");
 
             checkLogsForKeywords();
 
@@ -145,12 +147,12 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
             answerRequest.setPcqId(TEST_PCQ_ID + "' OR 'x'='x");
 
             Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-            Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
-            assertEquals(PCQ_NOT_VALID_MSG, HtmlUtils.htmlEscape(TEST_PCQ_ID + "' OR 'x'='x"),
-                         responseBody.get(RESPONSE_KEY_1));
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_BAD_REQUEST, responseBody.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_INVALID_MSG,
-                         responseBody.get(RESPONSE_KEY_3));
+            //Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
+            assertEquals(PCQ_VALID_MSG, HtmlUtils.htmlEscape(TEST_PCQ_ID + "' OR 'x'='x"),
+                         response.get(RESPONSE_KEY_1));
+            assertEquals(RESPONSE_CREATED_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals("Response Status valid", RESPONSE_CREATED_MSG,
+                         response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
                 protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
