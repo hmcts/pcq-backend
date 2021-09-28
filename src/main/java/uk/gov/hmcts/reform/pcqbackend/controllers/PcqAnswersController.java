@@ -47,6 +47,7 @@ import javax.validation.constraints.NotBlank;
 public class PcqAnswersController {
 
     private static final String OPT_OUT_FLAG = "Y";
+    private static final String TRUE = "true";
 
     @Autowired
     private SubmitAnswersService submitAnswersService;
@@ -156,12 +157,11 @@ public class PcqAnswersController {
     )
     @ResponseBody
     public ResponseEntity<Object> deletePcqRecord(@PathVariable("pcqId") @NotBlank String pcqId) {
-        if(environment.getProperty("DB_ALLOW_DELETE_RECORD")!=null &&
-            "true".equals(environment.getProperty("security.db.allow_delete_record"))) {
+        if (environment.getProperty("security.db.allow_delete_record") != null
+            && TRUE.equals(environment.getProperty("security.db.allow_delete_record"))) {
             return deleteService.deletePcqRecord(pcqId);
         }
-        return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED;
+        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.UNAUTHORIZED,
+                                               environment.getProperty("api-error-messages.bad_request"));
     }
-
 }

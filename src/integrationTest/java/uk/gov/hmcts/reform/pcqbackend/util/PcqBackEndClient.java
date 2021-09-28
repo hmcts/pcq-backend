@@ -269,6 +269,7 @@ public class PcqBackEndClient {
         return headers;
     }
 
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> deleteRequest(String uriPath, Object... params) {
 
         ResponseEntity<Map> responseEntity;
