@@ -63,6 +63,7 @@ class PcqAnswersControllerTest {
     private static final String SCHEMA_FILE_PROPERTY = "api-schema-file.submitanswer-schema";
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
+    private static final String ALLOW_DELETE_PROPERTY = "security.db.allow_delete_record";
 
     private static final String FIRST_SUBMIT_ANSWER_FILENAME = "JsonTestFiles/FirstSubmitAnswer.json";
     private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME
@@ -101,6 +102,7 @@ class PcqAnswersControllerTest {
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
+        when(environment.getProperty("api-error-messages.deleted")).thenReturn("Successfully deleted");
     }
 
     /**
@@ -920,6 +922,38 @@ class PcqAnswersControllerTest {
         mockHeader.set("HTTP_X-Correlation-Id", CO_RELATION_ID_FOR_TEST);
 
         return mockHeader;
+    }
+
+    /**
+     * This method tests the deletePcqRecord API when it is called with correct PcqId , pcq record in  the database
+     * should be deleted. The response status code will be 200.
+     */
+    @DisplayName("Should return with an 200 error code")
+    @Test
+    void testDeletePcqRecord()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+
+            /*ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            targetObject.setPcqId(pcqId);
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+
+            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);*/
+            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(1);
+            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
+
+
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
     }
 
 }
