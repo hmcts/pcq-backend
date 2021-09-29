@@ -103,6 +103,8 @@ class PcqAnswersControllerTest {
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
         when(environment.getProperty("api-error-messages.deleted")).thenReturn("Successfully deleted");
+        when(environment.getProperty("api-error-messages.not_found")).thenReturn("Not Found");
+        when(environment.getProperty("api-error-messages.bad_request")).thenReturn("Bad Request");
     }
 
     /**
@@ -925,7 +927,7 @@ class PcqAnswersControllerTest {
     }
 
     /**
-     * This method tests the deletePcqRecord API when it is called with correct PcqId , pcq record in  the database
+     * This method tests the deletePcqRecord API when it is called with correct PcqId , pcq record in database
      * should be deleted. The response status code will be 200.
      */
     @DisplayName("Should return with an 200 error code")
@@ -934,12 +936,6 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-
-            /*ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);*/
             when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
             when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(1);
             ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
@@ -947,8 +943,54 @@ class PcqAnswersControllerTest {
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
 
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the deletePcqRecord API when it is called with invalid PcqId , pcq record not found in database
+     * The response status code will be 404.
+     */
+    @DisplayName("Should return with an 404 error code")
+    @Test
+    void testDeletePcqRecordNotFound()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(0);
+            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode(), "Expected 404 status code");
 
             verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the deletePcqRecord API when it is called with db_allow_delete_record as false, pcq record
+     * will not be deleted . The response status code will be 401.
+     */
+    @DisplayName("Should return with an 401 error code")
+    @Test
+    void testDeletePcqRecordUnauthorised()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("false");
+            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode(), "Expected 404 status code");
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
