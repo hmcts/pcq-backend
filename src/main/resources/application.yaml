@@ -17,6 +17,7 @@ api-error-messages:
   created: Successfully created
   updated: Successfully updated
   accepted: Success
+  deleted: Successfully deleted
   internal_error: Unknown error occurred
 api-required-header-keys:
   co-relationid: X-Correlation-Id
@@ -34,7 +35,7 @@ security:
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
     encryption-enabled: ${DB_ENCRYPTION_ENABLED:Yes}
-    allow_delete_record: ${DB_ALLOW_DELETE_RECORD:false}
+    allow_delete_record: ${DB_ALLOW_DELETE_RECORD:true}
 
 idam:
   s2s-auth:
