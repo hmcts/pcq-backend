@@ -29,7 +29,6 @@ public class PcqBackEndServiceClient {
     private static final String INFO_MSG_CONSTANT_1 = "Update answers record response: ";
     private static final String SUBJECT = "TEST";
     private static final String TEST_AUTHORITIES = "TEST_AUTHORITY";
-    //private static final String TEST_OPTOUT_YES = "Y";
 
     private final String pcqBackEndApiUrl;
     private final String jwtSecretKey;

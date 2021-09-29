@@ -68,7 +68,6 @@ class ConsolidationControllerTest {
     private static final String EXPECTED_400_MSG = "Expected 400 status";
     private static final String EXPECTED_EMPTY_PCQIDS_MSG = "Expected empty pcqIds array";
     private static final String EXPECTED_EMPTY_PCQRCORDS_MSG = "Expected empty pcqRecords array";
-    //private static final String DELETE_MSG_PROPERTY = "api-error-messages.deleted";
 
     @BeforeEach
     void setUp() {

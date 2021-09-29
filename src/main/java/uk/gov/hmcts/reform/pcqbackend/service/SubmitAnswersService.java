@@ -41,7 +41,6 @@ public class SubmitAnswersService {
     private static final String OPTOUT_YES = "Y";
     private static final String INFO_LOG_MSG = "Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, ";
 
-
     Environment environment;
 
     ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
@@ -150,8 +149,6 @@ public class SubmitAnswersService {
         return protectedCharacteristics.orElse(null);
 
     }
-
-
 
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
         "PMD.UnusedLocalVariable"})
