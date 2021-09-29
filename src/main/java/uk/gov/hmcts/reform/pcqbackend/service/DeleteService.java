@@ -10,6 +10,8 @@ import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
+import javax.transaction.Transactional;
+
 @Slf4j
 @Service
 public class DeleteService {
@@ -25,6 +27,7 @@ public class DeleteService {
         this.environment = environment;
     }
 
+    @Transactional
     public ResponseEntity<Object> deletePcqRecord(String pcqId) {
         log.info("deletePcqRecord API invoked");
         int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
