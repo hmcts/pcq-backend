@@ -67,11 +67,15 @@ public class AddCaseForPcqTest extends PcqBaseFunctionalTest {
                          response.get(RESPONSE_KEY_3));
             assertEquals("Invalid PcqId in response", firstUuid, response.get(RESPONSE_KEY_1));
 
+            log.info("Add Case for PCQ Id = {}", answerRequest.getPcqId());
+
             //Get the record
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
                 firstUuid, HttpStatus.OK);
 
             assertEquals("CaseId not matching", validateGetResponse.get("ccdCaseId"), TEST_CASE_ID);
+
+            log.info("Get answer Record for PCQ Id = {}", answerRequest.getPcqId());
 
         } catch (IOException e) {
             log.error("Error during test execution", e);
