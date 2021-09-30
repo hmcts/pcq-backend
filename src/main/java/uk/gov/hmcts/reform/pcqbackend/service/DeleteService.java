@@ -29,8 +29,9 @@ public class DeleteService {
 
     @Transactional
     public ResponseEntity<Object> deletePcqRecord(String pcqId) {
-        log.info("deletePcqRecord API invoked");
+        log.info("deletePcqRecord API invoked PcqId {}" , pcqId);
         int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
+        log.info("deletePcqRecord resultCount {}" , resultCount);
         if (resultCount == 0) {
             log.error(
                 "PCQ Id : {} - Delete PCQ Record API, PCQ record does not exist.",

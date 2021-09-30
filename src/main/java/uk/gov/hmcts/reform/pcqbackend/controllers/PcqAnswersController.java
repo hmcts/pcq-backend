@@ -157,6 +157,7 @@ public class PcqAnswersController {
     )
     @ResponseBody
     public ResponseEntity<Object> deletePcqRecord(@PathVariable("pcqId") @NotBlank String pcqId) {
+        log.info("Delete Allow ={}",environment.getProperty("security.db.allow_delete_record"));
         if (environment.getProperty("security.db.allow_delete_record") != null
             && TRUE.equals(environment.getProperty("security.db.allow_delete_record"))) {
             return deleteService.deletePcqRecord(pcqId);
