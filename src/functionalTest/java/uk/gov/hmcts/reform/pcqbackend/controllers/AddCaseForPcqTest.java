@@ -53,6 +53,8 @@ public class AddCaseForPcqTest extends PcqBaseFunctionalTest {
             assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
+            log.info("PCQ Id = {}", answerRequest.getPcqId());
+
             //Prepare for clearing down.
             clearTestPcqAnswers.add(answerRequest);
 
