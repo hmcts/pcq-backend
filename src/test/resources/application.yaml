@@ -16,6 +16,7 @@ api-error-messages:
   bad_request: Invalid Request
   created: Successfully created
   accepted: Success
+  deleted: Successfully deleted
   internal_error: Unknown error occurred
 api-required-header-keys:
   co-relationid: X-Correlation-Id

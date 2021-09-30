@@ -33,7 +33,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
     public static final String RESPONSE_UPDATED_MSG = "Successfully updated";
     public static final String RESPONSE_OK_MSG = "Success";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
-    public static final String RESPONSE_VALID_STATUS_CODE = "Response Status Code valid";
+    public static final String RESPONSE_INVALID_STATUS_CODE = "Response Status Code not valid";
 
     @Test
     public void optOutPcqAnswers() {
@@ -46,7 +46,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
             answerRequest.setPcqId(generateUuid());
             Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-            assertEquals(RESPONSE_VALID_STATUS_CODE, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_INVALID_STATUS_CODE, HTTP_CREATED, response.get(RESPONSE_KEY_2));
             assertEquals("Response Status valid", RESPONSE_CREATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
@@ -59,7 +59,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
 
             response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.OK);
 
-            assertEquals(RESPONSE_VALID_STATUS_CODE, "200", response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_INVALID_STATUS_CODE, "200", response.get(RESPONSE_KEY_2));
             assertEquals("Response Status not valid", RESPONSE_UPDATED_MSG,
                          response.get(RESPONSE_KEY_3));
 
@@ -87,7 +87,7 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
             Map<String, Object> response = pcqBackEndServiceClient.updateAnswersRecord(answerRequest,
                                                                                        HttpStatus.CREATED);
 
-            assertEquals(RESPONSE_VALID_STATUS_CODE, "201", response.get(RESPONSE_KEY_2));
+            assertEquals(RESPONSE_INVALID_STATUS_CODE, "201", response.get(RESPONSE_KEY_2));
 
             //Get the record
             Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(

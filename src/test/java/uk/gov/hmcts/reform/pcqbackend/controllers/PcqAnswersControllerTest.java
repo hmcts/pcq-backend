@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
+import uk.gov.hmcts.reform.pcqbackend.service.DeleteService;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 
 import java.security.Security;
@@ -62,6 +63,7 @@ class PcqAnswersControllerTest {
     private static final String SCHEMA_FILE_PROPERTY = "api-schema-file.submitanswer-schema";
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
+    private static final String ALLOW_DELETE_PROPERTY = "security.db.allow_delete_record";
 
     private static final String FIRST_SUBMIT_ANSWER_FILENAME = "JsonTestFiles/FirstSubmitAnswer.json";
     private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME
@@ -86,7 +88,12 @@ class PcqAnswersControllerTest {
             protectedCharacteristicsRepository,
             environment
         );
-        this.pcqAnswersController = new PcqAnswersController(submitAnswersService, environment);
+        DeleteService deleteService = new DeleteService(
+            protectedCharacteristicsRepository,
+            environment
+        );
+
+        this.pcqAnswersController = new PcqAnswersController(submitAnswersService, deleteService,environment);
         MockitoAnnotations.initMocks(this);
 
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
@@ -95,6 +102,9 @@ class PcqAnswersControllerTest {
         when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
+        when(environment.getProperty("api-error-messages.deleted")).thenReturn("Successfully deleted");
+        when(environment.getProperty("api-error-messages.not_found")).thenReturn("Not Found");
+        when(environment.getProperty("api-error-messages.bad_request")).thenReturn("Bad Request");
     }
 
     /**
@@ -914,6 +924,78 @@ class PcqAnswersControllerTest {
         mockHeader.set("HTTP_X-Correlation-Id", CO_RELATION_ID_FOR_TEST);
 
         return mockHeader;
+    }
+
+    /**
+     * This method tests the deletePcqRecord API when it is called with correct PcqId , pcq record in database
+     * should be deleted. The response status code will be 200.
+     */
+    @DisplayName("Should return with an 200 error code")
+    @Test
+    void testDeletePcqRecord()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(1);
+            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
+
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the deletePcqRecord API when it is called with invalid PcqId , pcq record not found in database
+     * The response status code will be 404.
+     */
+    @DisplayName("Should return with an 404 error code")
+    @Test
+    void testDeletePcqRecordNotFound()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
+            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(0);
+            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode(), "Expected 404 status code");
+
+            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    /**
+     * This method tests the deletePcqRecord API when it is called with db_allow_delete_record as false, pcq record
+     * will not be deleted . The response status code will be 401.
+     */
+    @DisplayName("Should return with an 401 error code")
+    @Test
+    void testDeletePcqRecordUnauthorised()  {
+
+        String pcqId = TEST_PCQ_ID;
+        try {
+            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("false");
+            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode(), "Expected 404 status code");
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
     }
 
 }

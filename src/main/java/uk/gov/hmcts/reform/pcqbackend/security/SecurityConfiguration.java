@@ -49,6 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/pcq/backend/getAnswer/**").permitAll()
             .antMatchers("/pcq/backend/consolidation/**").permitAll()
             .antMatchers("/pcq/backend/token/**").permitAll()
+            .antMatchers("/pcq/backend/deletePcqRecord/**").permitAll()
             .antMatchers("/pcq/backend/submitAnswers**").authenticated();
 
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
