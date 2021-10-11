@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
+import uk.gov.hmcts.reform.pcqbackend.service.DeleteService;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
@@ -45,9 +47,13 @@ import javax.validation.constraints.NotBlank;
 public class PcqAnswersController {
 
     private static final String OPT_OUT_FLAG = "Y";
+    private static final String TRUE = "true";
 
     @Autowired
     private SubmitAnswersService submitAnswersService;
+
+    @Autowired
+    private DeleteService deleteService;
 
     @Autowired
     private Environment environment;
@@ -126,6 +132,36 @@ public class PcqAnswersController {
     }
 
 
-
-
+    @ApiOperation(
+        tags = "Delete PCQ Record", value = "Delete PCQ Record from the database.",
+        notes = "This API will delete a record from the PCQ database for the given PCQId. "
+            + "It is intended to be called from the test api for testing purposes."
+    )
+    @ApiResponses({
+        @ApiResponse(
+            code = 200,
+            message = "Pcq record has been deleted"
+        ),
+        @ApiResponse(
+            code = 400,
+            message = "An invalid id was provided"
+        ),
+        @ApiResponse(
+            code = 404,
+            message = "No pcq answer record was found with the given id"
+        )
+    })
+    @DeleteMapping(
+        path = "/deletePcqRecord/{pcqId}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ResponseEntity<Object> deletePcqRecord(@PathVariable("pcqId") @NotBlank String pcqId) {
+        if (environment.getProperty("security.db.allow_delete_record") != null
+            && TRUE.equals(environment.getProperty("security.db.allow_delete_record"))) {
+            return deleteService.deletePcqRecord(pcqId);
+        }
+        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.UNAUTHORIZED,
+                                               environment.getProperty("api-error-messages.bad_request"));
+    }
 }

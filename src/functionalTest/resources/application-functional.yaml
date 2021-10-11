@@ -18,6 +18,7 @@ api-error-messages:
   created: Successfully created
   updated: Successfully updated
   accepted: Success
+  deleted: Successfully deleted
   internal_error: Unknown error occurred
 api-required-header-keys:
   co-relationid: X-Correlation-Id
@@ -35,7 +36,8 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
-
+  db:
+    allow_delete_record: ${DB_ALLOW_DELETE_RECORD:true}
 idam:
   s2s-auth:
     url: ${TEST_S2S_URL:http://localhost:4502}
