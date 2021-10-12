@@ -115,7 +115,7 @@ public class PcqBackEndServiceClient {
 
     public Map<String, Object> deleteAnswersRecord(String pcqId, HttpStatus status) {
         Response response = getMultipleAuthHeaders(jwtSecretKey)
-            .delete("pcq/backend/deletePcqRecord/" + pcqId)
+            .delete("/pcq/backend/deletePcqRecord/" + pcqId)
             .andReturn();
         response.then()
             .assertThat()
