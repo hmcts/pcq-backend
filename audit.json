@@ -47,5 +47,10 @@
   "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/getAnswer/pcqId_GET": "ignore",
   "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/pcqWithoutCase_GET": "ignore",
   "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/pcqRecordWithoutCase_GET": "ignore",
-  "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/token/bulkscan_GET": "ignore"
+  "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/token/bulkscan_GET": "ignore",
+  "10010_Cookie No HttpOnly Flag_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
+  "10054_Cookie without SameSite Attribute_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
+  "10096_Timestamp Disclosure - Unix_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
+  "100000_A Client Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
+  "90033_Loosely Scoped Cookie_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore"
 }
