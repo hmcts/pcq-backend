@@ -4,5 +4,3 @@ java:
   ingressHost: ${SERVICE_FQDN}
   environment:
     DB_ALLOW_DELETE_RECORD: "true"
-
-
