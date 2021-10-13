@@ -41,7 +41,7 @@ withNightlyPipeline(type, product, component) {
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
   env.TEST_S2S_URL = "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
   env.STORAGE_URL = "https://pcqsharedaat.blob.core.windows.net"
-  
+
   env.Rules = params.SecurityRules
 
   loadVaultSecrets(secrets)
