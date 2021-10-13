@@ -1,8 +1,8 @@
 java:
-  environment:
-    DB_ALLOW_DELETE_RECORD: "true"
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
+  environment:
+    DB_ALLOW_DELETE_RECORD: "true"
 
 
