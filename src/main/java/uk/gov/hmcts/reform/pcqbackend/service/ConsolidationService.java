@@ -42,7 +42,7 @@ public class ConsolidationService {
         log.info("Co-Relation Id : {} - getPcqsWithoutCase service invoked", coRelationId);
 
         List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository
-            .findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(
+            .findByCaseIdIsNullAndCompletedDateGreaterThan(
                 PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
                 "api-config-params.number_of_days_limit")))));
 
