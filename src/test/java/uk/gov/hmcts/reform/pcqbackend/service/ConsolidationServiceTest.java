@@ -78,7 +78,7 @@ class ConsolidationServiceTest {
         try {
 
             List<ProtectedCharacteristics> targetList = generateTargetList(3);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(targetList);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
@@ -94,8 +94,7 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(
+        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
             any(Timestamp.class));
     }
 
@@ -106,7 +105,7 @@ class ConsolidationServiceTest {
         try {
 
             List<ProtectedCharacteristics> targetList = generateTargetList(1);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(targetList);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
@@ -122,8 +121,7 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(
+        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
             any(Timestamp.class));
     }
 
@@ -134,7 +132,7 @@ class ConsolidationServiceTest {
         try {
 
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(targetList);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
@@ -150,8 +148,7 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(
+        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
             any(Timestamp.class));
     }
 
@@ -160,7 +157,7 @@ class ConsolidationServiceTest {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
 
         try {
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(null);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
@@ -177,8 +174,7 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndOptOutFalseAndCompletedDateGreaterThan(
+        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
             any(Timestamp.class));
     }
 
