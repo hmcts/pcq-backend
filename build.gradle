@@ -257,7 +257,7 @@ dependencyManagement {
       entry 'groovy-xml'
     }
     // CVE-2021-29425
-    dependency group: 'commons-io', name: 'commons-io', version: '2.8.0'
+    dependency group: 'commons-io', name: 'commons-io', version: '2.11.0'
   }
   imports {
     mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.3'
@@ -400,7 +400,7 @@ dependencies {
   testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
-  testCompile 'com.github.hmcts:fortify-client:1.2.0:all'
+  testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
 
   integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
