@@ -349,8 +349,6 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.7.RELEASE'
 
-  compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.0.5'
-
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
   implementation(group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: versions.serviceAuthVersion) {
     force = true
