@@ -284,6 +284,7 @@ def versions = [
   reformLogging       : '5.1.1',
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '3.0.0',
+  springfoxSwaggerui  : '2.9.2',
   restAssured         : '4.2.0',
   serenity            : '2.4.24',
   lombok              : '1.18.12',
@@ -370,6 +371,7 @@ dependencies {
   compile group: 'org.flywaydb', name: 'flyway-core', version: '7.6.0'
   compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
   compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
+  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwaggerui
 
   compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging

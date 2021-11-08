@@ -56,7 +56,7 @@ public class ConsolidationController {
     private ConsolidationService consolidationService;
 
     @ApiOperation(
-        tags = "Get PCQ Ids", value = "Get list of PCQ Ids that don't have associated case information.",
+        tags = "GET end-points", value = "Get list of PCQ Ids that don't have associated case information.",
         notes = "This API will be invoked by the Consolidation process to get a list of PCQ records that don’t "
                 + "have an associated case. Any PCQ answer records which are over 90 days old will not be "
                 + "returned in the list."
@@ -109,7 +109,7 @@ public class ConsolidationController {
     }
 
     @ApiOperation(
-        tags = "Add Case for a PCQ", value = "Add case information on a PCQ answers record.",
+        tags = "PUT end-points", value = "Add case information on a PCQ answers record.",
         notes = "This API will be invoked by the Consolidation process to to update the case information ( case id )"
             + " on the PCQ answers record. "
     )
@@ -141,7 +141,7 @@ public class ConsolidationController {
     }
 
     @ApiOperation(
-        tags = "Get PCQ Records", value = "Get list of PCQ Record that don't have associated case information.",
+        tags = "GET end-points", value = "Get list of PCQ Record that don't have associated case information.",
         notes = "This API will be invoked by the Consolidation process to get a list of PCQ records that don’t "
             + "have an associated case. Any PCQ answer records which are over 90 days old will not be "
             + "returned in the list. The PCQ Answer response will contain the PCQ Id, Service Id and Actor only."
