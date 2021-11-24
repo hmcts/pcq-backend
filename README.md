@@ -69,7 +69,7 @@ The `.env` file has a list of the environment variables in use by the pcq-backen
 * DB_ENCRYPTION_KEY
 
 There is no need to export these values if pcq-backend repo is checked out.
-If another service is using the pcq-backend application, the emnvironment values are available through a batch script:
+If another service is using the pcq-backend application, the environment values are available through a batch script:
 ```bash
   source ./bin/set-pcq-docker-env.sh
 ```
@@ -139,7 +139,7 @@ You may need to forcibly remove any relevant images by executing the following c
 ```bash
   docker rmi $(docker images -q)
 ```
-Finally you can remove all volumes - not this rmoves all existing database values:
+Finally you can remove all volumes - note this removes all existing database values:
 ```bash
   docker volume rm $(docker volume ls -q)
 ```
