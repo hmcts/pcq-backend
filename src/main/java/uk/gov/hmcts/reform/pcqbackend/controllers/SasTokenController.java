@@ -42,7 +42,7 @@ public class SasTokenController {
     private AuthorisedServices authorisedServices;
 
     @ApiOperation(
-        tags = "Get SAS Token for BulkScan", value = "Endpoint for BulkScan to generate the PCQ Storage SAS token.",
+        tags = "GET end-points", value = "Endpoint for BulkScan to generate the PCQ Storage SAS token.",
         notes = "This API will be invoked by the Bulk Scan Processor to generate an Azure Service SAS token to allow"
                 + "the upload of paper PCQ envelops to the PCQ Blob Storage 'pcq' container."
     )

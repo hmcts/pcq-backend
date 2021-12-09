@@ -61,7 +61,7 @@ public class PcqAnswersController {
     @PostMapping(path = "/submitAnswers", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals"})
-    @ApiOperation(tags = "Save PCQ answers", value = "Add and update PCQ answers to the database.",
+    @ApiOperation(tags = "POST end-points", value = "Add and update PCQ answers to the database.",
         notes = "This API will create a new record in the database for the given PCQId where none exists "
         + "and will update an existing record with the answers as submitted by the users")
     @ApiResponses({
@@ -92,7 +92,7 @@ public class PcqAnswersController {
     }
 
     @ApiOperation(
-        tags = "Get PCQ answer", value = "Get PCQ answer from the database.",
+        tags = "GET end-points", value = "Get PCQ answer from the database.",
         notes = "This API will return a record from the PCQ database for the given PCQId. "
             + "It is intended to be called from the test api for testing purposes."
     )
@@ -133,7 +133,7 @@ public class PcqAnswersController {
 
 
     @ApiOperation(
-        tags = "Delete PCQ Record", value = "Delete PCQ Record from the database.",
+        tags = "DELETE end-points", value = "Delete PCQ Record from the database.",
         notes = "This API will delete a record from the PCQ database for the given PCQId. "
             + "It is intended to be called from the test api for testing purposes."
     )
