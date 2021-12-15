@@ -84,9 +84,9 @@ sourceSets {
 }
 
 configurations {
-  integrationTestCompile.extendsFrom testCompile
+  integrationTestImplementation.extendsFrom testImplementation
   integrationTestRuntime.extendsFrom testRuntime
-  functionalTestCompile.extendsFrom testCompile
+  functionalTestImplementation.extendsFrom testImplementation
   functionalTestRuntime.extendsFrom testRuntime
 }
 
@@ -133,7 +133,7 @@ checkstyle {
   maxWarnings = 0
   toolVersion = '8.29'
   // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
-  configDir = new File(rootDir, 'config/checkstyle')
+  configDirectory = new File(rootDir, 'config/checkstyle')
 }
 
 pmd {
@@ -324,13 +324,13 @@ dependencies {
     exclude group: 'org.springframework.cloud', module: 'spring-cloud-context'
   }
 
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-web-services'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-json'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web-services'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
   implementation group: 'org.springframework', name:'spring-aop', version: versions.springFramework
   implementation group: 'org.springframework', name:'spring-aspects', version: versions.springFramework
@@ -350,6 +350,8 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
 
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '3.0.5'
+
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
   implementation(group: 'uk.gov.hmcts.reform', name: 'service-auth-provider-client', version: versions.serviceAuthVersion) {
     force = true
@@ -360,39 +362,39 @@ dependencies {
 
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.1.5'
 
-  compile group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0', withoutSpringCloudContext
+  implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0', withoutSpringCloudContext
 
-  compile group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
-  compile group: 'org.springframework.boot', name: 'spring-boot-starter-security'
-  compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+  implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+  implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
-  compile group: 'org.flywaydb', name: 'flyway-core', version: '7.6.0'
-  compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
-  compile group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
-  compile group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwaggerui
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.6.0'
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
+  implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
+  implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwaggerui
 
-  compile group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
-  compile group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
+  implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
-  compile group: "com.networknt", name: "json-schema-validator", version: "1.0.49"
-  compile group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+  implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.49"
+  implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
-  compile group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
-  compile group: "com.gilecode.yagson", name:"j9-reflection-utils", version:"1.0"
+  implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
+  implementation group: "com.gilecode.yagson", name:"j9-reflection-utils", version:"1.0"
 
   testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-  testCompile group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
 
-  testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-  testCompile group: 'org.springframework.security', name: 'spring-security-test'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation group: 'org.springframework.security', name: 'spring-security-test'
 
-  testCompile group: 'com.github.tomakehurst', name: 'wiremock', version: '2.19.0'
+  testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.19.0'
 
-  testCompile group: 'org.pitest', name: 'pitest', version: versions.pitest
-  testCompile group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
-  testCompile 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
+  testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
+  testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
+  testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
 
   testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
   testImplementation group: 'net.serenity-bdd', name: 'serenity-junit', version: versions.serenity
@@ -404,19 +406,19 @@ dependencies {
   testImplementation group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
   testImplementation group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
 
-  testCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
-  testCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
+  testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+  testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
-  testCompile 'com.github.hmcts:fortify-client:1.2.1:all'
+  testImplementation 'com.github.hmcts:fortify-client:1.2.1:all'
 
-  integrationTestCompile group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
-  integrationTestCompile group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
+  integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+  integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
-  integrationTestCompile sourceSets.main.runtimeClasspath
-  integrationTestCompile sourceSets.test.runtimeClasspath
+  integrationTestImplementation sourceSets.main.runtimeClasspath
+  integrationTestImplementation sourceSets.test.runtimeClasspath
 
-  functionalTestCompile sourceSets.main.runtimeClasspath
-  functionalTestCompile sourceSets.test.runtimeClasspath
+  functionalTestImplementation sourceSets.main.runtimeClasspath
+  functionalTestImplementation sourceSets.test.runtimeClasspath
   functionalTestCompileOnly group: 'org.projectlombok', name: 'lombok', version: versions.lombok
   functionalTestAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
@@ -425,8 +427,8 @@ dependencies {
   smokeTestImplementation group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
   smokeTestImplementation group: 'io.rest-assured', name: 'xml-path', version: versions.restAssured
 
-  smokeTestCompile sourceSets.main.runtimeClasspath
-  smokeTestCompile sourceSets.test.runtimeClasspath
+  smokeTestImplementation sourceSets.main.runtimeClasspath
+  smokeTestImplementation sourceSets.test.runtimeClasspath
 }
 
 test {
@@ -459,4 +461,20 @@ bootJar {
   manifest {
     attributes('Implementation-Version': project.version.toString())
   }
+}
+
+rootProject.tasks.named("processTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processFunctionalTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processIntegrationTestResources") {
+  duplicatesStrategy = 'include'
+}
+
+rootProject.tasks.named("processSmokeTestResources") {
+  duplicatesStrategy = 'include'
 }
