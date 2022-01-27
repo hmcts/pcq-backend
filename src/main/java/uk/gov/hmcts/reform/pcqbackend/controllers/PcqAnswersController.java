@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import springfox.documentation.annotations.ApiIgnore;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
@@ -131,7 +132,7 @@ public class PcqAnswersController {
 
     }
 
-
+    @ApiIgnore
     @ApiOperation(
         tags = "DELETE end-points", value = "Delete PCQ Record from the database.",
         notes = "This API will delete a record from the PCQ database for the given PCQId. "
