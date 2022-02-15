@@ -305,7 +305,7 @@ configurations.all {
         details.useVersion '2.12.10'
       }
       if (details.requested.group in ['org.apache.tomcat.embed']) {
-        details.useVersion '10.0.16'
+        details.useVersion '9.0.58'
       }
       if (details.requested.group in ['org.hibernate']) {
         details.useVersion '5.4.25.Final'
@@ -407,6 +407,8 @@ dependencies {
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
 
   testImplementation 'com.github.hmcts:fortify-client:1.2.1:all'
+
+
 
   integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
