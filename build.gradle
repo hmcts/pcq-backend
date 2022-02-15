@@ -305,7 +305,7 @@ configurations.all {
         details.useVersion '2.12.10'
       }
       if (details.requested.group in ['org.apache.tomcat.embed']) {
-        details.useVersion '10.1.0-M10'
+        details.useVersion '10.0.16'
       }
       if (details.requested.group in ['org.hibernate']) {
         details.useVersion '5.4.25.Final'
