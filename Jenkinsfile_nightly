@@ -57,7 +57,7 @@ withNightlyPipeline(type, product, component) {
   }
 
   after('securityScan') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'security-output/**/*'
   }
 
   after('fullFunctionalTest') {
