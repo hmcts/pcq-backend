@@ -46,8 +46,8 @@ withNightlyPipeline(type, product, component) {
 
   loadVaultSecrets(secrets)
 
-  //enableSlackNotifications('#pcq-builds')
-  //enableMutationTest()
+  enableSlackNotifications('#pcq-builds')
+  enableMutationTest()
   //enableFullFunctionalTest()
   enableSecurityScan()
   //enableFortifyScan()
