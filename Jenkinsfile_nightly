@@ -47,25 +47,25 @@ withNightlyPipeline(type, product, component) {
   loadVaultSecrets(secrets)
 
   enableSlackNotifications('#pcq-builds')
-  //enableMutationTest()
-  //enableFullFunctionalTest()
+  enableMutationTest()
+  enableFullFunctionalTest()
   enableSecurityScan()
-  //enableFortifyScan()
+  enableFortifyScan()
 
   after('fortify-scan') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
   }
 
-  after('securityScan') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'security-output/**/*'
-  }
+  //after('securityScan') {
+  //  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'security-output/**/*'
+  //}
 
   after('fullFunctionalTest') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'target/**/*'
   }
 
-  after('mutationTest') {
-    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
-  }
+  //after('mutationTest') {
+  //  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
+  //}
 
 }
