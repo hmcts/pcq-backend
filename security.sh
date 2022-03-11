@@ -7,10 +7,11 @@ zap-api-scan.py -t ${TEST_URL}/v2/api-docs -f openapi -S -d -u ${SecurityRules} 
 cat zap.out
 echo "ZAP has successfully started"
 curl --fail http://0.0.0.0:1001/OTHER/core/other/jsonreport/?formMethod=GET --output report.json
+zap-cli --zap-url http://0.0.0.0 --port 1001 --verbose start
 echo "Debug 1"
-zap-cli --zap-url http://0.0.0.0 -p 1001 report -o /zap/zap-api-report.html -f html
+zap-cli --zap-url http://0.0.0.0 --port 1001 --verbose report -o /zap/zap-api-report.html -f html
 echo "Debug 2"
-zap-cli --zap-url http://0.0.0.0 -p 1001 alerts -l Informational --exit-code False
+zap-cli --zap-url http://0.0.0.0 --port 1001 --verbose alerts -l Informational --exit-code False
 echo "Debug 3"
 mkdir -p security-output
 chmod a+wx security-output
