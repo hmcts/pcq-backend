@@ -297,7 +297,8 @@ def versions = [
   pitest              : '1.6.3',
   sonarPitest         : '0.5',
   testcontainers      : '1.15.1',
-  springFramework     : '5.3.15'
+  springFramework     : '5.3.15',
+  fasterXmlJackson    : '2.13.2'
 ]
 
 configurations.all {
@@ -365,9 +366,11 @@ dependencies {
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.10.0'
 
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.1.5'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.13.2'
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.13.2'
+
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.fasterXmlJackson
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.fasterXmlJackson
+  implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.fasterXmlJackson, ext: 'pom'
 
   implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0', withoutSpringCloudContext
 
