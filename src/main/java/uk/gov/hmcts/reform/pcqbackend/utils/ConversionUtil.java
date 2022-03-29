@@ -104,7 +104,7 @@ public final class ConversionUtil {
         protectedCharacteristics.setPartyId(pcqAnswerRequest.getPartyId());
         protectedCharacteristics.setServiceId(pcqAnswerRequest.getServiceId());
         protectedCharacteristics.setVersionNumber(pcqAnswerRequest.getVersionNo());
-        protectedCharacteristics.setOptOut("Y".equals(pcqAnswerRequest.getOptOut()) ? true : false);
+        protectedCharacteristics.setOptOut("Y".equals(pcqAnswerRequest.getOptOut()));
 
         PcqAnswers pcqAnswers = pcqAnswerRequest.getPcqAnswers();
         if (pcqAnswers != null) {

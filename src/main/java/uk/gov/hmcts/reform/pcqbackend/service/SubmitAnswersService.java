@@ -23,6 +23,7 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
+import javax.annotation.Nullable;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,7 +56,7 @@ public class SubmitAnswersService {
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
         "PMD.UnusedLocalVariable"})
     @Transactional
-    public ResponseEntity<Object> processPcqAnswers(List<String> headers, PcqAnswerRequest answerRequest) {
+    public ResponseEntity<Object> processPcqAnswers(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
         String coRelationId = "";
         try {
@@ -153,7 +154,7 @@ public class SubmitAnswersService {
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
         "PMD.UnusedLocalVariable"})
     @Transactional
-    public ResponseEntity<Object> processOptOut(List<String> headers, PcqAnswerRequest answerRequest) {
+    public ResponseEntity<Object> processOptOut(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
         String coRelationId = "";
         try {
@@ -234,23 +235,6 @@ public class SubmitAnswersService {
                                                            environment.getProperty("api-error-messages.updated"));
                 }
             }
-
-
-            //Step 3. Invoke the delete pcq record method.
-            /*int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
-            if (resultCount == 0) {
-                log.error("Co-Relation Id : {} - submitAnswers API, Opt Out invoked but record does not exist.",
-                          coRelationId);
-                return PcqUtils.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
-                                                             environment.getProperty(
-                                                                 BAD_REQUEST_ERROR_MSG_KEY));
-            } else {
-                log.info(INFO_LOG_MSG
-                             + "Protected Characteristic Record submitted for deletion.", coRelationId,
-                         answerRequest.getChannel(), answerRequest.getServiceId());
-            }*/
-
-
         } catch (InvalidRequestException ive) {
             return handleInvalidRequestException(pcqId, ive);
         } catch (SchemaValidationException sve) {
