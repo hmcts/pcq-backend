@@ -21,7 +21,7 @@ plugins {
   id 'org.sonarqube' version '3.1.1'
   id 'com.gorylenko.gradle-git-properties' version '2.2.2'
   id "io.freefair.lombok" version "5.3.0"
-  id 'org.flywaydb.flyway' version '7.5.0'
+  id 'org.flywaydb.flyway' version '7.15.0'
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
@@ -378,8 +378,8 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
-  implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.6.0'
-  implementation group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.15.0'
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
   implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
   implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwaggerui
 
