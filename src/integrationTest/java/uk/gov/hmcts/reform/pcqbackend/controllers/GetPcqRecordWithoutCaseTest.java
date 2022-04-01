@@ -376,18 +376,19 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
         assertEquals(ASSERT_MESSAGE_STATUS_CODE, HTTP_OK, response.getBody().getResponseStatusCode());
         assertEquals(ASSERT_MESSAGE_STATUS, RESPONSE_SUCCESS_MSG, response.getBody().getResponseStatus());
         PcqAnswerResponse[] pcqRecordsActual = response.getBody().getPcqRecord();
-        assertEquals("Pcq Records size not matching", recordsExpected, pcqRecordsActual.length);
+        int length = pcqRecordsActual.length;
+        assertEquals("Pcq Records size not matching", recordsExpected, length);
 
-        List<String> actualPcqIds = new ArrayList<>(pcqRecordsActual.length);
-        List<String> actualServiceIds = new ArrayList<>(pcqRecordsActual.length);
-        List<String> actualActors = new ArrayList<>(pcqRecordsActual.length);
-        List<String> actualDcnNumbers = new ArrayList<>(pcqRecordsActual.length);
+        List<String> actualPcqIds = new ArrayList<>(length);
+        List<String> actualServiceIds = new ArrayList<>(length);
+        List<String> actualActors = new ArrayList<>(length);
+        List<String> actualDcnNumbers = new ArrayList<>(length);
 
-        for (int i = 0; i < pcqRecordsActual.length; i++) {
-            actualPcqIds.set(i, pcqRecordsActual[i].getPcqId());
-            actualServiceIds.set(i, pcqRecordsActual[i].getServiceId());
-            actualActors.set(i, pcqRecordsActual[i].getActor());
-            actualDcnNumbers.set(i, pcqRecordsActual[i].getDcnNumber());
+        for (int i = 0; i < length; i++) {
+            actualPcqIds.add(pcqRecordsActual[i].getPcqId());
+            actualServiceIds.add(pcqRecordsActual[i].getServiceId());
+            actualActors.add(pcqRecordsActual[i].getActor());
+            actualDcnNumbers.add(pcqRecordsActual[i].getDcnNumber());
         }
 
         if (recordsExpected > 0) {
