@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Functional")})
@@ -62,7 +63,10 @@ public abstract class PcqBaseFunctionalTest {
     @After
     public void afterTest() {
         for (PcqAnswerRequest pcqAnswerRequest : clearTestPcqAnswers) {
-            pcqBackEndServiceClient.deleteAnswersRecord(pcqAnswerRequest, HttpStatus.OK);
+            /* Changing Status code as per code at the moment ,
+            this need to change when we have correct method to delete answer Record*/
+            String pcqId = pcqAnswerRequest.getPcqId();
+            pcqBackEndServiceClient.deleteAnswersRecord(pcqId, HttpStatus.OK);
         }
     }
 
@@ -163,6 +167,12 @@ public abstract class PcqBaseFunctionalTest {
         Calendar calendar = Calendar.getInstance();
         completedTime.setTime(calendar.getTimeInMillis());
         return PcqUtils.convertTimeStampToString(completedTime);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    protected void checkOptOutOnResponse(Map<String, Object> responseMap) {
+        LinkedHashMap<String, Object> answers = (LinkedHashMap<String, Object>) responseMap.get("pcqAnswers");
+        assertTrue("Opt-out should be true", (Boolean)answers.get("opt_out"));
     }
 
 }

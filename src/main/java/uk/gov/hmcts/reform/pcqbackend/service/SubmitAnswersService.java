@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
@@ -24,6 +23,7 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
+import javax.annotation.Nullable;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +56,7 @@ public class SubmitAnswersService {
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
         "PMD.UnusedLocalVariable"})
     @Transactional
-    public ResponseEntity<Object> processPcqAnswers(List<String> headers, PcqAnswerRequest answerRequest) {
+    public ResponseEntity<Object> processPcqAnswers(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
         String coRelationId = "";
         try {
@@ -77,7 +77,6 @@ public class SubmitAnswersService {
 
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.persist(createCharacteristics);
-
                 log.info(INFO_LOG_MSG
                              + "Protected Characteristic Questions Record submitted for creation.", coRelationId,
                          createCharacteristics.getChannel(), createCharacteristics.getServiceId());
@@ -116,6 +115,7 @@ public class SubmitAnswersService {
                     createCharacteristics.getDisabilityNone(),
                     createCharacteristics.getPregnancy(),
                     createCharacteristics.getCompletedDate(),
+                    createCharacteristics.getOptOut(),
                     createCharacteristics.getPcqId(),
                     createCharacteristics.getCompletedDate());
 
@@ -130,7 +130,6 @@ public class SubmitAnswersService {
                              createCharacteristics.getChannel(), createCharacteristics.getServiceId());
                 }
             }
-
         } catch (InvalidRequestException ive) {
             return handleInvalidRequestException(pcqId, ive);
         } catch (SchemaValidationException sve) {
@@ -155,7 +154,7 @@ public class SubmitAnswersService {
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
         "PMD.UnusedLocalVariable"})
     @Transactional
-    public ResponseEntity<Object> processOptOut(List<String> headers, PcqAnswerRequest answerRequest) {
+    public ResponseEntity<Object> processOptOut(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
         String coRelationId = "";
         try {
@@ -167,21 +166,75 @@ public class SubmitAnswersService {
             //Step 2. Perform the validations
             performValidations(answerRequest);
 
-            //Step 3. Invoke the delete pcq record method.
-            int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
-            if (resultCount == 0) {
-                log.error("Co-Relation Id : {} - submitAnswers API, Opt Out invoked but record does not exist.",
-                          coRelationId);
-                return PcqUtils.generateResponseEntity(pcqId, HttpStatus.BAD_REQUEST,
-                                                             environment.getProperty(
-                                                                 BAD_REQUEST_ERROR_MSG_KEY));
-            } else {
+            //Step 3. Check whether record exists in database for the pcqId.
+            Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
+                .findById(answerRequest.getPcqId());
+
+            if (protectedCharacteristics.isEmpty()) {
+                ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
+
+                // Create the new PCQ Answers record with optOut as false.
+                protectedCharacteristicsRepository.persist(createCharacteristics);
                 log.info(INFO_LOG_MSG
-                             + "Protected Characteristic Record submitted for deletion.", coRelationId,
-                         answerRequest.getChannel(), answerRequest.getServiceId());
+                             + "Protected Char Questions Record submitted for creation with optOut true.",
+                     coRelationId,
+                         createCharacteristics.getChannel(), createCharacteristics.getServiceId());
+
+            } else {
+                // Update the PCQ Record
+                java.sql.Timestamp completedDateNow = PcqUtils.getTimeFromString(answerRequest.getCompletedDate());
+                int resultCount = protectedCharacteristicsRepository.updateCharacteristics(
+                                                                    null,
+                                                                    null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   null,
+                                                                   completedDateNow,
+                                                                   true,
+                                                                   answerRequest.getPcqId(),
+                                                                   completedDateNow
+                );
+
+                if (resultCount == 0) {
+                    log.error("Co-Relation Id : {} - submitAnswers API, Completed Date is in the past.", coRelationId);
+                    return PcqUtils.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
+                                                           environment.getProperty(
+                                                               "api-error-messages.accepted")
+                    );
+
+                } else {
+                    log.info(INFO_LOG_MSG
+                                 + "Protected Char Record submitted for Update with optOut true.", coRelationId,
+                             answerRequest.getChannel(), answerRequest.getServiceId());
+                    return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
+                                                           environment.getProperty("api-error-messages.updated"));
+                }
             }
-
-
         } catch (InvalidRequestException ive) {
             return handleInvalidRequestException(pcqId, ive);
         } catch (SchemaValidationException sve) {
@@ -190,8 +243,8 @@ public class SubmitAnswersService {
             return handleInternalErrors(pcqId, coRelationId, ioe);
         }
 
-        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
-                                                     environment.getProperty("api-error-messages.accepted"));
+        return PcqUtils.generateResponseEntity(pcqId, HttpStatus.CREATED,
+                                               environment.getProperty("api-error-messages.created"));
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")

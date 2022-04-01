@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringJUnitWebConfig
 @SpringBootTest
 @AutoConfigureMockMvc
-class SwaggerPublisher {
+class SwaggerGeneratorTest {
 
     @Autowired
     private MockMvc mvc;
@@ -37,7 +37,7 @@ class SwaggerPublisher {
             .getResponse()
             .getContentAsByteArray();
 
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get("/tmp/swagger-specs.json"))) {
+        try (OutputStream outputStream = Files.newOutputStream(Paths.get("/tmp/pcq-backend.json"))) {
             outputStream.write(specs);
         }
 

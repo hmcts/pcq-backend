@@ -67,6 +67,12 @@ class SubmitAnswersServiceTest {
 
     private static final String DB_ENCRYPTION_KEY = "security.db.backend-encryption-key";
 
+    private static final String STATUS_CODE_201_MSG = "Expected 201 status code";
+
+    private static final String CREATED_MESSAGE_PROPERTY = "api-error-messages.created";
+
+    private static final String UPDATED_MESSAGE_PROPERTY = "api-error-messages.updated";
+
     @BeforeEach
     void setUp() {
 
@@ -276,7 +282,7 @@ class SubmitAnswersServiceTest {
     void testSubmitFirstTime() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created");
         when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
@@ -297,7 +303,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCodeValue(), "Expected 201 status code");
+            assertEquals(201, responseEntity.getStatusCodeValue(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
@@ -310,7 +316,7 @@ class SubmitAnswersServiceTest {
     void testSubmitPaperChannel() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created");
         when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
@@ -335,7 +341,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCodeValue(), "Expected 201 status code");
+            assertEquals(201, responseEntity.getStatusCodeValue(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
@@ -348,18 +354,91 @@ class SubmitAnswersServiceTest {
     void testOptOutSuccess() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
-        String pcqId = TEST_PCQ_ID;
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Success");
+        //String pcqId = TEST_PCQ_ID;
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-            int resultCount = 1;
-            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(resultCount);
+            /*int resultCount = 1;
+            int dobProvided = 1;
+            when(protectedCharacteristicsRepository.updateCharacteristics(
+                                                        dobProvided,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,null,
+                                                      null,true,
+                                                      pcqId,null))
+                                .thenReturn(resultCount);*/
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);
+
+            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+            Object responseMap = responseEntity.getBody();
+            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            assertEquals(201, responseEntity.getStatusCodeValue(), STATUS_CODE_201_MSG);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    @Test
+    void testOptOutTrueRecord() {
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
+        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
+        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Success");
+        when(environment.getProperty(UPDATED_MESSAGE_PROPERTY)).thenReturn("Updated");
+        String pcqId = TEST_PCQ_ID;
+
+        try {
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            targetObject.setPcqId(pcqId);
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
+            int resultCount = 1;
+            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.updateCharacteristics(null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          null,null,
+                                                                          testTimeStamp,true,
+                                                                          pcqId,testTimeStamp))
+                                        .thenReturn(resultCount);
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+
+            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
+                                                                                       pcqAnswerRequest);
 
             assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -375,41 +454,10 @@ class SubmitAnswersServiceTest {
     }
 
     @Test
-    void testOptOutFailRecordNotFound() {
-        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
-        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
-        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
-        String pcqId = TEST_PCQ_ID;
-
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-
-            int resultCount = 0;
-            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(resultCount);
-
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
-                                                                                       pcqAnswerRequest);
-
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
-
-            Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCodeValue(), STATUS_CODE_400_MSG);
-
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
-    }
-
-    @Test
     void testSubmitSecondTime() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty("api-error-messages.created")).thenReturn("Successfully created");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created");
         String pcqId = TEST_PCQ_ID;
         try {
 
@@ -437,7 +485,7 @@ class SubmitAnswersServiceTest {
                                                                           null, null,
                                                                           null, null,
                                                                           null,
-                                                                          testTimeStamp, pcqId, testTimeStamp)
+                                                                          testTimeStamp, false,pcqId, testTimeStamp)
             ).thenReturn(resultCount);
 
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
@@ -490,7 +538,7 @@ class SubmitAnswersServiceTest {
                                                                           null, null,
                                                                           null, null,
                                                                           null,
-                                                                          testTimeStamp, pcqId, testTimeStamp)
+                                                                          testTimeStamp, null,pcqId, testTimeStamp)
             ).thenReturn(resultCount);
 
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
@@ -556,9 +604,8 @@ class SubmitAnswersServiceTest {
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-
-            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenThrow(
-                NullPointerException.class);
+            when(protectedCharacteristicsRepository.findById(pcqId))
+                                                .thenThrow(NullPointerException.class);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);

@@ -12,6 +12,7 @@ import uk.gov.hmcts.contino.GradleBuilder
 def type = "java"
 def product = "pcq"
 def component = "backend"
+def branchesToSync = ['demo','ithc', 'perftest']
 
 def secrets = [
   'pcq-${env}': [
@@ -47,6 +48,7 @@ withPipeline(type, product, component) {
   enableAksStagingDeployment()
   loadVaultSecrets(secrets)
   disableLegacyDeployment()
+  syncBranchesWithMaster(branchesToSync)
 
   env.TEST_URL = "http://pcq-backend-aat.service.core-compute-aat.internal"
 

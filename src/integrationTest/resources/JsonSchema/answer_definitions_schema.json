@@ -151,6 +151,10 @@
           "id": "#pregnancy",
           "type": ["integer", "null"],
           "enum": [ -1, 0, 1, 2, null ]
+        },
+        "opt_out": {
+          "id": "#opt_out",
+          "type": ["boolean","null"]
         }
       },
       "additionalProperties": false
