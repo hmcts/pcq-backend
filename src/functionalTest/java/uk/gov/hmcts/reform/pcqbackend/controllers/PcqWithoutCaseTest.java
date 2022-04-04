@@ -96,7 +96,8 @@ public class PcqWithoutCaseTest extends PcqBaseFunctionalTest {
             clearTestPcqAnswers.add(answerRequest);
 
             //Now call the pcqWithoutCaseAPI
-            PcqRecordWithoutCaseResponse getResponse = pcqBackEndServiceClient.getAnswerRecordsWithoutCase(HttpStatus.OK);
+            PcqRecordWithoutCaseResponse getResponse = pcqBackEndServiceClient
+                .getAnswerRecordsWithoutCase(HttpStatus.OK);
 
             assertEquals(STATUS_CODE_INVALID_MSG, HTTP_OK, getResponse.getResponseStatusCode());
             assertEquals(STATUS_INVALID_MSG, RESPONSE_SUCCESS_MSG, getResponse.getResponseStatus());
