@@ -54,9 +54,9 @@ public class PcqBackEndClient {
         return deleteRequest(APP_BASE_PATH + "/deletePcqRecord/{pcqId}", pcqId);
     }
 
-    public Map<String, Object> getPcqWithoutCase() {
+    /*public Map<String, Object> getPcqWithoutCase() {
         return getRequest(APP_BASE_PATH + "/consolidation/pcqWithoutCase");
-    }
+    }*/
 
     public Map<String, Object> getPcqRecordWithoutCase() {
         return getPcqRecordRequestObject(APP_BASE_PATH + "/consolidation/pcqRecordWithoutCase");

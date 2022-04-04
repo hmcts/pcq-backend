@@ -8,10 +8,14 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +38,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
     public static final String RESPONSE_SUCCESS_MSG = "Success";
     public static final String EXCEPTION_MSG = "Exception while executing test";
 
-    private static final String ASSERT_MESSAGE_PCQ = "PCQId not valid";
+    private static final String ASSERT_MESSAGE_PCQ = "PCQIdnot valid";
     private static final String ASSERT_MESSAGE_STATUS = "Response Status not valid";
     private static final String ASSERT_MESSAGE_STATUS_CODE = "Response Status Code not valid";
     private static final int DAYS_LIMIT = 90;
@@ -54,7 +58,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqWithoutCase();
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
 
             //Test the assertions
             assertTestForSuccess(responseMap, 1, answerRequest.getPcqId());
@@ -78,7 +82,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqWithoutCase();
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
 
             //Test the assertions
             assertTestForSuccess(responseMap, 0, answerRequest.getPcqId());
@@ -104,7 +108,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqWithoutCase();
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
 
             //Test the assertions
             assertTestForSuccess(responseMap, 0, answerRequest.getPcqId());
@@ -130,7 +134,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqWithoutCase();
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
 
             //Test the assertions
             assertTestForSuccess(responseMap, 0, answerRequest.getPcqId());
@@ -156,7 +160,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqWithoutCase();
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
 
             //Test the assertions
             assertTestForSuccess(responseMap, 1, answerRequest.getPcqId());
@@ -186,7 +190,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
             pcqBackEndClient.createPcqAnswer(answerRequest);
 
             //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqWithoutCase();
+            Map<String, Object> responseMap = pcqBackEndClient.getPcqRecordWithoutCase();
 
             //Test the assertions
             assertTestForSuccess(responseMap, 3, answerRequest.getPcqId(), "INTEG-TEST-11", "INTEG-TEST-12");
@@ -207,16 +211,26 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
 
     @SuppressWarnings("unchecked")
     private void assertTestForSuccess(Map<String, Object> responseMap, int recordsExpected, String... pcqIds) {
-        assertNotNull(responseMap.get(RESPONSE_KEY_1), ASSERT_MESSAGE_PCQ);
-        assertEquals(ASSERT_MESSAGE_STATUS_CODE, HTTP_OK, responseMap.get(RESPONSE_KEY_2));
-        assertEquals(ASSERT_MESSAGE_STATUS, RESPONSE_SUCCESS_MSG,
-                     responseMap.get(RESPONSE_KEY_3));
-        List<String> pcqIdsActual = (List<String>) responseMap.get(RESPONSE_KEY_1);
-        assertEquals("PcqIds size not matching", recordsExpected, pcqIdsActual.size());
+        ResponseEntity<PcqRecordWithoutCaseResponse> response = (ResponseEntity<PcqRecordWithoutCaseResponse>)
+            responseMap.get("response_body");
+        assertNotNull(response.getBody().getPcqRecord(), ASSERT_MESSAGE_PCQ);
+        assertEquals(ASSERT_MESSAGE_STATUS_CODE, HTTP_OK, response.getBody().getResponseStatusCode());
+        assertEquals(ASSERT_MESSAGE_STATUS, RESPONSE_SUCCESS_MSG, response.getBody().getResponseStatus());
 
-        for (int i = 0; i < pcqIdsActual.size(); i++) {
-            assertTrue(pcqIdsActual.contains(pcqIds[i]), "Pcq Id not found");
+        PcqAnswerResponse[] pcqRecordsActual = response.getBody().getPcqRecord();
+        int length = pcqRecordsActual.length;
+        assertEquals("Pcq Records size not matching", recordsExpected, length);
+
+        List<String> actualPcqIds = new ArrayList<>(length);
+        for (int i = 0; i < length; i++) {
+            actualPcqIds.add(pcqRecordsActual[i].getPcqId());
         }
+        if (recordsExpected > 0) {
+            for (String pcqId : pcqIds) {
+                assertTrue(actualPcqIds.contains(pcqId), "Pcq Id not found");
+            }
+        }
+
     }
 
 }
