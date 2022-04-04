@@ -86,7 +86,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters but the
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters but the
      * header does not contain the required attribute. The response status code will be 400.
      */
     @DisplayName("Should return with an Invalid Request error code 400")
@@ -119,7 +119,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * the response contains multiple pcq Ids. The response status code will be 200.
      */
     @DisplayName("Should return with an Success Request error code 200 and multiple pcq ids")
@@ -164,7 +164,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * the response contains array with single pcq Id. The response status code will be 200.
      */
     @DisplayName("Should return with an Success Request error code 200 and single pcq id")
@@ -207,7 +207,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * the response contains empty array (no pcq ids). The response status code will be 200.
      */
     @DisplayName("Should return with an Success Request error code 200 and no pcq ids")
@@ -251,7 +251,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * but unforeseen error occurs. The response status code will be 500.
      */
     @DisplayName("Should return with an Unrecoverable Request error code 500 and no pcq ids")

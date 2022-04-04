@@ -9,9 +9,12 @@ import org.junit.runner.RunWith;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -93,19 +96,18 @@ public class PcqWithoutCaseTest extends PcqBaseFunctionalTest {
             clearTestPcqAnswers.add(answerRequest);
 
             //Now call the pcqWithoutCaseAPI
-            response = pcqBackEndServiceClient.getAnswerRecordWithoutCase(HttpStatus.OK);
+            PcqRecordWithoutCaseResponse getResponse = pcqBackEndServiceClient.getAnswerRecordsWithoutCase(HttpStatus.OK);
 
-
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_OK, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_SUCCESS_MSG,
-                         response.get(RESPONSE_KEY_3));
-
-            assertTrue("First PCQ Id should have been picked up", ((List<String>)response.get(RESPONSE_KEY_1))
-                .contains(firstUuid));
-            assertTrue("Second PCQ Id should have been picked up", ((List<String>)response.get(RESPONSE_KEY_1))
-                .contains(secondUuid));
-            assertFalse("Third PCQ Id should not have been picked up", ((List<String>)response.get(RESPONSE_KEY_1))
-                .contains(thirdUuid));
+            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_OK, getResponse.getResponseStatusCode());
+            assertEquals(STATUS_INVALID_MSG, RESPONSE_SUCCESS_MSG, getResponse.getResponseStatus());
+            PcqAnswerResponse[] answerResponses = getResponse.getPcqRecord();
+            List<String> pcqIdsInResponse = new ArrayList<>(3);
+            for (PcqAnswerResponse answerResponse : answerResponses) {
+                pcqIdsInResponse.add(answerResponse.getPcqId());
+            }
+            assertTrue("First PCQ Id should have been picked up", pcqIdsInResponse.contains(firstUuid));
+            assertTrue("Second PCQ Id should have been picked up", pcqIdsInResponse.contains(secondUuid));
+            assertFalse("Third PCQ Id should not have been picked up", pcqIdsInResponse.contains(thirdUuid));
 
 
         } catch (IOException e) {

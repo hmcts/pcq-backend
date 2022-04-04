@@ -195,7 +195,7 @@ public class PcqBackEndServiceClient {
         return response.body().as(Map.class);
     }
 
-    public Map<String, Object> getAnswerRecordWithoutCase(HttpStatus status) {
+    /*public Map<String, Object> getAnswerRecordWithoutCase(HttpStatus status) {
 
         Response response = getCoRelationHeaders()
             .get("pcq/backend/consolidation/pcqWithoutCase")
@@ -208,7 +208,7 @@ public class PcqBackEndServiceClient {
             return null;
         }
         return response.body().as(Map.class);
-    }
+    }*/
 
     public PcqRecordWithoutCaseResponse getAnswerRecordsWithoutCase(HttpStatus status) {
 

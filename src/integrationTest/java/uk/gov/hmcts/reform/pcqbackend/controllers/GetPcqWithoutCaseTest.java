@@ -38,7 +38,7 @@ public class GetPcqWithoutCaseTest extends PcqIntegrationTest {
     public static final String RESPONSE_SUCCESS_MSG = "Success";
     public static final String EXCEPTION_MSG = "Exception while executing test";
 
-    private static final String ASSERT_MESSAGE_PCQ = "PCQIdnot valid";
+    private static final String ASSERT_MESSAGE_PCQ = "PCQId not valid";
     private static final String ASSERT_MESSAGE_STATUS = "Response Status not valid";
     private static final String ASSERT_MESSAGE_STATUS_CODE = "Response Status Code not valid";
     private static final int DAYS_LIMIT = 90;
