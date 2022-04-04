@@ -195,21 +195,6 @@ public class PcqBackEndServiceClient {
         return response.body().as(Map.class);
     }
 
-    public Map<String, Object> getAnswerRecordWithoutCase(HttpStatus status) {
-
-        Response response = getCoRelationHeaders()
-            .get("pcq/backend/consolidation/pcqWithoutCase")
-            .andReturn();
-        response.then()
-            .assertThat()
-            .statusCode(status.value());
-
-        if (status == HttpStatus.UNAUTHORIZED || status == INTERNAL_SERVER_ERROR) {
-            return null;
-        }
-        return response.body().as(Map.class);
-    }
-
     public PcqRecordWithoutCaseResponse getAnswerRecordsWithoutCase(HttpStatus status) {
 
         Response response = getCoRelationHeaders()

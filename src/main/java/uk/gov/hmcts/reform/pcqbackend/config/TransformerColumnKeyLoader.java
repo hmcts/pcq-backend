@@ -49,7 +49,7 @@ public class TransformerColumnKeyLoader implements ApplicationListener<Applicati
         log.info("TransformerColumnKeyLoader invoked");
         ConfigurableEnvironment environment = event.getApplicationContext().getEnvironment();
         MutablePropertySources mutablePropertySources = environment.getPropertySources();
-        for (PropertySource propertySource : mutablePropertySources) {
+        for (PropertySource<?> propertySource : mutablePropertySources) {
             if (propertySource.containsProperty("security.db.backend-encryption-key")
                 || propertySource.containsProperty("backend-encryption-key")) {
                 log.info("TransformerColumnKeyLoader Properties Found {}", propertySource.getName());
