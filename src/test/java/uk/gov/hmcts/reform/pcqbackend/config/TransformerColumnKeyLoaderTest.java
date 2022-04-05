@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-public class TransformerColumnKeyLoaderTest {
+class TransformerColumnKeyLoaderTest {
 
     TransformerColumnKeyLoader transformerColumnKeyLoader;
     ApplicationPreparedEvent mockApplicationPreparedEvent;
@@ -61,7 +61,7 @@ public class TransformerColumnKeyLoaderTest {
     }
 
     @Test
-    public void testAnnotationUpdatedWithEncryption() throws NoSuchFieldException {
+    void testAnnotationUpdatedWithEncryption() throws NoSuchFieldException {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
@@ -89,7 +89,7 @@ public class TransformerColumnKeyLoaderTest {
     }
 
     @Test
-    public void testAnnotationUpdatedWithoutEncryption() throws NoSuchFieldException {
+    void testAnnotationUpdatedWithoutEncryption() throws NoSuchFieldException {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics2.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
@@ -117,7 +117,7 @@ public class TransformerColumnKeyLoaderTest {
     }
 
     @Test
-    public void testAnnotationUpdatedAlternativeProperty() throws NoSuchFieldException {
+    void testAnnotationUpdatedAlternativeProperty() throws NoSuchFieldException {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(TestProtectedCharacteristics.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_2)).thenReturn(true);
@@ -144,7 +144,7 @@ public class TransformerColumnKeyLoaderTest {
     }
 
     @Test
-    public void testNoSuchField() throws NoSuchFieldException {
+    void testNoSuchField() throws NoSuchFieldException {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(RandomTestClass.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);
@@ -171,7 +171,7 @@ public class TransformerColumnKeyLoaderTest {
     }
 
     @Test
-    public void testMemberValueAccessError() throws NoSuchFieldException {
+    void testMemberValueAccessError() throws NoSuchFieldException {
 
         transformerColumnKeyLoader = new TransformerColumnKeyLoader(RandomTestClass2.class);
         when(mockPropertySource.containsProperty(PROPERTY_NAME_1)).thenReturn(true);

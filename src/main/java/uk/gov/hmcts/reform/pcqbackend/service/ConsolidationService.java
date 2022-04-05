@@ -17,6 +17,7 @@ import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nullable;
 import javax.transaction.Transactional;
 
 
@@ -36,7 +37,8 @@ public class ConsolidationService {
         this.environment = environment;
     }
 
-    public List<ProtectedCharacteristics> getPcqsWithoutCase(List<String> headers) throws InvalidRequestException {
+    public List<ProtectedCharacteristics> getPcqsWithoutCase(@Nullable List<String> headers)
+        throws InvalidRequestException {
 
         String coRelationId = ConversionUtil.validateRequestHeader(headers);
         log.info("Co-Relation Id : {} - getPcqsWithoutCase service invoked", coRelationId);
@@ -54,7 +56,7 @@ public class ConsolidationService {
     }
 
     @Transactional
-    public ResponseEntity<SubmitResponse> updateCaseId(List<String> headers, String pcqId, String caseId) {
+    public ResponseEntity<SubmitResponse> updateCaseId(@Nullable List<String> headers, String pcqId, String caseId) {
 
         try {
 

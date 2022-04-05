@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcq.commons.model.PcqWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
@@ -87,7 +86,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters but the
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters but the
      * header does not contain the required attribute. The response status code will be 400.
      */
     @DisplayName("Should return with an Invalid Request error code 400")
@@ -100,12 +99,13 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = mock(HttpHeaders.class);
             when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-            ResponseEntity<PcqWithoutCaseResponse> actual = consolidationController.getPcqIdsWithoutCase(mockHeaders);
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCase(mockHeaders);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
 
-            PcqWithoutCaseResponse actualBody = actual.getBody();
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
             assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
             assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
 
@@ -119,7 +119,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * the response contains multiple pcq Ids. The response status code will be 200.
      */
     @DisplayName("Should return with an Success Request error code 200 and multiple pcq ids")
@@ -137,18 +137,19 @@ class ConsolidationControllerTest {
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(targetList);
 
-            ResponseEntity<PcqWithoutCaseResponse> actual = consolidationController.getPcqIdsWithoutCase(mockHeaders);
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCase(mockHeaders);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            PcqWithoutCaseResponse actualBody = actual.getBody();
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
             assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqId(), "PcqIds are null");
-            assertTrue(actualBody.getPcqId().length > 0, "PcqIds has at least 1 entry");
-            assertArrayContents(targetList, actualBody.getPcqId());
+            assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are null");
+            assertTrue(actualBody.getPcqRecord().length > 0, "PcqAnswers has at least 1 entry");
+            assertArrayContents(targetList, actualBody.getPcqRecord());
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
@@ -163,7 +164,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * the response contains array with single pcq Id. The response status code will be 200.
      */
     @DisplayName("Should return with an Success Request error code 200 and single pcq id")
@@ -181,16 +182,17 @@ class ConsolidationControllerTest {
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(targetList);
 
-            ResponseEntity<PcqWithoutCaseResponse> actual = consolidationController.getPcqIdsWithoutCase(mockHeaders);
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCase(mockHeaders);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            PcqWithoutCaseResponse actualBody = actual.getBody();
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
             assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqId(), "PcqIds are not null");
+            assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are not null");
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
@@ -205,7 +207,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * the response contains empty array (no pcq ids). The response status code will be 200.
      */
     @DisplayName("Should return with an Success Request error code 200 and no pcq ids")
@@ -223,17 +225,18 @@ class ConsolidationControllerTest {
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenReturn(targetList);
 
-            ResponseEntity<PcqWithoutCaseResponse> actual = consolidationController.getPcqIdsWithoutCase(mockHeaders);
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCase(mockHeaders);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            PcqWithoutCaseResponse actualBody = actual.getBody();
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
             assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqId(), "PcqIds are null");
-            assertArrayContents(targetList, actualBody.getPcqId());
+            assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are null");
+            assertArrayContents(targetList, actualBody.getPcqRecord());
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
@@ -248,7 +251,7 @@ class ConsolidationControllerTest {
     }
 
     /**
-     * This method tests the getPcqWithoutCase API when it is called with all valid parameters and
+     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
      * but unforeseen error occurs. The response status code will be 500.
      */
     @DisplayName("Should return with an Unrecoverable Request error code 500 and no pcq ids")
@@ -265,19 +268,20 @@ class ConsolidationControllerTest {
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
                 Timestamp.class))).thenThrow(NullPointerException.class);
 
-            ResponseEntity<PcqWithoutCaseResponse> actual = consolidationController.getPcqIdsWithoutCase(mockHeaders);
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCase(mockHeaders);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
 
-            PcqWithoutCaseResponse actualBody = actual.getBody();
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
             assertNotNull(actualBody, BODY_NULL_MSG);
             assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
             assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertEquals(0, actualBody.getPcqId().length, EXPECTED_EMPTY_PCQIDS_MSG);
+            assertEquals(0, actualBody.getPcqRecord().length, EXPECTED_EMPTY_PCQIDS_MSG);
 
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            assertArrayContents(targetList, actualBody.getPcqId());
+            assertArrayContents(targetList, actualBody.getPcqRecord());
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
