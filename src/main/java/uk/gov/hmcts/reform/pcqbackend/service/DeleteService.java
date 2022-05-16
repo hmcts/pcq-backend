@@ -29,7 +29,7 @@ public class DeleteService {
 
     @Transactional
     public ResponseEntity<Object> deletePcqRecord(String pcqId) {
-        log.info("deletePcqRecord API invoked PcqId {}" , pcqId);
+        log.info("deletePcqRecord API invoked PcqId {}", pcqId);
         int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
         if (resultCount == 0) {
             log.error(
