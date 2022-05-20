@@ -55,5 +55,13 @@
   "90033_Loosely Scoped Cookie_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
   "100000_A Server Error response code was returned by the server_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
   "90022_Application Error Disclosure_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
-  "10023_Information Disclosure - Debug Error Messages_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore"
+  "10023_Information Disclosure - Debug Error Messages_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/deletePcqRecord/pcqId_DELETE": "ignore",
+  "10096_Timestamp Disclosure - Unix_http://pcq-backend-aat.service.core-compute-aat.internal_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_http://pcq-backend-aat.service.core-compute-aat.internal/robots.txt_GET": "ignore",
+  "10096_Timestamp Disclosure - Unix_http://pcq-backend-aat.service.core-compute-aat.internal/sitemap.xml_GET": "ignore",
+  "10021_X-Content-Type-Options Header Missing_http://pcq-backend-aat.service.core-compute-aat.internal_GET": "ignore",
+  "90027_Cookie Slack Detector_http://pcq-backend-aat.service.core-compute-aat.internal_GET": "ignore",
+  "90027_Cookie Slack Detector_http://pcq-backend-aat.service.core-compute-aat.internal/_GET": "ignore",
+  "90027_Cookie Slack Detector_http://pcq-backend-aat.service.core-compute-aat.internal/robots.txt_GET": "ignore",
+  "90027_Cookie Slack Detector_http://pcq-backend-aat.service.core-compute-aat.internal/sitemap.xml_GET": "ignore"
 }
