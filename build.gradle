@@ -267,7 +267,7 @@ dependencyManagement {
       entry 'spring-cloud-openfeign-core'
     }
 
-    dependencySet(group: 'org.springframework.security', version: '5.6.4') {
+    dependencySet(group: 'org.springframework.security', version: '5.7.1') {
       entry 'spring-security-core'
       entry 'spring-security-test'
     }
@@ -303,7 +303,7 @@ def versions = [
   springFramework     : '5.3.20',
   fasterXmlJackson    : '2.13.2',
   springCloud         : '3.1.2',
-  springSecurity      : '5.6.4'
+  springSecurity      : '5.7.1'
 ]
 
 configurations.all {
@@ -367,11 +367,8 @@ dependencies {
   implementation group: 'org.springframework.security', name: 'spring-security-web', version: versions.springSecurity
   implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: versions.springSecurity
   implementation group: 'org.springframework.security', name: 'spring-security-config', version: versions.springSecurity
-  implementation group: 'org.springframework.security', name: 'spring-security-rsa', version: '1.0.11.RELEASE'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.7.0'
 
-
-
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
   implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
 
@@ -388,7 +385,7 @@ dependencies {
   implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0', withoutSpringCloudContext
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
-  //implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.15.0'
