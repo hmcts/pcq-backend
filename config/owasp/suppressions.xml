@@ -26,8 +26,4 @@
   <suppress until="2023-01-07">
     <cve>CVE-2022-31569</cve>
   </suppress>
-  <suppress>
-    <packageUrl regex="true">^pkg:maven/com.azure/azure-storage-blob@.*$</packageUrl>
-    <cve>CVE-2022-30187</cve>
-  </suppress>
 </suppressions>
