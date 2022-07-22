@@ -13,11 +13,11 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.27'
   id 'pmd'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'io.spring.dependency-management' version '1.0.12.RELEASE'
   id 'org.springframework.boot' version '2.7.1'
-  id 'org.owasp.dependencycheck' version '7.1.0.1'
+  id 'org.owasp.dependencycheck' version '7.1.1'
   id 'com.github.ben-manes.versions' version '0.42.0'
-  id "info.solidsoft.pitest" version '1.6.0'
+  id "info.solidsoft.pitest" version '1.7.4'
   id 'org.sonarqube' version '3.4.0.2513'
   id 'com.gorylenko.gradle-git-properties' version '2.4.1'
   id "io.freefair.lombok" version "6.5.0.3"
@@ -159,8 +159,8 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 pitest {
-  pitestVersion.set('1.4.11')
-  junit5PluginVersion.set('0.12')
+  pitestVersion.set('1.7.4')
+  junit5PluginVersion.set('0.14')
   targetClasses = ['uk.gov.hmcts.reform.pcqbackend.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.pcqbackend.utils.*'
@@ -224,8 +224,8 @@ dependencyCheck {
 dependencyManagement {
   dependencies {
     // CVE-2021-21290
-    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.11.7'
-    dependencySet(group: 'io.netty', version: '4.1.77.Final') {
+    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.12.3'
+    dependencySet(group: 'io.netty', version: '4.1.79.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
       entry 'netty-codec-http'
@@ -249,7 +249,7 @@ dependencyManagement {
     dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
     // CVE-2018-10237 - Unbounded memory allocation
     // CVE-2020-8908 - Temp directory creation vulnerability
-    dependencySet(group: 'com.google.guava', version: '30.1-jre') {
+    dependencySet(group: 'com.google.guava', version: '31.1-jre') {
       entry 'guava'
     }
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
@@ -296,8 +296,8 @@ def versions = [
   restAssured         : '4.2.0',
   serenity            : '2.4.24',
   lombok              : '1.18.12',
-  gradlePitest        : '1.6.0',
-  pitest              : '1.6.3',
+  gradlePitest        : '1.7.4',
+  pitest              : '1.9.3',
   sonarPitest         : '0.5',
   testcontainers      : '1.15.1',
   springFramework     : '5.3.20',
@@ -378,7 +378,7 @@ dependencies {
 
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.1.5'
 
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.2.1'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.fasterXmlJackson
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.fasterXmlJackson
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.fasterXmlJackson, ext: 'pom'
@@ -390,14 +390,14 @@ dependencies {
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: 'org.flywaydb', name: 'flyway-core', version: '7.15.0'
-  implementation group: 'org.postgresql', name: 'postgresql', version: '42.3.3'
+  implementation group: 'org.postgresql', name: 'postgresql', version: '42.4.0'
   implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
   implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwaggerui
 
   implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
   implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
 
-  implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.49"
+  implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.72"
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
