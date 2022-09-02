@@ -132,7 +132,7 @@ task fortifyScan(type: JavaExec)  {
 checkstyle {
   maxWarnings = 0
   toolVersion = '8.29'
-  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
+  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstylejava
   configDirectory = new File(rootDir, 'config/checkstyle')
 }
 
@@ -377,6 +377,7 @@ dependencies {
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.18.0'
 
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.1.5'
+  implementation group: 'org.yaml', name: 'snakeyaml', version: '1.31'
 
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.fasterXmlJackson
