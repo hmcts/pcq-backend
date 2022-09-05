@@ -10,7 +10,7 @@ buildscript {
 plugins {
   id 'application'
   id 'checkstyle'
-  id 'uk.gov.hmcts.java' version '0.12.27'
+  id 'uk.gov.hmcts.java' version '0.12.29'
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.12.RELEASE'
@@ -132,7 +132,7 @@ task fortifyScan(type: JavaExec)  {
 checkstyle {
   maxWarnings = 0
   toolVersion = '8.29'
-  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstylejava
+  // need to set configDir to rootDir otherwise submodule will use submodule/config/checkstyle
   configDirectory = new File(rootDir, 'config/checkstyle')
 }
 
@@ -254,7 +254,7 @@ dependencyManagement {
     }
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
     // rest assured 4.2 -> 4.3 jumps to groovy v3. junit v5.6 still on v2.5
-    dependencySet(group: 'org.codehaus.groovy', version: '3.0.11') {
+    dependencySet(group: 'org.codehaus.groovy', version: '3.0.12') {
       entry 'groovy'
       entry 'groovy-json'
       entry 'groovy-xml'
@@ -412,7 +412,7 @@ dependencies {
   //testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   //testImplementation group: 'org.springframework.security', name: 'spring-security-test'
 
-  testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.19.0'
+  testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.33.2'
 
   testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
   testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
