@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.security;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.testcontainers.shaded.org.apache.commons.lang.reflect.FieldUtils;
+import org.testcontainers.shaded.org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.util.Arrays;
 import java.util.List;
