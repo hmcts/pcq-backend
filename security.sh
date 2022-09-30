@@ -51,9 +51,9 @@ zap-cli --zap-url http://$ZAP_HOST -p $ZAP_PORT open-url "${TEST_URL}"
 #xargs -I % zap-cli --zap-url http://$ZAP_HOST -p $ZAP_PORT exclude % <zap-exclusions
 zap-cli --zap-url http://$ZAP_HOST -p $ZAP_PORT spider ${TEST_URL}
 zap-cli --zap-url http://$ZAP_HOST -p $ZAP_PORT active-scan --scanners all --recursive "${TEST_URL}"
-zap-cli --zap-url http://$ZAP_HOST -p $ZAP_PORT report -o activescan.html -f html
+zap-cli --zap-url http://$ZAP_HOST -p $ZAP_PORT report -o zap-report.html -f html
 echo 'Changing owner from $(id -u):$(id -g) to $(id -u):$(id -u)'
-chown -R $(id -u):$(id -u) activescan.html
+chown -R $(id -u):$(id -u) zap-report.html
 mkdir -p functional-output && chmod a+wx functional-output
 cp *.html functional-output/
 zap-cli -p $ZAP_PORT alerts -l Informational
