@@ -10,7 +10,7 @@ buildscript {
 plugins {
   id 'application'
   id 'checkstyle'
-  id 'uk.gov.hmcts.java' version '0.12.29'
+  id 'uk.gov.hmcts.java' version '0.12.31'
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.12.RELEASE'
@@ -301,7 +301,7 @@ def versions = [
   sonarPitest         : '0.5',
   testcontainers      : '1.17.3',
   springFramework     : '5.3.20',
-  fasterXmlJackson    : '2.13.2',
+  fasterXmlJackson    : '2.14.0-rc1',
   springCloud         : '3.1.2',
   springSecurity      : '5.7.1'
 ]
@@ -379,7 +379,7 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.1.5'
   implementation group: 'org.yaml', name: 'snakeyaml', version: '1.32'
 
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.13.3'
+  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.fasterXmlJackson
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.fasterXmlJackson
   implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.fasterXmlJackson
   implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.fasterXmlJackson, ext: 'pom'
