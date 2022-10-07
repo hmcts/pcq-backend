@@ -57,7 +57,7 @@ spring:
   datasource:
       driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
       url: jdbc:tc:postgresql:11.17-alpine://localhost/pcq
-#    properties:
+  #    properties:
 #      charSet: UTF-8
 #    hikari:
 #      minimumIdle: 2
@@ -65,7 +65,7 @@ spring:
 #      idleTimeout: 10000
 #      poolName: {to-be-defined}HikariCP
 #      maxLifetime: 7200000
-#      connectionTimeout: 60000
+#      connectionTimeout: 30000
   jpa:
 #    properties:
 #      hibernate:
