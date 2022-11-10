@@ -10,6 +10,12 @@ This is the frontend for the protected characteristics questionnaire service. Th
 <a href="https://github.com/hmcts/pcq-frontend">pcq-frontend</a> • <b><a href="https://github.com/hmcts/pcq-backend">pcq-backend</a></b> • <a href="https://github.com/hmcts/pcq-consolidation-service">pcq-consolidation-service</a> • <a href="https://github.com/hmcts/pcq-shared-infrastructure">pcq-shared-infrastructure</a> • <a href="https://github.com/hmcts/pcq-loader">pcq-loader</a>
 </p>
 
+<br>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/hmcts/pcq-frontend/master/pcq_overview.png" width="500"/>
+</p>
+
 ## Purpose
 
 This is the Protected Characteristics Back-End application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service
