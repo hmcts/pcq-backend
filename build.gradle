@@ -10,7 +10,7 @@ buildscript {
 plugins {
   id 'application'
   id 'checkstyle'
-  id 'uk.gov.hmcts.java' version '0.12.29'
+  id 'uk.gov.hmcts.java' version '0.12.32'
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.0.12.RELEASE'
@@ -224,8 +224,8 @@ dependencyCheck {
 dependencyManagement {
   dependencies {
     // CVE-2021-21290
-    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.12.3'
-    dependencySet(group: 'io.netty', version: '4.1.79.Final') {
+    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.12.7'
+    dependencySet(group: 'io.netty', version: '4.1.82.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
       entry 'netty-codec-http'
@@ -254,7 +254,7 @@ dependencyManagement {
     }
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
     // rest assured 4.2 -> 4.3 jumps to groovy v3. junit v5.6 still on v2.5
-    dependencySet(group: 'org.codehaus.groovy', version: '3.0.12') {
+    dependencySet(group: 'org.codehaus.groovy', version: '3.0.13') {
       entry 'groovy'
       entry 'groovy-json'
       entry 'groovy-xml'
@@ -374,7 +374,7 @@ dependencies {
   implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
 
   implementation group: 'com.microsoft.azure', name: 'azure-storage', version: '8.6.6'
-  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.18.0'
+  implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.20.0'
 
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.1.5'
   implementation group: 'org.yaml', name: 'snakeyaml', version: '1.32'
