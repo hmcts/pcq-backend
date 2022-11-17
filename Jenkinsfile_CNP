@@ -1,4 +1,5 @@
 #!groovy
+import uk.gov.hmcts.contino.GithubAPI
 
 properties([
   // H allow predefined but random minute see https://en.wikipedia.org/wiki/Cron#Non-standard_characters
@@ -37,6 +38,13 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 GradleBuilder builder = new GradleBuilder(this, product)
 
 withPipeline(type, product, component) {
+  onPR {
+    def githubApi = new GithubAPI(this)
+    if (!githubApi.getLabelsbyPattern(env.BRANCH_NAME, "keep-helm")) {
+        enableCleanupOfHelmReleaseOnSuccess()
+    }
+  }
+
   env.TEST_S2S_URL = 'http://rpe-service-auth-provider-aat.service.core-compute-aat.internal'
   env.STORAGE_URL = 'https://pcqsharedaat.blob.core.windows.net'
 
