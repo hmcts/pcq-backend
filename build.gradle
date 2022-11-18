@@ -224,8 +224,8 @@ dependencyCheck {
 dependencyManagement {
   dependencies {
     // CVE-2021-21290
-    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.12.3'
-    dependencySet(group: 'io.netty', version: '4.1.79.Final') {
+    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.12.7'
+    dependencySet(group: 'io.netty', version: '4.1.82.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
       entry 'netty-codec-http'
@@ -254,7 +254,7 @@ dependencyManagement {
     }
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
     // rest assured 4.2 -> 4.3 jumps to groovy v3. junit v5.6 still on v2.5
-    dependencySet(group: 'org.codehaus.groovy', version: '3.0.12') {
+    dependencySet(group: 'org.codehaus.groovy', version: '3.0.13') {
       entry 'groovy'
       entry 'groovy-json'
       entry 'groovy-xml'
@@ -301,7 +301,7 @@ def versions = [
   sonarPitest         : '0.5',
   testcontainers      : '1.17.3',
   springFramework     : '5.3.20',
-  fasterXmlJackson    : '2.14.0-rc1',
+  fasterXmlJackson    : '2.14.0',
   springCloud         : '3.1.2',
   springSecurity      : '5.7.5'
 ]
