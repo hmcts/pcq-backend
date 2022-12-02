@@ -14,8 +14,6 @@ variable "location_db" {
   default = "UK South"
 }
 
-variable "deployment_namespace" {}
-
 variable "env" {}
 
 variable "tenant_id" {}
