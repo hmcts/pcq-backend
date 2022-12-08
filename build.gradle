@@ -261,8 +261,7 @@ dependencyManagement {
       entry 'groovy-xml'
     }
     // CVE-2021-29425
-    //dependency group: 'commons-io', name: 'commons-io', version: '2.11.0'
-    dependency group: 'commons-net', name: 'commons-net', version: '3.9.0'
+    dependency group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
     dependencySet(group: 'org.springframework.cloud', version: '3.1.5') {
       entry 'spring-cloud-starter-openfeign'
@@ -325,9 +324,6 @@ configurations.all {
       }
       if (details.requested.group in ['org.apache.httpcomponents.httpclient']) {
         details.useVersion '4.5.13'
-      }
-      if (details.requested.group in ['commons-net']) {
-        details.useVersion '3.9.0'
       }
     }
   }
