@@ -66,7 +66,7 @@ public class PcqBackEndClient {
         return getRequestForSasToken(APP_BASE_PATH + "/token/" + serviceName);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private <T> Map<String, Object> postRequest(String uriPath, T requestBody) {
 
         HttpEntity<T> request = new HttpEntity<>(requestBody, getS2sTokenHeaders());
@@ -88,7 +88,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private <T> Map<String, Object> postRequestNoAuthHeader(String uriPath, T requestBody) {
 
         HttpEntity<T> request = new HttpEntity<>(requestBody, getCoRelationTokenHeaders());
@@ -111,7 +111,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private <T> Map<String, Object> putRequest(String uriPath, Object... params) {
 
         HttpEntity<T> request = new HttpEntity<>(getCoRelationTokenHeaders());
@@ -136,7 +136,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> getRequest(String uriPath, Object... params) {
 
         ResponseEntity<Map> responseEntity;
@@ -159,7 +159,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> getRequestForSasToken(String uriPath, Object... params) {
 
         ResponseEntity<Map> responseEntity;
@@ -182,7 +182,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> getPcqRecordRequestObject(String uriPath, Object... params) {
 
         ResponseEntity<PcqRecordWithoutCaseResponse> responseEntity;
@@ -265,7 +265,7 @@ public class PcqBackEndClient {
         return headers;
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> deleteRequest(String uriPath, Object... params) {
 
         ResponseEntity<Map> responseEntity;

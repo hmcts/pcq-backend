@@ -53,7 +53,7 @@ public class SubmitAnswersService {
         this.environment = environment;
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
+    @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
         "PMD.UnusedLocalVariable"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
@@ -151,7 +151,7 @@ public class SubmitAnswersService {
 
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
+    @SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
         "PMD.UnusedLocalVariable"})
     @Transactional
     public ResponseEntity<Object> processOptOut(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
@@ -247,7 +247,7 @@ public class SubmitAnswersService {
                                                environment.getProperty("api-error-messages.created"));
     }
 
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+    //@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void validateRequestAgainstSchema(Object requestObject, String schemaFileName) throws IOException,
         SchemaValidationException {
 

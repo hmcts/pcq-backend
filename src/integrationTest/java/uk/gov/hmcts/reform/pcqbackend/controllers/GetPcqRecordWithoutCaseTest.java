@@ -367,7 +367,7 @@ public class GetPcqRecordWithoutCaseTest extends PcqIntegrationTest {
                    "Co-Relation Id was not logged in log files.");
     }
 
-    @SuppressWarnings({"unchecked", "PMD.DataflowAnomalyAnalysis"})
+    //@SuppressWarnings({"unchecked", "PMD.DataflowAnomalyAnalysis"})
     private void assertTestForSuccess(Map<String, Object> responseMap, int recordsExpected,
                                       PcqAnswerRequest... pcqIds) {
         ResponseEntity<PcqRecordWithoutCaseResponse> response = (ResponseEntity<PcqRecordWithoutCaseResponse>)
