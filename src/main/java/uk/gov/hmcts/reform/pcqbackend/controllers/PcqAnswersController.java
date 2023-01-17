@@ -61,7 +61,7 @@ public class PcqAnswersController {
 
     @PostMapping(path = "/submitAnswers", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
-    @SuppressWarnings({"PMD.AvoidDuplicateLiterals"})
+    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals"})
     @ApiOperation(tags = "POST end-points", value = "Add and update PCQ answers to the database.",
         notes = "This API will create a new record in the database for the given PCQId where none exists "
         + "and will update an existing record with the answers as submitted by the users")
