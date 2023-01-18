@@ -107,6 +107,7 @@ tasks.withType(JavaCompile) {
 task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification') {
   testClassesDirs = sourceSets.test.output.classesDirs
   classpath = sourceSets.test.runtimeClasspath
+  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
   useJUnitPlatform()
 }
 
@@ -116,12 +117,14 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
 
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
+  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
   finalizedBy aggregate
 }
 
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
   testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
+  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
   //useJUnitPlatform()
   // set your environment variables here
   // environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
@@ -131,6 +134,7 @@ task smoke(type: Test) {
   description = "Runs Smoke Tests"
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
+  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
 
 task fortifyScan(type: JavaExec)  {
