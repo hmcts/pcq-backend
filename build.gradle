@@ -102,29 +102,25 @@ configurations {
 
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
+  options.compilerArgs += ["--add-modules", "java.base"]
 }
 
 task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification') {
   testClassesDirs = sourceSets.test.output.classesDirs
   classpath = sourceSets.test.runtimeClasspath
-  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
   useJUnitPlatform()
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-
   systemProperty "scenario", System.getProperty('scenario')
-
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
-  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
   finalizedBy aggregate
 }
 
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
   testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
-  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
   //useJUnitPlatform()
   // set your environment variables here
   // environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
@@ -134,7 +130,6 @@ task smoke(type: Test) {
   description = "Runs Smoke Tests"
   testClassesDirs = sourceSets.smokeTest.output.classesDirs
   classpath = sourceSets.smokeTest.runtimeClasspath
-  jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
 }
 
 task fortifyScan(type: JavaExec)  {
@@ -310,13 +305,13 @@ def versions = [
   springfoxSwaggerui  : '2.9.2',
   restAssured         : '4.2.0',
   serenity            : '2.4.34',
-  lombok              : '1.18.12',
+  lombok              : '1.18.22',
   gradlePitest        : '1.7.4',
   pitest              : '1.9.3',
   sonarPitest         : '0.5',
   testcontainers      : '1.17.3',
   springFramework     : '5.3.20',
-  fasterXmlJackson    : '2.14.0',
+  fasterXmlJackson    : '2.14.1',
   springCloud         : '3.1.2',
   springSecurity      : '5.7.5'
 ]
