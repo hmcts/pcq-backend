@@ -102,7 +102,6 @@ configurations {
 
 tasks.withType(JavaCompile) {
   options.compilerArgs << "-Xlint:unchecked" << "-Werror"
-  options.compilerArgs += ["--add-modules", "java.base"]
 }
 
 task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification') {
@@ -112,7 +111,9 @@ task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification'
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
+
   systemProperty "scenario", System.getProperty('scenario')
+  
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
   finalizedBy aggregate
