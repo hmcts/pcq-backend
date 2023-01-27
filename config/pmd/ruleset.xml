@@ -66,11 +66,11 @@
   <rule ref="category/java/errorprone.xml">
     <exclude name="BeanMembersShouldSerialize"/>
   </rule>
-  <!--<rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
+  <rule ref="category/java/errorprone.xml/DataflowAnomalyAnalysis">
     <properties>
       <property name="violationSuppressRegex" value="^Found 'UR'-anomaly.*"/>
     </properties>
-  </rule>-->
+  </rule>
   <rule ref="category/java/multithreading.xml"/>
   <rule ref="category/java/performance.xml"/>
   <rule ref="category/java/security.xml"/>
