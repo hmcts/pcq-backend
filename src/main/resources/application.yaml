@@ -55,9 +55,9 @@ spring:
     name: Protected Characteristics Questions
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5052}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
+    url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
     username: ${PCQ_DB_USERNAME:pcquser}
-    password: ${PCQ_DB_PASSWORD:pcqpass}
+    password: ${PCQ_DB_PASSWORD:}
     properties:
       charSet: UTF-8
     hikari:
