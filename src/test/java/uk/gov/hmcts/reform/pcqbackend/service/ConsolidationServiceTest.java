@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -79,7 +80,7 @@ class ConsolidationServiceTest {
 
             List<ProtectedCharacteristics> targetList = generateTargetList(3);
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
-                Timestamp.class))).thenReturn(targetList);
+                Timestamp.class), Mockito.eq(null))).thenReturn(targetList);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
@@ -94,8 +95,9 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
-            any(Timestamp.class));
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThan(
+            any(Timestamp.class), Mockito.eq(null));
     }
 
     @Test
@@ -106,7 +108,7 @@ class ConsolidationServiceTest {
 
             List<ProtectedCharacteristics> targetList = generateTargetList(1);
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
-                Timestamp.class))).thenReturn(targetList);
+                Timestamp.class), Mockito.eq(null))).thenReturn(targetList);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
@@ -121,8 +123,9 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
-            any(Timestamp.class));
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThan(
+            any(Timestamp.class), Mockito.eq(null));
     }
 
     @Test
@@ -133,7 +136,7 @@ class ConsolidationServiceTest {
 
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
-                Timestamp.class))).thenReturn(targetList);
+                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
@@ -148,8 +151,9 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
-            any(Timestamp.class));
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThan(
+            any(Timestamp.class), Mockito.eq(null));
     }
 
     @Test
@@ -158,7 +162,7 @@ class ConsolidationServiceTest {
 
         try {
             when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
-                Timestamp.class))).thenReturn(null);
+                Timestamp.class), Mockito.eq(null))).thenReturn(null);
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 getTestHeader());
@@ -174,8 +178,9 @@ class ConsolidationServiceTest {
         }
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-        verify(protectedCharacteristicsRepository, times(1)).findByCaseIdIsNullAndCompletedDateGreaterThan(
-            any(Timestamp.class));
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThan(
+            any(Timestamp.class), Mockito.eq(null));
     }
 
     @Test

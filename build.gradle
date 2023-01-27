@@ -113,7 +113,7 @@ task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification'
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
 
   systemProperty "scenario", System.getProperty('scenario')
-  
+
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
   classpath = sourceSets.functionalTest.runtimeClasspath
   finalizedBy aggregate
@@ -414,7 +414,6 @@ dependencies {
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
-  implementation group: "com.gilecode.yagson", name:"j9-reflection-utils", version:"1.0"
 
   testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit

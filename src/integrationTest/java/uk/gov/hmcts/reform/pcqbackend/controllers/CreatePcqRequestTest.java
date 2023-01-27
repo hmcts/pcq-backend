@@ -57,7 +57,7 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record Not found");
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -85,7 +85,7 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record Not found");
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -113,7 +113,7 @@ public class CreatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record Not found");
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
@@ -64,6 +65,7 @@ class PcqAnswersControllerTest {
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
     private static final String ALLOW_DELETE_PROPERTY = "security.db.allow_delete_record";
+    private static final String DB_ENCRYPTION_KEY = "security.db.backend-encryption-key";
 
     private static final String FIRST_SUBMIT_ANSWER_FILENAME = "JsonTestFiles/FirstSubmitAnswer.json";
     private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME
@@ -124,8 +126,10 @@ class PcqAnswersControllerTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
+            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+                targetObject,null);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
@@ -138,9 +142,11 @@ class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).persist(any(
-                ProtectedCharacteristics.class));
+            verify(protectedCharacteristicsRepository, times(1))
+                .findByPcqId(pcqId,null);
+            verify(protectedCharacteristicsRepository, times(1))
+                .saveProtectedCharacteristicsWithEncryption(any(
+                ProtectedCharacteristics.class), Mockito.eq(null));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -165,8 +171,10 @@ class PcqAnswersControllerTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
+            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+                targetObject,null);
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -178,9 +186,11 @@ class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).persist(any(
-                ProtectedCharacteristics.class));
+            verify(protectedCharacteristicsRepository, times(1))
+                .findByPcqId(pcqId,null);
+            verify(protectedCharacteristicsRepository, times(1))
+                .saveProtectedCharacteristicsWithEncryption(any(
+                ProtectedCharacteristics.class),Mockito.eq(null));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -204,8 +214,10 @@ class PcqAnswersControllerTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
+            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+                targetObject,null);
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -217,9 +229,11 @@ class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).persist(any(
-                ProtectedCharacteristics.class));
+            verify(protectedCharacteristicsRepository, times(1))
+                .findByPcqId(pcqId,null);
+            verify(protectedCharacteristicsRepository, times(1))
+                .saveProtectedCharacteristicsWithEncryption(any(
+                    ProtectedCharacteristics.class),Mockito.eq(null));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -453,7 +467,8 @@ class PcqAnswersControllerTest {
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
             Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
                                                                           null, null,
                                                                           null, null,
@@ -484,7 +499,7 @@ class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
             verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
                 dobProvided, testDob, null,
                 null, null,
@@ -529,7 +544,8 @@ class PcqAnswersControllerTest {
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
             Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
                                                                           null, null,
                                                                           null, null,
@@ -562,7 +578,7 @@ class PcqAnswersControllerTest {
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty("api-error-messages.accepted");
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
             verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
                 dobProvided, testDob, null,
                 null, null,
@@ -826,9 +842,11 @@ class PcqAnswersControllerTest {
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository).persist(any(
-                ProtectedCharacteristics.class));
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
+            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository)
+                .saveProtectedCharacteristicsWithEncryption(any(
+                ProtectedCharacteristics.class),Mockito.eq(null));
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -840,9 +858,10 @@ class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
-            verify(protectedCharacteristicsRepository, times(1)).persist(any(
-                ProtectedCharacteristics.class));
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
+            verify(protectedCharacteristicsRepository, times(1))
+                .saveProtectedCharacteristicsWithEncryption(any(
+                ProtectedCharacteristics.class),Mockito.eq(null));
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -865,7 +884,8 @@ class PcqAnswersControllerTest {
             targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
 
             ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
 
@@ -875,7 +895,7 @@ class PcqAnswersControllerTest {
             PcqAnswerResponse actualBody = actual.getBody();
             assertNotNull(actualBody, RESPONSE_NULL_MSG);
 
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -896,11 +916,12 @@ class PcqAnswersControllerTest {
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
 
             assertThrows(DataNotFoundException.class, () -> pcqAnswersController.getAnswersByPcqId(pcqId));
 
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);

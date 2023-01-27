@@ -156,10 +156,16 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
                      response.get(RESPONSE_KEY_3));
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+    }
+
+    protected String getEncryptionKey() {
+        String encryptionKey = environment.getProperty("security.db.backend-encryption-key");
+        log.info("EncryptionKey " + encryptionKey);
+        return environment.getProperty("security.db.backend-encryption-key");
     }
 
     protected String updateCompletedDate(String completedDateStr) {
