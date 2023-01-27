@@ -163,8 +163,6 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
     }
 
     protected String getEncryptionKey() {
-        String encryptionKey = environment.getProperty("security.db.backend-encryption-key");
-        log.info("EncryptionKey " + encryptionKey);
         return environment.getProperty("security.db.backend-encryption-key");
     }
 
