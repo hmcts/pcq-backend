@@ -65,7 +65,6 @@ class PcqAnswersControllerTest {
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
     private static final String HEADER_API_PROPERTY = "api-required-header-keys.co-relationid";
     private static final String ALLOW_DELETE_PROPERTY = "security.db.allow_delete_record";
-    private static final String DB_ENCRYPTION_KEY = "security.db.backend-encryption-key";
 
     private static final String FIRST_SUBMIT_ANSWER_FILENAME = "JsonTestFiles/FirstSubmitAnswer.json";
     private static final String FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME
