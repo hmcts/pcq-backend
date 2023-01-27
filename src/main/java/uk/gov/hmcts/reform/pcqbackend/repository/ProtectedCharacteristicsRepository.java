@@ -45,7 +45,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
     int updateCase(String caseId, String pcqId);
 
     @Query(value = "SELECT pc.pcq_id, pc.DCN_NUMBER, pc.FORM_ID, pc.CASE_ID, "
-        + "pgp_sym_decrypt(decode(pc.party_Id, 'base64'), cast(:encryptionKey as text)) as party_id, "
+        + "pgp_sym_decrypt(cast(decode(pc.party_Id, 'base64') as text), cast(:encryptionKey as text)) as party_id, "
         + "pc.CHANNEL, pc.COMPLETED_DATE, pc.SERVICE_ID, pc.ACTOR, "
         + "pc.VERSION_NUMBER, pc.DOB_PROVIDED, pc.DOB, pc.LANGUAGE_MAIN ,"
         + "pc.LANGUAGE_OTHER, pc.ENGLISH_LANGUAGE_LEVEL, pc.SEX, pc.GENDER_DIFFERENT, "
