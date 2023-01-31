@@ -391,7 +391,7 @@ dependencies {
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   // Upgrading Flyway 9.0> require Spring Boot 3.0 for Autoconfiguration to work.
-  implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.8.3'
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: '9.14.0'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.5.1'
   implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
   implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwaggerui
