@@ -53,20 +53,20 @@ withNightlyPipeline(type, product, component) {
   enableSecurityScan()
   enableFortifyScan()
 
-  after('fortify-scan') {
+  afterAlways('fortify-scan') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
   }
 
-  //after('securityScan') {
-  //  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
-  //}
+  afterAlways('securityScan') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
+  }
 
-  after('fullFunctionalTest') {
+  afterAlways('fullFunctionalTest') {
     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'target/**/*'
   }
 
-  //after('mutationTest') {
-  //  steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
-  //}
+  afterAlways('mutationTest') {
+    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/**/*'
+  }
 
 }
