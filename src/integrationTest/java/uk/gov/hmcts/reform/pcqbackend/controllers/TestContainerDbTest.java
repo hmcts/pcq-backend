@@ -21,7 +21,7 @@ public class TestContainerDbTest {
     public static final String DOCKER_IMAGE_PG_11_ALPINE = "postgres:11-alpine";
 
     @ClassRule
-    private static final PostgreSQLContainer POSTGRE_SQL_CONTAINER
+    public static final PostgreSQLContainer POSTGRE_SQL_CONTAINER
         = new PostgreSQLContainer<>(DOCKER_IMAGE_PG_11_ALPINE);
 
     @BeforeClass
