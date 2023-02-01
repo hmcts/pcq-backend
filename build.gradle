@@ -32,11 +32,6 @@ apply plugin: "org.owasp.dependencycheck"
 group = 'uk.gov.hmcts.reform'
 version = '0.1.0'
 
-/*allprojects {
-  sourceCompatibility = JavaVersion.VERSION_17
-  targetCompatibility = JavaVersion.VERSION_17
-}*/
-
 java {
   toolchain {
     languageVersion = JavaLanguageVersion.of(17)
