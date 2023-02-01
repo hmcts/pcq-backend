@@ -35,6 +35,7 @@ import java.util.Set;
 @Slf4j
 @Service
 @Getter
+@SuppressWarnings({"PMD.TooManyMethods"})
 public class SubmitAnswersService extends BaseService {
 
     private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
@@ -54,7 +55,7 @@ public class SubmitAnswersService extends BaseService {
     }
 
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
-        "PMD.UnusedLocalVariable"})
+        "PMD.UnusedLocalVariable","PMD.AvoidThrowingRawExceptionTypes"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
@@ -69,7 +70,7 @@ public class SubmitAnswersService extends BaseService {
             performValidations(answerRequest);
 
             //Step 3. Check whether record exists in database for the pcqId.
-            Optional<ProtectedCharacteristics> protectedCharacteristics = Optional.empty();
+            Optional<ProtectedCharacteristics> protectedCharacteristics;
             if (pcqId != null &&  ! pcqId.equals("")) {
                 protectedCharacteristics = protectedCharacteristicsRepository
                     .findByPcqId(answerRequest.getPcqId(), getEncryptionKey());

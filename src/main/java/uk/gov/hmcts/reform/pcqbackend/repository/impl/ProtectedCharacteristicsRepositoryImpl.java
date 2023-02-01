@@ -47,7 +47,7 @@ public class ProtectedCharacteristicsRepositoryImpl implements ProtectedCharacte
             + "  cast(cast(:optOut as text) as boolean)) "
             + "  RETURNING pcq_Id";
 
-
+    @Override
     @Transactional
     public void saveProtectedCharacteristicsWithEncryption(
         ProtectedCharacteristics pc,
@@ -96,7 +96,7 @@ public class ProtectedCharacteristicsRepositoryImpl implements ProtectedCharacte
             .setParameter("disabilityNone", pc.getDisabilityNone())
             .setParameter("pregnancy", pc.getPregnancy())
             .setParameter("optOut", pc.getOptOut());
-        String pcqId = (String) insertQuery.getSingleResult();
+        insertQuery.getSingleResult();
     }
 
 }

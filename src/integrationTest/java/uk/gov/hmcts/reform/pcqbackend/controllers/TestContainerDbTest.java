@@ -21,14 +21,15 @@ public class TestContainerDbTest {
     public static final String DOCKER_IMAGE_PG_11_ALPINE = "postgres:11-alpine";
 
     @ClassRule
-    public static PostgreSQLContainer postgresContainer = new PostgreSQLContainer<>(DOCKER_IMAGE_PG_11_ALPINE);
+    private static final PostgreSQLContainer POSTGRE_SQL_CONTAINER
+        = new PostgreSQLContainer<>(DOCKER_IMAGE_PG_11_ALPINE);
 
     @BeforeClass
     @SuppressWarnings({"PMD.JUnit4TestShouldUseBeforeAnnotation"})
     public static void setUp() {
-        String jdbcUrl = postgresContainer.getJdbcUrl();
-        String username = postgresContainer.getUsername();
-        String password = postgresContainer.getPassword();
+        String jdbcUrl = POSTGRE_SQL_CONTAINER.getJdbcUrl();
+        String username = POSTGRE_SQL_CONTAINER.getUsername();
+        String password = POSTGRE_SQL_CONTAINER.getPassword();
         Flyway flyway = Flyway.configure().dataSource(
             jdbcUrl, username, password).load();
         flyway.migrate();
@@ -37,9 +38,9 @@ public class TestContainerDbTest {
     @Test
     @SuppressWarnings({"PMD.CloseResource"})
     public void testDatabaseExists() throws SQLException {
-        String jdbcUrl = postgresContainer.getJdbcUrl();
-        String username = postgresContainer.getUsername();
-        String password = postgresContainer.getPassword();
+        String jdbcUrl = POSTGRE_SQL_CONTAINER.getJdbcUrl();
+        String username = POSTGRE_SQL_CONTAINER.getUsername();
+        String password = POSTGRE_SQL_CONTAINER.getPassword();
         Connection conn = DriverManager
                 .getConnection(jdbcUrl, username, password);
         ResultSet resultSet =
@@ -54,9 +55,9 @@ public class TestContainerDbTest {
     @Test
     @SuppressWarnings({"PMD.CloseResource"})
     public void testAnotherDatabaseExists() throws SQLException {
-        String jdbcUrl = postgresContainer.getJdbcUrl();
-        String username = postgresContainer.getUsername();
-        String password = postgresContainer.getPassword();
+        String jdbcUrl = POSTGRE_SQL_CONTAINER.getJdbcUrl();
+        String username = POSTGRE_SQL_CONTAINER.getUsername();
+        String password = POSTGRE_SQL_CONTAINER.getPassword();
         Connection conn = DriverManager
             .getConnection(jdbcUrl, username, password);
         ResultSet resultSet =

@@ -3,7 +3,6 @@ package uk.gov.hmcts.reform.pcqbackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 
@@ -61,7 +60,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "WHERE pc.case_id IS NULL AND  pc.COMPLETED_DATE > :completedDate ",
         nativeQuery = true)
     List<ProtectedCharacteristics> findByCaseIdIsNullAndCompletedDateGreaterThan(Timestamp completedDate,
-               final @Param("encryptionKey") String encryptionKey);
+                String encryptionKey);
 
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM protected_characteristics p WHERE p.pcqId = ?1")
@@ -83,8 +82,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "FROM protected_characteristics pc "
         + "WHERE pc.DCN_NUMBER= :dcnNumber ",
         nativeQuery = true)
-    List<ProtectedCharacteristics> findByDcnNumber(final @Param("dcnNumber") String dcnNumber,
-                                                   final @Param("encryptionKey") String encryptionKey);
+    List<ProtectedCharacteristics> findByDcnNumber(String dcnNumber, String encryptionKey);
 
 
     @Query(value = "SELECT pc.pcq_id, pc.DCN_NUMBER, pc.FORM_ID, pc.CASE_ID, "
@@ -103,6 +101,5 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "FROM protected_characteristics pc "
         + "WHERE pc.pcq_id= :pcqId ",
         nativeQuery = true)
-    Optional<ProtectedCharacteristics> findByPcqId(final @Param("pcqId") String pcqId,
-                                                   final @Param("encryptionKey") String encryptionKey);
+    Optional<ProtectedCharacteristics> findByPcqId(String pcqId, String encryptionKey);
 }

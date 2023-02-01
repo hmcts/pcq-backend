@@ -20,11 +20,11 @@ import uk.gov.hmcts.reform.pcqbackend.client.PcqBackEndServiceClient;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -164,8 +164,8 @@ public abstract class PcqBaseFunctionalTest {
 
     protected String updateCompletedDate(String completedDateStr) {
         Timestamp completedTime = PcqUtils.getTimeFromString(completedDateStr);
-        Calendar calendar = Calendar.getInstance();
-        completedTime.setTime(calendar.getTimeInMillis());
+        Date currentDate = new Date();
+        completedTime.setTime(currentDate.getTime());
         return PcqUtils.convertTimeStampToString(completedTime);
     }
 

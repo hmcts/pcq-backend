@@ -14,7 +14,7 @@ import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsReposit
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -168,8 +168,8 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
 
     protected String updateCompletedDate(String completedDateStr) {
         Timestamp completedTime = PcqUtils.getTimeFromString(completedDateStr);
-        Calendar calendar = Calendar.getInstance();
-        completedTime.setTime(calendar.getTimeInMillis());
+        Date currentDate = new Date();
+        completedTime.setTime(currentDate.getTime());
         return PcqUtils.convertTimeStampToString(completedTime);
     }
 
