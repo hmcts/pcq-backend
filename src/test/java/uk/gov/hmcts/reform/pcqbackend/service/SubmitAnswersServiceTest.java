@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
@@ -209,7 +210,8 @@ class SubmitAnswersServiceTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
             List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
             protectedCharacteristicsList.add(targetObject);
-            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class)))
+            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class),
+                 Mockito.eq(null)))
                 .thenReturn(protectedCharacteristicsList);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
@@ -293,8 +295,11 @@ class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+            String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
+                .thenReturn(protectedCharacteristicsOptional);
+            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+                targetObject,encryptionKey);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
@@ -328,11 +333,15 @@ class SubmitAnswersServiceTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
             List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
-            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class)))
+            String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
+            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class),
+                 Mockito.eq(encryptionKey)))
                 .thenReturn(protectedCharacteristicsList);
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).persist(targetObject);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
+                .thenReturn(protectedCharacteristicsOptional);
+            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+                targetObject,encryptionKey);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
@@ -414,7 +423,8 @@ class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
             int resultCount = 1;
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(null,null,
                                                                           null,null,
                                                                           null,null,
@@ -469,7 +479,8 @@ class SubmitAnswersServiceTest {
             Date testDob = new Date(PcqUtils.getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
             Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
                                                                           null, null,
                                                                           null, null,
@@ -522,7 +533,8 @@ class SubmitAnswersServiceTest {
             Date testDob = new Date(PcqUtils.getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
             Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
             when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
                                                                           null, null,
                                                                           null, null,
@@ -573,8 +585,11 @@ class SubmitAnswersServiceTest {
             targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository).persist(targetObject);
+            String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
+                .thenReturn(protectedCharacteristicsOptional);
+            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository)
+                .saveProtectedCharacteristicsWithEncryption(targetObject,encryptionKey);
 
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
@@ -604,7 +619,7 @@ class SubmitAnswersServiceTest {
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            when(protectedCharacteristicsRepository.findById(pcqId))
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                                                 .thenThrow(NullPointerException.class);
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
@@ -633,14 +648,15 @@ class SubmitAnswersServiceTest {
             targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
 
             ProtectedCharacteristics actualObject = submitAnswersService.getProtectedCharacteristicsById(pcqId);
 
             assertNotNull(actualObject, RESPONSE_NULL_MSG);
             assertEquals(pcqId, actualObject.getPcqId(), "Not expected pcq id");
 
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -656,13 +672,14 @@ class SubmitAnswersServiceTest {
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
 
             ProtectedCharacteristics actualObject = submitAnswersService.getProtectedCharacteristicsById(pcqId);
 
             assertNull(actualObject, RESPONSE_NULL_MSG);
 
-            verify(protectedCharacteristicsRepository, times(1)).findById(pcqId);
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);

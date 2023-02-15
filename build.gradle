@@ -32,9 +32,14 @@ apply plugin: "org.owasp.dependencycheck"
 group = 'uk.gov.hmcts.reform'
 version = '0.1.0'
 
-allprojects {
-  sourceCompatibility = '11'
-  targetCompatibility = '11'
+java {
+  toolchain {
+    languageVersion = JavaLanguageVersion.of(17)
+  }
+}
+
+tasks.withType(JavaExec).configureEach {
+  javaLauncher.set(javaToolchains.launcherFor(java.toolchain))
 }
 
 gitProperties {
@@ -137,7 +142,6 @@ checkstyle {
 }
 
 pmd {
-  toolVersion = "6.28.0"
   sourceSets = [sourceSets.main, sourceSets.test, sourceSets.functionalTest, sourceSets.integrationTest, sourceSets.smokeTest]
   reportsDir = file("$project.buildDir/reports/pmd")
   // https://github.com/pmd/pmd/issues/876
@@ -287,21 +291,21 @@ repositories {
 }
 
 def versions = [
-  junit               : '5.7.0',
-  junitPlatform       : '1.7.1',
+  junit               : '5.9.2',
+  junitPlatform       : '1.9.2',
   reformLogging       : '5.1.1',
   springBoot          : springBoot.class.package.implementationVersion,
   springfoxSwagger    : '3.0.0',
   springfoxSwaggerui  : '2.9.2',
   restAssured         : '4.2.0',
   serenity            : '2.4.34',
-  lombok              : '1.18.12',
+  lombok              : '1.18.22',
   gradlePitest        : '1.7.4',
   pitest              : '1.9.3',
   sonarPitest         : '0.5',
   testcontainers      : '1.17.3',
   springFramework     : '5.3.20',
-  fasterXmlJackson    : '2.14.0',
+  fasterXmlJackson    : '2.14.1',
   springCloud         : '3.1.2',
   springSecurity      : '5.7.5'
 ]
@@ -403,7 +407,6 @@ dependencies {
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
-  implementation group: "com.gilecode.yagson", name:"j9-reflection-utils", version:"1.0"
 
   testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
   testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit

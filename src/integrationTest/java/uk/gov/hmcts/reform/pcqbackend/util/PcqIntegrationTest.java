@@ -14,7 +14,7 @@ import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsReposit
 
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
@@ -156,16 +156,20 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
                      response.get(RESPONSE_KEY_3));
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
     }
 
+    protected String getEncryptionKey() {
+        return environment.getProperty("security.db.backend-encryption-key");
+    }
+
     protected String updateCompletedDate(String completedDateStr) {
         Timestamp completedTime = PcqUtils.getTimeFromString(completedDateStr);
-        Calendar calendar = Calendar.getInstance();
-        completedTime.setTime(calendar.getTimeInMillis());
+        Date currentDate = new Date();
+        completedTime.setTime(currentDate.getTime());
         return PcqUtils.convertTimeStampToString(completedTime);
     }
 

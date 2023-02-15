@@ -62,7 +62,7 @@ public class AddCaseForPcqTest extends PcqIntegrationTest {
 
             //Fetch the record from database and verify the answers.
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(answerRequest.getPcqId());
+                protectedCharacteristicsRepository.findByPcqId(answerRequest.getPcqId(),getEncryptionKey());
 
             assertEquals(ASSERT_MESSAGE_CASE_ID, TEST_CASE_ID, protectedCharacteristicsOptional.get().getCaseId());
 
@@ -91,7 +91,7 @@ public class AddCaseForPcqTest extends PcqIntegrationTest {
 
             //Fetch the record from database and verify the answers.
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(answerRequest.getPcqId());
+                protectedCharacteristicsRepository.findByPcqId(answerRequest.getPcqId(),getEncryptionKey());
 
             assertEquals(ASSERT_MESSAGE_CASE_ID, null, protectedCharacteristicsOptional.get().getCaseId());
 
@@ -120,7 +120,7 @@ public class AddCaseForPcqTest extends PcqIntegrationTest {
 
             //Fetch the record from database and verify the answers.
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(answerRequest.getPcqId());
+                protectedCharacteristicsRepository.findByPcqId(answerRequest.getPcqId(),getEncryptionKey());
 
             assertEquals(ASSERT_MESSAGE_CASE_ID, null, protectedCharacteristicsOptional.get().getCaseId());
 
@@ -150,7 +150,7 @@ public class AddCaseForPcqTest extends PcqIntegrationTest {
 
             //Fetch the record from database and verify the answers.
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(answerRequest.getPcqId());
+                protectedCharacteristicsRepository.findByPcqId(answerRequest.getPcqId(),getEncryptionKey());
 
             assertEquals(ASSERT_MESSAGE_CASE_ID, "CCD-CASE-121&#39;;--",
                          protectedCharacteristicsOptional.get().getCaseId());
