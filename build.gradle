@@ -163,8 +163,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 pitest {
-  pitestVersion.set('1.7.4')
-  junit5PluginVersion.set('0.14')
+  junit5PluginVersion.set('1.0.0')
   targetClasses = ['uk.gov.hmcts.reform.pcqbackend.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.pcqbackend.utils.*'
