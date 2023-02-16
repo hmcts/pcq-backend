@@ -65,7 +65,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -90,7 +90,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
             assertEquals(RESPONSE_STATUS_CODE_MSG, HTTP_UNAUTHORISED, response.get("http_status"));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
 
@@ -115,7 +115,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -142,7 +142,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -159,7 +159,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(newPcqId);
+                protectedCharacteristicsRepository.findByPcqId(newPcqId,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
 
@@ -187,7 +187,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
             checkLogsForKeywords();
@@ -213,7 +213,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -243,7 +243,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
@@ -273,7 +273,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
@@ -303,7 +303,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
@@ -333,7 +333,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
@@ -363,7 +363,7 @@ public class PaperChannelTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 

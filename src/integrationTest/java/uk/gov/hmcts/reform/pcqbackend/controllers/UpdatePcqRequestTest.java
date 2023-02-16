@@ -61,7 +61,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -91,7 +91,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -121,7 +121,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             assertNotEquals("DobProvided matching", protectedCharacteristicsOptional.get().getDobProvided(),
@@ -153,7 +153,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -185,7 +185,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             assertNotEquals("Dob not matching", protectedCharacteristicsOptional
@@ -247,7 +247,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -277,13 +277,14 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
             assertLogsForKeywords();
 
-            protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
+            protectedCharacteristicsOptional = protectedCharacteristicsRepository
+                .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
             assertNotEquals("OtherLanguage not matching", protectedCharacteristicsOptional
                                 .get().getOtherLanguage(),
                          answerRequest.getPcqAnswers().getLanguageOther());
@@ -402,7 +403,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -462,7 +463,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -492,13 +493,14 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
             assertLogsForKeywords();
 
-            protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
+            protectedCharacteristicsOptional = protectedCharacteristicsRepository
+                .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
             assertNotEquals("OtherSexuality not matching", protectedCharacteristicsOptional
                                 .get().getOtherSexuality(),
                             answerRequest.getPcqAnswers().getSexualityOther());
@@ -586,7 +588,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -616,13 +618,14 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
             assertLogsForKeywords();
 
-            protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
+            protectedCharacteristicsOptional = protectedCharacteristicsRepository
+                .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
             assertNotEquals("OtherEtnicity not matching", protectedCharacteristicsOptional
                                 .get().getOtherEthnicity(),
                             answerRequest.getPcqAnswers().getEthnicityOther());
@@ -681,7 +684,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -711,13 +714,14 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
             assertLogsForKeywords();
 
-            protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
+            protectedCharacteristicsOptional = protectedCharacteristicsRepository
+                .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
             assertNotEquals("OtherReligion not matching", protectedCharacteristicsOptional
                                 .get().getOtherReligion(),
                             answerRequest.getPcqAnswers().getReligionOther());
@@ -806,7 +810,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -836,7 +840,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
@@ -866,13 +870,14 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
             assertLogsForKeywords();
 
-            protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
+            protectedCharacteristicsOptional = protectedCharacteristicsRepository
+                .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
             assertNotEquals("OtherDisabilityDetails not matching", protectedCharacteristicsOptional
                                 .get().getOtherDisabilityDetails(),
                             answerRequest.getPcqAnswers().getDisabilityConditionOther());
@@ -933,7 +938,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             assertNotEquals("Pregnancy not matching", protectedCharacteristicsOptional
@@ -954,11 +959,13 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
         createTestRecord();
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findById(TEST_PCQ_ID + "'; DROP TABLE protected_characteristics;");
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID
+                + "'; DROP TABLE protected_characteristics;",getEncryptionKey());
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
-        protectedCharacteristicsOptional = protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+        protectedCharacteristicsOptional = protectedCharacteristicsRepository
+            .findByPcqId(TEST_PCQ_ID,getEncryptionKey());
         assertNotNull("Answer record not found", protectedCharacteristicsOptional.get());
         assertEquals("PCQ Id not matching", protectedCharacteristicsOptional.get().getPcqId(), TEST_PCQ_ID);
 

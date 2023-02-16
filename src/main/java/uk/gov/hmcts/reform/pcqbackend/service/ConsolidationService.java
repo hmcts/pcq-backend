@@ -24,17 +24,15 @@ import javax.transaction.Transactional;
 
 @Slf4j
 @Service
-public class ConsolidationService {
-
-    Environment environment;
+public class ConsolidationService extends BaseService {
 
     ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @Autowired
     public ConsolidationService(ProtectedCharacteristicsRepository protectedCharacteristicsRepository,
                                 Environment environment) {
+        super(environment);
         this.protectedCharacteristicsRepository = protectedCharacteristicsRepository;
-        this.environment = environment;
     }
 
     public List<ProtectedCharacteristics> getPcqsWithoutCase(@Nullable List<String> headers)
@@ -46,7 +44,7 @@ public class ConsolidationService {
         List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository
             .findByCaseIdIsNullAndCompletedDateGreaterThan(
                 PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
-                "api-config-params.number_of_days_limit")))));
+                "api-config-params.number_of_days_limit")))),getEncryptionKey());
 
         if (returnList == null) {
             return new ArrayList<>();

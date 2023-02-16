@@ -35,26 +35,27 @@ import java.util.Set;
 @Slf4j
 @Service
 @Getter
-public class SubmitAnswersService {
+@SuppressWarnings({"PMD.TooManyMethods"})
+public class SubmitAnswersService extends BaseService {
 
     private static final String BAD_REQUEST_ERROR_MSG_KEY = "api-error-messages.bad_request";
     private static final int PAPER_CHANNEL = 2;
     private static final String OPTOUT_YES = "Y";
     private static final String INFO_LOG_MSG = "Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, ";
 
-    Environment environment;
-
     ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @Autowired
     public SubmitAnswersService(ProtectedCharacteristicsRepository protectedCharacteristicsRepository,
                                 Environment environment) {
+        super(environment);
         this.protectedCharacteristicsRepository = protectedCharacteristicsRepository;
-        this.environment = environment;
+
+
     }
 
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
-        "PMD.UnusedLocalVariable"})
+        "PMD.UnusedLocalVariable","PMD.AvoidThrowingRawExceptionTypes"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
@@ -69,14 +70,20 @@ public class SubmitAnswersService {
             performValidations(answerRequest);
 
             //Step 3. Check whether record exists in database for the pcqId.
-            Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
-                .findById(answerRequest.getPcqId());
+            Optional<ProtectedCharacteristics> protectedCharacteristics;
+            if (pcqId != null &&  ! pcqId.equals("")) {
+                protectedCharacteristics = protectedCharacteristicsRepository
+                    .findByPcqId(answerRequest.getPcqId(), getEncryptionKey());
+            } else {
+                throw new Exception("PCQ Id is blank or null.");
+            }
 
             ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
 
                 // Create the new PCQ Answers record.
-                protectedCharacteristicsRepository.persist(createCharacteristics);
+                protectedCharacteristicsRepository.saveProtectedCharacteristicsWithEncryption(
+                    createCharacteristics,getEncryptionKey());
                 log.info(INFO_LOG_MSG
                              + "Protected Characteristic Questions Record submitted for creation.", coRelationId,
                          createCharacteristics.getChannel(), createCharacteristics.getServiceId());
@@ -145,7 +152,7 @@ public class SubmitAnswersService {
     public ProtectedCharacteristics getProtectedCharacteristicsById(String pcqId) {
         log.info("getAnswer API invoked");
         Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
-            .findById(pcqId);
+            .findByPcqId(pcqId, getEncryptionKey());
 
         return protectedCharacteristics.orElse(null);
 
@@ -168,13 +175,14 @@ public class SubmitAnswersService {
 
             //Step 3. Check whether record exists in database for the pcqId.
             Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
-                .findById(answerRequest.getPcqId());
+                .findByPcqId(answerRequest.getPcqId(),getEncryptionKey());
 
             if (protectedCharacteristics.isEmpty()) {
                 ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
 
                 // Create the new PCQ Answers record with optOut as false.
-                protectedCharacteristicsRepository.persist(createCharacteristics);
+                protectedCharacteristicsRepository.saveProtectedCharacteristicsWithEncryption(
+                    createCharacteristics,getEncryptionKey());
                 log.info(INFO_LOG_MSG
                              + "Protected Char Questions Record submitted for creation with optOut true.",
                      coRelationId,
@@ -297,7 +305,7 @@ public class SubmitAnswersService {
         }
         // Check whether a record already exists.
         List<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
-            .findByDcnNumber(dcnNumber);
+            .findByDcnNumber(dcnNumber,getEncryptionKey());
         if (!protectedCharacteristics.isEmpty()) {
             throw new InvalidRequestException("Record already exists for Dcn Number- " + dcnNumber,
                                               HttpStatus.CONFLICT);

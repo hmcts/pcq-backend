@@ -10,6 +10,7 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static net.serenitybdd.rest.SerenityRest.given;
@@ -21,7 +22,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
-@SuppressWarnings({"unchecked", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"unchecked", "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods"})
 public class PcqBackEndServiceClient {
 
     private static final String CO_RELATION_HEADER = "X-Correlation-Id";
@@ -91,7 +92,7 @@ public class PcqBackEndServiceClient {
             .statusCode(status.value());
 
         if (status == HttpStatus.UNAUTHORIZED) {
-            return null;
+            return new HashMap<String, Object>();
         }
         return response.body().as(Map.class);
     }
@@ -122,7 +123,7 @@ public class PcqBackEndServiceClient {
             .statusCode(status.value());
 
         if (status == HttpStatus.UNAUTHORIZED) {
-            return null;
+            return new HashMap<String, Object>();
         }
         return response.body().as(Map.class);
     }
@@ -219,7 +220,7 @@ public class PcqBackEndServiceClient {
             .statusCode(status.value());
 
         if (status == HttpStatus.UNAUTHORIZED) {
-            return null;
+            return new HashMap<String, Object>();
         }
         return response.body().as(Map.class);
     }

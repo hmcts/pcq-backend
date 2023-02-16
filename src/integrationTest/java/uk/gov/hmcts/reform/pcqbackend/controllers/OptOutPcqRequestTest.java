@@ -64,7 +64,7 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), "Record found");
 
@@ -93,7 +93,7 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
             assertEquals(RESPONSE_STATUS_MSG, RESPONSE_UPDATED_MSG, response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record exist");
             checkLogsForKeywords();
@@ -122,7 +122,7 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record found");
 
@@ -155,13 +155,13 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
                          response.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record is Deleted!");
 
             //Check the Duplicate test record also exists
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptionalDup =
-                protectedCharacteristicsRepository.findById(TEST_DUP_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptionalDup.isEmpty(), "Other Pcq Record Deleted!");
 
@@ -191,7 +191,7 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
                          responseBody.get(RESPONSE_KEY_3));
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-                protectedCharacteristicsRepository.findById(TEST_PCQ_ID);
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record Deleted");
             checkLogsForKeywords();
