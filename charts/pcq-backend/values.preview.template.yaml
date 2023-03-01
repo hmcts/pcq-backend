@@ -14,7 +14,7 @@ java:
     TEST_S2S_URL: "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
   # Don't modify below here
   image: ${IMAGE_NAME}
-  ingressHost: ${SERVICE_FQDN}
+  ingressHost: ${SERVICE_NAME}.preview.platform.hmcts.net
 
   postgresql:
     enabled: true
