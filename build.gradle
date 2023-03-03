@@ -345,7 +345,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.7.5'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.0.3'
 
   implementation group: 'org.springframework', name:'spring-aop', version: versions.springFramework
   implementation group: 'org.springframework', name:'spring-aspects', version: versions.springFramework
