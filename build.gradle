@@ -265,7 +265,7 @@ dependencyManagement {
     // CVE-2021-29425
     dependency group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
-    dependencySet(group: 'org.springframework.cloud', version: '3.1.5') {
+    dependencySet(group: 'org.springframework.cloud', version: '4.0.1') {
       entry 'spring-cloud-starter-openfeign'
       entry 'spring-cloud-openfeign-core'
     }
