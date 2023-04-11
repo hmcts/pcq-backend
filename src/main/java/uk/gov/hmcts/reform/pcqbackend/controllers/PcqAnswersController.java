@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,6 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
 import uk.gov.hmcts.reform.pcqbackend.service.DeleteService;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
-
-import javax.validation.constraints.NotBlank;
 
 
 /**

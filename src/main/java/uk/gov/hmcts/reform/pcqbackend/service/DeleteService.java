@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -10,7 +11,6 @@ import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
-import javax.transaction.Transactional;
 
 @Slf4j
 @Service
