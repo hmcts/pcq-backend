@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -26,7 +28,8 @@ import uk.gov.hmcts.reform.pcqbackend.service.SasTokenService;
 @RestController
 @RequestMapping(path = "/pcq/backend/token")
 @Slf4j
-@Api(tags = "PCQ BackEnd - API for SAS token service operations.", value = "This is the Protected Characteristics "
+@Tag(name = "PCQ BackEnd - API for SAS token service operations.",
+    description = "This is the Protected Characteristics "
     + "Back-End API that will serve authentication tasks for other services and components to generate a Service SAS "
     + "token for the PCQ Storage Account container 'pcq' - this will provoide Write, List and Create access."
     + "The API will be invoked by the bulk-scan-processor service.")
@@ -41,19 +44,21 @@ public class SasTokenController {
     @Autowired
     private AuthorisedServices authorisedServices;
 
-    @ApiOperation(
-        tags = "GET end-points", value = "Endpoint for BulkScan to generate the PCQ Storage SAS token.",
-        notes = "This API will be invoked by the Bulk Scan Processor to generate an Azure Service SAS token to allow"
+    @Operation(
+        tags = "GET end-points",
+        summary = "Endpoint for BulkScan to generate the PCQ Storage SAS token.",
+        description = "This API will be invoked by the Bulk Scan Processor to "
+                + "generate an Azure Service SAS token to allow"
                 + "the upload of paper PCQ envelops to the PCQ Blob Storage 'pcq' container."
     )
     @ApiResponses({
         @ApiResponse(
-            code = 200, message = "Successfully generated Storage Account SAS token for BulkScan.",
-            response = SasTokenResponse.class
+            responseCode = "200", description = "Successfully generated Storage Account SAS token for BulkScan.",
+            content = { @Content(schema = @Schema(implementation = SasTokenResponse.class))}
         ),
-        @ApiResponse(code = 401, message = "ServiceAuthorization header invalid or expired."),
-        @ApiResponse(code = 404, message = "Service or path not found."),
-        @ApiResponse(code = 500, message = "Server error, unable to generate SAS token.")
+        @ApiResponse(responseCode = "401", description = "ServiceAuthorization header invalid or expired."),
+        @ApiResponse(responseCode = "404", description = "Service or path not found."),
+        @ApiResponse(responseCode = "500", description = "Server error, unable to generate SAS token.")
     })
     @GetMapping(
         path = "/bulkscan",

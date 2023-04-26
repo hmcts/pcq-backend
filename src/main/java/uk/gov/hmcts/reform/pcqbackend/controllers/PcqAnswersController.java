@@ -1,9 +1,11 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import springfox.documentation.annotations.ApiIgnore;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
@@ -41,7 +42,7 @@ import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 @RequestMapping(path = "/pcq/backend")
 @AllArgsConstructor
 @Slf4j
-@Api(tags = "PCQ BackEnd - API for PCQ database operations.", value = "This is the Protected Characteristics "
+@Tag(name = "PCQ BackEnd - API for PCQ database operations.", description = "This is the Protected Characteristics "
     + "Back-End API that will save user's answers to the database. "
     + "The API will be invoked by the PCQ front-end service.")
 public class PcqAnswersController {
@@ -61,16 +62,22 @@ public class PcqAnswersController {
     @PostMapping(path = "/submitAnswers", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals"})
-    @ApiOperation(tags = "POST end-points", value = "Add and update PCQ answers to the database.",
-        notes = "This API will create a new record in the database for the given PCQId where none exists "
+    @Operation(tags = "POST end-points", summary = "Add and update PCQ answers to the database.",
+        description = "This API will create a new record in the database for the given PCQId where none exists "
         + "and will update an existing record with the answers as submitted by the users")
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Operation completed successfully.", response = SubmitResponse.class),
-        @ApiResponse(code = 201, message = "Successfully saved to database.", response = SubmitResponse.class),
-        @ApiResponse(code = 202, message = "Request valid but stale.", response = SubmitResponse.class),
-        @ApiResponse(code = 400, message = "Request failed schema validation.", response = SubmitResponse.class),
-        @ApiResponse(code = 403, message = "Version number mismatch.", response = SubmitResponse.class),
-        @ApiResponse(code = 500, message = "General/Un-recoverable error.", response = SubmitResponse.class)
+        @ApiResponse(responseCode = "200", description = "Operation completed successfully.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+        @ApiResponse(responseCode = "201", description = "Successfully saved to database.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+        @ApiResponse(responseCode = "202", description = "Request valid but stale.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+        @ApiResponse(responseCode = "400", description = "Request failed schema validation.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+        @ApiResponse(responseCode = "403", description = "Version number mismatch.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+        @ApiResponse(responseCode = "500", description = "General/Un-recoverable error.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))})
     })
     @ResponseBody
     public ResponseEntity<Object> submitAnswers(@RequestHeader HttpHeaders headers,
@@ -91,24 +98,24 @@ public class PcqAnswersController {
 
     }
 
-    @ApiOperation(
-        tags = "GET end-points", value = "Get PCQ answer from the database.",
-        notes = "This API will return a record from the PCQ database for the given PCQId. "
+    @Operation(
+        tags = "GET end-points", summary = "Get PCQ answer from the database.",
+        description = "This API will return a record from the PCQ database for the given PCQId. "
             + "It is intended to be called from the test api for testing purposes."
     )
     @ApiResponses({
         @ApiResponse(
-            code = 200,
-            message = "Details of the pcq answer record",
-            response = PcqAnswerResponse.class
+            responseCode = "200",
+            description = "Details of the pcq answer record",
+            content = { @Content(schema = @Schema(implementation = PcqAnswerResponse.class))}
         ),
         @ApiResponse(
-            code = 400,
-            message = "An invalid id was provided"
+            responseCode = "400",
+            description = "An invalid id was provided"
         ),
         @ApiResponse(
-            code = 404,
-            message = "No pcq answer record was found with the given id"
+            responseCode = "404",
+            description = "No pcq answer record was found with the given id"
         )
     })
     @GetMapping(
@@ -131,24 +138,23 @@ public class PcqAnswersController {
 
     }
 
-    @ApiIgnore
-    @ApiOperation(
-        tags = "DELETE end-points", value = "Delete PCQ Record from the database.",
-        notes = "This API will delete a record from the PCQ database for the given PCQId. "
+    @Operation(hidden = true,
+        tags = "DELETE end-points", summary = "Delete PCQ Record from the database.",
+        description = "This API will delete a record from the PCQ database for the given PCQId. "
             + "It is intended to be called from the test api for testing purposes."
     )
     @ApiResponses({
         @ApiResponse(
-            code = 200,
-            message = "Pcq record has been deleted"
+            responseCode = "200",
+            description = "Pcq record has been deleted"
         ),
         @ApiResponse(
-            code = 400,
-            message = "An invalid id was provided"
+            responseCode = "400",
+            description = "An invalid id was provided"
         ),
         @ApiResponse(
-            code = 404,
-            message = "No pcq answer record was found with the given id"
+            responseCode = "404",
+            description = "No pcq answer record was found with the given id"
         )
     })
     @DeleteMapping(

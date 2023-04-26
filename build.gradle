@@ -22,6 +22,7 @@ plugins {
   id 'com.gorylenko.gradle-git-properties' version '2.4.1'
   id "io.freefair.lombok" version "8.0.1"
   id "org.flywaydb.flyway" version "9.16.1"
+  id "org.springdoc.openapi-gradle-plugin" version "1.6.0"
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
@@ -30,7 +31,7 @@ apply plugin: "info.solidsoft.pitest"
 apply plugin: "org.owasp.dependencycheck"
 
 group = 'uk.gov.hmcts.reform'
-version = '0.1.0'
+version = '1.0.2'
 
 java {
   toolchain {
@@ -251,11 +252,7 @@ dependencyManagement {
       entry 'netty-transport-classes-kqueue'
     }
     dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
-    // CVE-2018-10237 - Unbounded memory allocation
-    // CVE-2020-8908 - Temp directory creation vulnerability
-    /*dependencySet(group: 'com.google.guava', version: '31.1-jre') {
-      entry 'guava'
-    }*/
+
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
     // rest assured 4.2 -> 4.3 jumps to groovy v3. junit v5.6 still on v2.5
     dependencySet(group: 'org.codehaus.groovy', version: '3.0.13') {
@@ -266,14 +263,9 @@ dependencyManagement {
     // CVE-2021-29425
     dependency group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
-    dependencySet(group: 'org.springframework.cloud', version: '4.0.1') {
+    dependencySet(group: 'org.springframework.cloud', version: '4.0.2') {
       entry 'spring-cloud-starter-openfeign'
       entry 'spring-cloud-openfeign-core'
-    }
-
-    dependencySet(group: 'org.springframework.security', version: '6.0.2') {
-      entry 'spring-security-core'
-      entry 'spring-security-test'
     }
   }
   imports {
@@ -284,7 +276,6 @@ dependencyManagement {
 repositories {
   mavenLocal()
   mavenCentral()
-  jcenter()
   maven {
     url 'https://jitpack.io'
   }
@@ -293,10 +284,7 @@ repositories {
 def versions = [
   junit               : '5.9.2',
   junitPlatform       : '1.9.2',
-  reformLogging       : '5.1.1',
   springBoot          : springBoot.class.package.implementationVersion,
-  springfoxSwagger    : '3.0.0',
-  springfoxSwaggerui  : '2.9.2',
   restAssured         : '4.2.0',
   serenity            : '2.4.34',
   lombok              : '1.18.22',
@@ -304,10 +292,7 @@ def versions = [
   pitest              : '1.9.3',
   sonarPitest         : '0.5',
   testcontainers      : '1.17.3',
-  springFramework     : '5.3.26',
-  fasterXmlJackson    : '2.14.2',
-  springCloud         : '3.1.2',
-  springSecurity      : '5.7.5'
+  springCloud         : '4.0.2'
 ]
 
 configurations.all {
@@ -319,9 +304,6 @@ configurations.all {
       if (details.requested.group in ['org.scala-lang']) {
         details.useVersion '2.12.10'
       }
-      /*if (details.requested.group in ['org.apache.tomcat.embed']) {
-        details.useVersion '9.0.72'
-      }*/
       if (details.requested.group in ['org.hibernate']) {
         details.useVersion '5.6.8.Final'
       }
@@ -338,35 +320,16 @@ dependencies {
     exclude group: 'org.springframework.cloud', module: 'spring-cloud-context'
   }
 
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.0.5'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web-services', version: '3.0.5'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '3.0.5'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop', version: '3.0.5'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json', version: '3.0.5'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '3.0.5'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc', version: '3.0.5'
-
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.0.5'
-
-  //implementation group: 'org.springframework', name:'spring-aop', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-aspects', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-beans', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-context', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-core', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-expression', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-jcl', version: versions.springFramework
-  implementation group: 'org.springframework', name:'spring-jdbc', version: versions.springFramework
-  implementation group: 'org.springframework', name:'spring-orm', version: versions.springFramework
-  implementation group: 'org.springframework', name:'spring-oxm', version: versions.springFramework
-  implementation group: 'org.springframework', name:'spring-tx', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-web', version: versions.springFramework
-  //implementation group: 'org.springframework', name:'spring-webmvc', version: versions.springFramework
-  //testImplementation group: 'org.springframework', name: 'spring-test', version: versions.springFramework
-  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.0.3'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web-services'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
 
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.2.10.RELEASE'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: versions.springCloud
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: versions.springCloud
 
@@ -376,22 +339,17 @@ dependencies {
 
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
   implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '4.0.3'
+  implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.0.0'
   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
 
   implementation group: 'com.microsoft.azure', name: 'azure-storage', version: '8.6.6'
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.18.0'
 
-  implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.1.5'
+  implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.2.2'
   implementation group: 'org.yaml', name: 'snakeyaml', version: '1.33'
   implementation group: 'commons-net', name: 'commons-net', version: '3.9.0'
 
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: versions.fasterXmlJackson
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: versions.fasterXmlJackson
-  implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: versions.fasterXmlJackson
-  implementation group: 'com.fasterxml.jackson', name: 'jackson-bom', version: versions.fasterXmlJackson, ext: 'pom'
-
-  implementation group: 'uk.gov.hmcts.reform', name: 'properties-volume-spring-boot-starter', version:'0.1.0', withoutSpringCloudContext
+  implementation group: 'com.github.hmcts', name: 'properties-volume-spring-boot-starter', version:'0.1.1', withoutSpringCloudContext
 
   implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
@@ -403,25 +361,21 @@ dependencies {
   //implementation group: 'io.springfox', name: 'springfox-swagger2', version: versions.springfoxSwagger
   //implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: versions.springfoxSwaggerui
 
-  // https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
-  implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
+  implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
 
-
-  implementation group: 'uk.gov.hmcts.reform', name: 'logging', version: versions.reformLogging
-  implementation group: 'uk.gov.hmcts.reform', name: 'logging-appinsights', version: versions.reformLogging
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '5.1.9'
 
   implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.72"
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
 
-  testImplementation group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: versions.junit
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
-
-  //testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
-  //testImplementation group: 'org.springframework.security', name: 'spring-security-test'
+  testImplementation(platform(group: 'org.junit', name: 'junit-bom', version: '5.9.2'))
+  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
+    exclude group: 'junit', module: 'junit'
+    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+  }
 
   testImplementation group: 'com.github.tomakehurst', name: 'wiremock', version: '2.33.2'
 
