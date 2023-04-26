@@ -131,10 +131,6 @@ public class SubmitAnswersService extends BaseService {
                     return PcqUtils.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
                                                            environment.getProperty(
                                                                      "api-error-messages.accepted"));
-                } else {
-                    log.info(INFO_LOG_MSG
-                                 + "Protected Characteristic Record submitted for Update.", coRelationId,
-                             createCharacteristics.getChannel(), createCharacteristics.getServiceId());
                 }
             }
         } catch (InvalidRequestException ive) {
@@ -150,7 +146,6 @@ public class SubmitAnswersService extends BaseService {
     }
 
     public ProtectedCharacteristics getProtectedCharacteristicsById(String pcqId) {
-        log.info("getAnswer API invoked");
         Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
             .findByPcqId(pcqId, getEncryptionKey());
 
@@ -168,7 +163,6 @@ public class SubmitAnswersService extends BaseService {
 
             //Step 1. Check the request contains the required header content.
             coRelationId = validateAndReturnCorrelationId(headers);
-            log.info("Co-Relation Id : {} - submitAnswers API call with OptOut invoked.", coRelationId);
 
             //Step 2. Perform the validations
             performValidations(answerRequest);
@@ -183,11 +177,6 @@ public class SubmitAnswersService extends BaseService {
                 // Create the new PCQ Answers record with optOut as false.
                 protectedCharacteristicsRepository.saveProtectedCharacteristicsWithEncryption(
                     createCharacteristics,getEncryptionKey());
-                log.info(INFO_LOG_MSG
-                             + "Protected Char Questions Record submitted for creation with optOut true.",
-                     coRelationId,
-                         createCharacteristics.getChannel(), createCharacteristics.getServiceId());
-
             } else {
                 // Update the PCQ Record
                 java.sql.Timestamp completedDateNow = PcqUtils.getTimeFromString(answerRequest.getCompletedDate());
@@ -236,9 +225,6 @@ public class SubmitAnswersService extends BaseService {
                     );
 
                 } else {
-                    log.info(INFO_LOG_MSG
-                                 + "Protected Char Record submitted for Update with optOut true.", coRelationId,
-                             answerRequest.getChannel(), answerRequest.getServiceId());
                     return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
                                                            environment.getProperty("api-error-messages.updated"));
                 }
