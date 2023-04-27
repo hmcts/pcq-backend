@@ -65,19 +65,22 @@ public class PcqAnswersController {
     @Operation(tags = "POST end-points", summary = "Add and update PCQ answers to the database.",
         description = "This API will create a new record in the database for the given PCQId where none exists "
         + "and will update an existing record with the answers as submitted by the users")
-    @ApiResponses({
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Operation completed successfully.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+            content = { @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SubmitResponse.class))}),
         @ApiResponse(responseCode = "201", description = "Successfully saved to database.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+            content = { @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SubmitResponse.class))}),
         @ApiResponse(responseCode = "202", description = "Request valid but stale.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+            content = { @Content(mediaType = "application/json",
+                schema = @Schema(implementation = SubmitResponse.class))}),
         @ApiResponse(responseCode = "400", description = "Request failed schema validation.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+            content = @Content),
         @ApiResponse(responseCode = "403", description = "Version number mismatch.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+            content = @Content),
         @ApiResponse(responseCode = "500", description = "General/Un-recoverable error.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))})
+            content = @Content)
     })
     @ResponseBody
     public ResponseEntity<Object> submitAnswers(@RequestHeader HttpHeaders headers,
@@ -107,7 +110,8 @@ public class PcqAnswersController {
         @ApiResponse(
             responseCode = "200",
             description = "Details of the pcq answer record",
-            content = { @Content(schema = @Schema(implementation = PcqAnswerResponse.class))}
+            content = { @Content(mediaType = "application/json",
+                schema = @Schema(implementation = PcqAnswerResponse.class))}
         ),
         @ApiResponse(
             responseCode = "400",
