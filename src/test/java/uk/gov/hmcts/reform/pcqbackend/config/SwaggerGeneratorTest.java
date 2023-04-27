@@ -1,12 +1,19 @@
 package uk.gov.hmcts.reform.pcqbackend.config;
 
 import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
-//import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * Built-in feature which saves service's swagger specs in temporary directory.
@@ -17,22 +24,23 @@ import org.springframework.test.context.junit.jupiter.web.SpringJUnitWebConfig;
 @AutoConfigureMockMvc
 class SwaggerGeneratorTest {
 
-    /*@Autowired
-    private MockMvc mvc;*/
+    @Autowired
+    private MockMvc mvc;
 
     @DisplayName("Generate swagger documentation")
-    //@Test
+    @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void generateDocs() throws Exception {
-        /*byte[] specs = mvc.perform(get("/v2/api-docs"))
-            .andExpect(status().isOk())
+        byte[] specs = mvc.perform(MockMvcRequestBuilders.get("/v2/api-docs")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn()
             .getResponse()
             .getContentAsByteArray();
 
         try (OutputStream outputStream = Files.newOutputStream(Paths.get("/tmp/pcq-backend.json"))) {
             outputStream.write(specs);
-        }*/
+        }
 
     }
 }
