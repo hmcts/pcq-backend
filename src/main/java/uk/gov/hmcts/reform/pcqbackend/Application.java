@@ -2,8 +2,12 @@ package uk.gov.hmcts.reform.pcqbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+@EnableFeignClients(basePackages = {
+    "uk.gov.hmcts.reform.authorisation"
+})
 @SpringBootApplication
 @EnableJpaRepositories
 @SuppressWarnings("HideUtilityClassConstructor") // Spring needs a constructor, its not a utility class
