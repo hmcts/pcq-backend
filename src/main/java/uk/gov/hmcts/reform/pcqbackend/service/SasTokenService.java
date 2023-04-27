@@ -33,11 +33,9 @@ public class SasTokenService {
 
     public String generateSasToken(String serviceName) {
         try {
-            String sasToken = blobServiceClient
+            return blobServiceClient
                 .getBlobContainerClient(pcqContainer)
                 .generateSas(createSharedAccessPolicy());
-            return sasToken;
-
         } catch (Exception exception) {
             log.error("Error occured while creating SAS token", exception);
             throw new UnableToGenerateSasTokenException(exception);
