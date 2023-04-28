@@ -131,6 +131,11 @@ public class SubmitAnswersService extends BaseService {
                     return PcqUtils.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
                                                            environment.getProperty(
                                                                      "api-error-messages.accepted"));
+                }else {
+                    log.info(INFO_LOG_MSG
+                                 + "Protected Characteristic Record submitted for Update.", coRelationId,
+                             createCharacteristics.getChannel(), createCharacteristics.getServiceId()
+                    );
                 }
             }
         } catch (InvalidRequestException ive) {
@@ -225,6 +230,9 @@ public class SubmitAnswersService extends BaseService {
                     );
 
                 } else {
+                    log.info(INFO_LOG_MSG
+                                 + "Protected Char Record submitted for Update with optOut true.", coRelationId,
+                             answerRequest.getChannel(), answerRequest.getServiceId());
                     return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
                                                            environment.getProperty("api-error-messages.updated"));
                 }
