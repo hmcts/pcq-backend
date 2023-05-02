@@ -182,6 +182,11 @@ public class SubmitAnswersService extends BaseService {
                 // Create the new PCQ Answers record with optOut as false.
                 protectedCharacteristicsRepository.saveProtectedCharacteristicsWithEncryption(
                     createCharacteristics,getEncryptionKey());
+                log.info(INFO_LOG_MSG
+                             + "Protected Char Questions Record submitted for creation with optOut true.",
+                         coRelationId,
+                         createCharacteristics.getChannel(), createCharacteristics.getServiceId());
+
             } else {
                 // Update the PCQ Record
                 java.sql.Timestamp completedDateNow = PcqUtils.getTimeFromString(answerRequest.getCompletedDate());
