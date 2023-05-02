@@ -131,7 +131,7 @@ public class SubmitAnswersService extends BaseService {
                     return PcqUtils.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
                                                            environment.getProperty(
                                                                      "api-error-messages.accepted"));
-                }else {
+                } else {
                     log.info(INFO_LOG_MSG
                                  + "Protected Characteristic Record submitted for Update.", coRelationId,
                              createCharacteristics.getChannel(), createCharacteristics.getServiceId()
