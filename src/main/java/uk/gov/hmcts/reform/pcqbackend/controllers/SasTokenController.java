@@ -68,9 +68,7 @@ public class SasTokenController {
             log.info("Service {} has NOT been authorised!", serviceName);
             throw new InvalidAuthenticationException("Unable to authenticate service request.");
         }
-
-        log.info("Service {} has been authorised!", serviceName);
-        SasTokenResponse sasTokenResponse = new SasTokenResponse(sasTokenService.generateSasToken("bulkscan"));
+        SasTokenResponse sasTokenResponse = new SasTokenResponse(sasTokenService.generateSasToken());
         return ResponseEntity.ok(sasTokenResponse);
     }
 
