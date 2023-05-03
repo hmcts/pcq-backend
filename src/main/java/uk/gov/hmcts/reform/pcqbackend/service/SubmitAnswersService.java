@@ -134,8 +134,7 @@ public class SubmitAnswersService extends BaseService {
                 } else {
                     log.info(INFO_LOG_MSG
                                  + "Protected Characteristic Record submitted for Update.", coRelationId,
-                             createCharacteristics.getChannel(), createCharacteristics.getServiceId()
-                    );
+                             createCharacteristics.getChannel(), createCharacteristics.getServiceId());
                 }
             }
         } catch (InvalidRequestException ive) {
@@ -184,7 +183,7 @@ public class SubmitAnswersService extends BaseService {
                     createCharacteristics,getEncryptionKey());
                 log.info(INFO_LOG_MSG
                              + "Protected Char Questions Record submitted for creation with optOut true.",
-                         coRelationId,
+                     coRelationId,
                          createCharacteristics.getChannel(), createCharacteristics.getServiceId());
 
             } else {
