@@ -29,7 +29,6 @@ public class DeleteService {
 
     @Transactional
     public ResponseEntity<Object> deletePcqRecord(String pcqId) {
-        log.info("deletePcqRecord API invoked");
         int resultCount = protectedCharacteristicsRepository.deletePcqRecord(HtmlUtils.htmlEscape(pcqId));
         if (resultCount == 0) {
             log.error(
@@ -41,9 +40,6 @@ public class DeleteService {
                                                        NOT_FOUND_ERROR_MSG_KEY)
             );
         } else {
-            log.info("PCQ IDd : {} - Protected Characteristic Record has been deleted.", pcqId
-
-            );
             return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
                                                    environment.getProperty(
                                                        "api-error-messages.deleted")
