@@ -68,8 +68,6 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
 
             assertTrue(protectedCharacteristicsOptional.isEmpty(), "Record found");
 
-            checkLogsForKeywords();
-
 
         } catch (IOException e) {
             log.error(IO_EXCEPTION_MSG, e);
@@ -96,9 +94,6 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
                 protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record exist");
-            checkLogsForKeywords();
-
-
         } catch (IOException e) {
             log.error(IO_EXCEPTION_MSG, e);
         }
@@ -125,9 +120,6 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
                 protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record found");
-
-            checkLogsForKeywords();
-
 
         } catch (IOException e) {
             log.error(IO_EXCEPTION_MSG, e);
@@ -165,9 +157,6 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptionalDup.isEmpty(), "Other Pcq Record Deleted!");
 
-            checkLogsForKeywords();
-
-
         } catch (IOException e) {
             log.error(IO_EXCEPTION_MSG, e);
         }
@@ -194,8 +183,6 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
                 protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record Deleted");
-            checkLogsForKeywords();
-
 
         } catch (IOException e) {
             log.error(IO_EXCEPTION_MSG, e);
@@ -204,11 +191,6 @@ public class OptOutPcqRequestTest extends PcqIntegrationTest {
 
     }
 
-
-    private void checkLogsForKeywords() {
-        assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
-                   "Co-Relation Id was not logged in log files.");
-    }
 
     private void createTestRecord() {
         PcqAnswerRequest testRequest = createAnswerRequestForTest(TEST_PCQ_ID);

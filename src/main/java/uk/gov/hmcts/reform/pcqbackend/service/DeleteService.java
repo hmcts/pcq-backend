@@ -41,9 +41,6 @@ public class DeleteService {
                                                        NOT_FOUND_ERROR_MSG_KEY)
             );
         } else {
-            log.info("PCQ IDd : {} - Protected Characteristic Record has been deleted.", pcqId
-
-            );
             return PcqUtils.generateResponseEntity(pcqId, HttpStatus.OK,
                                                    environment.getProperty(
                                                        "api-error-messages.deleted")

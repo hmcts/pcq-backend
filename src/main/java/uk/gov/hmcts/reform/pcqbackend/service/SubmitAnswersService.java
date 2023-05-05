@@ -150,7 +150,6 @@ public class SubmitAnswersService extends BaseService {
     }
 
     public ProtectedCharacteristics getProtectedCharacteristicsById(String pcqId) {
-        log.info("getAnswer API invoked");
         Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
             .findByPcqId(pcqId, getEncryptionKey());
 
@@ -168,7 +167,6 @@ public class SubmitAnswersService extends BaseService {
 
             //Step 1. Check the request contains the required header content.
             coRelationId = validateAndReturnCorrelationId(headers);
-            log.info("Co-Relation Id : {} - submitAnswers API call with OptOut invoked.", coRelationId);
 
             //Step 2. Perform the validations
             performValidations(answerRequest);

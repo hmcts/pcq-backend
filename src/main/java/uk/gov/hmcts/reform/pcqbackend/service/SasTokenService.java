@@ -31,17 +31,11 @@ public class SasTokenService {
         this.blobServiceClient = blobServiceClient;
     }
 
-    public String generateSasToken(String serviceName) {
-        String storageAccountName = blobServiceClient.getAccountName();
-        log.info("SAS Token request received for service {}. Account: {}", serviceName, storageAccountName);
-
+    public String generateSasToken() {
         try {
-            String sasToken = blobServiceClient
+            return blobServiceClient
                 .getBlobContainerClient(pcqContainer)
                 .generateSas(createSharedAccessPolicy());
-            log.info("Generated SAS Token = {}...", sasToken.substring(0,30));
-            return sasToken;
-
         } catch (Exception exception) {
             log.error("Error occured while creating SAS token", exception);
             throw new UnableToGenerateSasTokenException(exception);

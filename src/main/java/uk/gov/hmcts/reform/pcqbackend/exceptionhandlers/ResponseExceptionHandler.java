@@ -23,14 +23,12 @@ public class ResponseExceptionHandler {
     }
 
     @ExceptionHandler(InvalidAuthenticationException.class)
-    protected ResponseEntity<Void> handleUnAuthenticatedException(InvalidAuthenticationException exception) {
-        log.error(exception.getMessage(), exception);
+    protected ResponseEntity<Void> handleUnAuthenticatedException() {
         return status(HttpStatus.UNAUTHORIZED).build();
     }
 
     @ExceptionHandler(InvalidTokenException.class)
     protected ResponseEntity<ErrorResponse> handleInvalidToken(InvalidTokenException exc) {
-        log.error(exc.getMessage(), exc);
         return status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(exc.getMessage()));
     }
 }

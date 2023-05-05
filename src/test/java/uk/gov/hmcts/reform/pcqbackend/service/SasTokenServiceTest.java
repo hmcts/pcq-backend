@@ -37,7 +37,7 @@ class SasTokenServiceTest {
     @Test
     void testGenerateSasTokenSuccess() {
         try {
-            String actualSasToken = sasTokenService.generateSasToken("bulkscan");
+            String actualSasToken = sasTokenService.generateSasToken();
             assertNotNull(actualSasToken, NOT_NULL_MESSAGE);
             verifySasTokenProperties(actualSasToken);
 
