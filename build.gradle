@@ -287,8 +287,8 @@ repositories {
 }
 
 def versions = [
-  junit               : '5.9.2',
-  junitPlatform       : '1.9.2',
+  junit               : '5.9.3',
+  junitPlatform       : '1.9.3',
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '4.2.0',
   serenity            : '2.4.34',
@@ -375,7 +375,7 @@ dependencies {
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
 
-  testImplementation(platform(group: 'org.junit', name: 'junit-bom', version: '5.9.2'))
+  testImplementation(platform(group: 'org.junit', name: 'junit-bom', version: '5.9.3'))
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
     exclude group: 'junit', module: 'junit'
