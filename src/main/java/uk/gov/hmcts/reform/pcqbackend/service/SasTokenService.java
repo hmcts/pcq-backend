@@ -31,7 +31,7 @@ public class SasTokenService {
         this.blobServiceClient = blobServiceClient;
     }
 
-    public String generateSasToken() {
+    public String generateSasToken(String serviceName) {
         try {
             return blobServiceClient
                 .getBlobContainerClient(pcqContainer)
