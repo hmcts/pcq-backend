@@ -157,7 +157,6 @@ jacocoTestReport {
   reports {
     xml.enabled = true
     csv.enabled = false
-   // xml.destination file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
     xml.outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
@@ -369,6 +368,9 @@ dependencies {
 
   implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.72"
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
+
+  implementation group: 'com.microsoft.azure', name: 'applicationinsights-web', version: '3.4.12'
+
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
   implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.6'
