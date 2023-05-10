@@ -8,6 +8,9 @@ functional-output/
 
 git.properties
 
+lib/applicationinsights-agent-*.jar
+lib/applicationinsights.log
+
 ### STS ###
 .apt_generated
 .classpath
