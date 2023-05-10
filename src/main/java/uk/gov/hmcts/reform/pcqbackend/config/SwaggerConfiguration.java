@@ -43,12 +43,12 @@ public class SwaggerConfiguration {
 
     @Bean
     public WebMvcEndpointHandlerMapping webEndpointServletHandlerMapping(WebEndpointsSupplier webEndpointsSupplier,
-         ServletEndpointsSupplier servletEndpointsSupplier,
-         ControllerEndpointsSupplier controllerEndpointsSupplier,
-         EndpointMediaTypes endpointMediaTypes,
-         CorsEndpointProperties corsProperties,
-         WebEndpointProperties webEndpointProperties,
-         Environment environment) {
+                 ServletEndpointsSupplier servletEndpointsSupplier,
+                 ControllerEndpointsSupplier controllerEndpointsSupplier,
+                 EndpointMediaTypes endpointMediaTypes,
+                 CorsEndpointProperties corsProperties,
+                 WebEndpointProperties webEndpointProperties,
+                 Environment environment) {
         List<ExposableEndpoint<?>> allEndpoints = new ArrayList<ExposableEndpoint<?>>();
         Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
         allEndpoints.addAll(webEndpoints);
@@ -59,8 +59,8 @@ public class SwaggerConfiguration {
         boolean shouldRegisterLinksMapping = this.shouldRegisterLinksMapping(webEndpointProperties,
                                                                              environment, basePath);
         return new WebMvcEndpointHandlerMapping(endpointMapping, webEndpoints, endpointMediaTypes,
-            corsProperties.toCorsConfiguration(),
-            new EndpointLinksResolver(allEndpoints, basePath), shouldRegisterLinksMapping);
+                corsProperties.toCorsConfiguration(),
+                new EndpointLinksResolver(allEndpoints, basePath), shouldRegisterLinksMapping);
     }
 
 

@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-
 @Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
 
@@ -29,8 +28,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+        throws ServletException, IOException {
 
         String header = request.getHeader(jwtConfiguration.getHeader());
         if (header == null || !header.startsWith(jwtConfiguration.getPrefix())) {
