@@ -97,13 +97,3 @@ spring:
 flyway:
   noop:
     strategy: "false"
-
-springdoc:
-  swagger-ui:
-    enabled: true
-    layout: BaseLayout
-    path: /swagger-ui.html
-  api-docs:
-    path: v3/api-docs
-  packagesToScan: uk.gov.hmcts.reform.pcqbackend.controllers
-  pathsToMatch: /**
