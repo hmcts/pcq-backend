@@ -37,7 +37,7 @@ public class SecurityConfiguration {
         .requestMatchers("/pcq/backend/token/**").permitAll()
         .requestMatchers("/pcq/backend/deletePcqRecord/**").permitAll()
         .requestMatchers("/pcq/backend/submitAnswers**").authenticated()
-        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+        .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         return http.build();
     }
