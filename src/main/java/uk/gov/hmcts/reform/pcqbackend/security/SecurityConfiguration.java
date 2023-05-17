@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,6 +21,22 @@ public class SecurityConfiguration {
 
     @Autowired
     private JwtConfiguration jwtConfiguration;
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+            "/swagger-ui.html",
+            "/webjars/springfox-swagger-ui/**",
+            "/swagger-resources/**",
+            "/health",
+            "/health/liveness",
+            "/health/readiness",
+            "/v2/api-docs/**",
+            "/info",
+            "/favicon.ico",
+            "/"
+        );
+    }
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {

@@ -31,7 +31,7 @@ class SwaggerGeneratorTest {
     @Test
     @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void generateDocs() throws Exception {
-        byte[] specs = mvc.perform(MockMvcRequestBuilders.get("/api-docs")
+        byte[] specs = mvc.perform(MockMvcRequestBuilders.get("/v2/api-docs")
             .accept(MediaType.APPLICATION_JSON))
             .andExpect(MockMvcResultMatchers.status().isOk())
             .andReturn()
