@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,6 +23,22 @@ public class SecurityConfiguration {
     private JwtConfiguration jwtConfiguration;
 
     @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return web -> web.ignoring().requestMatchers(
+            "/swagger-ui.html",
+            "/webjars/springfox-swagger-ui/**",
+            "/swagger-resources/**",
+            "/health",
+            "/health/liveness",
+            "/health/readiness",
+            "/v2/api-docs/**",
+            "/info",
+            "/favicon.ico",
+            "/"
+        );
+    }
+
+    @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
         .csrf().disable() //NOSONAR not used in secure contexts
@@ -37,7 +54,7 @@ public class SecurityConfiguration {
         .requestMatchers("/pcq/backend/token/**").permitAll()
         .requestMatchers("/pcq/backend/deletePcqRecord/**").permitAll()
         .requestMatchers("/pcq/backend/submitAnswers**").authenticated()
-        .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+        .requestMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         return http.build();
     }

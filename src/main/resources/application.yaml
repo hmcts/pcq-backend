@@ -102,6 +102,6 @@ springdoc:
   swagger-ui:
     path: "/swagger-ui.html"
   api-docs:
-    path: /api-docs
+    path: v2/api-docs
   packagesToScan: uk.gov.hmcts.reform.pcqbackend.controllers
   pathsToMatch: /**
