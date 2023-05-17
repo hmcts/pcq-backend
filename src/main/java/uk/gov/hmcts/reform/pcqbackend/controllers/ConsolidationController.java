@@ -1,9 +1,12 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +30,6 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 /**
@@ -37,7 +39,8 @@ import java.util.List;
 @RequestMapping(path = "/pcq/backend/consolidation")
 @AllArgsConstructor
 @Slf4j
-@Api(tags = "PCQ BackEnd - API for consolidation service operations.", value = "This is the Protected Characteristics "
+@Tag(name = "PCQ BackEnd - API for consolidation service operations.",
+     description = "This is the Protected Characteristics "
     + "Back-End API that will serve the consolidation service to fetch PCQ Ids that don't have an associated "
     + "case record and add case information to a PCQ record in the database. "
     + "The API will be invoked by the Consolidation service.")
@@ -54,17 +57,22 @@ public class ConsolidationController {
     @Autowired
     private ConsolidationService consolidationService;
 
-    @ApiOperation(
-        tags = "PUT end-points", value = "Add case information on a PCQ answers record.",
-        notes = "This API will be invoked by the Consolidation process to to update the case information ( case id )"
+    @Operation(
+        tags = "PUT end-points", summary = "Add case information on a PCQ answers record.",
+        description = "This API will be invoked by the Consolidation process "
+            + "to to update the case information ( case id )"
             + " on the PCQ answers record. "
     )
     @ApiResponses({
-        @ApiResponse(code = 200, message = "Request executed successfully. Case Id successfully added to the PCQ "
-            + "Answers record.", response = SubmitResponse.class),
-        @ApiResponse(code = 400, message = "The supplied input parameters are not in the acceptable format. The user"
-            + " will be returned a standard error message.", response = SubmitResponse.class),
-        @ApiResponse(code = 500, message = "General/Un-recoverable error.", response = SubmitResponse.class)
+        @ApiResponse(responseCode = "200", description = "Request executed successfully. "
+            + "Case Id successfully added to the PCQ Answers record.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+        @ApiResponse(responseCode = "400",
+            description = "The supplied input parameters are not in the acceptable format. The user"
+            + " will be returned a standard error message.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
+        @ApiResponse(responseCode = "500", description = "General/Un-recoverable error.",
+            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))})
     })
     @PutMapping(
         path = "/addCaseForPCQ/{pcqId}",
@@ -86,23 +94,22 @@ public class ConsolidationController {
 
     }
 
-    @ApiOperation(
-        tags = "GET end-points", value = "Get list of PCQ Record that don't have associated case information.",
-        notes = "This API will be invoked by the Consolidation process to get a list of PCQ records that don’t "
+    @Operation(
+        tags = "GET end-points", summary = "Get list of PCQ Record that don't have associated case information.",
+        description = "This API will be invoked by the Consolidation process to get a list of PCQ records that don’t "
             + "have an associated case. Any PCQ answer records which are over 90 days old will not be "
             + "returned in the list. The PCQ Answer response will contain the PCQ Id, Service Id and Actor only."
     )
     @ApiResponses({
         @ApiResponse(
-            code = 200,
-            message = "Request executed successfully. Response will contain the multiple/single PCQ Record(s)/ "
-                + "empty array",
-            response = PcqRecordWithoutCaseResponse.class
+            responseCode = "200",
+            description = "Request executed successfully. Response will contain the multiple/single PCQ Record(s)/ "
+                + "empty array"
         ),
-        @ApiResponse(code = 400, message = "Missing co-relation Id information in the header."),
+        @ApiResponse(responseCode = "400", description = "Missing co-relation Id information in the header."),
         @ApiResponse(
-            code = 500,
-            message = "Any general application/database un-recoverable error"
+            responseCode = "500",
+            description = "Any general application/database un-recoverable error"
         )
     })
     @GetMapping(
