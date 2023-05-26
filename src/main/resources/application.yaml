@@ -53,6 +53,8 @@ authorised.services: pcq_consolidation_service,reform_scan_blob_router
 spring:
   application:
     name: Protected Characteristics Questions
+  config:
+    import: "optional:configtree:/mnt/secrets/pcq/"
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
@@ -105,3 +107,4 @@ springdoc:
     path: v2/api-docs
   packagesToScan: uk.gov.hmcts.reform.pcqbackend.controllers
   pathsToMatch: /**
+
