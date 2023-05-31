@@ -1,7 +1,4 @@
 buildscript {
-  repositories {
-    jcenter()
-  }
   dependencies {
     classpath("net.serenity-bdd:serenity-gradle-plugin:2.4.34")
   }
@@ -154,8 +151,8 @@ project.tasks['jacocoTestReport'].dependsOn test, integration
 jacocoTestReport {
   executionData(test, integration)
   reports {
-    xml.enabled = true
-    csv.enabled = false
+    xml.required = true
+    csv.required = false
     xml.outputLocation = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
   }
 }
@@ -197,7 +194,7 @@ sonarqube {
   properties {
     property "sonar.projectName", "Reform :: pcq-backend"
     property "sonar.projectKey", "uk.gov.hmcts.reform:pcq-backend"
-    property "sonar.coverage.jacoco.xmlReportPaths", "${jacocoTestReport.reports.xml.destination.path}"
+    property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
     property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
     property "sonar.pitest.mode", "reuseReport"
     property "sonar.pitest.reportsDirectory", "build/reports/pitest"
@@ -450,7 +447,7 @@ task migratePostgresDatabase(type: FlywayMigrateTask) {
 mainClassName = 'uk.gov.hmcts.reform.pcqbackend.Application'
 
 bootJar {
-  archiveName = 'pcq-backend.jar'
+  archiveFileName = 'pcq-backend.jar'
 
   manifest {
     attributes('Implementation-Version': project.version.toString())
