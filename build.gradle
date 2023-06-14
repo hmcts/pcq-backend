@@ -363,7 +363,6 @@ dependencies {
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: 'com.microsoft.azure', name: 'applicationinsights-web', version: '3.4.12'
-  implementation group: 'com.fasterxml.woodstox', name: 'woodstox-core', version: '6.5.1'
 
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
