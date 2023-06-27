@@ -5,7 +5,7 @@
     <cve>CVE-2023-20883</cve>
   </suppress>
   <suppress>
-    <notes>False positive</notes>
+    <notes>False positive:jackson-databind 2.14.2</notes>
     <cve>CVE-2023-35116</cve>
   </suppress>
 </suppressions>
