@@ -11,7 +11,7 @@ plugins {
   id 'pmd'
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.1.0'
-  id 'org.springframework.boot' version '3.0.6'
+  id 'org.springframework.boot' version '3.0.8'
   id 'org.owasp.dependencycheck' version '8.3.1'
   id 'com.github.ben-manes.versions' version '0.47.0'
   id "info.solidsoft.pitest" version '1.9.11'
@@ -249,7 +249,7 @@ dependencyManagement {
     dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
     // CVE-2018-10237 - Unbounded memory allocation
     // CVE-2020-8908 - Temp directory creation vulnerability
-    dependencySet(group: 'com.google.guava', version: '32.0.0-jre') {
+    dependencySet(group: 'com.google.guava', version: '32.0.1-jre') {
       entry 'guava'
     }
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
