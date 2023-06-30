@@ -225,7 +225,7 @@ dependencyManagement {
   dependencies {
     // CVE-2021-21290
     dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.13.0'
-    dependencySet(group: 'io.netty', version: '4.1.86.Final') {
+    dependencySet(group: 'io.netty', version: '4.1.94.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
       entry 'netty-codec-http'
@@ -444,7 +444,9 @@ task migratePostgresDatabase(type: FlywayMigrateTask) {
   }
 }
 
-mainClassName = 'uk.gov.hmcts.reform.pcqbackend.Application'
+application {
+  mainClass = 'uk.gov.hmcts.reform.pcqbackend.Application'
+}
 
 bootJar {
   archiveFileName = 'pcq-backend.jar'

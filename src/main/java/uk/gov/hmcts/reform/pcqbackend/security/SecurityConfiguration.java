@@ -41,12 +41,11 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-        .csrf().disable() //NOSONAR not used in secure contexts
-        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .exceptionHandling().authenticationEntryPoint((req, rsp, e) -> rsp.sendError(HttpServletResponse
-                                                                                         .SC_UNAUTHORIZED))
-        .and()
+        .csrf(csrf -> csrf.disable()) //NOSONAR not used in secure contexts
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+        .exceptionHandling(exc -> exc.authenticationEntryPoint(
+            (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
         .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
         .authorizeRequests()
         .requestMatchers("/pcq/backend/getAnswer/**").permitAll()
