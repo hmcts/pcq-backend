@@ -3,7 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.config;
 
 import org.hibernate.annotations.ColumnTransformer;
 
-@SuppressWarnings("PMD.UnusedPrivateField")
+@SuppressWarnings({"PMD.UnusedPrivateField", "PMD.TestClassWithoutTestCases"})
 public class TestProtectedCharacteristics2 {
 
     @ColumnTransformer(
