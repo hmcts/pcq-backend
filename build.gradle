@@ -363,7 +363,7 @@ dependencies {
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: 'com.microsoft.azure', name: 'applicationinsights-web', version: '3.4.12'
-
+  implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
   implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '4.0.2'
