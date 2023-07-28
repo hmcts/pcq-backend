@@ -68,6 +68,10 @@ class ConsolidationControllerTest {
     private static final String EXPECTED_400_MSG = "Expected 400 status";
     private static final String EXPECTED_EMPTY_PCQIDS_MSG = "Expected empty pcqIds array";
     private static final String EXPECTED_EMPTY_PCQRCORDS_MSG = "Expected empty pcqRecords array";
+    private static final String START_DATE = "api-config-params.start_date";
+    private static final String END_DATE = "api-config-params.end_date";
+    private static final String START_DATE_TIME = "2023-03-01T00:00:00.000Z";
+    private static final String END_DATE_TIME = "2023-04-01T00:00:00.000Z";
 
     @BeforeEach
     void setUp() {
@@ -688,6 +692,136 @@ class ConsolidationControllerTest {
             assertEquals(targetList.get(i).getDcnNumber(), actualList[i].getDcnNumber(),
                          "DCN Number is not matching");
         }
+    }
+
+    /**
+     * This method tests the getPcqRecordWithoutCaseBetweenDates API when it is called with all valid parameters and
+     * the response contains array with single pcq record. The response status code will be 200.
+     */
+    @DisplayName("Should return with an Success Request error code 200 and single pcq record")
+    @Test
+    void testGetPcqRecordWithoutCaseBetweenDatesSingleId()  {
+
+        try {
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+            when(environment.getProperty(START_DATE)).thenReturn(START_DATE_TIME);
+            when(environment.getProperty(END_DATE)).thenReturn(END_DATE_TIME);
+
+            List<ProtectedCharacteristics> targetList = generateTargetList(1);
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateBetweenDates(any(
+                Timestamp.class),any(
+                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
+
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCaseBetweenDates(
+                mockHeaders);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
+
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+            assertNotNull(actualBody, BODY_NULL_MSG);
+            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
+            assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+            assertNotNull(actualBody.getPcqRecord(), "Pcq Record are null");
+            assertArrayContents(targetList, actualBody.getPcqRecord());
+
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(START_DATE);
+            verify(environment, times(1)).getProperty(END_DATE);
+            verify(protectedCharacteristicsRepository, times(1))
+                .findByCaseIdIsNullAndCompletedDateBetweenDates(any(Timestamp.class),any(Timestamp.class),
+                                                           Mockito.eq(null));
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage());
+        }
+
+    }
+
+    /**
+     * This method tests the getPcqRecordWithoutCaseBetweenDates API when it is called with all valid parameters but the
+     * header does not contain the required attribute. The response status code will be 400.
+     */
+    @DisplayName("Should return with an Invalid Request error code 400")
+    @Test
+    void testGetPcqRecordWithoutCaseBetweenDatesForMissingHeader() {
+
+        try {
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = mock(HttpHeaders.class);
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCaseBetweenDates(
+                mockHeaders);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
+
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+            assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
+            assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage());
+        }
+    }
+
+    /**
+     * This method tests the getPcqRecordWithoutCaseBetweenDates API when it is called with all valid parameters and
+     * but unforeseen error occurs. The response status code will be 500.
+     */
+    @DisplayName("Should return with an Unrecoverable Request error code 500 and no pcq ids")
+    @Test
+    void testGetPcqRecordWithoutCaseBetweenDatesInternalError()  {
+
+        try {
+
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateBetweenDates(any(
+                Timestamp.class), any(Timestamp.class),
+                Mockito.eq(null))).thenThrow(NullPointerException.class);
+
+            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
+                .getPcqRecordWithoutCaseBetweenDates(
+                mockHeaders);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
+
+            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+            assertNotNull(actualBody, BODY_NULL_MSG);
+            assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
+            assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+            assertEquals(0, actualBody.getPcqRecord().length, EXPECTED_EMPTY_PCQRCORDS_MSG);
+            List<ProtectedCharacteristics> targetList = generateTargetList(0);
+            assertArrayContents(targetList, actualBody.getPcqRecord());
+
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(START_DATE);
+            verify(environment, times(1)).getProperty(END_DATE);
+            verify(protectedCharacteristicsRepository, times(1))
+                .findByCaseIdIsNullAndCompletedDateBetweenDates(any(Timestamp.class)
+                    ,any(Timestamp.class),Mockito.eq(null));
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
     }
 
 }

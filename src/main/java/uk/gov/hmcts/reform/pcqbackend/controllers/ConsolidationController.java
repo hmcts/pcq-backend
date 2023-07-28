@@ -141,4 +141,35 @@ public class ConsolidationController {
 
     }
 
+    @GetMapping(
+        path = "/pcqRecordWithoutCaseBetweenDates",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ResponseBody
+    public ResponseEntity<PcqRecordWithoutCaseResponse> getPcqRecordWithoutCaseBetweenDates(
+        @RequestHeader HttpHeaders headers) {
+
+        try {
+            List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService
+                .getPcqsWithoutCaseAndBetweenDates(
+                headers.get(environment.getProperty(CO_RELATIONID_PROPERTY_NAME)));
+
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(protectedCharacteristicsList, HttpStatus.OK,
+                                                                       environment.getProperty(
+                                                                           ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME));
+
+        } catch (InvalidRequestException ive) {
+            log.error("getPcqsWithoutCaseAndBetweenDates API call failed due to error - {}", ive.getMessage(), ive);
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(null, HttpStatus.BAD_REQUEST,
+                                                                       environment.getProperty(
+                                                                           BAD_REQUEST_ERROR_MESSAGE_PROPERTY_NAME));
+        } catch (Exception e) {
+            log.error("getPcqsWithoutCaseAndBetweenDates API call failed due to error - {}", e.getMessage(), e);
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(null, HttpStatus.INTERNAL_SERVER_ERROR,
+                                                                       environment.getProperty(
+                                                                           INTERNAL_ERROR_MESSAGE_PROPERTY_NAME));
+        }
+
+    }
+
 }

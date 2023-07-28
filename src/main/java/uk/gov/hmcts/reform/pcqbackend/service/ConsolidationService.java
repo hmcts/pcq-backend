@@ -83,4 +83,25 @@ public class ConsolidationService extends BaseService {
         }
     }
 
+    public List<ProtectedCharacteristics> getPcqsWithoutCaseAndBetweenDates(@Nullable List<String> headers)
+        throws InvalidRequestException {
+
+        String coRelationId = ConversionUtil.validateRequestHeader(headers);
+        log.info("Co-Relation Id : {} - getPcqsWithoutCaseAndBetweenDates service invoked", coRelationId);
+
+        List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository
+            .findByCaseIdIsNullAndCompletedDateBetweenDates(
+                PcqUtils.getTimeFromString(Objects.requireNonNull(environment.getProperty(
+                    "api-config-params.start_date"))),
+                PcqUtils.getTimeFromString(Objects.requireNonNull(environment.getProperty(
+                    "api-config-params.end_date"))),
+                getEncryptionKey());
+
+        if (returnList == null) {
+            return new ArrayList<>();
+        }
+
+        return returnList;
+    }
+
 }
