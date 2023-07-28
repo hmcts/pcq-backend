@@ -10,7 +10,7 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.33'
   id 'pmd'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.1.2'
+  id 'io.spring.dependency-management' version '1.1.0'
   id 'org.springframework.boot' version '3.0.8'
   id 'org.owasp.dependencycheck' version '8.3.1'
   id 'com.github.ben-manes.versions' version '0.47.0'
@@ -18,11 +18,12 @@ plugins {
   id 'org.sonarqube' version '4.3.0.3225'
   id 'com.gorylenko.gradle-git-properties' version '2.4.1'
   id "io.freefair.lombok" version "8.1.0"
-  id "org.flywaydb.flyway" version "9.21.1"
+  id "org.flywaydb.flyway" version "9.21.0"
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
 apply plugin: 'net.serenity-bdd.aggregator'
+apply plugin: "info.solidsoft.pitest"
 apply plugin: "org.owasp.dependencycheck"
 
 group = 'uk.gov.hmcts.reform'
@@ -159,7 +160,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 pitest {
-  junit5PluginVersion.set('1.1.2')
+  junit5PluginVersion.set('1.0.0')
   targetClasses = ['uk.gov.hmcts.reform.pcqbackend.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.pcqbackend.utils.*'
@@ -261,7 +262,7 @@ dependencyManagement {
     // CVE-2021-29425
     dependency group: 'commons-io', name: 'commons-io', version: '2.13.0'
 
-    dependencySet(group: 'org.springframework.cloud', version: '4.0.4') {
+    dependencySet(group: 'org.springframework.cloud', version: '4.0.2') {
       entry 'spring-cloud-starter-openfeign'
       entry 'spring-cloud-openfeign-core'
     }
@@ -283,13 +284,14 @@ def versions = [
   junit               : '5.9.3',
   junitPlatform       : '1.9.3',
   springBoot          : springBoot.class.package.implementationVersion,
-  restAssured         : '5.3.1',
+  restAssured         : '5.3.0',
   serenity            : '3.7.1',
-  lombok              : '1.18.28',
-  pitest              : '1.9.11',
+  lombok              : '1.18.22',
+  gradlePitest        : '1.7.4',
+  pitest              : '1.9.3',
   sonarPitest         : '0.5',
-  testcontainers      : '1.18.3',
-  springCloud         : '4.0.4',
+  testcontainers      : '1.17.3',
+  springCloud         : '4.0.2',
   springSecurity      : '6.1.2'
 ]
 
@@ -380,7 +382,7 @@ dependencies {
 
 
   testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
-  testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.pitest
+  testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
   testImplementation 'org.codehaus.sonar-plugins:sonar-pitest-plugin:0.5'
 
   testImplementation group: 'net.serenity-bdd', name: 'serenity-core', version: versions.serenity
