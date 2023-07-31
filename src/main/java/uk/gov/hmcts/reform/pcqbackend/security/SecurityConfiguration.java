@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -48,17 +47,17 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http,MvcRequestMatcher.Builder mvc) throws Exception {
         http
-        .csrf(csrf -> csrf.disable()) //NOSONAR not used in secure contexts
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf(csrf -> csrf.disable()) //NOSONAR not used in secure contexts
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .exceptionHandling(exc -> exc.authenticationEntryPoint(
                 (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
-        .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
-        .authorizeHttpRequests(authorize -> authorize
+            .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
+            .authorizeHttpRequests(authorize -> authorize
             .requestMatchers(mvc.pattern("/pcq/backend/getAnswer/**\"")).permitAll()
-            .requestMatchers(mvc.pattern( "/pcq/backend/getAnswer/**")).permitAll()
+            .requestMatchers(mvc.pattern("/pcq/backend/getAnswer/**")).permitAll()
             .requestMatchers(mvc.pattern("/pcq/backend/consolidation/**")).permitAll()
             .requestMatchers(mvc.pattern("/pcq/backend/token/**")).permitAll()
-            .requestMatchers(mvc.pattern( "/pcq/backend/deletePcqRecord/**")).permitAll()
+            .requestMatchers(mvc.pattern("/pcq/backend/deletePcqRecord/**")).permitAll()
             .requestMatchers(mvc.pattern("/pcq/backend/submitAnswers**")).authenticated()
             .requestMatchers(mvc.pattern("/v2/api-docs/**")).permitAll()
             .requestMatchers(mvc.pattern("/swagger-ui/**")).permitAll()
