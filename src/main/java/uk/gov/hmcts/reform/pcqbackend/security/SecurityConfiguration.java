@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,7 +46,7 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http,MvcRequestMatcher.Builder mvc) throws Exception {
         http
         .csrf(csrf -> csrf.disable()) //NOSONAR not used in secure contexts
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -53,18 +54,25 @@ public class SecurityConfiguration {
                 (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
         .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/getAnswer/**")).permitAll()
-            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/consolidation/**")).permitAll()
-            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/token/**")).permitAll()
-            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/deletePcqRecord/**")).permitAll()
-            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/submitAnswers**")).authenticated()
-            .requestMatchers(new MvcRequestMatcher(introspector, "/v2/api-docs/**")).permitAll()
-            .requestMatchers(new MvcRequestMatcher(introspector, "/swagger-ui/**")).permitAll()
-            .requestMatchers(new MvcRequestMatcher(introspector, "/swagger-ui.html")).permitAll()
-        ).httpBasic(Customizer.withDefaults());
+            .requestMatchers(mvc.pattern("/pcq/backend/getAnswer/**\"")).permitAll()
+            .requestMatchers(mvc.pattern( "/pcq/backend/getAnswer/**")).permitAll()
+            .requestMatchers(mvc.pattern("/pcq/backend/consolidation/**")).permitAll()
+            .requestMatchers(mvc.pattern("/pcq/backend/token/**")).permitAll()
+            .requestMatchers(mvc.pattern( "/pcq/backend/deletePcqRecord/**")).permitAll()
+            .requestMatchers(mvc.pattern("/pcq/backend/submitAnswers**")).authenticated()
+            .requestMatchers(mvc.pattern("/v2/api-docs/**")).permitAll()
+            .requestMatchers(mvc.pattern("/swagger-ui/**")).permitAll()
+            .requestMatchers(mvc.pattern("/swagger-ui.html")).permitAll());
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         return http.build();
     }
+
+    @Scope("prototype")
+    @Bean
+    MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector introspector) {
+        return new MvcRequestMatcher.Builder(introspector);
+    }
+
 }
 
 
