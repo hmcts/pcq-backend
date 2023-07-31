@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import javax.servlet.http.HttpServletResponse;
@@ -59,9 +60,9 @@ public class SecurityConfiguration {
             .requestMatchers(mvc.pattern("/pcq/backend/token/**")).permitAll()
             .requestMatchers(mvc.pattern("/pcq/backend/deletePcqRecord/**")).permitAll()
             .requestMatchers(mvc.pattern("/pcq/backend/submitAnswers**")).authenticated()
-            .requestMatchers(mvc.pattern("/v2/api-docs/**")).permitAll()
-            .requestMatchers(mvc.pattern("/swagger-ui/**")).permitAll()
-            .requestMatchers(mvc.pattern("/swagger-ui.html")).permitAll());
+            .requestMatchers(new AntPathRequestMatcher("/v2/api-docs/**")).permitAll()
+            .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+            .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html")).permitAll());
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         return http.build();
     }
