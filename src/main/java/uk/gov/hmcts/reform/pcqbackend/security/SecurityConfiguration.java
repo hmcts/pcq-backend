@@ -44,10 +44,10 @@ public class SecurityConfiguration {
         http
         .csrf(csrf -> csrf.disable()) //NOSONAR not used in secure contexts
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-        .exceptionHandling(exc -> exc.authenticationEntryPoint(
-            (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
+            .exceptionHandling(exc -> exc.authenticationEntryPoint(
+                (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
         .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
+            .securityMatcher("/pcq/backend/**","/v2/api-docs/**","/swagger-ui/**","/swagger-ui.html")
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/pcq/backend/getAnswer/**").permitAll()
             .requestMatchers("/pcq/backend/consolidation/**").permitAll()
