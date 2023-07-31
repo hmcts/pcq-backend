@@ -10,7 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import javax.servlet.http.HttpServletResponse;
 import java.security.Security;
@@ -23,6 +24,9 @@ public class SecurityConfiguration {
 
     @Autowired
     private JwtConfiguration jwtConfiguration;
+
+    @Autowired
+    private HandlerMappingIntrospector introspector;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
@@ -49,14 +53,14 @@ public class SecurityConfiguration {
                 (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
         .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/pcq/backend/getAnswer/**")).permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/pcq/backend/consolidation/**")).permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/pcq/backend/token/**")).permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/pcq/backend/deletePcqRecord/**")).permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/pcq/backend/submitAnswers**")).authenticated()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/v2/api-docs/**")).permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui/**")).permitAll()
-            .requestMatchers(AntPathRequestMatcher.antMatcher("/swagger-ui.html")).permitAll()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/getAnswer/**")).permitAll()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/consolidation/**")).permitAll()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/token/**")).permitAll()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/deletePcqRecord/**")).permitAll()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/pcq/backend/submitAnswers**")).authenticated()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/v2/api-docs/**")).permitAll()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/swagger-ui/**")).permitAll()
+            .requestMatchers(new MvcRequestMatcher(introspector, "/swagger-ui.html")).permitAll()
         ).httpBasic(Customizer.withDefaults());
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         return http.build();
