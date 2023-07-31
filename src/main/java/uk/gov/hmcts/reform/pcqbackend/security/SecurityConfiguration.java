@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -47,13 +48,14 @@ public class SecurityConfiguration {
         .exceptionHandling(exc -> exc.authenticationEntryPoint(
             (req, rsp, e) -> rsp.sendError(HttpServletResponse.SC_UNAUTHORIZED)))
         .addFilterAfter(new JwtTokenFilter(jwtConfiguration), UsernamePasswordAuthenticationFilter.class)
-        .authorizeRequests()
-        .requestMatchers("/pcq/backend/getAnswer/**").permitAll()
-        .requestMatchers("/pcq/backend/consolidation/**").permitAll()
-        .requestMatchers("/pcq/backend/token/**").permitAll()
-        .requestMatchers("/pcq/backend/deletePcqRecord/**").permitAll()
-        .requestMatchers("/pcq/backend/submitAnswers**").authenticated()
-        .requestMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/pcq/backend/getAnswer/**").permitAll()
+            .requestMatchers("/pcq/backend/consolidation/**").permitAll()
+            .requestMatchers("/pcq/backend/token/**").permitAll()
+            .requestMatchers("/pcq/backend/deletePcqRecord/**").permitAll()
+            .requestMatchers("/pcq/backend/submitAnswers**").authenticated()
+            .requestMatchers("/v2/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+        ).httpBasic(Customizer.withDefaults());
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         return http.build();
     }
