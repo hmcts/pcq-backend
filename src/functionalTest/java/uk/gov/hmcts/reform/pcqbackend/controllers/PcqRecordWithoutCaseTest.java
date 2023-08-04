@@ -37,7 +37,7 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
     public static final String HTTP_CREATED = "201";
     public static final String RESPONSE_SUCCESS_MSG = "Success";
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
-    public static final int DAYS_LIMIT = 90;
+    public static final int DAYS_LIMIT = 120;
 
     private static final String STATUS_CODE_INVALID_MSG = "Response Status Code not valid";
     private static final String STATUS_INVALID_MSG = "Response Status not valid";
