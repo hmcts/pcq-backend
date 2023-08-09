@@ -37,7 +37,6 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
     public static final String HTTP_CREATED = "201";
     public static final String RESPONSE_SUCCESS_MSG = "Success";
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
-    public static final int DAYS_LIMIT = 210;
 
     private static final String STATUS_CODE_INVALID_MSG = "Response Status Code not valid";
     private static final String STATUS_INVALID_MSG = "Response Status not valid";
@@ -84,7 +83,7 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
             answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(thirdUuid);
             answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
-                DAYS_LIMIT + 1)));
+                daysLimit + 1)));
 
             response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 

@@ -43,6 +43,9 @@ public abstract class PcqBaseFunctionalTest {
     @Value("${jwt_test_secret}")
     protected String jwtSecretKey;
 
+    @Value("${api-config-params.number_of_days_limit}")
+    protected int daysLimit;
+
     protected PcqBackEndServiceClient pcqBackEndServiceClient;
 
     protected RequestSpecification bearerToken;
