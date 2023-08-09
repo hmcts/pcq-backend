@@ -83,7 +83,7 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
             answerRequest = jsonObjectFromString(jsonStringRequest);
             answerRequest.setPcqId(thirdUuid);
             answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
-                daysLimit + 1)));
+                Long.parseLong(daysLimit) + 1)));
 
             response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 

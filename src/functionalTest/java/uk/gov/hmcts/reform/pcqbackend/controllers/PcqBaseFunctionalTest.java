@@ -44,7 +44,7 @@ public abstract class PcqBaseFunctionalTest {
     protected String jwtSecretKey;
 
     @Value("${api-config-params.number_of_days_limit}")
-    protected int daysLimit;
+    protected String daysLimit;
 
     protected PcqBackEndServiceClient pcqBackEndServiceClient;
 
