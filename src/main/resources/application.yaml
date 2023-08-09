@@ -24,8 +24,8 @@ api-required-header-keys:
 api-schema-file:
   submitanswer-schema: JsonSchema/submitAnswersSchema.json
 api-version-number: 1
-api-config-params:
-  number_of_days_limit: 210
+api-config-params.number_of_days_limit: 210
+
 
 security:
   jwt:
