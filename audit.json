@@ -71,6 +71,9 @@
   "90033_Loosely Scoped Cookie_http://pcq-backend-aat.service.core-compute-aat.internal_GET": "ignore",
   "10010_Cookie No HttpOnly Flag_http://pcq-backend-aat.service.core-compute-aat.internal/robots.txt_GET": "ignore",
   "10054_Cookie without SameSite Attribute_http://pcq-backend-aat.service.core-compute-aat.internal/robots.txt_GET": "ignore",
-  "90033_Loosely Scoped Cookie_http://pcq-backend-aat.service.core-compute-aat.internal/robots.txt_GET": "ignore"
+  "90033_Loosely Scoped Cookie_http://pcq-backend-aat.service.core-compute-aat.internal/robots.txt_GET": "ignore",
+  "10049_Non-Storable Content_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/submitAnswers_POST": "ignore",
+  "10049_Storable and Cacheable Content_http://pcq-backend-aat.service.core-compute-aat.internal/_GET": "ignore",
+  "10049_Storable and Cacheable Content_http://pcq-backend-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore"
 
 }
