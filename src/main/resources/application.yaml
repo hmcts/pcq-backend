@@ -25,7 +25,7 @@ api-schema-file:
   submitanswer-schema: JsonSchema/submitAnswersSchema.json
 api-version-number: 1
 api-config-params:
-  number_of_days_limit: 300
+  number_of_days_limit: 330
 
 security:
   jwt:
