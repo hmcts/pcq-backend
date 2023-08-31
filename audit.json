@@ -79,5 +79,9 @@
   "10049_Non-Storable Content_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/pcqRecordWithoutCase_GET": "ignore",
   "10049_Non-Storable Content_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/token/bulkscan_GET": "ignore",
   "10049_Non-Storable Content_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/addCaseForPCQ/pcqId_PUT": "ignore",
-  "10112_Session Management Response Identified_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/token/bulkscan_GET": "ignore"
+  "10112_Session Management Response Identified_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/token/bulkscan_GET": "ignore",
+  "10112_Session Management Response Identified_http://pcq-backend-aat.service.core-compute-aat.internal/_GET": "ignore",
+  "10112_Session Management Response Identified_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/consolidation/pcqRecordWithoutCase_GET": "ignore",
+  "10112_Session Management Response Identified_http://pcq-backend-aat.service.core-compute-aat.internal/v2/api-docs_GET": "ignore",
+  "10112_Session Management Response Identified_http://pcq-backend-aat.service.core-compute-aat.internal/pcq/backend/getAnswer/pcqId_GET": "ignore"
 }
