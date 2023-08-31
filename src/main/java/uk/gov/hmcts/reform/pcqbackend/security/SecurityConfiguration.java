@@ -11,9 +11,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.security.Security;
-import javax.servlet.http.HttpServletResponse;
 
 @Configuration
 @EnableWebSecurity
