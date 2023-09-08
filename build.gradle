@@ -340,8 +340,8 @@ dependencies {
   implementation group: 'org.springframework.security', name: 'spring-security-crypto', version: versions.springSecurity
   implementation group: 'org.springframework.security', name: 'spring-security-config', version: versions.springSecurity
 
-  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
+  implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.14'
   implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.0.0'
   implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.5'
 
