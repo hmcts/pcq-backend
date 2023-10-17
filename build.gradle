@@ -292,7 +292,7 @@ def versions = [
   sonarPitest         : '0.5',
   testcontainers      : '1.19.1',
   springCloud         : '4.0.4',
-  springSecurity      : '6.1.4'
+  springSecurity      : '6.1.5'
 ]
 
 configurations.all {
