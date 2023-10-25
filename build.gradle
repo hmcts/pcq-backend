@@ -288,7 +288,7 @@ def versions = [
   serenity            : '3.9.8',
   lombok              : '1.18.30',
   gradlePitest        : '1.15.0',
-  pitest              : '1.15.1',
+  pitest              : '1.15.2',
   sonarPitest         : '0.5',
   testcontainers      : '1.19.1',
   springCloud         : '4.0.4',
