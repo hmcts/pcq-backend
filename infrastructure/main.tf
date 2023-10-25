@@ -32,6 +32,8 @@ module "pcq-db-flexible" {
 
     common_tags = var.common_tags
 
+    pgsql_storage_mb = 131072
+
     pgsql_admin_username = "pcquser"
     pgsql_version   = "15"
 
