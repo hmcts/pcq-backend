@@ -34,14 +34,14 @@ services:
   pcq-frontend:
     image: hmctspublic.azurecr.io/pcq/frontend
     environment:
-      - LAUNCHDARKLY_KEY=sdk-e97f48f2-0492-43fe-b881-12695a051846
+      - LAUNCHDARKLY_KEY=${PCQ_LD_KEY}
       - PCQ_BACKEND_ENABLED=true
       - PCQ_BACKEND_URL=http://pcq-backend:4550
     ports:
       - 4000:4000
     depends_on:
       - pcq-backend
- 
+
   service-auth-provider-api:
     image: hmctspublic.azurecr.io/rpe/service-auth-provider:latest
     healthcheck:
