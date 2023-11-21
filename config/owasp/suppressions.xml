@@ -15,4 +15,8 @@
     ]]></notes>
     <cve>CVE-2023-35116</cve>
   </suppress>
+  <suppress until="2023-12-31">
+    <notes><![CDATA[name: azure-core-http-netty-1.13.10.jar]]></notes>
+    <cve>CVE-2023-36052</cve>
+  </suppress>
 </suppressions>
