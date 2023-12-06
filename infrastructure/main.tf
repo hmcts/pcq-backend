@@ -35,6 +35,9 @@ module "pcq-db-flexible" {
     pgsql_admin_username = "pcquser"
     pgsql_version   = "15"
 
+    # Setup Access Reader db user
+    force_user_permissions_trigger = "1"
+
     pgsql_databases = [
       {
         name: "pcq"
