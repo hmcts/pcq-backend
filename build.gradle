@@ -266,6 +266,11 @@ dependencyManagement {
       entry 'spring-cloud-starter-openfeign'
       entry 'spring-cloud-openfeign-core'
     }
+
+    dependencySet(group: 'ch.qos.logback', version: '1.4.14') {
+      entry 'logback-core'
+      entry 'logback-classic'
+    }
   }
   imports {
     mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
@@ -376,8 +381,6 @@ dependencies {
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.1.16'
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '10.1.16'
 
-  implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.4.14'
-
   testImplementation(platform(group: 'org.junit', name: 'junit-bom', version: '5.10.1'))
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', {
@@ -409,8 +412,6 @@ dependencies {
 
   testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
   testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-
-  testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.14'
 
   integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
