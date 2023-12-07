@@ -51,6 +51,8 @@ module "sdp_db_user" {
   server_admin_user = module.pcq-db-flexible.username
   server_admin_pass = module.pcq-db-flexible.password
 
+  count = var.env == "perftest" || var.env == "ithc" ? 0 : 1
+
   databases = [
     {
       name : "pcq"
