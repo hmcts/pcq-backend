@@ -368,7 +368,7 @@ dependencies {
   implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
   implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.7.0'
 
-  implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.87"
+  implementation group: "com.networknt", name: "json-schema-validator", version: "1.0.88"
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
   implementation group: 'com.microsoft.azure', name: 'applicationinsights-web', version: '3.4.18'
