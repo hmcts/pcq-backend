@@ -8,29 +8,31 @@ java:
   aadIdentityName: pcq
   environment:
     PCQ_DB_NAME: pcq
-    PCQ_DB_HOST: pcq-backend-{{ .Values.global.environment }}.postgres.database.azure.com
+    PCQ_DB_HOST: pcq-backend-flexible-{{ .Values.global.environment }}.postgres.database.azure.com
     PCQ_DB_PORT: "5432"
     STORAGE_URL: https://pcqshared{{ .Values.global.environment }}.blob.core.windows.net
-    FLYWAY_URL: jdbc:postgresql://pcq-backend-{{ .Values.global.environment }}.postgres.database.azure.com:5432/pcq?sslmode=require
-    FLYWAY_USER: pcquser@pcq-backend-{{ .Values.global.environment }}
+    FLYWAY_URL: jdbc:postgresql://pcq-backend-flexible-{{ .Values.global.environment }}.postgres.database.azure.com:5432/pcq?sslmode=require
+    FLYWAY_USER: pcquser
     FLYWAY_NOOP_STRATEGY: "false"
     DB_ENCRYPTION_ENABLED: "Yes"
-    DB_ALLOW_DELETE_RECORD: "false"
-    S2S_URL: "http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal"
+    DB_ALLOW_DELETE_RECORD: "true"
+    S2S_URL: "http://rpe-service-auth-provider-prod.service.core-compute-{{ .Values.global.environment }}.internal"
   keyVaults:
     pcq:
       resourceGroup: pcq
       secrets:
-        - name: backend-POSTGRES-USER
+        - name: backend-POSTGRES-USER-FLEXIBLE
           alias: PCQ_DB_USERNAME
-        - name: backend-POSTGRES-PASS
+        - name: backend-POSTGRES-PASS-FLEXIBLE
           alias: PCQ_DB_PASSWORD
         - name: jwt-secret
           alias: JWT_SECRET
         - name: backend-encryption-key
           alias: DB_ENCRYPTION_KEY
-        - name: flyway-password
+        - name: backend-POSTGRES-PASS-FLEXIBLE
           alias: flyway.password
+        - name: idam-client-secret
+          alias: IDAM_CLIENT_SECRET
         - name: app-insights-connection-string
           alias: app-insights-connection-string
         - name: pcq-storage-account-primary-connection-string
