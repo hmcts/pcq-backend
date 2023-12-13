@@ -42,4 +42,9 @@ variable "postgresql_flexible_server_port" {
   default = "5432"
 }
 
+variable "pcq_db_name" {
+  description = "Name of database to use"
+  default = "pcq"
+}
+
 variable "aks_subscription_id" {}
