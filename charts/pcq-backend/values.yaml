@@ -21,15 +21,15 @@ java:
     pcq:
       resourceGroup: pcq
       secrets:
-        - name: backend-POSTGRES-USER-FLEXIBLE
+        - name: backend-POSTGRES-USER
           alias: PCQ_DB_USERNAME
-        - name: backend-POSTGRES-PASS-FLEXIBLE
+        - name: backend-POSTGRES-PASS
           alias: PCQ_DB_PASSWORD
         - name: jwt-secret
           alias: JWT_SECRET
         - name: backend-encryption-key
           alias: DB_ENCRYPTION_KEY
-        - name: backend-POSTGRES-PASS-FLEXIBLE
+        - name: flyway-password
           alias: flyway.password
         - name: idam-client-secret
           alias: IDAM_CLIENT_SECRET
