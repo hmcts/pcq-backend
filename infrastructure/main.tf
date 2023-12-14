@@ -81,38 +81,38 @@ data "azurerm_key_vault" "key_vault" {
 resource "azurerm_key_vault_secret" "POSTGRES-USER" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
   name         = "${var.component}-POSTGRES-USER"
-  value        = module.pcq-db.user_name
+  value        = module.pcq-db-flexible.username
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES-PASS" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
   name         = "${var.component}-POSTGRES-PASS"
-  value        = module.pcq-db.postgresql_password
+  value        = module.pcq-db-flexible.password
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES_HOST" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
   name         = "${var.component}-POSTGRES-HOST"
-  value        = module.pcq-db.host_name
+  value        = module.pcq-db-flexible.fqdn
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES_PORT" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
   name         = "${var.component}-POSTGRES-PORT"
-  value        = module.pcq-db.postgresql_listen_port
+  value        = var.postgresql_flexible_server_port
 }
 
 resource "azurerm_key_vault_secret" "POSTGRES_DATABASE" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
   name         = "${var.component}-POSTGRES-DATABASE"
-  value        = module.pcq-db.postgresql_database
+  value        = var.pcq_db_name
 }
 
 # Copy postgres password for flyway migration
 resource "azurerm_key_vault_secret" "flyway_password" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
   name         = "flyway-password"
-  value        = module.pcq-db.postgresql_password
+  value        = module.pcq-db-flexible.password
 }
 
 ///////////////////////////////////////
