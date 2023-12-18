@@ -54,20 +54,6 @@ module "pcq-db-flexible" {
     admin_user_object_id = var.jenkins_AAD_objectId
   }
 
-module "pcq-db" {
-  source                 = "git@github.com:hmcts/cnp-module-postgres?ref=master"
-  product                = "${var.product}-${var.component}"
-  location               = var.location_db
-  env                    = var.env
-  database_name          = "pcq"
-  postgresql_user        = "pcquser"
-  postgresql_version     = "11"
-  postgresql_listen_port = "5432"
-  sku_name               = "GP_Gen5_2"
-  sku_tier               = "GeneralPurpose"
-  common_tags            = var.common_tags
-  subscription           = var.subscription
-}
 
 data "azurerm_key_vault" "key_vault" {
   name                = local.vault_name
@@ -115,30 +101,3 @@ resource "azurerm_key_vault_secret" "flyway_password" {
   value        = module.pcq-db-flexible.password
 }
 
-///////////////////////////////////////
-// Populate Vault with Flexible DB info
-//////////////////////////////////////
-
-resource "azurerm_key_vault_secret" "POSTGRES-USER-FLEXIBLE" {
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name         = "${var.component}-POSTGRES-USER-FLEXIBLE"
-  value        = module.pcq-db-flexible.username
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES-PASS-FLEXIBLE" {
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name         = "${var.component}-POSTGRES-PASS-FLEXIBLE"
-  value        = module.pcq-db-flexible.password
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES_HOST_FLEXIBLE" {
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name         = "${var.component}-POSTGRES-HOST-FLEXIBLE"
-  value        = module.pcq-db-flexible.fqdn
-}
-
-resource "azurerm_key_vault_secret" "POSTGRES_PORT_FLEXIBLE" {
-  key_vault_id = data.azurerm_key_vault.key_vault.id
-  name      = "${var.component}-POSTGRES-PORT-FLEXIBLE"
-  value     =  var.postgresql_flexible_server_port
-}
