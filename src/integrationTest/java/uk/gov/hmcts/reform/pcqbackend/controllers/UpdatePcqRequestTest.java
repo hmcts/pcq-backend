@@ -1032,7 +1032,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            assertNotEquals("Main Language English not matching", protectedCharacteristicsOptional
+            assertEquals("Main Language English not matching", protectedCharacteristicsOptional
                 .get().getMainLanguage(), answerRequest.getPcqAnswers().getLanguageMain());
             assertLogsForKeywords();
 
@@ -1064,7 +1064,7 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
             assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
             checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-            assertNotEquals("Main Language Welsh not matching", protectedCharacteristicsOptional
+            assertEquals("Main Language Welsh not matching", protectedCharacteristicsOptional
                 .get().getMainLanguage(), answerRequest.getPcqAnswers().getLanguageMain());
             assertLogsForKeywords();
 
