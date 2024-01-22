@@ -73,6 +73,8 @@ class SubmitAnswersServiceTest {
     private static final String CREATED_MESSAGE_PROPERTY = "api-error-messages.created";
 
     private static final String UPDATED_MESSAGE_PROPERTY = "api-error-messages.updated";
+    private static final String TEST_TIME_STAMP = "2020-03-05T09:13:45.000Z";
+    private static final String TEST_DOB = "1970-01-01T00:00:00.000Z";
 
     @BeforeEach
     void setUp() {
@@ -94,7 +96,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCodeValue(), STATUS_CODE_400_MSG);
+            assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
@@ -115,7 +117,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCodeValue(), STATUS_CODE_400_MSG);
+            assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
@@ -139,7 +141,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCodeValue(),STATUS_CODE_400_MSG);
+            assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
@@ -163,7 +165,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCodeValue(),STATUS_CODE_400_MSG);
+            assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
@@ -188,7 +190,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCodeValue(),STATUS_CODE_400_MSG);
+            assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
@@ -221,7 +223,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(409, responseEntity.getStatusCodeValue(),STATUS_CODE_400_MSG);
+            assertEquals(409, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
@@ -246,7 +248,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(403, responseEntity.getStatusCodeValue(), "Expected 403 status code");
+            assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
 
 
         } catch (Exception e) {
@@ -271,7 +273,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(403, responseEntity.getStatusCodeValue(), "Expected 403 status code");
+            assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
 
 
         } catch (Exception e) {
@@ -284,7 +286,7 @@ class SubmitAnswersServiceTest {
     void testSubmitFirstTime() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created first record");
         when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
@@ -308,7 +310,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCodeValue(), STATUS_CODE_201_MSG);
+            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
@@ -321,7 +323,7 @@ class SubmitAnswersServiceTest {
     void testSubmitPaperChannel() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created paper channel record");
         when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
@@ -350,7 +352,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCodeValue(), STATUS_CODE_201_MSG);
+            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
@@ -399,7 +401,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCodeValue(), STATUS_CODE_201_MSG);
+            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
@@ -421,7 +423,7 @@ class SubmitAnswersServiceTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
             targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
             int resultCount = 1;
             when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                 .thenReturn(protectedCharacteristicsOptional);
@@ -454,7 +456,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(200, responseEntity.getStatusCodeValue(), "Expected 200 status code");
+            assertEquals(200, responseEntity.getStatusCode().value(), "Expected 200 status code");
 
 
         } catch (Exception e) {
@@ -467,7 +469,7 @@ class SubmitAnswersServiceTest {
     void testSubmitSecondTime() {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully updated second time");
         String pcqId = TEST_PCQ_ID;
         try {
 
@@ -476,8 +478,8 @@ class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             int resultCount = 1;
             int dobProvided = 1;
-            Date testDob = new Date(PcqUtils.getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
+            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
             when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                 .thenReturn(protectedCharacteristicsOptional);
@@ -508,7 +510,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCodeValue(), "Expected 201 status code");
+            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
@@ -530,8 +532,8 @@ class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             int resultCount = 0;
             int dobProvided = 1;
-            Date testDob = new Date(PcqUtils.getTimeFromString("1970-01-01T00:00:00.000Z").getTime());
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
+            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
             when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                 .thenReturn(protectedCharacteristicsOptional);
@@ -562,7 +564,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(202, responseEntity.getStatusCodeValue(), "Expected 202 status code");
+            assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
 
 
         } catch (Exception e) {
@@ -600,7 +602,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(500, responseEntity.getStatusCodeValue(), "Expected 500 status code");
+            assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
 
 
         } catch (Exception e) {
@@ -629,7 +631,7 @@ class SubmitAnswersServiceTest {
 
             Object responseMap = responseEntity.getBody();
             assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(500, responseEntity.getStatusCodeValue(), "Expected 500 status code");
+            assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
 
 
         } catch (Exception e) {
@@ -680,6 +682,116 @@ class SubmitAnswersServiceTest {
             assertNull(actualObject, RESPONSE_NULL_MSG);
 
             verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    @Test
+    void testSubmitMainLanguageEnglish() {
+        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
+        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created english language");
+        String pcqId = TEST_PCQ_ID;
+        try {
+
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            targetObject.setPcqId(pcqId);
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+            int resultCount = 1;
+            int dobProvided = 1;
+            int mainLanguage = 4;
+            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null,
+                                                                          testTimeStamp, false,pcqId, testTimeStamp)
+            ).thenReturn(resultCount);
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/MainLanguageAnswerEnglish.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
+                                                                                           pcqAnswerRequest);
+
+            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+            Object responseMap = responseEntity.getBody();
+            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+
+
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+    }
+
+    @Test
+    void testSubmitMainLanguageWelsh() {
+        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
+        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created welsh language");
+        String pcqId = TEST_PCQ_ID;
+        try {
+
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            targetObject.setPcqId(pcqId);
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+            int resultCount = 1;
+            int dobProvided = 1;
+            int mainLanguage = 3;
+            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null,
+                                                                          testTimeStamp, false,pcqId, testTimeStamp)
+            ).thenReturn(resultCount);
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/MainLanguageAnswerWelsh.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
+                                                                                           pcqAnswerRequest);
+
+            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+            Object responseMap = responseEntity.getBody();
+            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
