@@ -34,7 +34,8 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeade
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.JUnit4TestShouldUseTestAnnotation"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.JUnit4TestShouldUseTestAnnotation",
+    "PMD.JUnitTestsShouldIncludeAssert"})
 class SubmitAnswersServiceTest {
 
     @Mock
@@ -691,64 +692,34 @@ class SubmitAnswersServiceTest {
 
     @Test
     void testSubmitMainLanguageEnglish() {
-        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
-        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created english language");
-        String pcqId = TEST_PCQ_ID;
-        try {
-
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 1;
-            int dobProvided = 1;
-            int mainLanguage = 4;
-            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
-
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp, false,pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
-
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/MainLanguageAnswerEnglish.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
-
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
-
-            Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
-
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
+        Integer mainLanguage = 4;
+        String fileName = "JsonTestFiles/MainLanguageAnswerEnglish.json";
+        String createdMessage = "Successfully created english language";
+        updateLanguage(mainLanguage,fileName,createdMessage);
     }
 
     @Test
     void testSubmitMainLanguageWelsh() {
+        Integer mainLanguage = 3;
+        String fileName = "JsonTestFiles/MainLanguageAnswerWelsh.json";
+        String createdMessage = "Successfully created Welsh language";
+        updateLanguage(mainLanguage,fileName,createdMessage);
+    }
+
+
+    //Test English or welsh option as well for backward compatibility
+    @Test
+    void testSubmitMainLanguageEnglishOrWelsh() {
+        Integer mainLanguage = 1;
+        String fileName = "JsonTestFiles/MainLanguageEnglishOrWelsh.json";
+        String createdMessage = "Successfully created English or Welsh language";
+        updateLanguage(mainLanguage,fileName,createdMessage);
+    }
+
+    public void updateLanguage(Integer mainLanguage, String fileName, String createdMessage) {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
-        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created welsh language");
+        when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn(createdMessage);
         String pcqId = TEST_PCQ_ID;
         try {
 
@@ -757,7 +728,6 @@ class SubmitAnswersServiceTest {
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
             int resultCount = 1;
             int dobProvided = 1;
-            int mainLanguage = 3;
             Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
             Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
@@ -781,7 +751,7 @@ class SubmitAnswersServiceTest {
                                                                           testTimeStamp, false,pcqId, testTimeStamp)
             ).thenReturn(resultCount);
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/MainLanguageAnswerWelsh.json");
+            String jsonStringRequest = jsonStringFromFile(fileName);
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
@@ -796,7 +766,6 @@ class SubmitAnswersServiceTest {
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
-
     }
 
 }

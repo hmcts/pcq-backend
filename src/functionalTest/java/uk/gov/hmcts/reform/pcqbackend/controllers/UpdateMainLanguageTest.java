@@ -21,6 +21,7 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @WithTags({@WithTag("testType:Functional")})
 @ActiveProfiles("functional")
 @Slf4j
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"})
 public class UpdateMainLanguageTest extends PcqBaseFunctionalTest {
     public static final String RESPONSE_KEY_2 = "responseStatusCode";
     public static final String RESPONSE_KEY_3 = "responseStatus";
@@ -31,50 +32,24 @@ public class UpdateMainLanguageTest extends PcqBaseFunctionalTest {
 
     @Test
     public void updateMainLanguageEnglish() {
-
-        try {
-
-            //Create a record before updating.
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            answerRequest.setPcqId(generateUuid());
-            Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
-
-            assertEquals(RESPONSE_STATUS_CODE_NOT_VALID, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(RESPONSE_STATUS_NOT_VALID, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
-
-            //Update the record
-            jsonStringRequest = jsonStringFromFile("JsonTestFiles/UpdateMainLanguageEnglish.json");
-            PcqAnswerRequest updateAnswerRequest = jsonObjectFromString(jsonStringRequest);
-
-            //Use the same PCQ ID as above
-            updateAnswerRequest.setPcqId(answerRequest.getPcqId());
-
-            response = pcqBackEndServiceClient.createAnswersRecord(updateAnswerRequest);
-
-            assertEquals(RESPONSE_STATUS_CODE_NOT_VALID, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(RESPONSE_STATUS_NOT_VALID, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
-
-            //Prepare for clearing down.
-            clearTestPcqAnswers.add(answerRequest);
-
-            //Get the record
-            Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                updateAnswerRequest.getPcqId(), HttpStatus.OK);
-
-            checkAssertionsOnResponse(validateGetResponse, updateAnswerRequest);
-
-        } catch (IOException e) {
-            log.error("Error during test execution", e);
-        }
-
+        String fileName = "JsonTestFiles/UpdateMainLanguageEnglish.json";
+        updateRecord(fileName);
     }
 
     @Test
     public void updateMainLanguageWelsh() {
+        String fileName = "JsonTestFiles/UpdateMainLanguageWelsh.json";
+        updateRecord(fileName);
+    }
 
+    //Test English or welsh option as well for backward compatibility
+    @Test
+    public void updateMainLanguageEnglishOrWelsh() {
+        String fileName = "JsonTestFiles/UpdateMainLanguageEnglishOrWelsh.json";
+        updateRecord(fileName);
+    }
+
+    public void updateRecord(String fileName) {
         try {
 
             //Create a record before updating.
@@ -88,7 +63,7 @@ public class UpdateMainLanguageTest extends PcqBaseFunctionalTest {
                          response.get(RESPONSE_KEY_3));
 
             //Update the record
-            jsonStringRequest = jsonStringFromFile("JsonTestFiles/UpdateMainLanguageWelsh.json");
+            jsonStringRequest = jsonStringFromFile(fileName);
             PcqAnswerRequest updateAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
             //Use the same PCQ ID as above
