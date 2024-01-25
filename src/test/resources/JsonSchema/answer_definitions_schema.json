@@ -20,7 +20,7 @@
         "language_main": {
           "id": "#language_main",
           "type": [ "integer", "null" ],
-          "enum": [ -1, 0, 1, 2, null ]
+          "enum": [ -1, 0, 1, 2, 3, 4, null ]
         },
         "language_other": {
           "id": "#language_other",

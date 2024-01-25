@@ -44,7 +44,8 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFr
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @Slf4j
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals"})
+@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals",
+    "PMD.JUnitTestsShouldIncludeAssert"})
 class PcqAnswersControllerTest {
 
     private PcqAnswersController pcqAnswersController;
@@ -79,6 +80,7 @@ class PcqAnswersControllerTest {
         = "JsonTestFiles/FirstSubmitAnswerDcnEmpty.json";
 
     private static final String TEST_PCQ_ID = "T1234";
+    private static final String TEST_TIME_STAMP = "2020-03-05T09:13:45.000Z";
 
     @BeforeEach
     void setUp() {
@@ -137,7 +139,8 @@ class PcqAnswersControllerTest {
             ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+            assertEquals(HttpStatus.CREATED, actual.getStatusCode(),
+                         "Expected 201 status code");
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
@@ -464,7 +467,7 @@ class PcqAnswersControllerTest {
             int resultCount = 1;
             int dobProvided = 1;
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
             when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                 .thenReturn(protectedCharacteristicsOptional);
@@ -541,7 +544,7 @@ class PcqAnswersControllerTest {
             int resultCount = 0;
             int dobProvided = 1;
             Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString("2020-03-05T09:13:45.000Z");
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
             when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                 .thenReturn(protectedCharacteristicsOptional);
@@ -1016,6 +1019,94 @@ class PcqAnswersControllerTest {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
+    }
+
+    @Test
+    void testSubmitAnswersEnglish() {
+        Integer mainLanguage = 4;
+        String fileName = "JsonTestFiles/MainLanguageAnswerEnglish.json";
+        updateLanguage(mainLanguage,fileName);
+    }
+
+    @Test
+    void testSubmitAnswersWelsh() {
+        Integer mainLanguage = 3;
+        String fileName = "JsonTestFiles/MainLanguageAnswerWelsh.json";
+        updateLanguage(mainLanguage,fileName);
+    }
+
+    //Test English or welsh option as well for backward compatibility
+    @Test
+    void testSubmitAnswersEnglishOrWelsh() {
+        Integer mainLanguage = 1;
+        String fileName = "JsonTestFiles/MainLanguageEnglishOrWelsh.json";
+        updateLanguage(mainLanguage,fileName);
+    }
+
+    public void updateLanguage(Integer mainLanguage, String fileName) {
+        String pcqId = TEST_PCQ_ID;
+        try {
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            targetObject.setPcqId(pcqId);
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+            int resultCount = 1;
+            int dobProvided = 1;
+            Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                .thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null,
+                                                                          testTimeStamp,false, pcqId, testTimeStamp)
+            ).thenReturn(resultCount);
+            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            HttpHeaders mockHeaders = getMockHeader();
+            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+
+            String jsonStringRequest = jsonStringFromFile(fileName);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+
+            assertNotNull(actual, RESPONSE_NULL_MSG);
+            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+
+
+            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
+            verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
+                dobProvided, testDob, mainLanguage,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, null,
+                null, testTimeStamp,false, pcqId, testTimeStamp);
+            verify(mockHeaders, times(1)).get(HEADER_KEY);
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
     }
 
 }

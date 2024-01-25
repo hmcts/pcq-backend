@@ -28,7 +28,7 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
-@SuppressWarnings({"PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.JUnitTestsShouldIncludeAssert"})
 public class UpdatePcqRequestTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_4 = "response_body";
@@ -1009,6 +1009,59 @@ public class UpdatePcqRequestTest extends PcqIntegrationTest {
     private void assertLogsForKeywords() {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
+    }
+
+    @Test
+    public void updateMainLanguageEnglish() {
+        String fileName = "JsonTestFiles/UpdateMainLanguageEnglish.json";
+        String errorMessage = "Main Language English not matching";
+        updateLanguage(fileName,errorMessage);
+    }
+
+    @Test
+    public void updateMainLanguageWelsh() {
+        String fileName = "JsonTestFiles/UpdateMainLanguageWelsh.json";
+        String errorMessage = "Main Language Welsh not matching";
+        updateLanguage(fileName,errorMessage);
+    }
+
+    //Test English or welsh option as well for backward compatibility
+    @Test
+    public void updateMainLanguageEnglishOrWelsh() {
+        String fileName = "JsonTestFiles/UpdateMainLanguageEnglishOrWelsh.json";
+        String errorMessage = "Main Language English or Welsh not matching";
+        updateLanguage(fileName,errorMessage);
+    }
+
+    public void updateLanguage(String fileName, String errorMessage) {
+        // Create an record first.
+        createTestRecord();
+
+        try {
+
+            String jsonStringRequest = jsonStringFromFile(fileName);
+            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+
+            Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
+            assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
+            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
+            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
+                         response.get(RESPONSE_KEY_3));
+
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
+                protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
+
+            assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
+            checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
+            assertEquals(errorMessage, protectedCharacteristicsOptional
+                .get().getMainLanguage(), answerRequest.getPcqAnswers().getLanguageMain());
+            assertLogsForKeywords();
+
+
+        } catch (IOException e) {
+            log.error(IO_EXCEPTION_MSG, e);
+        }
+
     }
 
 }
