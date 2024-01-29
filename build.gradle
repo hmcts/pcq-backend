@@ -273,7 +273,7 @@ dependencyManagement {
     }
   }
   imports {
-    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.4'
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.5'
   }
 }
 
@@ -296,7 +296,7 @@ def versions = [
   pitest              : '1.15.6',
   sonarPitest         : '0.5',
   testcontainers      : '1.19.4',
-  springCloud         : '4.1.0',
+  springCloud         : '4.1.1',
   springSecurity      : '6.2.1'
 ]
 
