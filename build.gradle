@@ -23,7 +23,6 @@ plugins {
 
 apply plugin: "com.gorylenko.gradle-git-properties"
 apply plugin: 'net.serenity-bdd.aggregator'
-apply plugin: "info.solidsoft.pitest"
 apply plugin: "org.owasp.dependencycheck"
 
 group = 'uk.gov.hmcts.reform'
@@ -160,7 +159,7 @@ jacocoTestReport {
 project.tasks['sonarqube'].dependsOn jacocoTestReport
 
 pitest {
-  junit5PluginVersion.set('1.0.0')
+  junit5PluginVersion.set('1.2.1')
   targetClasses = ['uk.gov.hmcts.reform.pcqbackend.*']
   excludedClasses = [
     'uk.gov.hmcts.reform.pcqbackend.utils.*'
