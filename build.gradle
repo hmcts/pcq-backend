@@ -409,7 +409,7 @@ dependencies {
 
   testImplementation 'com.github.hmcts:fortify-client:1.4.0:all'
 
-  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.25.2'
+  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.25.3'
   testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
 
 
