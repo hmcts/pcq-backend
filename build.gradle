@@ -294,7 +294,7 @@ def versions = [
   gradlePitest        : '1.15.0',
   pitest              : '1.15.8',
   sonarPitest         : '0.5',
-  testcontainers      : '1.19.6',
+  testcontainers      : '1.19.7',
   springCloud         : '4.1.1',
   springSecurity      : '6.2.2'
 ]
