@@ -6,6 +6,10 @@ java:
   applicationPort: 4550
   ingressHost: pcq-backend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
   aadIdentityName: pcq
+  autoscaling:
+    enabled: true
+    maxReplicas: 2
+    targetCPUUtilizationPercentage: 80
   environment:
     PCQ_DB_NAME: pcq
     PCQ_DB_HOST: pcq-backend-flexible-{{ .Values.global.environment }}.postgres.database.azure.com
