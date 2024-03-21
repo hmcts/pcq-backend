@@ -11,6 +11,8 @@ java:
     minReplicas: 1
     maxReplicas: 2
     targetCPUUtilizationPercentage: 80
+  spotInstances:
+    enabled: true
   environment:
     PCQ_DB_NAME: pcq
     PCQ_DB_HOST: pcq-backend-flexible-{{ .Values.global.environment }}.postgres.database.azure.com
