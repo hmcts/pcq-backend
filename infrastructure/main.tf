@@ -34,6 +34,7 @@ module "pcq-db-flexible" {
 
     pgsql_admin_username = "pcquser"
     pgsql_version   = "15"
+    auto_grow_enabled = true
 
     # Setup Access Reader db user
     force_user_permissions_trigger = "1"
@@ -100,4 +101,3 @@ resource "azurerm_key_vault_secret" "flyway_password" {
   name         = "flyway-password"
   value        = module.pcq-db-flexible.password
 }
-
