@@ -377,7 +377,7 @@ dependencies {
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
   implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '4.0.5'
 
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.1.20'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.1.23'
   implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '10.1.23'
 
   testImplementation(platform(group: 'org.junit', name: 'junit-bom', version: '5.10.2'))
