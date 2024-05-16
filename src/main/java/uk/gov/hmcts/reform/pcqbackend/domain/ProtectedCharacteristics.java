@@ -146,4 +146,7 @@ public class ProtectedCharacteristics implements Serializable {
     @Column(name = "OPT_OUT")
     private Boolean optOut;
 
+    @Column(name = "LAST_UPDATED_TIMESTAMP")
+    private Timestamp lastUpdatedTimestamp;
+
 }

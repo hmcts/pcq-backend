@@ -20,7 +20,8 @@ public class ProtectedCharacteristicsRepositoryImpl implements ProtectedCharacte
             + " ETHNICITY_OTHER,RELIGION,RELIGION_OTHER, DISABILITY_CONDITIONS,DISABILITY_IMPACT,"
             + " DISABILITY_VISION,DISABILITY_HEARING,DISABILITY_MOBILITY,DISABILITY_DEXTERITY, "
             + " DISABILITY_LEARNING,DISABILITY_MEMORY,DISABILITY_MENTAL_HEALTH,DISABILITY_STAMINA, "
-            + " DISABILITY_SOCIAL,DISABILITY_OTHER, DISABILITY_CONDITION_OTHER, DISABILITY_NONE,PREGNANCY,OPT_OUT)"
+            + " DISABILITY_SOCIAL,DISABILITY_OTHER, DISABILITY_CONDITION_OTHER, DISABILITY_NONE,PREGNANCY,OPT_OUT, "
+            + " LAST_UPDATED_TIMESTAMP)"
             + " VALUES (:pcqId, :dcnNumber, :formId, :caseId, "
             + " encode(pgp_sym_encrypt(cast(:partyId as text), cast(:encryptionKey as text)), 'base64'), "
             + " cast(cast(:channel as text) as smallint), cast(cast(:completedDate as text) as timestamp), "
@@ -43,7 +44,8 @@ public class ProtectedCharacteristicsRepositoryImpl implements ProtectedCharacte
             + "  cast(cast(:disabilityStamina as text) as smallint),cast(cast(:disabilitySocial as text) as smallint), "
             + "  cast(cast(:disabilityOther as text) as smallint),:otherDisabilityDetails, "
             + "  cast(cast(:disabilityNone as text) as smallint), cast(cast(:pregnancy as text) as smallint), "
-            + "  cast(cast(:optOut as text) as boolean)) "
+            + "  cast(cast(:optOut as text) as boolean), "
+            + "  :lastUpdatedTimestamp) "
             + "  RETURNING pcq_Id";
 
     @Override
@@ -94,7 +96,9 @@ public class ProtectedCharacteristicsRepositoryImpl implements ProtectedCharacte
             .setParameter("otherDisabilityDetails", pc.getOtherDisabilityDetails())
             .setParameter("disabilityNone", pc.getDisabilityNone())
             .setParameter("pregnancy", pc.getPregnancy())
-            .setParameter("optOut", pc.getOptOut());
+            .setParameter("optOut", pc.getOptOut())
+            .setParameter("lastUpdatedTimestamp", pc.getLastUpdatedTimestamp());
+
         insertQuery.getSingleResult();
     }
 
