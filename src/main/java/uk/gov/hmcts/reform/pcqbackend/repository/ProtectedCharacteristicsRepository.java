@@ -41,7 +41,9 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
                               Timestamp completedDateNew, Boolean optOut, String pcqId, Timestamp completedDate);
 
     @Modifying(clearAutomatically = true)
-    @Query("UPDATE protected_characteristics p SET p.caseId = ?1 WHERE p.pcqId = ?2")
+    @Query("UPDATE protected_characteristics p "
+        + "SET p.lastUpdatedTimestamp = CURRENT_TIMESTAMP, p.caseId = ?1 "
+        + "WHERE p.pcqId = ?2")
     int updateCase(String caseId, String pcqId);
 
     @Query(value = "SELECT pc.pcq_id, pc.DCN_NUMBER, pc.FORM_ID, pc.CASE_ID, "
