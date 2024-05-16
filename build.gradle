@@ -10,7 +10,7 @@ plugins {
   id 'uk.gov.hmcts.java' version '0.12.61'
   id 'pmd'
   id 'jacoco'
-  id 'io.spring.dependency-management' version '1.1.4'
+  id 'io.spring.dependency-management' version '1.1.5'
   id 'org.springframework.boot' version '3.2.5'
   id 'org.owasp.dependencycheck' version '9.1.0'
   id 'com.github.ben-manes.versions' version '0.51.0'
@@ -223,7 +223,7 @@ dependencyCheck {
 dependencyManagement {
   dependencies {
     // CVE-2021-21290
-    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.14.2'
+    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.15.0'
     dependencySet(group: 'io.netty', version: '4.1.109.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
@@ -248,7 +248,7 @@ dependencyManagement {
     dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
     // CVE-2018-10237 - Unbounded memory allocation
     // CVE-2020-8908 - Temp directory creation vulnerability
-    dependencySet(group: 'com.google.guava', version: '33.1.0-jre') {
+    dependencySet(group: 'com.google.guava', version: '33.2.0-jre') {
       entry 'guava'
     }
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
@@ -292,9 +292,9 @@ def versions = [
   serenity            : '3.9.8',
   lombok              : '1.18.32',
   gradlePitest        : '1.15.0',
-  pitest              : '1.16.0',
+  pitest              : '1.16.1',
   sonarPitest         : '0.5',
-  testcontainers      : '1.19.7',
+  testcontainers      : '1.19.8',
   springCloud         : '4.1.2',
   springSecurity      : '6.2.4'
 ]
@@ -377,8 +377,8 @@ dependencies {
   implementation group: "io.jsonwebtoken", name: "jjwt", version: "0.9.1"
   implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '4.0.5'
 
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.1.23'
-  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '10.1.23'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-websocket', version: '10.1.24'
+  implementation group: 'org.apache.tomcat.embed', name: 'tomcat-embed-core', version: '10.1.24'
 
   testImplementation(platform(group: 'org.junit', name: 'junit-bom', version: '5.10.2'))
   testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
