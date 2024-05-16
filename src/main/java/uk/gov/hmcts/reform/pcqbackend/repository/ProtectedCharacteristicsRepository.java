@@ -26,8 +26,9 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "p.disabilityMobility = ?20, p.disabilityDexterity = ?21, p.disabilityLearning = ?22, "
         + "p.disabilityMemory = ?23, p.disabilityMentalHealth = ?24, p.disabilityStamina = ?25, "
         + "p.disabilitySocial = ?26, p.disabilityOther = ?27, p.otherDisabilityDetails = ?28, "
-        + "p.disabilityNone = ?29, p.pregnancy = ?30, p.completedDate = ?31, p.optOut = ?32 "
-        +  "WHERE p.pcqId = ?33 and p.completedDate < ?34")
+        + "p.disabilityNone = ?29, p.pregnancy = ?30, p.completedDate = ?31, p.optOut = ?32, "
+        + "p.lastUpdatedTimestamp = ?31 "
+        + "WHERE p.pcqId = ?33 and p.completedDate < ?34")
     int updateCharacteristics(Integer dobProvided, Date dateOfBirth, Integer mainLanguage, String otherLanguage,
                               Integer englishLanguageLevel, Integer sex, Integer genderDifferent, String otherGender,
                               Integer sexuality, String otherSexuality, Integer marriage, Integer ethnicity,
@@ -55,7 +56,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "pc.DISABILITY_LEARNING, pc.DISABILITY_MEMORY, pc.DISABILITY_MENTAL_HEALTH, "
         + "pc.DISABILITY_STAMINA, pc.DISABILITY_SOCIAL, pc.DISABILITY_OTHER, "
         + "pc.DISABILITY_CONDITION_OTHER, "
-        + "pc.DISABILITY_NONE, pc.PREGNANCY, pc.OPT_OUT "
+        + "pc.DISABILITY_NONE, pc.PREGNANCY, pc.OPT_OUT, pc.LAST_UPDATED_TIMESTAMP "
         + "FROM protected_characteristics pc "
         + "WHERE pc.case_id IS NULL AND  pc.COMPLETED_DATE > :completedDate ",
         nativeQuery = true)
@@ -78,7 +79,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "pc.DISABILITY_LEARNING, pc.DISABILITY_MEMORY, pc.DISABILITY_MENTAL_HEALTH, "
         + "pc.DISABILITY_STAMINA, pc.DISABILITY_SOCIAL, pc.DISABILITY_OTHER, "
         + "pc.DISABILITY_CONDITION_OTHER, "
-        + "pc.DISABILITY_NONE, pc.PREGNANCY, pc.OPT_OUT "
+        + "pc.DISABILITY_NONE, pc.PREGNANCY, pc.OPT_OUT, pc.LAST_UPDATED_TIMESTAMP "
         + "FROM protected_characteristics pc "
         + "WHERE pc.DCN_NUMBER= :dcnNumber ",
         nativeQuery = true)
@@ -97,7 +98,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "pc.DISABILITY_LEARNING, pc.DISABILITY_MEMORY, pc.DISABILITY_MENTAL_HEALTH, "
         + "pc.DISABILITY_STAMINA, pc.DISABILITY_SOCIAL, pc.DISABILITY_OTHER, "
         + "pc.DISABILITY_CONDITION_OTHER, "
-        + "pc.DISABILITY_NONE, pc.PREGNANCY, pc.OPT_OUT "
+        + "pc.DISABILITY_NONE, pc.PREGNANCY, pc.OPT_OUT, pc.LAST_UPDATED_TIMESTAMP "
         + "FROM protected_characteristics pc "
         + "WHERE pc.pcq_id= :pcqId ",
         nativeQuery = true)

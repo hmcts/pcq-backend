@@ -61,7 +61,6 @@ public class SubmitAnswersService extends BaseService {
         String pcqId = answerRequest.getPcqId();
         String coRelationId = "";
         try {
-
             //Step 1. Check the request contains the required header content.
             coRelationId = validateAndReturnCorrelationId(headers);
             log.info("Co-Relation Id : {} - submitAnswers API call invoked.", coRelationId);
@@ -71,7 +70,7 @@ public class SubmitAnswersService extends BaseService {
 
             //Step 3. Check whether record exists in database for the pcqId.
             Optional<ProtectedCharacteristics> protectedCharacteristics;
-            if (pcqId != null &&  ! pcqId.equals("")) {
+            if (pcqId != null && !pcqId.isEmpty()) {
                 protectedCharacteristics = protectedCharacteristicsRepository
                     .findByPcqId(answerRequest.getPcqId(), getEncryptionKey());
             } else {
@@ -80,10 +79,12 @@ public class SubmitAnswersService extends BaseService {
 
             ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
+                // Populate last_updated_timestamp
+                createCharacteristics.setLastUpdatedTimestamp(createCharacteristics.getCompletedDate());
 
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.saveProtectedCharacteristicsWithEncryption(
-                    createCharacteristics,getEncryptionKey());
+                    createCharacteristics, getEncryptionKey());
                 log.info(INFO_LOG_MSG
                              + "Protected Characteristic Questions Record submitted for creation.", coRelationId,
                          createCharacteristics.getChannel(), createCharacteristics.getServiceId());
