@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
@@ -36,68 +36,50 @@ public class OptOutPcqAnswersTest extends PcqBaseFunctionalTest {
     public static final String RESPONSE_INVALID_STATUS_CODE = "Response Status Code not valid";
 
     @Test
-    public void optOutPcqAnswers() {
+    public void optOutPcqAnswers() throws IOException {
+        //Create a record before updating.
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOutNull.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        answerRequest.setPcqId(generateUuid());
+        Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-        try {
+        assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), RESPONSE_INVALID_STATUS_CODE);
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), "Response Status valid");
 
-            //Create a record before updating.
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOutNull.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            answerRequest.setPcqId(generateUuid());
-            Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
+        //invoke the submitAnswers to Opt Out the record.
+        jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutSubmitAnswer.json");
+        PcqAnswerRequest optOutAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-            assertEquals(RESPONSE_INVALID_STATUS_CODE, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status valid", RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+        //Use the same PCQ ID as above
+        optOutAnswerRequest.setPcqId(answerRequest.getPcqId());
 
-            //invoke the submitAnswers to Opt Out the record.
-            jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutSubmitAnswer.json");
-            PcqAnswerRequest optOutAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.OK);
 
-            //Use the same PCQ ID as above
-            optOutAnswerRequest.setPcqId(answerRequest.getPcqId());
+        assertEquals("200", response.get(RESPONSE_KEY_2), RESPONSE_INVALID_STATUS_CODE);
+        assertEquals(RESPONSE_UPDATED_MSG, response.get(RESPONSE_KEY_3), "Response Status not valid");
 
-            response = pcqBackEndServiceClient.updateAnswersRecord(optOutAnswerRequest, HttpStatus.OK);
-
-            assertEquals(RESPONSE_INVALID_STATUS_CODE, "200", response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status not valid", RESPONSE_UPDATED_MSG,
-                         response.get(RESPONSE_KEY_3));
-
-            //Get the record
-            Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                optOutAnswerRequest.getPcqId(), HttpStatus.OK);
-            checkOptOutOnResponse(validateGetResponse);
-
-        } catch (IOException e) {
-            log.error("Error during test execution.", e);
-        }
-
+        //Get the record
+        Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
+            optOutAnswerRequest.getPcqId(), HttpStatus.OK);
+        checkOptOutOnResponse(validateGetResponse);
     }
 
     @Test
-    public void optOutPcqAnswersRecordFoundWithOptOutTrue() {
+    public void optOutPcqAnswersRecordFoundWithOptOutTrue() throws IOException {
+        //create a record with optOut as true.
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutSubmitAnswer.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        answerRequest.setPcqId(generateUuid());
 
-        try {
+        Map<String, Object> response = pcqBackEndServiceClient.updateAnswersRecord(answerRequest,
+                                                                                   HttpStatus.CREATED);
 
-            //create a record with optOut as true.
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutSubmitAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            answerRequest.setPcqId(generateUuid());
+        assertEquals("201", response.get(RESPONSE_KEY_2), RESPONSE_INVALID_STATUS_CODE);
 
-            Map<String, Object> response = pcqBackEndServiceClient.updateAnswersRecord(answerRequest,
-                                                                                       HttpStatus.CREATED);
-
-            assertEquals(RESPONSE_INVALID_STATUS_CODE, "201", response.get(RESPONSE_KEY_2));
-
-            //Get the record
-            Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                answerRequest.getPcqId(), HttpStatus.OK);
-            checkOptOutOnResponse(validateGetResponse);
-
-        } catch (IOException e) {
-            log.error("Error during test execution", e);
-        }
-
+        //Get the record
+        Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
+            answerRequest.getPcqId(), HttpStatus.OK);
+        checkOptOutOnResponse(validateGetResponse);
     }
 
 }

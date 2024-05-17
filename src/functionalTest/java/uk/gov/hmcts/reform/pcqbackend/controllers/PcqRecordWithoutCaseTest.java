@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
@@ -43,77 +43,67 @@ public class PcqRecordWithoutCaseTest extends PcqBaseFunctionalTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    public void testPcqRecordWithoutCase() {
+    public void testPcqRecordWithoutCase() throws IOException {
+        //Create 2 records in database with the current completed date.
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-        try {
+        String firstUuid = generateUuid();
+        answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
+        answerRequest.setPcqId(firstUuid);
 
-            //Create 2 records in database with the current completed date.
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-            String firstUuid = generateUuid();
-            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
-            answerRequest.setPcqId(firstUuid);
+        assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), STATUS_CODE_INVALID_MSG);
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), STATUS_INVALID_MSG);
 
-            Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
+        //Prepare for clearing down.
+        clearTestPcqAnswers.add(answerRequest);
 
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+        String secondUuid = generateUuid();
+        answerRequest = jsonObjectFromString(jsonStringRequest);
+        answerRequest.setPcqId(secondUuid);
+        answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
-            //Prepare for clearing down.
-            clearTestPcqAnswers.add(answerRequest);
+        response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-            String secondUuid = generateUuid();
-            answerRequest = jsonObjectFromString(jsonStringRequest);
-            answerRequest.setPcqId(secondUuid);
-            answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
+        assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), STATUS_CODE_INVALID_MSG);
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), STATUS_INVALID_MSG);
 
-            response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
+        //Prepare for clearing down.
+        clearTestPcqAnswers.add(answerRequest);
 
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+        //Create 3rd record in database with a completed date past the limit.
+        String thirdUuid = generateUuid();
+        answerRequest = jsonObjectFromString(jsonStringRequest);
+        answerRequest.setPcqId(thirdUuid);
+        answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
+            Integer.parseInt(daysLimit) + 1L)));
 
-            //Prepare for clearing down.
-            clearTestPcqAnswers.add(answerRequest);
+        response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-            //Create 3rd record in database with a completed date past the limit.
-            String thirdUuid = generateUuid();
-            answerRequest = jsonObjectFromString(jsonStringRequest);
-            answerRequest.setPcqId(thirdUuid);
-            answerRequest.setCompletedDate(PcqUtils.convertTimeStampToString(PcqUtils.getDateTimeInPast(
-                Integer.parseInt(daysLimit) + 1)));
+        assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), STATUS_CODE_INVALID_MSG);
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), STATUS_INVALID_MSG);
 
-            response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
+        //Prepare for clearing down.
+        clearTestPcqAnswers.add(answerRequest);
 
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+        //Now call the pcqWithoutCaseAPI
+        PcqRecordWithoutCaseResponse getResponse = pcqBackEndServiceClient.getAnswerRecordsWithoutCase(
+            HttpStatus.OK);
 
-            //Prepare for clearing down.
-            clearTestPcqAnswers.add(answerRequest);
+        assertEquals(HTTP_OK, getResponse.getResponseStatusCode(), STATUS_CODE_INVALID_MSG);
+        assertEquals(RESPONSE_SUCCESS_MSG, getResponse.getResponseStatus(), STATUS_INVALID_MSG);
 
-            //Now call the pcqWithoutCaseAPI
-            PcqRecordWithoutCaseResponse getResponse = pcqBackEndServiceClient.getAnswerRecordsWithoutCase(
-                HttpStatus.OK);
-
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_OK, getResponse.getResponseStatusCode());
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_SUCCESS_MSG, getResponse.getResponseStatus());
-
-            PcqAnswerResponse[] answerResponses = getResponse.getPcqRecord();
-            List<String> pcqIdsInResponse = new ArrayList<>(3);
-            for (PcqAnswerResponse answerResponse : answerResponses) {
-                pcqIdsInResponse.add(answerResponse.getPcqId());
-            }
-
-            assertTrue("First PCQ Id should have been picked up", pcqIdsInResponse.contains(firstUuid));
-            assertTrue("Second PCQ Id should have been picked up", pcqIdsInResponse.contains(secondUuid));
-            assertFalse("Third PCQ Id should not have been picked up", pcqIdsInResponse.contains(thirdUuid));
-
-        } catch (IOException e) {
-            log.error("Error during test execution", e);
+        PcqAnswerResponse[] answerResponses = getResponse.getPcqRecord();
+        List<String> pcqIdsInResponse = new ArrayList<>(3);
+        for (PcqAnswerResponse answerResponse : answerResponses) {
+            pcqIdsInResponse.add(answerResponse.getPcqId());
         }
+
+        assertTrue(pcqIdsInResponse.contains(firstUuid), "First PCQ Id should have been picked up");
+        assertTrue(pcqIdsInResponse.contains(secondUuid), "Second PCQ Id should have been picked up");
+        assertFalse(pcqIdsInResponse.contains(thirdUuid), "Third PCQ Id should not have been picked up");
 
     }
 }

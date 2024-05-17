@@ -28,7 +28,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Functional")})
@@ -76,12 +76,12 @@ public class SasTokenControllerTest {
 
         try {
             String s2sString = idamServiceClient.s2sSignIn(s2sName, s2sSecret, s2sUrl);
-            assertNotNull("S2S String should contain a value", s2sString);
+            assertNotNull(s2sString, "S2S String should contain a value");
 
             String sasTokenResponse = bulkScanServiceClient
                 .fetchTokenResponse(pcqBackEndApiUrl + "/pcq/backend/token/bulkscan", s2sString);
 
-            assertNotNull("SAS Token should contain a value", sasTokenResponse);
+            assertNotNull(sasTokenResponse, "SAS Token should contain a value");
             verifySasTokenProperties(sasTokenResponse);
 
         } catch (Exception e) {
@@ -95,12 +95,12 @@ public class SasTokenControllerTest {
 
         try {
             String s2sString = idamServiceClient.s2sSignIn(s2sName, s2sSecret, s2sUrl);
-            assertNotNull("S2S String should contain a value", s2sString);
+            assertNotNull(s2sString, "S2S String should contain a value");
 
             String sasTokenResponse = bulkScanServiceClient
                 .fetchTokenResponse(pcqBackEndApiUrl + "/pcq/backend/token/bulkscan", s2sString);
 
-            assertNotNull("SAS Token should contain a value", sasTokenResponse);
+            assertNotNull(sasTokenResponse, "SAS Token should contain a value");
             verifySasTokenWithStorageContainer(storageUrl, storagePcqContainer, sasTokenResponse);
 
         } catch (Exception e) {

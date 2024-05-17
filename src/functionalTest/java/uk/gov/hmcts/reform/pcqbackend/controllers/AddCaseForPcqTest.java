@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
@@ -36,44 +36,34 @@ public class AddCaseForPcqTest extends PcqBaseFunctionalTest {
     private static final String TEST_CASE_ID = "TEST_CCD_FUNC";
 
     @Test
-    public void testAddPcqForCase() {
+    public void testAddPcqForCase() throws IOException {
+        //Create a records in database without the case Id.
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-        try {
+        String firstUuid = generateUuid();
+        answerRequest.setPcqId(firstUuid);
 
-            //Create a records in database without the case Id.
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-            String firstUuid = generateUuid();
-            answerRequest.setPcqId(firstUuid);
+        assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), STATUS_CODE_INVALID_MSG);
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), STATUS_INVALID_MSG);
 
-            Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
+        //Prepare for clearing down.
+        clearTestPcqAnswers.add(answerRequest);
 
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
-
-            //Prepare for clearing down.
-            clearTestPcqAnswers.add(answerRequest);
-
-            //Now call the addPcqForCase API.
-            response = pcqBackEndServiceClient.addCaseForPcq(firstUuid, TEST_CASE_ID, HttpStatus.OK);
+        //Now call the addPcqForCase API.
+        response = pcqBackEndServiceClient.addCaseForPcq(firstUuid, TEST_CASE_ID, HttpStatus.OK);
 
 
-            assertEquals(STATUS_CODE_INVALID_MSG, HTTP_OK, response.get(RESPONSE_KEY_2));
-            assertEquals(STATUS_INVALID_MSG, RESPONSE_UPDATED_MSG,
-                         response.get(RESPONSE_KEY_3));
-            assertEquals("Invalid PcqId in response", firstUuid, response.get(RESPONSE_KEY_1));
+        assertEquals(HTTP_OK, response.get(RESPONSE_KEY_2), STATUS_CODE_INVALID_MSG);
+        assertEquals(RESPONSE_UPDATED_MSG, response.get(RESPONSE_KEY_3), STATUS_INVALID_MSG);
+        assertEquals(firstUuid, response.get(RESPONSE_KEY_1), "Invalid PcqId in response");
 
-            //Get the record
-            Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                firstUuid, HttpStatus.OK);
+        //Get the record
+        Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
+            firstUuid, HttpStatus.OK);
 
-            assertEquals("CaseId not matching", validateGetResponse.get("ccdCaseId"), TEST_CASE_ID);
-
-        } catch (IOException e) {
-            log.error("Error during test execution", e);
-        }
-
+        assertEquals(validateGetResponse.get("ccdCaseId"), TEST_CASE_ID, "CaseId not matching");
     }
 }
