@@ -13,7 +13,7 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
@@ -32,32 +32,22 @@ public class PaperChannelPcqAnswersTest extends PcqBaseFunctionalTest {
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
 
     @Test
-    public void createPcqAnswersWithoutCaseId() {
+    public void createPcqAnswersWithoutCaseId() throws IOException {
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswer.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        answerRequest.setPcqId(generateUuid());
+        answerRequest.setDcnNumber("DCN_" + generateUuid());
+        Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
 
-        try {
+        assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), "Response Status Code not valid");
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), "Response Status not valid");
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            answerRequest.setPcqId(generateUuid());
-            answerRequest.setDcnNumber("DCN_" + generateUuid());
-            Map<String, Object> response = pcqBackEndServiceClient.createAnswersRecord(answerRequest);
+        //Prepare for clearing down.
+        clearTestPcqAnswers.add(answerRequest);
 
-            assertEquals("Response Status Code not valid", HTTP_CREATED, response.get(RESPONSE_KEY_2));
-            assertEquals("Response Status not valid", RESPONSE_CREATED_MSG,
-                         response.get(RESPONSE_KEY_3));
+        Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
+            answerRequest.getPcqId(), HttpStatus.OK);
 
-            //Prepare for clearing down.
-            clearTestPcqAnswers.add(answerRequest);
-
-            Map<String, Object> validateGetResponse = pcqBackEndServiceClient.getAnswersRecord(
-                answerRequest.getPcqId(), HttpStatus.OK);
-
-            checkAssertionsOnResponse(validateGetResponse, answerRequest);
-
-
-        } catch (IOException e) {
-            log.error("Error during test execution", e);
-        }
-
+        checkAssertionsOnResponse(validateGetResponse, answerRequest);
     }
 }

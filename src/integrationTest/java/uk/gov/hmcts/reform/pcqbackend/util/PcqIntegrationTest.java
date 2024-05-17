@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswers;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
@@ -18,7 +19,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Configuration
@@ -60,100 +61,96 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
     @SuppressWarnings("PMD.ConfusingTernary")
     protected void checkAssertionsOnResponse(ProtectedCharacteristics protectedCharacteristics,
                                           PcqAnswerRequest answerRequest) {
-        assertEquals("PCQId not matching", protectedCharacteristics.getPcqId(), answerRequest.getPcqId());
-        assertEquals("CaseId not matching", protectedCharacteristics.getCaseId(),
-                     answerRequest.getCaseId());
-        assertEquals("DCN Number not matching", protectedCharacteristics.getDcnNumber(),
-                     answerRequest.getDcnNumber());
-        assertEquals("Form Id not matching", protectedCharacteristics.getFormId(),
-                     answerRequest.getFormId());
+        assertEquals(protectedCharacteristics.getPcqId(), answerRequest.getPcqId(), "PCQId not matching");
+        assertEquals(protectedCharacteristics.getCaseId(), answerRequest.getCaseId(), "CaseId not matching");
+        assertEquals(protectedCharacteristics.getDcnNumber(), answerRequest.getDcnNumber(), "DCN Number not matching");
+        assertEquals(protectedCharacteristics.getFormId(), answerRequest.getFormId(), "Form Id not matching");
         //assertEquals("PartyId not matching", answerRequest.getPartyId(),
         //             ConversionUtil.decrypt(protectedCharacteristics.getPartyId(), environment
         //                 .getProperty("security.db.backend-encryption-key")));
-        assertEquals("PartyId not matching", answerRequest.getPartyId(),
-                     protectedCharacteristics.getPartyId());
-        assertEquals("Channel not matching", protectedCharacteristics.getChannel().intValue(),
-                     answerRequest.getChannel());
-        assertEquals("ServiceId not matching", protectedCharacteristics.getServiceId(),
-                     answerRequest.getServiceId());
-        assertEquals("Actor not matching", protectedCharacteristics.getActor(),
-                     answerRequest.getActor());
-        assertEquals("VersionNumber not matching", protectedCharacteristics.getVersionNumber().intValue(),
-                     answerRequest.getVersionNo());
-        assertEquals("DobProvided not matching", protectedCharacteristics.getDobProvided(),
-                     answerRequest.getPcqAnswers().getDobProvided());
+        assertEquals(answerRequest.getPartyId(), protectedCharacteristics.getPartyId(), "PartyId not matching");
+        assertEquals(protectedCharacteristics.getChannel().intValue(),
+                     answerRequest.getChannel(), "Channel not matching");
+        assertEquals(protectedCharacteristics.getServiceId(),
+                     answerRequest.getServiceId(), "ServiceId not matching");
+        assertEquals(protectedCharacteristics.getActor(),
+                     answerRequest.getActor(), "Actor not matching");
+        assertEquals(protectedCharacteristics.getVersionNumber().intValue(),
+                     answerRequest.getVersionNo(), "VersionNumber not matching");
+
+        PcqAnswers pcqAnswers = answerRequest.getPcqAnswers();
+        assertEquals(protectedCharacteristics.getDobProvided(), pcqAnswers.getDobProvided(),
+                     "DobProvided not matching");
         if (protectedCharacteristics.getDateOfBirth() != null) {
-            assertEquals("Dob not matching", PcqUtils.convertDateToString(protectedCharacteristics
-                                                                                    .getDateOfBirth()),
-                         answerRequest.getPcqAnswers().getDob()
+            assertEquals(
+                PcqUtils.convertDateToString(protectedCharacteristics.getDateOfBirth()),
+                pcqAnswers.getDob(),
+                "Dob not matching"
             );
-        } else {
-            assertEquals("Dob not matching", null, answerRequest.getPcqAnswers().getDob());
         }
-        assertEquals("LanguageMain not matching", protectedCharacteristics.getMainLanguage(),
-                     answerRequest.getPcqAnswers().getLanguageMain());
-        assertEquals("OtherLanguage not matching", protectedCharacteristics.getOtherLanguage(),
-                     answerRequest.getPcqAnswers().getLanguageOther());
-        assertEquals("EnglishLanguageLevel not matching", protectedCharacteristics.getEnglishLanguageLevel(),
-                     answerRequest.getPcqAnswers().getEnglishLanguageLevel());
-        assertEquals("Sex not matching", protectedCharacteristics.getSex(),
-                     answerRequest.getPcqAnswers().getSex());
-        assertEquals("Gender Different not matching", protectedCharacteristics.getGenderDifferent(),
-                      answerRequest.getPcqAnswers().getGenderDifferent());
-        assertEquals("Other Gender not matching", protectedCharacteristics.getOtherGender(),
-                     answerRequest.getPcqAnswers().getGenderOther());
-        assertEquals("Sexuality not matching", protectedCharacteristics.getSexuality(),
-                     answerRequest.getPcqAnswers().getSexuality());
-        assertEquals("Sexuality Other not matching", protectedCharacteristics.getOtherSexuality(),
-                     answerRequest.getPcqAnswers().getSexualityOther());
-        assertEquals("Marriage not matching", protectedCharacteristics.getMarriage(),
-                     answerRequest.getPcqAnswers().getMarriage());
-        assertEquals("Ethnicity not matching", protectedCharacteristics.getEthnicity(),
-                     answerRequest.getPcqAnswers().getEthnicity());
-        assertEquals("Other Ethnicity not matching", protectedCharacteristics.getOtherEthnicity(),
-                     answerRequest.getPcqAnswers().getEthnicityOther());
-        assertEquals("Religion not matching", protectedCharacteristics.getReligion(),
-                     answerRequest.getPcqAnswers().getReligion());
-        assertEquals("Religion Other not matching", protectedCharacteristics.getOtherReligion(),
-                     answerRequest.getPcqAnswers().getReligionOther());
-        assertEquals("Disability Conditions not matching", protectedCharacteristics.getDisabilityConditions(),
-                     answerRequest.getPcqAnswers().getDisabilityConditions());
-        assertEquals("Disability Impact not matching", protectedCharacteristics.getDisabilityImpact(),
-                     answerRequest.getPcqAnswers().getDisabilityImpact());
-        assertEquals("Disability Vision not matching", protectedCharacteristics.getDisabilityVision(),
-                     answerRequest.getPcqAnswers().getDisabilityVision());
-        assertEquals("Disability Hearing not matching", protectedCharacteristics.getDisabilityHearing(),
-                     answerRequest.getPcqAnswers().getDisabilityHearing());
-        assertEquals("Disability Mobility not matching", protectedCharacteristics.getDisabilityMobility(),
-                     answerRequest.getPcqAnswers().getDisabilityMobility());
-        assertEquals("Disability Dexterity not matching", protectedCharacteristics.getDisabilityDexterity(),
-                     answerRequest.getPcqAnswers().getDisabilityDexterity());
-        assertEquals("Disability Learning not matching", protectedCharacteristics.getDisabilityLearning(),
-                     answerRequest.getPcqAnswers().getDisabilityLearning());
-        assertEquals("Disability Memory not matching", protectedCharacteristics.getDisabilityMemory(),
-                     answerRequest.getPcqAnswers().getDisabilityMemory());
-        assertEquals("Disability Mental Health not matching", protectedCharacteristics.getDisabilityMentalHealth(),
-                     answerRequest.getPcqAnswers().getDisabilityMentalHealth());
-        assertEquals("Disability Stamina not matching", protectedCharacteristics.getDisabilityStamina(),
-                     answerRequest.getPcqAnswers().getDisabilityStamina());
-        assertEquals("Disability Social not matching", protectedCharacteristics.getDisabilitySocial(),
-                     answerRequest.getPcqAnswers().getDisabilitySocial());
-        assertEquals("Disability Other not matching", protectedCharacteristics.getDisabilityOther(),
-                     answerRequest.getPcqAnswers().getDisabilityOther());
-        assertEquals("Disability Other Details not matching", protectedCharacteristics.getOtherDisabilityDetails(),
-                     answerRequest.getPcqAnswers().getDisabilityConditionOther());
-        assertEquals("Disability None not matching", protectedCharacteristics.getDisabilityNone(),
-                     answerRequest.getPcqAnswers().getDisabilityNone());
-        assertEquals("Pregnancy not matching", protectedCharacteristics.getPregnancy(),
-                     answerRequest.getPcqAnswers().getPregnancy());
+        assertEquals(protectedCharacteristics.getMainLanguage(),
+                     pcqAnswers.getLanguageMain(), "LanguageMain not matching");
+        assertEquals(protectedCharacteristics.getOtherLanguage(),
+                     pcqAnswers.getLanguageOther(), "OtherLanguage not matching");
+        assertEquals(protectedCharacteristics.getEnglishLanguageLevel(),
+                     pcqAnswers.getEnglishLanguageLevel(), "EnglishLanguageLevel not matching");
+        assertEquals(protectedCharacteristics.getSex(),
+                     pcqAnswers.getSex(), "Sex not matching");
+        assertEquals(protectedCharacteristics.getGenderDifferent(),
+                      pcqAnswers.getGenderDifferent(), "Gender Different not matching");
+        assertEquals(protectedCharacteristics.getOtherGender(),
+                     pcqAnswers.getGenderOther(), "Other Gender not matching");
+        assertEquals(protectedCharacteristics.getSexuality(),
+                     pcqAnswers.getSexuality(), "Sexuality not matching");
+        assertEquals(protectedCharacteristics.getOtherSexuality(),
+                     pcqAnswers.getSexualityOther(), "Sexuality Other not matching");
+        assertEquals(protectedCharacteristics.getMarriage(),
+                     pcqAnswers.getMarriage(), "Marriage not matching");
+        assertEquals(protectedCharacteristics.getEthnicity(),
+                     pcqAnswers.getEthnicity(), "Ethnicity not matching");
+        assertEquals(protectedCharacteristics.getOtherEthnicity(),
+                     pcqAnswers.getEthnicityOther(), "Other Ethnicity not matching");
+        assertEquals(protectedCharacteristics.getReligion(),
+                     pcqAnswers.getReligion(), "Religion not matching");
+        assertEquals(protectedCharacteristics.getOtherReligion(),
+                     pcqAnswers.getReligionOther(), "Religion Other not matching");
+        assertEquals(protectedCharacteristics.getDisabilityConditions(),
+                     pcqAnswers.getDisabilityConditions(), "Disability Conditions not matching");
+        assertEquals(protectedCharacteristics.getDisabilityImpact(),
+                     pcqAnswers.getDisabilityImpact(), "Disability Impact not matching");
+        assertEquals(protectedCharacteristics.getDisabilityVision(),
+                     pcqAnswers.getDisabilityVision(), "Disability Vision not matching");
+        assertEquals(protectedCharacteristics.getDisabilityHearing(),
+                     pcqAnswers.getDisabilityHearing(), "Disability Hearing not matching");
+        assertEquals(protectedCharacteristics.getDisabilityMobility(),
+                     pcqAnswers.getDisabilityMobility(), "Disability Mobility not matching");
+        assertEquals(protectedCharacteristics.getDisabilityDexterity(),
+                     pcqAnswers.getDisabilityDexterity(), "Disability Dexterity not matching");
+        assertEquals(protectedCharacteristics.getDisabilityLearning(),
+                     pcqAnswers.getDisabilityLearning(), "Disability Learning not matching");
+        assertEquals(protectedCharacteristics.getDisabilityMemory(),
+                     pcqAnswers.getDisabilityMemory(), "Disability Memory not matching");
+        assertEquals(protectedCharacteristics.getDisabilityMentalHealth(),
+                     pcqAnswers.getDisabilityMentalHealth(), "Disability Mental Health not matching");
+        assertEquals(protectedCharacteristics.getDisabilityStamina(),
+                     pcqAnswers.getDisabilityStamina(), "Disability Stamina not matching");
+        assertEquals(protectedCharacteristics.getDisabilitySocial(),
+                     pcqAnswers.getDisabilitySocial(), "Disability Social not matching");
+        assertEquals(protectedCharacteristics.getDisabilityOther(),
+                     pcqAnswers.getDisabilityOther(), "Disability Other not matching");
+        assertEquals(protectedCharacteristics.getOtherDisabilityDetails(),
+                     pcqAnswers.getDisabilityConditionOther(), "Disability Other Details not matching");
+        assertEquals(protectedCharacteristics.getDisabilityNone(),
+                     pcqAnswers.getDisabilityNone(), "Disability None not matching");
+        assertEquals(protectedCharacteristics.getPregnancy(),
+                     pcqAnswers.getPregnancy(), "Pregnancy not matching");
     }
 
     protected void runAnswerUpdates(PcqAnswerRequest answerRequest) {
         Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-        assertEquals(PCQ_NOT_VALID_MSG, TEST_PCQ_ID, response.get(RESPONSE_KEY_1));
-        assertEquals(STATUS_CODE_INVALID_MSG, HTTP_CREATED, response.get(RESPONSE_KEY_2));
-        assertEquals(STATUS_INVALID_MSG, RESPONSE_CREATED_MSG,
-                     response.get(RESPONSE_KEY_3));
+        assertEquals(TEST_PCQ_ID, response.get(RESPONSE_KEY_1), PCQ_NOT_VALID_MSG);
+        assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), STATUS_CODE_INVALID_MSG);
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), STATUS_INVALID_MSG);
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
             protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());

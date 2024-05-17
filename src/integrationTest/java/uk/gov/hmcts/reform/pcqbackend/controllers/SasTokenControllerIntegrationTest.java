@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
+import com.azure.storage.blob.BlobServiceVersion;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.microsoft.azure.storage.StorageException;
@@ -14,9 +15,9 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 
-import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Map;
 
@@ -30,11 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestPropertySource(locations = "/application.properties")
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
-public class SasTokenControllerTest extends PcqIntegrationTest {
+public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
 
     public static final String SERVICE_BULKSCAN = "bulkscan";
     public static final String SERVICE_RANDOM = "random";
-    public static final String EXCEPTION_MSG = "Exception while executing test";
     private static final String RESPONSE_SAS_KEY = "sas_token";
     private static final String RESPONSE_HTTP_STATUS = "http_status";
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
@@ -49,65 +49,57 @@ public class SasTokenControllerTest extends PcqIntegrationTest {
     public WireMockRule wireMockServer = new WireMockRule(WireMockConfiguration.options().port(4554));
 
     @Test
-    public void testShouldGetSasTokenSuccess() {
-        try {
-            //Setup authentication stubs
-            setupAuthorisationStubs();
+    public void testShouldGetSasTokenSuccess() throws StorageException {
+        //Setup authentication stubs
+        setupAuthorisationStubs();
 
-            //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_BULKSCAN);
+        //Now call the actual method.
+        Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_BULKSCAN);
 
-            //Test the assertions
-            assertEquals(responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_OK, EXPECTED_STATUS_MESSAGE);
-            verifySasTokenProperties(responseMap.get(RESPONSE_SAS_KEY).toString());
-
-        } catch (Exception e) {
-            log.error(EXCEPTION_MSG, e);
-        }
+        //Test the assertions
+        assertEquals(EXPECTED_STATUS_OK, responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_MESSAGE);
+        verifySasTokenProperties(responseMap.get(RESPONSE_SAS_KEY).toString());
     }
 
     @Test
     public void testShouldGetSasTokenNotFoundService() {
-        try {
-            //Setup authentication stubs
-            setupAuthorisationStubs();
+        //Setup authentication stubs
+        setupAuthorisationStubs();
 
-            //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_RANDOM);
+        //Now call the actual method.
+        Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_RANDOM);
 
-            //Test the assertions
-            assertEquals(responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_NOT_FOUND, EXPECTED_STATUS_MESSAGE);
+        //Test the assertions
+        assertEquals(EXPECTED_STATUS_NOT_FOUND, responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_MESSAGE);
 
-        } catch (Exception e) {
-            log.error(EXCEPTION_MSG, e);
-        }
     }
 
     @Test
     public void testShouldGetSasTokenUnauthorised() {
-        try {
-            //Setup authentication stubs
-            setupAuthorisationBadAuthStubs();
+        //Setup authentication stubs
+        setupAuthorisationBadAuthStubs();
 
-            //Now call the actual method.
-            Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_BULKSCAN);
+        //Now call the actual method.
+        Map<String, Object> responseMap = pcqBackEndClient.getPcqBlobStorageSasToken(SERVICE_BULKSCAN);
 
-            //Test the assertions
-            assertEquals(responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_UNAUTHORISED, EXPECTED_STATUS_MESSAGE);
-
-        } catch (Exception e) {
-            log.error(EXCEPTION_MSG, e);
-        }
+        //Test the assertions
+        assertEquals(EXPECTED_STATUS_UNAUTHORISED, responseMap.get(RESPONSE_HTTP_STATUS), EXPECTED_STATUS_MESSAGE);
     }
 
-    private void verifySasTokenProperties(String tokenResponse) throws java.io.IOException, StorageException {
+    private void verifySasTokenProperties(String tokenResponse) throws StorageException {
         Map<String, String[]> queryParams = PathUtility.parseQueryString(tokenResponse);
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
-            .format(OffsetDateTime.now(ZoneOffset.UTC).plusSeconds(SAS_TOKEN_EXPIRY));
 
+        DateTimeFormatter formatter = DateTimeFormatter
+            .ofPattern("yyyy-MM-dd")
+            .withLocale(Locale.ENGLISH)
+            .withZone(ZoneId.of("UTC"));
+        Instant now = Instant.now().plusSeconds(SAS_TOKEN_EXPIRY);
+        String currentDate = formatter.format(now);
+
+        BlobServiceVersion latest = BlobServiceVersion.V2023_11_03;
         assertThat(queryParams.get("sig")).isNotNull();//this is a generated hash of the resource string
         assertThat(queryParams.get("se")[0]).startsWith(currentDate);//the expiry date/time for the signature
-        assertThat(queryParams.get("sv")).contains("2021-08-06");//azure api version is latest
+        assertThat(queryParams.get("sv")).contains(latest.getVersion());//azure api version is latest
         assertThat(queryParams.get("sp")).contains("rcwl");//access permissions(read-r,create-c,write-w,list-l)
     }
 
