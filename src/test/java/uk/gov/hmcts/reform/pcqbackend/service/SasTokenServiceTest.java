@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pcqbackend.service;
 
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.azure.storage.blob.BlobServiceVersion;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.core.PathUtility;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,9 +51,10 @@ class SasTokenServiceTest {
         Map<String, String[]> queryParams = PathUtility.parseQueryString(tokenResponse);
         String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
 
+        BlobServiceVersion latest = BlobServiceVersion.getLatest();
         assertThat(queryParams.get("sig")).isNotNull();//this is a generated hash of the resource string
         assertThat(queryParams.get("se")[0]).startsWith(currentDate);//the expiry date/time for the signature
-        assertThat(queryParams.get("sv")).contains("2023-11-03");//azure api version is latest
+        assertThat(queryParams.get("sv")).contains(latest.getVersion());//azure api version is latest
         assertThat(queryParams.get("sp")).contains("rcwl");//access permissions(read-r,create-c,write-w,list-l)
     }
 }

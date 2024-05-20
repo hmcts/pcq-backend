@@ -96,7 +96,7 @@ public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
         Instant now = Instant.now().plusSeconds(SAS_TOKEN_EXPIRY);
         String currentDate = formatter.format(now);
 
-        BlobServiceVersion latest = BlobServiceVersion.V2023_11_03;
+        BlobServiceVersion latest = BlobServiceVersion.getLatest();
         assertThat(queryParams.get("sig")).isNotNull();//this is a generated hash of the resource string
         assertThat(queryParams.get("se")[0]).startsWith(currentDate);//the expiry date/time for the signature
         assertThat(queryParams.get("sv")).contains(latest.getVersion());//azure api version is latest
