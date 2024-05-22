@@ -51,7 +51,7 @@ spring:
     name: Spring Boot Template
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:11.17-alpine://localhost/pcq
+    url: jdbc:tc:postgresql:15.7-alpine://localhost/pcq
 #    properties:
 #      charSet: UTF-8
 #    hikari:
