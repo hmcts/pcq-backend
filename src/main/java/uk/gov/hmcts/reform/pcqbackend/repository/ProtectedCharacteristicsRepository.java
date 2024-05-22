@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.repository;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -105,4 +106,22 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "WHERE pc.pcq_id= :pcqId ",
         nativeQuery = true)
     Optional<ProtectedCharacteristics> findByPcqId(String pcqId, String encryptionKey);
+
+
+    List<ProtectedCharacteristics> findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+
+    List<ProtectedCharacteristics> findAllByCaseIdNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM protected_characteristics pc "
+        + "WHERE pc.caseId IS NOT NULL AND pc.lastUpdatedTimestamp < :lastUpdatedTimestamp")
+    void deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM protected_characteristics pc "
+        + "WHERE pc.caseId IS NULL AND pc.lastUpdatedTimestamp < :lastUpdatedTimestamp")
+    void deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+
 }

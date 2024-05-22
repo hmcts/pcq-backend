@@ -27,6 +27,17 @@ api-version-number: 1
 api-config-params:
   number_of_days_limit: ${NUMBER_OF_DAYS_LIMIT:90}
 
+
+disposer:
+  # extended cron version with seconds:
+  # https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html#parse(java.lang.String)
+  # pass "-" to disable, e.g. cron: -
+  cron: ${PCQ_DISPOSER_SCHEDULE:0 17 23 * * SUN-THU}
+  dry-run: ${PCQ_DISPOSER_DRY_RUN:true}
+  # days to keep PCQs before deleting
+  keep-with-case: ${PCQ_DAYS_TO_KEEP_WITH_CASEID:92}
+  keep-no-case: ${PCQ_DAYS_TO_KEEP_WITHOUT_CASEID:183}
+
 security:
   jwt:
     header: Authorization
