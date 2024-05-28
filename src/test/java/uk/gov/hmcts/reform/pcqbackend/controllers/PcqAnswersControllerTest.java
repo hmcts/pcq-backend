@@ -12,11 +12,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
+import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
-import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
-import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.service.DeleteService;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
@@ -840,8 +840,6 @@ class PcqAnswersControllerTest {
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
-
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
             when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
@@ -850,6 +848,7 @@ class PcqAnswersControllerTest {
                 .saveProtectedCharacteristicsWithEncryption(any(
                 ProtectedCharacteristics.class),Mockito.eq(null));
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+            when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
@@ -860,6 +859,7 @@ class PcqAnswersControllerTest {
 
 
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty("api-error-messages.internal_error");
             verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
             verify(protectedCharacteristicsRepository, times(1))
                 .saveProtectedCharacteristicsWithEncryption(any(
@@ -868,7 +868,6 @@ class PcqAnswersControllerTest {
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
-
     }
 
     /**
@@ -885,7 +884,6 @@ class PcqAnswersControllerTest {
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
             targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-
             when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                 .thenReturn(protectedCharacteristicsOptional);
 
@@ -898,7 +896,6 @@ class PcqAnswersControllerTest {
             assertNotNull(actualBody, RESPONSE_NULL_MSG);
 
             verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
@@ -992,7 +989,6 @@ class PcqAnswersControllerTest {
             assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode(), "Expected 404 status code");
 
             verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
-
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }

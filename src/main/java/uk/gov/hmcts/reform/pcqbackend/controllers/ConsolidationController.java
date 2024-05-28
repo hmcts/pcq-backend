@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -63,17 +62,15 @@ public class ConsolidationController {
             + "to to update the case information ( case id )"
             + " on the PCQ answers record. "
     )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Request executed successfully. "
-            + "Case Id successfully added to the PCQ Answers record.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
-        @ApiResponse(responseCode = "400",
-            description = "The supplied input parameters are not in the acceptable format. The user"
-            + " will be returned a standard error message.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))}),
-        @ApiResponse(responseCode = "500", description = "General/Un-recoverable error.",
-            content = { @Content(schema = @Schema(implementation = SubmitResponse.class))})
-    })
+    @ApiResponse(responseCode = "200", description = "Request executed successfully. "
+        + "Case Id successfully added to the PCQ Answers record.",
+        content = { @Content(schema = @Schema(implementation = SubmitResponse.class))})
+    @ApiResponse(responseCode = "400",
+        description = "The supplied input parameters are not in the acceptable format. The user"
+        + " will be returned a standard error message.",
+        content = { @Content(schema = @Schema(implementation = SubmitResponse.class))})
+    @ApiResponse(responseCode = "500", description = "General/Un-recoverable error.",
+        content = { @Content(schema = @Schema(implementation = SubmitResponse.class))})
     @PutMapping(
         path = "/addCaseForPCQ/{pcqId}",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -100,18 +97,14 @@ public class ConsolidationController {
             + "have an associated case. Any PCQ answer records which are over 90 days old will not be "
             + "returned in the list. The PCQ Answer response will contain the PCQ Id, Service Id and Actor only."
     )
-    @ApiResponses({
-        @ApiResponse(
-            responseCode = "200",
-            description = "Request executed successfully. Response will contain the multiple/single PCQ Record(s)/ "
-                + "empty array"
-        ),
-        @ApiResponse(responseCode = "400", description = "Missing co-relation Id information in the header."),
-        @ApiResponse(
-            responseCode = "500",
-            description = "Any general application/database un-recoverable error"
-        )
-    })
+    @ApiResponse(
+        responseCode = "200",
+        description = "Request executed successfully. Response will contain the multiple/single PCQ Record(s)/ "
+            + "empty array")
+    @ApiResponse(responseCode = "400", description = "Missing co-relation Id information in the header.")
+    @ApiResponse(
+        responseCode = "500",
+        description = "Any general application/database un-recoverable error")
     @GetMapping(
         path = "/pcqRecordWithoutCase",
         produces = MediaType.APPLICATION_JSON_VALUE
