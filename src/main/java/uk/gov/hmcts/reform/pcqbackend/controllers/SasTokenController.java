@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,15 +50,12 @@ public class SasTokenController {
                 + "generate an Azure Service SAS token to allow"
                 + "the upload of paper PCQ envelops to the PCQ Blob Storage 'pcq' container."
     )
-    @ApiResponses({
-        @ApiResponse(
-            responseCode = "200", description = "Successfully generated Storage Account SAS token for BulkScan.",
-            content = { @Content(schema = @Schema(implementation = SasTokenResponse.class))}
-        ),
-        @ApiResponse(responseCode = "401", description = "ServiceAuthorization header invalid or expired."),
-        @ApiResponse(responseCode = "404", description = "Service or path not found."),
-        @ApiResponse(responseCode = "500", description = "Server error, unable to generate SAS token.")
-    })
+    @ApiResponse(
+        responseCode = "200", description = "Successfully generated Storage Account SAS token for BulkScan.",
+        content = { @Content(schema = @Schema(implementation = SasTokenResponse.class))})
+    @ApiResponse(responseCode = "401", description = "ServiceAuthorization header invalid or expired.")
+    @ApiResponse(responseCode = "404", description = "Service or path not found.")
+    @ApiResponse(responseCode = "500", description = "Server error, unable to generate SAS token.")
     @GetMapping(
         path = "/bulkscan",
         produces = MediaType.APPLICATION_JSON_VALUE
