@@ -1,3 +1,9 @@
+buildscript {
+  dependencies {
+    classpath "org.flywaydb:flyway-database-postgresql:10.13.0"
+  }
+}
+
 plugins {
   id 'application'
   id 'checkstyle'
@@ -279,6 +285,7 @@ repositories {
 }
 
 def versions = [
+  flywaydb            : '10.13.0',
   junit               : '5.9.3',
   junitPlatform       : '1.9.3',
   springBoot          : springBoot.class.package.implementationVersion,
@@ -352,7 +359,8 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
 
-  implementation group: 'org.flywaydb', name: 'flyway-core', version: '10.13.0'
+  implementation group: 'org.flywaydb', name: 'flyway-core', version: versions.flywaydb
+  implementation group: 'org.flywaydb', name: 'flyway-database-postgresql', version: versions.flywaydb
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.3'
 
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.4'
