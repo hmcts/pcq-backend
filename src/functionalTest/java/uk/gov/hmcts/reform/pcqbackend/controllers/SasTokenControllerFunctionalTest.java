@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ComponentScan("uk.gov.hmcts.reform.pcqbackend")
 @ActiveProfiles("functional")
 @Slf4j
-public class SasTokenControllerTest {
+public class SasTokenControllerFunctionalTest {
 
     private static final String IO_EXCEPTION_MSG = "Error during test execution";
 
