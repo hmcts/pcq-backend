@@ -18,9 +18,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
@@ -42,9 +43,8 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
     public static final String RESPONSE_STATUS_MSG = "Response Status valid";
     public static final String RESPONSE_KEY_4 = "response_body";
     private static final String TEST_DUP_PCQ_ID = "UPDATE-DUP-INTEG-TEST";
-    private static final String IO_EXCEPTION_MSG = "IOException while executing test";
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
-
+    private static final String FAIL_TO_FIND_PCQ_MSG = "Expected to find PCQ record in db, but didn't";
 
     @Rule
     public OutputCaptureRule capture = new OutputCaptureRule();
@@ -61,14 +61,14 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
         assertEquals(RESPONSE_INVALID_MSG, responseBody.get(RESPONSE_KEY_3), "Response Status not valid");
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID, getEncryptionKey());
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), "Record found");
     }
 
     @Test
     public void optOutWithSuccess() throws IOException {
-        // Create an record first.
+        // Create a record first.
         createTestRecord();
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutRequested.json");
@@ -80,9 +80,9 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
         assertEquals(RESPONSE_UPDATED_MSG, response.get(RESPONSE_KEY_3), RESPONSE_STATUS_MSG);
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID, getEncryptionKey());
 
-        assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record exist");
+        assertLastUpdatedTimestampEqualsCompletedDate(protectedCharacteristicsOptional, FAIL_TO_FIND_PCQ_MSG);
     }
 
     @Test
@@ -91,15 +91,14 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-        //Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
         assertEquals(TEST_PCQ_ID, response.get(RESPONSE_KEY_1), PCQ_VALID_MSG);
         assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), RESPONSE_STATUS_CODE_MSG);
         assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), RESPONSE_STATUS_MSG);
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID, getEncryptionKey());
 
-        assertFalse(protectedCharacteristicsOptional.isEmpty(), "Record found");
+        assertLastUpdatedTimestampEqualsCompletedDate(protectedCharacteristicsOptional, FAIL_TO_FIND_PCQ_MSG);
     }
 
     @Test
@@ -112,28 +111,30 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
         answerRequest.setPcqId(TEST_PCQ_ID + "' OR 'x'='x");
 
         Map<String, Object> response = pcqBackEndClient.createPcqAnswer(answerRequest);
-        //Map<String, Object> responseBody = jsonMapFromString((String) response.get(RESPONSE_KEY_4));
-        assertEquals(HtmlUtils.htmlEscape(TEST_PCQ_ID + "' OR 'x'='x"),
-                     response.get(RESPONSE_KEY_1), PCQ_VALID_MSG);
+        assertEquals(HtmlUtils.htmlEscape(TEST_PCQ_ID + "' OR 'x'='x"), response.get(RESPONSE_KEY_1), PCQ_VALID_MSG);
         assertEquals(HTTP_CREATED, response.get(RESPONSE_KEY_2), RESPONSE_CREATED_MSG);
-        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), "Response Status valid");
+        assertEquals(RESPONSE_CREATED_MSG, response.get(RESPONSE_KEY_3), RESPONSE_STATUS_MSG);
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID, getEncryptionKey());
 
-        assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record is Deleted!");
+        assertTrue(protectedCharacteristicsOptional.isPresent(), "Pcq Record is Deleted!");
+
+        assertLastUpdatedTimestampEqualsCompletedDate(protectedCharacteristicsOptional, FAIL_TO_FIND_PCQ_MSG);
 
         //Check the Duplicate test record also exists
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptionalDup =
-            protectedCharacteristicsRepository.findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
+            protectedCharacteristicsRepository.findByPcqId(TEST_DUP_PCQ_ID, getEncryptionKey());
 
-        assertFalse(protectedCharacteristicsOptionalDup.isEmpty(), "Other Pcq Record Deleted!");
+        assertTrue(protectedCharacteristicsOptionalDup.isPresent(), "Other Pcq Record Deleted!");
+        String failMsg2 = "Expected to find duplicate PCQ record in db, but didn't";
+        assertLastUpdatedTimestampEqualsCompletedDate(protectedCharacteristicsOptionalDup, failMsg2);
 
     }
 
     @Test
     public void optOutInvalidJson() throws IOException {
-        // Create an record first.
+        // Create a record first.
         createTestRecord();
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutRequestedInvalidJson.json");
@@ -146,9 +147,10 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
         assertEquals(RESPONSE_INVALID_MSG, responseBody.get(RESPONSE_KEY_3), STATUS_INVALID_MSG);
 
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
-            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID,getEncryptionKey());
+            protectedCharacteristicsRepository.findByPcqId(TEST_PCQ_ID, getEncryptionKey());
 
-        assertFalse(protectedCharacteristicsOptional.isEmpty(), "Pcq Record Deleted");
+        assertTrue(protectedCharacteristicsOptional.isPresent(), "Pcq Record Deleted");
+        assertLastUpdatedTimestampEqualsCompletedDate(protectedCharacteristicsOptional, FAIL_TO_FIND_PCQ_MSG);
     }
 
 
@@ -181,6 +183,18 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
 
         testRequest = createAnswerRequestForTest(TEST_DUP_PCQ_ID);
         pcqBackEndClient.createPcqAnswer(testRequest);
+    }
+
+    private void assertLastUpdatedTimestampEqualsCompletedDate(
+        Optional<ProtectedCharacteristics> optPcq,
+        String failMsg
+    ) {
+        if (optPcq.isPresent()) {
+            ProtectedCharacteristics pcq = optPcq.get();
+            assertThat(pcq.getLastUpdatedTimestamp()).isEqualTo(pcq.getCompletedDate());
+        } else {
+            fail(failMsg);
+        }
     }
 
 }

@@ -6,9 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -38,7 +37,7 @@ import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
  */
 @RestController
 @RequestMapping(path = "/pcq/backend")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 @Tag(name = "PCQ BackEnd - API for PCQ database operations.", description = "This is the Protected Characteristics "
     + "Back-End API that will save user's answers to the database. "
@@ -48,14 +47,11 @@ public class PcqAnswersController {
     private static final String OPT_OUT_FLAG = "Y";
     private static final String TRUE = "true";
 
-    @Autowired
-    private SubmitAnswersService submitAnswersService;
+    private final SubmitAnswersService submitAnswersService;
 
-    @Autowired
-    private DeleteService deleteService;
+    private final DeleteService deleteService;
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
     @PostMapping(path = "/submitAnswers", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)

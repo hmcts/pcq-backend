@@ -6,9 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/pcq/backend/consolidation")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 @Tag(name = "PCQ BackEnd - API for consolidation service operations.",
      description = "This is the Protected Characteristics "
@@ -49,11 +48,9 @@ public class ConsolidationController {
     private static final String BAD_REQUEST_ERROR_MESSAGE_PROPERTY_NAME = "api-error-messages.bad_request";
     private static final String INTERNAL_ERROR_MESSAGE_PROPERTY_NAME = "api-error-messages.internal_error";
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
-    @Autowired
-    private ConsolidationService consolidationService;
+    private final ConsolidationService consolidationService;
 
     @Operation(
         tags = "PUT end-points", summary = "Add case information on a PCQ answers record.",

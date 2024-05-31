@@ -1,12 +1,12 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcq.commons.model.SasTokenResponse;
@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 class SasTokenControllerTest {
 
     @InjectMocks
@@ -50,12 +51,6 @@ class SasTokenControllerTest {
     private static final String RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN = "Unable to generate token";
     private static final String RESPONSE_HAS_CORRECT_OUTPUT = "Response is showing correct output.";
     private static final String BULK_SCAN_SERVICE_NAME = "bulkscan";
-
-    @BeforeEach
-    void setUp() {
-        this.sasTokenController = new SasTokenController();
-        MockitoAnnotations.initMocks(this);
-    }
 
     /**
      * This method tests the generateBulkScanSasToken API to generate a SAS token.

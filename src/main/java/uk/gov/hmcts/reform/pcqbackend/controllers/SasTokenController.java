@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +26,7 @@ import uk.gov.hmcts.reform.pcqbackend.service.SasTokenService;
 @RestController
 @RequestMapping(path = "/pcq/backend/token")
 @Slf4j
+@RequiredArgsConstructor
 @Tag(name = "PCQ BackEnd - API for SAS token service operations.",
     description = "This is the Protected Characteristics "
     + "Back-End API that will serve authentication tasks for other services and components to generate a Service SAS "
@@ -33,14 +34,11 @@ import uk.gov.hmcts.reform.pcqbackend.service.SasTokenService;
     + "The API will be invoked by the bulk-scan-processor service.")
 public class SasTokenController {
 
-    @Autowired
-    private AuthService authService;
+    private final AuthService authService;
 
-    @Autowired
-    private SasTokenService sasTokenService;
+    private final SasTokenService sasTokenService;
 
-    @Autowired
-    private AuthorisedServices authorisedServices;
+    private final AuthorisedServices authorisedServices;
 
     @Operation(
         tags = "GET end-points",
