@@ -101,6 +101,7 @@ public final class ConversionUtil {
         protectedCharacteristics.setCaseId(pcqAnswerRequest.getCaseId());
         protectedCharacteristics.setChannel(pcqAnswerRequest.getChannel());
         protectedCharacteristics.setCompletedDate(getTimeFromString(pcqAnswerRequest.getCompletedDate()));
+        protectedCharacteristics.setLastUpdatedTimestamp(protectedCharacteristics.getCompletedDate());
         protectedCharacteristics.setPartyId(pcqAnswerRequest.getPartyId());
         protectedCharacteristics.setServiceId(pcqAnswerRequest.getServiceId());
         protectedCharacteristics.setVersionNumber(pcqAnswerRequest.getVersionNo());
@@ -140,8 +141,6 @@ public final class ConversionUtil {
             protectedCharacteristics.setOtherDisabilityDetails(pcqAnswers.getDisabilityConditionOther());
             protectedCharacteristics.setDisabilityNone(pcqAnswers.getDisabilityNone());
             protectedCharacteristics.setPregnancy(pcqAnswers.getPregnancy());
-
-
         }
 
         return protectedCharacteristics;
