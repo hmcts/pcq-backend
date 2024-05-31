@@ -19,6 +19,7 @@ import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsReposit
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,12 +58,45 @@ public class ProtectedCharacteristicsRepositoryImplTest {
 
     @Test
     void shouldSearchByPcqId() {
-        final Page<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+        final Optional<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
             .findByPcqId("1", ENCRYPTION_KEY);
 
 
-        //assertThat(pc.).isEqualTo(1);
-        //assertResults(idamLogon.getContent(), 1);
+        assertThat(pc).isPresent();
+        assertThat(pc.get().getPcqId()).isEqualTo("1");
+    }
+
+    @Test
+    void shouldSearchByDcnNumber() {
+        final List<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+            .findByDcnNumber("1", ENCRYPTION_KEY);
+
+        assertThat(pc).isNotEmpty();
+        assertThat(pc.get(0).getDcnNumber()).isEqualTo("1");
+    }
+
+    @Test
+    void shouldUpdateCase() {
+        //case if and pcqid are set the same so lets change case to 2
+        ProtectedCharacteristicsRepositoryImpl.updateCase("2", "1");
+
+        final Optional<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+            .findByPcqId("1", ENCRYPTION_KEY);
+
+
+        assertThat(pc).isPresent();
+        assertThat(pc.get().getPcqId()).isEqualTo("1");
+        assertThat(pc.get().getCaseId()).isEqualTo("2");
+    }
+
+    @Test
+    void shouldDeleteRecord() {
+        ProtectedCharacteristicsRepositoryImpl.deletePcqRecord("1");
+
+        final Optional<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+            .findByPcqId("1", ENCRYPTION_KEY);
+        
+        assertThat(pc).isNotPresent();
     }
 
     private ProtectedCharacteristics getProtectedCharacteristics(final String id,
