@@ -248,7 +248,7 @@ dependencyManagement {
     dependency group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.70'
     // CVE-2018-10237 - Unbounded memory allocation
     // CVE-2020-8908 - Temp directory creation vulnerability
-    dependencySet(group: 'com.google.guava', version: '33.2.0-jre') {
+    dependencySet(group: 'com.google.guava', version: '33.2.1-jre') {
       entry 'guava'
     }
     // force junit5 deps to use groovy v3 which fixes reflective call errors for java 11
