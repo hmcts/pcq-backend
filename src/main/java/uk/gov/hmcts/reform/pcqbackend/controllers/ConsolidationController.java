@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
@@ -75,7 +74,6 @@ public class ConsolidationController {
         path = "/addCaseForPCQ/{pcqId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<SubmitResponse> addCaseForPcq(@RequestHeader HttpHeaders headers,
                                                         @PathVariable("pcqId") @NotBlank String pcqId,
                                                         @NotBlank String caseId) {
@@ -109,7 +107,6 @@ public class ConsolidationController {
         path = "/pcqRecordWithoutCase",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<PcqRecordWithoutCaseResponse> getPcqRecordWithoutCase(@RequestHeader HttpHeaders headers) {
 
         try {
