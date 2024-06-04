@@ -16,7 +16,7 @@ public class JwtConfiguration {
     @Value("${security.jwt.prefix}")
     private String prefix;
 
-    @Value("${security.jwt.secret:JwtSecretKey}")
+    @Value("${security.jwt.secret:a-very-long-and-boring-secret-key}")
     private String secret;
 
 }

@@ -32,7 +32,7 @@ class JwtTokenFilterTest {
     private static final String EXCEPTION_SERVLET_MSG = "ServletException thrown while test execution ";
     private static final String EXCEPTION_IO_MSG = "IOException thrown while test execution ";
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final String SECRET_KEY = "Filter-Test-Key-1";
+    private static final String SECRET_KEY = "a-very-long-and-boring-secret-key";
     private static final String SUBJECT = "TEST";
     private static final String TEST_AUTHORITIES = "TEST_AUTHORITY";
 
