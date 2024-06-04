@@ -26,7 +26,7 @@ public class PcqBackEndClient {
     private static final String APP_BASE_PATH = "/pcq/backend";
     private static final String SUBJECT = "TEST";
     private static final String TEST_AUTHORITIES = "TEST_AUTHORITY";
-    private static final String SECRET_KEY = "JwtSecretKey";
+    private static final String SECRET_KEY = "a-very-long-and-boring-secret-key";
 
     private final int prdApiPort;
     private final ObjectMapper objectMapper = new ObjectMapper();

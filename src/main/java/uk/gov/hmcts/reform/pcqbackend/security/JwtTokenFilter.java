@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pcqbackend.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.crypto.SecretKey;
 
 
 @Slf4j
@@ -38,13 +40,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        String token = header.replace(jwtConfiguration.getPrefix(), "");
+        String token = header.replace(jwtConfiguration.getPrefix(), "").strip();
         try {
+            SecretKey secretKey = Keys.hmacShaKeyFor(jwtConfiguration.getSecret().getBytes());
 
-            Claims claims = Jwts.parser()
-                .setSigningKey(jwtConfiguration.getSecret().getBytes())
-                .parseClaimsJws(token)
-                .getBody();
+            Claims claims = (Claims) Jwts.parser().verifyWith(secretKey).build().parse(token).getPayload();
 
             String partyId = claims.getSubject();
             if (partyId != null) {
