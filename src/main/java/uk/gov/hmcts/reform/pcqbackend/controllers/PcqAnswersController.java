@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
@@ -87,7 +86,6 @@ public class PcqAnswersController {
         responseCode = "500",
         description = "General/Un-recoverable error.",
         content = @Content)
-    @ResponseBody
     public ResponseEntity<Object> submitAnswers(@RequestHeader HttpHeaders headers,
                                                 @RequestBody PcqAnswerRequest answerRequest) {
 
@@ -129,7 +127,6 @@ public class PcqAnswersController {
         path = "/getAnswer/{pcqId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<PcqAnswerResponse> getAnswersByPcqId(@PathVariable("pcqId") @NotBlank String pcqId) {
 
         ProtectedCharacteristics protectedCharacteristics = submitAnswersService
@@ -163,7 +160,6 @@ public class PcqAnswersController {
         path = "/deletePcqRecord/{pcqId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<Object> deletePcqRecord(@PathVariable("pcqId") @NotBlank String pcqId) {
         if (environment.getProperty("security.db.allow_delete_record") != null
             && TRUE.equals(environment.getProperty("security.db.allow_delete_record"))) {

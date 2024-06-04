@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcq.commons.model.SasTokenResponse;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
@@ -60,7 +59,6 @@ public class SasTokenController {
         path = "/bulkscan",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<SasTokenResponse> generateBulkScanSasToken(
         @RequestHeader(name = "ServiceAuthorization", required = false) String serviceAuthHeader
     ) {
