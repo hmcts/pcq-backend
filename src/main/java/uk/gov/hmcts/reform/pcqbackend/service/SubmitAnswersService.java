@@ -79,9 +79,6 @@ public class SubmitAnswersService extends BaseService {
 
             ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
-                // Populate last_updated_timestamp
-                createCharacteristics.setLastUpdatedTimestamp(createCharacteristics.getCompletedDate());
-
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.saveProtectedCharacteristicsWithEncryption(
                     createCharacteristics, getEncryptionKey());
