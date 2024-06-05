@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String>,
     ProtectedCharacteristicsRepositoryCustom {
 
-    @SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.UseObjectForClearerAPI"})
+    @SuppressWarnings({"PMD.ExcessiveParameterList", "PMD.UseObjectForClearerAPI", "squid:S107"})
     @Modifying(clearAutomatically = true)
     @Query("UPDATE protected_characteristics p SET p.dobProvided = ?1, p.dateOfBirth = ?2, "
         + "p.mainLanguage = ?3, p.otherLanguage = ?4, p.englishLanguageLevel = ?5, "

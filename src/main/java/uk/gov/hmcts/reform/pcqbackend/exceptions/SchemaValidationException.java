@@ -1,31 +1,26 @@
 package uk.gov.hmcts.reform.pcqbackend.exceptions;
 
 
+import lombok.Getter;
+
+import java.io.Serial;
+
 /**
  * This exception class is for capturing the JSON Schema validation.
  */
+@Getter
 public class SchemaValidationException extends Exception {
 
-    public static final long serialVersionUID = 432874322;
-
-    private String formattedError;
-
-    /**
-     * Constructor with the error message string.
-     * @param errorMessage - the error message.
-     */
-    public SchemaValidationException(String errorMessage) {
-        super(errorMessage);
-    }
+    @Serial
+    private static final long serialVersionUID = 432874322;
 
     /**
-     * Constructor to be called in case the parent exception is to be logged.
-     * @param errorMessage - The error message.
-     * @param exception - The parent exception.
+     * -- GETTER --
+     *  This method will collate all the validation messages and return a formatted String.
+     *
+     * @return the validation errors formatted as a String.
      */
-    public SchemaValidationException(String errorMessage, Throwable exception) {
-        super(errorMessage, exception);
-    }
+    private final String formattedError;
 
     /**
      * Constructor to be called with the schema validation errors.
@@ -37,11 +32,4 @@ public class SchemaValidationException extends Exception {
         formattedError = formattedErrorMessage;
     }
 
-    /**
-     * This method will collate all the validation messages and return a formatted String.
-     * @return the validation errors formatted as a String.
-     */
-    public String getFormattedError() {
-        return formattedError;
-    }
 }

@@ -110,9 +110,11 @@ public class ConsolidationController {
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 headers.get(environment.getProperty(CO_RELATIONID_PROPERTY_NAME)));
 
-            return ConversionUtil.generatePcqRecordWithoutCaseResponse(protectedCharacteristicsList, HttpStatus.OK,
-                                                                 environment.getProperty(
-                                                                     ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME));
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(
+                protectedCharacteristicsList,
+                HttpStatus.OK,
+                environment.getProperty(ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME)
+            );
 
         } catch (InvalidRequestException ive) {
             log.error("getPcqRecordWithoutCase API call failed due to error - {}", ive.getMessage(), ive);

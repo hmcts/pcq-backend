@@ -63,13 +63,13 @@ class SasTokenControllerTest {
         try {
             when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
             when(authorisedServices.hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME)).thenReturn(true);
-            when(sasTokenService.generateSasToken(BULK_SCAN_SERVICE_NAME)).thenReturn(SAS_TOKEN);
+            when(sasTokenService.generateSasToken()).thenReturn(SAS_TOKEN);
 
             ResponseEntity<SasTokenResponse> actual =
                 sasTokenController.generateBulkScanSasToken(SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
-            verify(sasTokenService, times(1)).generateSasToken(BULK_SCAN_SERVICE_NAME);
+            verify(sasTokenService, times(1)).generateSasToken();
             assertEquals(SAS_TOKEN, actual.getBody().getSasToken(), RESPONSE_HAS_CORRECT_OUTPUT);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), RESPONSE_STATUS_OK);
 
@@ -113,7 +113,7 @@ class SasTokenControllerTest {
         try {
             when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
             when(authorisedServices.hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME)).thenReturn(true);
-            when(sasTokenService.generateSasToken(BULK_SCAN_SERVICE_NAME))
+            when(sasTokenService.generateSasToken())
                 .thenThrow(new UnableToGenerateSasTokenException(
                     new Exception(RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN)));
 
@@ -121,7 +121,7 @@ class SasTokenControllerTest {
 
         } catch (UnableToGenerateSasTokenException unableToGenerateException) {
             verify(authorisedServices, times(1)).hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
-            verify(sasTokenService, times(1)).generateSasToken(BULK_SCAN_SERVICE_NAME);
+            verify(sasTokenService, times(1)).generateSasToken();
             assertEquals(RESPONSE_MESSAGE_UNABLE_TO_GENERATE_TOKEN, unableToGenerateException.getCause().getMessage(),
                          RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN);
 

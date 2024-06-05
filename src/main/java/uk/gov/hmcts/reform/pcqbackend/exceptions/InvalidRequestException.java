@@ -1,15 +1,26 @@
 package uk.gov.hmcts.reform.pcqbackend.exceptions;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import java.io.Serial;
 
 /**
  * This exception class is for any invalid request content including the headers
  * and parameters except the JSON Schema validation.
  */
+@Getter
 public class InvalidRequestException extends Exception {
 
-    public static final long serialVersionUID = 43287432;
+    @Serial
+    private static final long serialVersionUID = 43287432;
 
+    /**
+     * -- GETTER --
+     *  Returns the error code for the message as passed by the caller.
+     *
+     * @return error Code.
+     */
     private final HttpStatus errorCode;
 
     /**
@@ -35,11 +46,4 @@ public class InvalidRequestException extends Exception {
         errorCode = errCode;
     }
 
-    /**
-     * Returns the error code for the message as passed by the caller.
-     * @return error Code.
-     */
-    public HttpStatus getErrorCode() {
-        return errorCode;
-    }
 }
