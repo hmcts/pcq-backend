@@ -38,7 +38,7 @@ class SasTokenServiceTest {
     @Test
     void testGenerateSasTokenSuccess() {
         try {
-            String actualSasToken = sasTokenService.generateSasToken("bulkscan");
+            String actualSasToken = sasTokenService.generateSasToken();
             assertNotNull(actualSasToken, NOT_NULL_MESSAGE);
             verifySasTokenProperties(actualSasToken);
 
@@ -47,7 +47,7 @@ class SasTokenServiceTest {
         }
     }
 
-    private void verifySasTokenProperties(String tokenResponse) throws java.io.IOException, StorageException {
+    private void verifySasTokenProperties(String tokenResponse) throws StorageException {
         Map<String, String[]> queryParams = PathUtility.parseQueryString(tokenResponse);
         String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).format(new Date());
 

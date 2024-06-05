@@ -116,8 +116,8 @@ public class PcqAnswersErrorResponseTest extends PcqBaseFunctionalTest {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-        //Deliberately set an empty Id to trigger error.
-        answerRequest.setPcqId("");
+        //add extra char at the end of timestamp to trigger 500 error.
+        answerRequest.setCompletedDate("2024-05-16T09:34:43.123Zk");
 
         Map<String, Object> response = pcqBackEndServiceClient.unRecoverableError(answerRequest);
 

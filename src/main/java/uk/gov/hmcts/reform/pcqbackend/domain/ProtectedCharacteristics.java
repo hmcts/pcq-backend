@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -20,7 +21,8 @@ import java.sql.Timestamp;
 @SuppressWarnings({"PMD.TooManyFields"})
 public class ProtectedCharacteristics implements Serializable {
 
-    public static final long serialVersionUID = 5428747L;
+    @Serial
+    private static final long serialVersionUID = 5428747L;
 
     @Id
     @NotEmpty

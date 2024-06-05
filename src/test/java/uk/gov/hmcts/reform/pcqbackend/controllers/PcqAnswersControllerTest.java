@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
@@ -21,6 +23,7 @@ import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsReposit
 import uk.gov.hmcts.reform.pcqbackend.service.DeleteService;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
 
+import java.io.IOException;
 import java.security.Security;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -97,7 +100,7 @@ class PcqAnswersControllerTest {
         );
 
         this.pcqAnswersController = new PcqAnswersController(submitAnswersService, deleteService,environment);
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
@@ -122,7 +125,6 @@ class PcqAnswersControllerTest {
         try {
             String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
@@ -168,7 +170,6 @@ class PcqAnswersControllerTest {
         try {
             String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
@@ -256,27 +257,7 @@ class PcqAnswersControllerTest {
         try {
             String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
-            /*int resultCount = 1;
-
-            when(protectedCharacteristicsRepository.updateCharacteristics(null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,true,
-                                                                          pcqId,null)).thenReturn(resultCount);*/
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
@@ -286,101 +267,13 @@ class PcqAnswersControllerTest {
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
 
-
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            /*verify(protectedCharacteristicsRepository, times(1))
-                .updateCharacteristics(null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,null,
-                                       null,true,
-                                       pcqId,null);*/
             verify(mockHeaders, times(1)).get(HEADER_KEY);
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
-
-    /**
-     * This method tests the submitAnswers API when it is called with Y in OptOut and that the answers record
-     * is set to null in database and optOut is true.
-     */
-    /*@DisplayName("Should set the answers as null and optOut as true when OptOut")
-    @Test
-    void testSubmitAnswersOptOutRecordAsTrue()  {
-
-        String pcqId = TEST_PCQ_ID;
-        try {
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 1;
-            when(protectedCharacteristicsRepository.findById(pcqId)).thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,true,
-                                                                          pcqId,null)).thenReturn(resultCount);
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-
-            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
-
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .updateCharacteristics(null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,null,
-                                      null,true,
-                                      pcqId,null);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
-    }*/
 
     /**
      * This method tests the submitAnswers API when it is called for paper channel and that the answers record
@@ -428,7 +321,6 @@ class PcqAnswersControllerTest {
             String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_EMPTY_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
             HttpHeaders mockHeaders = getMockHeader();
@@ -459,8 +351,6 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
-
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
             targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
@@ -536,8 +426,6 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         try {
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
-
             ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
             targetObject.setPcqId(pcqId);
             Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
@@ -615,7 +503,6 @@ class PcqAnswersControllerTest {
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
@@ -648,7 +535,6 @@ class PcqAnswersControllerTest {
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
@@ -739,9 +625,7 @@ class PcqAnswersControllerTest {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
-
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
@@ -772,9 +656,7 @@ class PcqAnswersControllerTest {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
-
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
@@ -805,9 +687,7 @@ class PcqAnswersControllerTest {
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson.json");
-
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            //logger.info("testSubmitAnswersFirstTime - Generated Json String is " + jsonStringRequest);
 
             when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
             when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
@@ -1017,92 +897,74 @@ class PcqAnswersControllerTest {
 
     }
 
-    @Test
-    void testSubmitAnswersEnglish() {
-        Integer mainLanguage = 4;
-        String fileName = "JsonTestFiles/MainLanguageAnswerEnglish.json";
-        updateLanguage(mainLanguage,fileName);
-    }
-
-    @Test
-    void testSubmitAnswersWelsh() {
-        Integer mainLanguage = 3;
-        String fileName = "JsonTestFiles/MainLanguageAnswerWelsh.json";
-        updateLanguage(mainLanguage,fileName);
-    }
-
-    //Test English or welsh option as well for backward compatibility
-    @Test
-    void testSubmitAnswersEnglishOrWelsh() {
-        Integer mainLanguage = 1;
-        String fileName = "JsonTestFiles/MainLanguageEnglishOrWelsh.json";
-        updateLanguage(mainLanguage,fileName);
-    }
-
-    public void updateLanguage(Integer mainLanguage, String fileName) {
+    @DisplayName("Test language updates")
+    @ParameterizedTest
+    @CsvSource({
+        "4,JsonTestFiles/MainLanguageAnswerEnglish.json",
+        "3,JsonTestFiles/MainLanguageAnswerWelsh.json",
+        "1,JsonTestFiles/MainLanguageEnglishOrWelsh.json",
+    })
+    void testSubmitUpdatesLanguage(Integer mainLanguage, String fileName) throws IOException {
         String pcqId = TEST_PCQ_ID;
-        try {
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 1;
-            int dobProvided = 1;
-            Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp,false, pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        int resultCount = 1;
+        int dobProvided = 1;
+        Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
-            String jsonStringRequest = jsonStringFromFile(fileName);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null,
+                                                                      testTimeStamp,false, pcqId, testTimeStamp)
+        ).thenReturn(resultCount);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+        String jsonStringRequest = jsonStringFromFile(fileName);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-            verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
-                dobProvided, testDob, mainLanguage,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, testTimeStamp,false, pcqId, testTimeStamp);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
+        verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
+            dobProvided, testDob, mainLanguage,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, testTimeStamp,false, pcqId, testTimeStamp);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+
     }
 
 }

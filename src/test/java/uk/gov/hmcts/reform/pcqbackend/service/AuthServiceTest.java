@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
 
@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
     private static final String REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH = "DFJSDFSDFSDFSDFSDSFS";
@@ -25,12 +26,6 @@ class AuthServiceTest {
 
     @Mock
     private AuthTokenValidator authTokenValidator;
-
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.initMocks(this);
-        this.authService = new AuthService(authTokenValidator);
-    }
 
     @Test
     void testShouldGetServiceAuthName() {

@@ -78,7 +78,7 @@ class ConsolidationControllerTest {
             environment
         );
         this.consolidationController = new ConsolidationController(environment, consolidationService);
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
 
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(UPDATE_MSG_PROPERTY)).thenReturn(API_ERROR_MESSAGE_UPDATED);

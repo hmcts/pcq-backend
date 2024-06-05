@@ -15,7 +15,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
 
@@ -51,9 +50,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 @SuppressWarnings("unchecked")
                 List<String> authorities = (List<String>) claims.get("authorities");
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    partyId, null, authorities.stream().map(SimpleGrantedAuthority::new)
-                    .collect(Collectors.toList())
-                );
+                    partyId, null, authorities.stream().map(SimpleGrantedAuthority::new).toList());
+
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
 
