@@ -368,33 +368,10 @@ class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Success");
-        //String pcqId = TEST_PCQ_ID;
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-
-            /*int resultCount = 1;
-            int dobProvided = 1;
-            when(protectedCharacteristicsRepository.updateCharacteristics(
-                                                        dobProvided,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,true,
-                                                      pcqId,null))
-                                .thenReturn(resultCount);*/
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);
@@ -690,7 +667,7 @@ class SubmitAnswersServiceTest {
         }
 
     }
-    
+
     @DisplayName("Test main language creation")
     @ParameterizedTest
     @CsvSource({

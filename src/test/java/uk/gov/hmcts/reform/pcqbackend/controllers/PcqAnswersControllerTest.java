@@ -252,8 +252,6 @@ class PcqAnswersControllerTest {
         + "successfully and return with 201 response code")
     @Test
     void testSubmitAnswersOptOutSuccess()  {
-
-        //String pcqId = TEST_PCQ_ID;
         try {
             String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
             PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
