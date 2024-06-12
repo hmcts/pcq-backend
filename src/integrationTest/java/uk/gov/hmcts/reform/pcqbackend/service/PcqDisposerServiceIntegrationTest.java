@@ -5,14 +5,12 @@ import net.serenitybdd.annotations.WithTags;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
 
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -26,11 +24,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     public static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
 
-    @Value("${disposer.keep-with-case:92}")
-    private int keepWithCase;
-
-    @Value("${disposer.keep-no-case:183}")
-    private int keepNoCase;
+    private static final int KEEP_NO_CASE = 183;
 
     @Autowired
     PcqDisposerService pcqDisposerService;
@@ -42,11 +36,12 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
     public OutputCaptureRule capture = new OutputCaptureRule();
 
     @Test
-    public void testDisposePcqLogsCollectedPcqs() throws SQLException {
+    public void testDisposePcqLogsCollectedPcqs() {
+        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
         insertPcq(Instant.now(), CASE_ID);
-        insertPcq(Instant.now().minus(keepNoCase * 3L, ChronoUnit.DAYS), CASE_ID);
-        ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(keepNoCase * 3L, ChronoUnit.DAYS), null);
+        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
+        ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
 
         pcqDisposerService.disposePcq();
 
@@ -66,10 +61,11 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     @Test
     public void testDisposePcqLogsDeletesPcqs() {
+        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         insertPcq(Instant.now(), CASE_ID);
-        insertPcq(Instant.now().minus(keepNoCase * 3L, ChronoUnit.DAYS), CASE_ID);
-        ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(keepNoCase * 3L, ChronoUnit.DAYS), null);
+        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
+        ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
 
         pcqDisposerService.disposePcq();
 
@@ -88,6 +84,30 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     }
 
+    @Test
+    public void testDisposePcqDoesNotRunIfDisabled() {
+        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", false);
+        insertPcq(Instant.now(), CASE_ID);
+        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
+        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
+
+        pcqDisposerService.disposePcq();
+
+        List<ProtectedCharacteristics> pcqList = pcqRepository.findAll();
+        assertThat(pcqList).hasSize(3);
+
+        String logMessages = capture.getAll();
+        String expectedMsg = "PCQ disposer is disabled, not running.";
+        assertThat(logMessages)
+            .withFailMessage("Expected to find + \"" + expectedMsg + "\" in the logs, but didn't find")
+            .contains(expectedMsg);
+
+        assertThat(logMessages)
+            .withFailMessage("Didn't expect to find \"PCQ disposer completed\" in the logs, but found")
+            .doesNotContain("PCQ disposer completed");
+    }
+
+
     public ProtectedCharacteristics insertPcq(Instant timestamp, String caseId) {
         ProtectedCharacteristics pcq = new ProtectedCharacteristics();
         String uuid = UUID.randomUUID().toString();
@@ -102,4 +122,5 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
         pcqRepository.saveAndFlush(pcq);
         return pcq;
     }
+
 }

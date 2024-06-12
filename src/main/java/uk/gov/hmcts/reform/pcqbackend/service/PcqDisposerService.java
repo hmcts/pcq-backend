@@ -28,10 +28,18 @@ public class PcqDisposerService {
     @Value("${disposer.keep-no-case:183}")
     private int keepNoCase;
 
+    @Value("${disposer.enabled:false}")
+    private boolean disposerEnabled;
+
     private final ProtectedCharacteristicsRepository pcqRepository;
 
     @Scheduled(cron = "${disposer.cron:-}", zone = "Europe/London")
     public void disposePcq() {
+        if (!disposerEnabled) {
+            log.info("PCQ disposer is disabled, not running.");
+            return;
+        }
+
         log.info("Starting PCQ disposer, dry run: {}", dryRun);
 
         Timestamp caseCutoffTimestamp = PcqUtils.getDateTimeInPast(keepWithCase);

@@ -29,6 +29,7 @@ api-config-params:
 
 
 disposer:
+  enabled: ${PCQ_DISPOSER_ENABLED:false}
   # extended cron version with seconds:
   # https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html#parse(java.lang.String)
   # pass "-" to disable, e.g. cron: -
