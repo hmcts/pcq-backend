@@ -2,21 +2,19 @@ package uk.gov.hmcts.reform.pcqbackend.repository.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepositoryCustom;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +23,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@RunWith(SpringRunner.class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(properties = {
     "spring.jpa.hibernate.ddl-auto=update",
@@ -37,30 +34,30 @@ public class ProtectedCharacteristicsRepositoryImplTest {
     private static final String ENCRYPTION_KEY = "ThisIsATestKeyForEncryption";
 
     @Autowired
-    private ProtectedCharacteristicsRepositoryCustom ProtectedCharacteristicsRepositoryCustom;
+    @Qualifier("protectedCharacteristicsRepositoryImpl")
+    private ProtectedCharacteristicsRepositoryCustom protectedCharacteristicsRepositoryCustom;
 
-    private ProtectedCharacteristicsRepository ProtectedCharacteristicsRepositoryImpl;
+    @Autowired
+    private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
 
     @BeforeEach
     public void setUp() {
-        //Insert 20 records
-        for (int i = 1; i < 11; i++) {
-            ProtectedCharacteristicsRepositoryCustom
+        for (int i = 1; i <= 10; i++) {
+            protectedCharacteristicsRepositoryCustom
                 .saveProtectedCharacteristicsWithEncryption(getProtectedCharacteristics(
                     String.valueOf(i),
-                    "1990-09-"+String.format("%02d", i)
+                    "1990-09-" + String.format("%02d", i)
                 ), ENCRYPTION_KEY);
         }
     }
 
     @Test
     void shouldSearchByPcqId() {
-        final Optional<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+        final Optional<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
             .findByPcqId("1", ENCRYPTION_KEY);
-
 
         assertThat(pc).isPresent();
         assertThat(pc.get().getPcqId()).isEqualTo("1");
@@ -68,7 +65,7 @@ public class ProtectedCharacteristicsRepositoryImplTest {
 
     @Test
     void shouldSearchByDcnNumber() {
-        final List<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
             .findByDcnNumber("1", ENCRYPTION_KEY);
 
         assertThat(pc).isNotEmpty();
@@ -77,12 +74,10 @@ public class ProtectedCharacteristicsRepositoryImplTest {
 
     @Test
     void shouldUpdateCase() {
-        //case if and pcqid are set the same so lets change case to 2
-        ProtectedCharacteristicsRepositoryImpl.updateCase("2", "1");
+        protectedCharacteristicsRepository.updateCase("2", "1");
 
-        final Optional<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+        final Optional<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
             .findByPcqId("1", ENCRYPTION_KEY);
-
 
         assertThat(pc).isPresent();
         assertThat(pc.get().getPcqId()).isEqualTo("1");
@@ -91,16 +86,15 @@ public class ProtectedCharacteristicsRepositoryImplTest {
 
     @Test
     void shouldDeleteRecord() {
-        ProtectedCharacteristicsRepositoryImpl.deletePcqRecord("1");
+        protectedCharacteristicsRepository.deletePcqRecord("1");
 
-        final Optional<ProtectedCharacteristics> pc = ProtectedCharacteristicsRepositoryImpl
+        final Optional<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
             .findByPcqId("1", ENCRYPTION_KEY);
-        
+
         assertThat(pc).isNotPresent();
     }
 
-    private ProtectedCharacteristics getProtectedCharacteristics(final String id,
-                                             final String dob) {
+    private ProtectedCharacteristics getProtectedCharacteristics(final String id, final String dob) {
         final ProtectedCharacteristics pc = new ProtectedCharacteristics();
         pc.setPcqId(id);
         pc.setDcnNumber(id);
@@ -111,7 +105,7 @@ public class ProtectedCharacteristicsRepositoryImplTest {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dateOfBirth = sdf.parse(dob);
-            pc.setDateOfBirth((java.sql.Date) dateOfBirth);
+            pc.setDateOfBirth(new java.sql.Date(dateOfBirth.getTime()));  // Correctly convert to java.sql.Date
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -152,5 +146,4 @@ public class ProtectedCharacteristicsRepositoryImplTest {
         pc.setLastUpdatedTimestamp(new Timestamp(System.currentTimeMillis()));
         return pc;
     }
-
 }
