@@ -1,7 +1,11 @@
 package uk.gov.hmcts.reform.pcqbackend.repository.impl;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -11,13 +15,11 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepositoryCustom;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,9 +31,13 @@ import static org.assertj.core.api.Assertions.assertThat;
     "spring.liquibase.enabled=false",
     "spring.flyway.enabled=true"
 })
-public class ProtectedCharacteristicsRepositoryImplTest {
+class ProtectedCharacteristicsRepositoryImplTest {
 
     private static final String ENCRYPTION_KEY = "ThisIsATestKeyForEncryption";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProtectedCharacteristicsRepositoryImplTest.class);
+
+    private static final String NA = "N/A";
 
     @Autowired
     @Qualifier("protectedCharacteristicsRepositoryImpl")
@@ -103,11 +109,11 @@ public class ProtectedCharacteristicsRepositoryImplTest {
         pc.setPartyId(id);
         pc.setChannel(1);
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             Date dateOfBirth = sdf.parse(dob);
             pc.setDateOfBirth(new java.sql.Date(dateOfBirth.getTime()));  // Correctly convert to java.sql.Date
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("getProtectedCharacteristics", e);
         }
         pc.setCompletedDate(new Timestamp(System.currentTimeMillis()));
         pc.setServiceId(id);
@@ -119,14 +125,14 @@ public class ProtectedCharacteristicsRepositoryImplTest {
         pc.setEnglishLanguageLevel(2);
         pc.setSex(1);
         pc.setGenderDifferent(0);
-        pc.setOtherGender("N/A");
+        pc.setOtherGender(NA);
         pc.setSexuality(1);
-        pc.setOtherSexuality("N/A");
+        pc.setOtherSexuality(NA);
         pc.setMarriage(1);
         pc.setEthnicity(1);
-        pc.setOtherEthnicity("N/A");
+        pc.setOtherEthnicity(NA);
         pc.setReligion(1);
-        pc.setOtherReligion("N/A");
+        pc.setOtherReligion(NA);
         pc.setDisabilityConditions(0);
         pc.setDisabilityImpact(0);
         pc.setDisabilityVision(0);
@@ -139,7 +145,7 @@ public class ProtectedCharacteristicsRepositoryImplTest {
         pc.setDisabilityStamina(0);
         pc.setDisabilitySocial(0);
         pc.setDisabilityOther(0);
-        pc.setOtherDisabilityDetails("N/A");
+        pc.setOtherDisabilityDetails(NA);
         pc.setDisabilityNone(1);
         pc.setPregnancy(0);
         pc.setOptOut(false);
