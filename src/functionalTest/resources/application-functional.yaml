@@ -1,5 +1,5 @@
 targetInstance: ${TEST_URL:http://localhost:4550}
-jwt_test_secret: ${JWT_SECRET:JwtSecretKey}
+jwt_test_secret: ${JWT_SECRET:a-very-long-and-boring-secret-key}
 backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
 
 management:

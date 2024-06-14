@@ -1,12 +1,12 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcq.commons.model.SasTokenResponse;
@@ -24,6 +24,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @Slf4j
+@ExtendWith(MockitoExtension.class)
 class SasTokenControllerTest {
 
     @InjectMocks
@@ -51,12 +52,6 @@ class SasTokenControllerTest {
     private static final String RESPONSE_HAS_CORRECT_OUTPUT = "Response is showing correct output.";
     private static final String BULK_SCAN_SERVICE_NAME = "bulkscan";
 
-    @BeforeEach
-    void setUp() {
-        this.sasTokenController = new SasTokenController();
-        MockitoAnnotations.initMocks(this);
-    }
-
     /**
      * This method tests the generateBulkScanSasToken API to generate a SAS token.
      * The response status code will be 200.
@@ -68,13 +63,13 @@ class SasTokenControllerTest {
         try {
             when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
             when(authorisedServices.hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME)).thenReturn(true);
-            when(sasTokenService.generateSasToken(BULK_SCAN_SERVICE_NAME)).thenReturn(SAS_TOKEN);
+            when(sasTokenService.generateSasToken()).thenReturn(SAS_TOKEN);
 
             ResponseEntity<SasTokenResponse> actual =
                 sasTokenController.generateBulkScanSasToken(SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
-            verify(sasTokenService, times(1)).generateSasToken(BULK_SCAN_SERVICE_NAME);
+            verify(sasTokenService, times(1)).generateSasToken();
             assertEquals(SAS_TOKEN, actual.getBody().getSasToken(), RESPONSE_HAS_CORRECT_OUTPUT);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), RESPONSE_STATUS_OK);
 
@@ -118,7 +113,7 @@ class SasTokenControllerTest {
         try {
             when(authService.authenticate(SERVICE_AUTH_HEADER)).thenReturn(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
             when(authorisedServices.hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME)).thenReturn(true);
-            when(sasTokenService.generateSasToken(BULK_SCAN_SERVICE_NAME))
+            when(sasTokenService.generateSasToken())
                 .thenThrow(new UnableToGenerateSasTokenException(
                     new Exception(RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN)));
 
@@ -126,7 +121,7 @@ class SasTokenControllerTest {
 
         } catch (UnableToGenerateSasTokenException unableToGenerateException) {
             verify(authorisedServices, times(1)).hasService(REFORM_SCAN_BLOB_ROUTER_S2S_NAME);
-            verify(sasTokenService, times(1)).generateSasToken(BULK_SCAN_SERVICE_NAME);
+            verify(sasTokenService, times(1)).generateSasToken();
             assertEquals(RESPONSE_MESSAGE_UNABLE_TO_GENERATE_TOKEN, unableToGenerateException.getCause().getMessage(),
                          RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN);
 

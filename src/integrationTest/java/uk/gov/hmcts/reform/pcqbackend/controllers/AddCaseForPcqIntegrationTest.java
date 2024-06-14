@@ -38,7 +38,6 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     public static final String HTTP_OK = "200";
     public static final String HTTP_BAD_REQUEST = "400";
     public static final String RESPONSE_SUCCESS_MSG = "Successfully updated";
-    public static final String EXCEPTION_MSG = "Exception while executing test";
 
     private static final String ASSERT_MESSAGE_PCQ = "PCQId not valid";
     private static final String ASSERT_MESSAGE_STATUS = "Response Status not valid";

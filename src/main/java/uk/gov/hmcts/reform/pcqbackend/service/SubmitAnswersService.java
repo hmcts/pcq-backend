@@ -50,8 +50,6 @@ public class SubmitAnswersService extends BaseService {
                                 Environment environment) {
         super(environment);
         this.protectedCharacteristicsRepository = protectedCharacteristicsRepository;
-
-
     }
 
     @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
@@ -74,14 +72,11 @@ public class SubmitAnswersService extends BaseService {
                 protectedCharacteristics = protectedCharacteristicsRepository
                     .findByPcqId(answerRequest.getPcqId(), getEncryptionKey());
             } else {
-                throw new Exception("PCQ Id is blank or null.");
+                throw new InvalidRequestException("PCQ Id is blank or null.", HttpStatus.BAD_REQUEST);
             }
 
             ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
-                // Populate last_updated_timestamp
-                createCharacteristics.setLastUpdatedTimestamp(createCharacteristics.getCompletedDate());
-
                 // Create the new PCQ Answers record.
                 protectedCharacteristicsRepository.saveProtectedCharacteristicsWithEncryption(
                     createCharacteristics, getEncryptionKey());
@@ -313,7 +308,7 @@ public class SubmitAnswersService extends BaseService {
 
     private String validateAndReturnCorrelationId(List<String> headers) throws InvalidRequestException {
         String coRelationId = ConversionUtil.validateRequestHeader(headers);
-        coRelationId = coRelationId.replaceAll("[\n|\r|\t]", "_");
+        coRelationId = coRelationId.replaceAll("[\n\r\t]", "_");
 
         return coRelationId;
     }

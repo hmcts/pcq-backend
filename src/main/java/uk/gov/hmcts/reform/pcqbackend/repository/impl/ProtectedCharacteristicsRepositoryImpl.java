@@ -12,7 +12,7 @@ public class ProtectedCharacteristicsRepositoryImpl implements ProtectedCharacte
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final String insertProtectedCharacteristicsWithEncryption =
+    private static final String INSERT_PCQ_ENCRYPTED =
         "INSERT INTO protected_characteristics "
             + "(pcq_Id, DCN_NUMBER, FORM_ID,CASE_ID, PARTY_ID, CHANNEL, COMPLETED_DATE, SERVICE_ID, ACTOR, "
             + " VERSION_NUMBER, DOB_PROVIDED, DOB, LANGUAGE_MAIN, LANGUAGE_OTHER, ENGLISH_LANGUAGE_LEVEL, "
@@ -53,7 +53,7 @@ public class ProtectedCharacteristicsRepositoryImpl implements ProtectedCharacte
     public void saveProtectedCharacteristicsWithEncryption(
         ProtectedCharacteristics pc,
         String encryptionKey) {
-        Query insertQuery = entityManager.createNativeQuery(insertProtectedCharacteristicsWithEncryption);
+        Query insertQuery = entityManager.createNativeQuery(INSERT_PCQ_ENCRYPTED);
 
         insertQuery.setParameter("pcqId", pc.getPcqId())
             .setParameter("dcnNumber", pc.getDcnNumber())

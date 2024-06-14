@@ -1,7 +1,10 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -13,7 +16,7 @@ import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
-import java.security.Security;
+import java.io.IOException;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -79,9 +82,7 @@ class SubmitAnswersServiceTest {
 
     @BeforeEach
     void setUp() {
-
-        MockitoAnnotations.initMocks(this);
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        MockitoAnnotations.openMocks(this);
     }
 
 
@@ -367,33 +368,10 @@ class SubmitAnswersServiceTest {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Success");
-        //String pcqId = TEST_PCQ_ID;
 
         try {
             String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
             PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-
-            /*int resultCount = 1;
-            int dobProvided = 1;
-            when(protectedCharacteristicsRepository.updateCharacteristics(
-                                                        dobProvided,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,null,
-                                                      null,true,
-                                                      pcqId,null))
-                                .thenReturn(resultCount);*/
 
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);
@@ -690,82 +668,58 @@ class SubmitAnswersServiceTest {
 
     }
 
-    @Test
-    void testSubmitMainLanguageEnglish() {
-        Integer mainLanguage = 4;
-        String fileName = "JsonTestFiles/MainLanguageAnswerEnglish.json";
-        String createdMessage = "Successfully created english language";
-        updateLanguage(mainLanguage,fileName,createdMessage);
-    }
-
-    @Test
-    void testSubmitMainLanguageWelsh() {
-        Integer mainLanguage = 3;
-        String fileName = "JsonTestFiles/MainLanguageAnswerWelsh.json";
-        String createdMessage = "Successfully created Welsh language";
-        updateLanguage(mainLanguage,fileName,createdMessage);
-    }
-
-
-    //Test English or welsh option as well for backward compatibility
-    @Test
-    void testSubmitMainLanguageEnglishOrWelsh() {
-        Integer mainLanguage = 1;
-        String fileName = "JsonTestFiles/MainLanguageEnglishOrWelsh.json";
-        String createdMessage = "Successfully created English or Welsh language";
-        updateLanguage(mainLanguage,fileName,createdMessage);
-    }
-
-    public void updateLanguage(Integer mainLanguage, String fileName, String createdMessage) {
+    @DisplayName("Test main language creation")
+    @ParameterizedTest
+    @CsvSource({
+        "4,JsonTestFiles/MainLanguageAnswerEnglish.json,Successfully created english language",
+        "3,JsonTestFiles/MainLanguageAnswerWelsh.json,Successfully created Welsh language",
+        "1,JsonTestFiles/MainLanguageEnglishOrWelsh.json,Successfully created English or Welsh language"
+    })
+    void testSubmitMainLanguage(int mainLanguage, String fileName, String createdMessage) throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn(createdMessage);
         String pcqId = TEST_PCQ_ID;
-        try {
-
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 1;
-            int dobProvided = 1;
-            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
-
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp, false,pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
-
-            String jsonStringRequest = jsonStringFromFile(fileName);
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
-
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
-
-            Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        int resultCount = 1;
+        int dobProvided = 1;
+        Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, mainLanguage,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null,
+                                                                      testTimeStamp, false,pcqId, testTimeStamp)
+        ).thenReturn(resultCount);
+
+        String jsonStringRequest = jsonStringFromFile(fileName);
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(
+            getTestHeader(), pcqAnswerRequest);
+
+        assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+        Object responseMap = responseEntity.getBody();
+        assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
     }
 
 }

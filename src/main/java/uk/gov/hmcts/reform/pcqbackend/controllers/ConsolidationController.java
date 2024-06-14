@@ -6,9 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
@@ -36,7 +34,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(path = "/pcq/backend/consolidation")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 @Tag(name = "PCQ BackEnd - API for consolidation service operations.",
      description = "This is the Protected Characteristics "
@@ -50,11 +48,9 @@ public class ConsolidationController {
     private static final String BAD_REQUEST_ERROR_MESSAGE_PROPERTY_NAME = "api-error-messages.bad_request";
     private static final String INTERNAL_ERROR_MESSAGE_PROPERTY_NAME = "api-error-messages.internal_error";
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
-    @Autowired
-    private ConsolidationService consolidationService;
+    private final ConsolidationService consolidationService;
 
     @Operation(
         tags = "PUT end-points", summary = "Add case information on a PCQ answers record.",
@@ -75,7 +71,6 @@ public class ConsolidationController {
         path = "/addCaseForPCQ/{pcqId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<SubmitResponse> addCaseForPcq(@RequestHeader HttpHeaders headers,
                                                         @PathVariable("pcqId") @NotBlank String pcqId,
                                                         @NotBlank String caseId) {
@@ -109,16 +104,17 @@ public class ConsolidationController {
         path = "/pcqRecordWithoutCase",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<PcqRecordWithoutCaseResponse> getPcqRecordWithoutCase(@RequestHeader HttpHeaders headers) {
 
         try {
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 headers.get(environment.getProperty(CO_RELATIONID_PROPERTY_NAME)));
 
-            return ConversionUtil.generatePcqRecordWithoutCaseResponse(protectedCharacteristicsList, HttpStatus.OK,
-                                                                 environment.getProperty(
-                                                                     ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME));
+            return ConversionUtil.generatePcqRecordWithoutCaseResponse(
+                protectedCharacteristicsList,
+                HttpStatus.OK,
+                environment.getProperty(ACCEPTED_ERROR_MESSAGE_PROPERTY_NAME)
+            );
 
         } catch (InvalidRequestException ive) {
             log.error("getPcqRecordWithoutCase API call failed due to error - {}", ive.getMessage(), ive);

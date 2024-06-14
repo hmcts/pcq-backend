@@ -6,9 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
@@ -39,7 +37,7 @@ import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
  */
 @RestController
 @RequestMapping(path = "/pcq/backend")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 @Tag(name = "PCQ BackEnd - API for PCQ database operations.", description = "This is the Protected Characteristics "
     + "Back-End API that will save user's answers to the database. "
@@ -49,14 +47,11 @@ public class PcqAnswersController {
     private static final String OPT_OUT_FLAG = "Y";
     private static final String TRUE = "true";
 
-    @Autowired
-    private SubmitAnswersService submitAnswersService;
+    private final SubmitAnswersService submitAnswersService;
 
-    @Autowired
-    private DeleteService deleteService;
+    private final DeleteService deleteService;
 
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
 
     @PostMapping(path = "/submitAnswers", consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,7 +82,6 @@ public class PcqAnswersController {
         responseCode = "500",
         description = "General/Un-recoverable error.",
         content = @Content)
-    @ResponseBody
     public ResponseEntity<Object> submitAnswers(@RequestHeader HttpHeaders headers,
                                                 @RequestBody PcqAnswerRequest answerRequest) {
 
@@ -129,7 +123,6 @@ public class PcqAnswersController {
         path = "/getAnswer/{pcqId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<PcqAnswerResponse> getAnswersByPcqId(@PathVariable("pcqId") @NotBlank String pcqId) {
 
         ProtectedCharacteristics protectedCharacteristics = submitAnswersService
@@ -163,7 +156,6 @@ public class PcqAnswersController {
         path = "/deletePcqRecord/{pcqId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    @ResponseBody
     public ResponseEntity<Object> deletePcqRecord(@PathVariable("pcqId") @NotBlank String pcqId) {
         if (environment.getProperty("security.db.allow_delete_record") != null
             && TRUE.equals(environment.getProperty("security.db.allow_delete_record"))) {
