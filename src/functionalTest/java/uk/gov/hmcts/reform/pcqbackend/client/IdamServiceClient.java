@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.client;
 
-import com.google.common.collect.ImmutableMap;
 import com.warrenstrange.googleauth.GoogleAuthenticator;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -18,7 +17,7 @@ public class IdamServiceClient {
     @SuppressWarnings("PMD.UseConcurrentHashMap")
     public String s2sSignIn(String s2sName, String s2sSecret, String s2sUrl) {
 
-        Map<String, Object> params = ImmutableMap.of(
+        Map<String, Object> params = Map.of(
             "microservice", s2sName,
             "oneTimePassword", new GoogleAuthenticator().getTotpPassword(s2sSecret)
         );

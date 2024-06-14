@@ -49,7 +49,6 @@ storage:
   url: ${STORAGE_URL:http://0.0.0.0:10000}
   blob_pcq_container: ${STORAGE_BLOB_PCQ_CONTAINER:pcq}
 
-#If you use a database then uncomment below lines and update db properties accordingly
 spring:
   application:
     name: Protected Characteristics Questions Functional Tests
@@ -66,3 +65,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
+
+logging:
+  level:
+    root: INFO
+    uk.gov.hmcts.reform.pcqbackend: DEBUG
