@@ -1,7 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.repository.impl;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -31,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     "spring.liquibase.enabled=false",
     "spring.flyway.enabled=true"
 })
-@SuppressWarnings({"PMD.TooManyMethods","PMD.ExcessiveParameterList", "PMD.LongLine"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveParameterList"})
 class ProtectedCharacteristicsRepositoryImplTest {
 
     private static final String ENCRYPTION_KEY = "ThisIsATestKeyForEncryption";
@@ -46,9 +44,6 @@ class ProtectedCharacteristicsRepositoryImplTest {
 
     @Autowired
     private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
-
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @BeforeEach
     public void setUp() {
@@ -91,15 +86,18 @@ class ProtectedCharacteristicsRepositoryImplTest {
         // Call the method under test
         protectedCharacteristicsRepository.updateCharacteristics(
             npc.getDobProvided(), npc.getDateOfBirth(), npc.getMainLanguage(), npc.getOtherLanguage(),
-                                      npc.getEnglishLanguageLevel(), npc.getSex(), npc.getGenderDifferent(), npc.getOtherGender(),
-                                      npc.getSexuality(), npc.getOtherSexuality(), npc.getMarriage(), npc.getEthnicity(),
-                                      npc.getOtherEthnicity(), npc.getReligion(), npc.getOtherReligion(),
-                                      npc.getDisabilityConditions(), npc.getDisabilityImpact(), npc.getDisabilityVision(),
-                                      npc.getDisabilityHearing(), npc.getDisabilityMobility(), npc.getDisabilityDexterity(),
-                                      npc.getDisabilityLearning(), npc.getDisabilityMemory(), npc.getDisabilityMentalHealth(),
-                                      npc.getDisabilityStamina(), npc.getDisabilitySocial(), npc.getDisabilityOther(),
-                                      npc.getOtherDisabilityDetails(), npc.getDisabilityNone(), npc.getPregnancy(),
-                                      npc.getLastUpdatedTimestamp(), npc.getOptOut(), npc.getPcqId(), npc.getCompletedDate());
+            npc.getEnglishLanguageLevel(), npc.getSex(), npc.getGenderDifferent(),
+            npc.getOtherGender(),
+            npc.getSexuality(), npc.getOtherSexuality(), npc.getMarriage(),
+            npc.getEthnicity(),
+            npc.getOtherEthnicity(), npc.getReligion(), npc.getOtherReligion(),
+            npc.getDisabilityConditions(), npc.getDisabilityImpact(), npc.getDisabilityVision(),
+            npc.getDisabilityHearing(), npc.getDisabilityMobility(), npc.getDisabilityDexterity(),
+            npc.getDisabilityLearning(), npc.getDisabilityMemory(), npc.getDisabilityMentalHealth(),
+            npc.getDisabilityStamina(), npc.getDisabilitySocial(), npc.getDisabilityOther(),
+            npc.getOtherDisabilityDetails(), npc.getDisabilityNone(), npc.getPregnancy(),
+            npc.getLastUpdatedTimestamp(), npc.getOptOut(), npc.getPcqId(), npc.getCompletedDate()
+        );
 
         // get record
         final Optional<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
@@ -175,7 +173,8 @@ class ProtectedCharacteristicsRepositoryImplTest {
     void shouldDeleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore() {
         Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
 
-        protectedCharacteristicsRepository.deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+        protectedCharacteristicsRepository
+            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
 
         // get record
         final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
