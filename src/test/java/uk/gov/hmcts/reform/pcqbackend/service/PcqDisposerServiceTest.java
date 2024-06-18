@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -9,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
+import uk.gov.hmcts.reform.pcqbackend.util.LeaderContext;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -29,15 +31,24 @@ class PcqDisposerServiceTest {
     @Mock
     ProtectedCharacteristicsRepository pcqRepository;
 
+    @Mock
+    LeaderContext leaderContext;
+
     @InjectMocks
     private PcqDisposerService pcqDisposerService;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
+        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
+    }
 
     @Test
     void disposePcqInDryRunModeShouldNotCallDelete() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
             .thenReturn(List.of(new ProtectedCharacteristics()));
+        when(leaderContext.isLeader()).thenReturn(true);
 
         pcqDisposerService.disposePcq();
 
@@ -50,13 +61,12 @@ class PcqDisposerServiceTest {
 
     @Test
     void disposePcqShouldUseDaysInQueries() {
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         ReflectionTestUtils.setField(pcqDisposerService, "keepWithCase", 7);
         ReflectionTestUtils.setField(pcqDisposerService, "keepNoCase", 14);
 
         when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
             .thenReturn(List.of(new ProtectedCharacteristics()));
+        when(leaderContext.isLeader()).thenReturn(true);
 
         pcqDisposerService.disposePcq();
 
@@ -89,10 +99,9 @@ class PcqDisposerServiceTest {
 
     @Test
     void disposePcqShouldCallDelete() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
             .thenReturn(List.of(new ProtectedCharacteristics()));
+        when(leaderContext.isLeader()).thenReturn(true);
 
         pcqDisposerService.disposePcq();
 
@@ -110,7 +119,17 @@ class PcqDisposerServiceTest {
     }
 
     @Test
+    void disposeShouldNotRunIfNotLeader() {
+        when(leaderContext.isLeader()).thenReturn(false);
+
+        pcqDisposerService.disposePcq();
+
+        verifyNoMoreInteractions(pcqRepository);
+    }
+
+    @Test
     void disposePcqShouldNotRunIfDisabled() {
+        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", false);
         pcqDisposerService.disposePcq();
 
         verifyNoMoreInteractions(pcqRepository);

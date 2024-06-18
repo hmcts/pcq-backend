@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
+import uk.gov.hmcts.reform.pcqbackend.util.LeaderContext;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -18,6 +19,8 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class PcqDisposerService {
+
+    private final LeaderContext context;
 
     @Value("${disposer.dry-run:true}")
     private boolean dryRun;
@@ -37,6 +40,11 @@ public class PcqDisposerService {
     public void disposePcq() {
         if (!disposerEnabled) {
             log.info("PCQ disposer is disabled, not running.");
+            return;
+        }
+
+        if (!context.isLeader()) {
+            log.info("PCQ disposer - not leader, not running.");
             return;
         }
 

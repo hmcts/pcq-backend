@@ -65,6 +65,12 @@ authorised.services: pcq_consolidation_service,reform_scan_blob_router
 spring:
   application:
     name: Protected Characteristics Questions
+  cloud:
+    kubernetes:
+      leader:
+        config-map-name: pcq-backend-leader-election
+        namespace: pcq
+        role: pcq-backend-leader
   config:
     import: "optional:configtree:/mnt/secrets/pcq/"
   datasource:

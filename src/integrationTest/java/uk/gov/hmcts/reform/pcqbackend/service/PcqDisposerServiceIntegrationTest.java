@@ -6,6 +6,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.integration.leader.event.OnGrantedEvent;
+import org.springframework.integration.leader.event.OnRevokedEvent;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
@@ -26,19 +29,25 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     private static final int KEEP_NO_CASE = 183;
 
+    private static final String DISPOSER_ENABLED_FIELD = "disposerEnabled";
+
     @Autowired
     PcqDisposerService pcqDisposerService;
 
     @Autowired
     ProtectedCharacteristicsRepository pcqRepository;
 
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+
     @Rule
     public OutputCaptureRule capture = new OutputCaptureRule();
 
     @Test
     public void testDisposePcqLogsCollectedPcqs() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
+        applicationEventPublisher.publishEvent(new OnGrantedEvent(this, () -> true, null));
+        setField(DISPOSER_ENABLED_FIELD, true);
+        setField("dryRun", true);
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
         ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
@@ -61,8 +70,9 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     @Test
     public void testDisposePcqLogsDeletesPcqs() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
+        applicationEventPublisher.publishEvent(new OnGrantedEvent(this, () -> true, null));
+        setField(DISPOSER_ENABLED_FIELD, true);
+        setField("dryRun", false);
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
         ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
@@ -86,7 +96,8 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     @Test
     public void testDisposePcqDoesNotRunIfDisabled() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", false);
+        applicationEventPublisher.publishEvent(new OnGrantedEvent(this, () -> true, null));
+        setField(DISPOSER_ENABLED_FIELD, false);
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
@@ -105,6 +116,35 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
         assertThat(logMessages)
             .withFailMessage("Didn't expect to find \"PCQ disposer completed\" in the logs, but found")
             .doesNotContain("PCQ disposer completed");
+    }
+
+    @Test
+    public void shouldNotRunIfNotLeader() {
+        applicationEventPublisher.publishEvent(new OnRevokedEvent(this, () -> false, null));
+        setField(DISPOSER_ENABLED_FIELD, true);
+        setField("dryRun", false);
+        insertPcq(Instant.now(), CASE_ID);
+        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
+        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
+
+        pcqDisposerService.disposePcq();
+
+        List<ProtectedCharacteristics> pcqList = pcqRepository.findAll();
+        assertThat(pcqList).hasSize(3);
+
+        String logMessages = capture.getAll();
+        String expectedMsg = "PCQ disposer - not leader, not running.";
+        assertThat(logMessages)
+            .withFailMessage("Expected to find + \"" + expectedMsg + "\" in the logs, but didn't find")
+            .contains(expectedMsg);
+
+        assertThat(logMessages)
+            .withFailMessage("Didn't expect to find \"PCQ disposer completed\" in the logs, but found")
+            .doesNotContain("PCQ disposer completed");
+    }
+
+    private void setField(String fieldName, Object value) {
+        ReflectionTestUtils.setField(pcqDisposerService, fieldName, value);
     }
 
 
