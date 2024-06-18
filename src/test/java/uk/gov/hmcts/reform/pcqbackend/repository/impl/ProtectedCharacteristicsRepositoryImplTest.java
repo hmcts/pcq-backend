@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     "spring.liquibase.enabled=false",
     "spring.flyway.enabled=true"
 })
+@SuppressWarnings({"PMD.TooManyMethods","PMD.ExcessiveParameterList", "PMD.LongLine"})
 class ProtectedCharacteristicsRepositoryImplTest {
 
     private static final String ENCRYPTION_KEY = "ThisIsATestKeyForEncryption";
@@ -61,7 +62,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
     }
 
     @Test
-    void shouldSearchByPcqId() {
+    void shouldFindByPcqId() {
         final Optional<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
             .findByPcqId("1", ENCRYPTION_KEY);
 
@@ -70,12 +71,42 @@ class ProtectedCharacteristicsRepositoryImplTest {
     }
 
     @Test
-    void shouldSearchByDcnNumber() {
+    void shouldFindByDcnNumber() {
         final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
             .findByDcnNumber("1", ENCRYPTION_KEY);
 
         assertThat(pc).isNotEmpty();
         assertThat(pc.get(0).getDcnNumber()).isEqualTo("1");
+    }
+
+    @Test
+    void shouldUpdateCharacteristics() {
+        String id = "1";
+        String dob = "2000-01-01";
+        ProtectedCharacteristics npc = getProtectedCharacteristics(id, dob);
+
+        // Modify one of the fields
+        npc.setMainLanguage(2);
+
+        // Call the method under test
+        protectedCharacteristicsRepository.updateCharacteristics(
+            npc.getDobProvided(), npc.getDateOfBirth(), npc.getMainLanguage(), npc.getOtherLanguage(),
+                                      npc.getEnglishLanguageLevel(), npc.getSex(), npc.getGenderDifferent(), npc.getOtherGender(),
+                                      npc.getSexuality(), npc.getOtherSexuality(), npc.getMarriage(), npc.getEthnicity(),
+                                      npc.getOtherEthnicity(), npc.getReligion(), npc.getOtherReligion(),
+                                      npc.getDisabilityConditions(), npc.getDisabilityImpact(), npc.getDisabilityVision(),
+                                      npc.getDisabilityHearing(), npc.getDisabilityMobility(), npc.getDisabilityDexterity(),
+                                      npc.getDisabilityLearning(), npc.getDisabilityMemory(), npc.getDisabilityMentalHealth(),
+                                      npc.getDisabilityStamina(), npc.getDisabilitySocial(), npc.getDisabilityOther(),
+                                      npc.getOtherDisabilityDetails(), npc.getDisabilityNone(), npc.getPregnancy(),
+                                      npc.getLastUpdatedTimestamp(), npc.getOptOut(), npc.getPcqId(), npc.getCompletedDate());
+
+        // get record
+        final Optional<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
+            .findByPcqId("1", ENCRYPTION_KEY);
+
+        assertThat(pc).isPresent();
+        assertThat(pc.get().getMainLanguage()).isEqualTo(2);
     }
 
     @Test
@@ -91,6 +122,21 @@ class ProtectedCharacteristicsRepositoryImplTest {
     }
 
     @Test
+    void shouldFindByCaseIdIsNullAndCompletedDateGreaterThan() {
+        String priorTimestamp = "2023-06-13 00:00:00";
+        protectedCharacteristicsRepository.updateCase(null, "1");
+
+        Timestamp completedDate = Timestamp.valueOf(priorTimestamp);
+
+        // get record
+        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
+            .findByCaseIdIsNullAndCompletedDateGreaterThan(completedDate, ENCRYPTION_KEY);
+
+        assertThat(pc).isNotEmpty();
+        assertThat(pc.get(0).getPcqId()).isEqualTo("1");
+    }
+
+    @Test
     void shouldDeleteRecord() {
         protectedCharacteristicsRepository.deletePcqRecord("1");
 
@@ -98,6 +144,60 @@ class ProtectedCharacteristicsRepositoryImplTest {
             .findByPcqId("1", ENCRYPTION_KEY);
 
         assertThat(pc).isNotPresent();
+    }
+
+    @Test
+    void shouldFindAllByCaseIdNotNullAndLastUpdatedTimestampBefore() {
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+
+        // get record
+        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
+            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+
+        assertThat(pc).isNotEmpty();
+    }
+
+    @Test
+    void shouldFindAllByCaseIdNullAndLastUpdatedTimestampBefore() {
+        protectedCharacteristicsRepository.updateCase(null, "1");
+
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+
+        // get record
+        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
+            .findAllByCaseIdNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+
+        assertThat(pc).isNotEmpty();
+        assertThat(pc.get(0).getPcqId()).isEqualTo("1");
+    }
+
+    @Test
+    void shouldDeleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore() {
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+
+        protectedCharacteristicsRepository.deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+
+        // get record
+        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
+            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+
+        assertThat(pc).isEmpty();
+    }
+
+    @Test
+    void shouldDeleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore() {
+        protectedCharacteristicsRepository.updateCase(null, "1");
+
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+
+        protectedCharacteristicsRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+
+        // get record
+        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
+            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+
+        assertThat(pc).isNotEmpty();
+        assertThat(pc.get(0).getPcqId()).isEqualTo("2");
     }
 
     private ProtectedCharacteristics getProtectedCharacteristics(final String id, final String dob) {
