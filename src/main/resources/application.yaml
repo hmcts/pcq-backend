@@ -97,7 +97,7 @@ spring:
 #      abandon-when-percentage-full: 0
   # disable flyway migration as it is done by the jenkins pipeline
   flyway:
-    enabled: false
+    enabled: ${PCQ_FLYWAY_MIGRATE_DB:false}
   jpa:
     properties:
       hibernate:
