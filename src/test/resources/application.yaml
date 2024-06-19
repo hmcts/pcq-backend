@@ -47,43 +47,16 @@ authorised.services: reform_scan_blob_router
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:
   application:
-    name: Spring Boot Template
+    name: Protected Characteristics Questions Unit Tests
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:11.17-alpine://localhost/pcq
-#  datasource:
-#    driver-class-name: org.postgresql.Driver
-#    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}${DB_OPTIONS:}
-#    username: ${DB_USER_NAME}
-#    password: ${DB_PASSWORD}
-#    properties:
-#      charSet: UTF-8
-#    hikari:
-#      minimumIdle: 2
-#      maximumPoolSize: 10
-#      idleTimeout: 10000
-#      poolName: {to-be-defined}HikariCP
-#      maxLifetime: 7200000
-#      connectionTimeout: 30000
-#  jpa:
-#    properties:
-#      hibernate:
-#        jdbc:
-#          lob:
-#            # silence the 'wall-of-text' - unnecessary exception throw about blob types
-#            non_contextual_creation: true
+    url: jdbc:tc:postgresql:15-alpine://localhost/pcq
   jpa:
-    #    properties:
-    #      hibernate:
-    #        jdbc:
-    #          lob:
-    #            # silence the 'wall-of-text' - unnecessary exception throw about blob types
-    #            non_contextual_creation: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
   flyway:
-    locations: classpath:db/migration,classpath:db/integtest
+    locations: classpath:db/migration
 
 flyway:
   noop:

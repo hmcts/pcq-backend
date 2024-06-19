@@ -25,8 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(properties = {
-    "spring.jpa.hibernate.ddl-auto=update",
-    "spring.liquibase.enabled=false",
+    "spring.jpa.hibernate.ddl-auto=none",
     "spring.flyway.enabled=true"
 })
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveParameterList"})
