@@ -95,6 +95,9 @@ spring:
 #      remove-abandoned-timeout: 60
 #      log-abandoned: true
 #      abandon-when-percentage-full: 0
+  # disable flyway migration as it is done by the jenkins pipeline
+  flyway:
+    enabled: false
   jpa:
     properties:
       hibernate:
