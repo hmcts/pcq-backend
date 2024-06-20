@@ -49,23 +49,6 @@ storage:
   url: ${STORAGE_URL:http://0.0.0.0:10000}
   blob_pcq_container: ${STORAGE_BLOB_PCQ_CONTAINER:pcq}
 
-spring:
-  application:
-    name: Protected Characteristics Questions Functional Tests
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
-    username: ${PCQ_DB_USERNAME:pcquser}
-    password: ${PCQ_DB_PASSWORD:}
-    properties:
-      charSet: UTF-8
-  flyway:
-    enabled: false
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: none
-
 logging:
   level:
     root: INFO
