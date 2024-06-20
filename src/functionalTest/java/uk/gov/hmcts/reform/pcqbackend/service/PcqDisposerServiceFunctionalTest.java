@@ -1,8 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
 import lombok.extern.slf4j.Slf4j;
-import net.serenitybdd.annotations.WithTag;
-import net.serenitybdd.annotations.WithTags;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -26,7 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ActiveProfiles("functional")
-@WithTags({@WithTag("testType:Functional")})
 @SpringBootTest
 public class PcqDisposerServiceFunctionalTest {
 
