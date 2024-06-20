@@ -1,11 +1,11 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import jakarta.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.test.context.ActiveProfiles;
@@ -25,17 +25,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ActiveProfiles("functional")
-@SpringBootTest(classes = Application.class)
+@SpringBootTest
 public class PcqDisposerServiceFunctionalTest {
 
     public static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
 
     private List<String> createdPcqs;
 
-    @Autowired
+    @Inject
     PcqDisposerService pcqDisposerService;
 
-    @Autowired
+    @Inject
     ProtectedCharacteristicsRepository pcqRepository;
 
     @Rule
