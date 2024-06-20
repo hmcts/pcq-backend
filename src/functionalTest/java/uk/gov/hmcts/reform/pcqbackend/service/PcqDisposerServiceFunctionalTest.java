@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("functional")
 @SpringBootTest
 @ExtendWith(OutputCaptureExtension.class)
-public class PcqDisposerServiceFunctionalTest {
+class PcqDisposerServiceFunctionalTest {
 
     public static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
 
