@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.pcqbackend.Application;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
@@ -24,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @ActiveProfiles("functional")
-@SpringBootTest
+@SpringBootTest(classes = Application.class)
 public class PcqDisposerServiceFunctionalTest {
 
     public static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
