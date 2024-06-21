@@ -1,16 +1,20 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import net.serenitybdd.annotations.WithTag;
+import net.serenitybdd.annotations.WithTags;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.system.CapturedOutput;
-import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import uk.gov.hmcts.reform.pcqbackend.Application;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
@@ -22,12 +26,12 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @Slf4j
 @ActiveProfiles("functional")
-@SpringBootTest
-@ExtendWith(OutputCaptureExtension.class)
-class PcqDisposerServiceFunctionalTest {
+@WithTags({@WithTag("testType:Functional")})
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class PcqDisposerServiceFunctionalTest {
 
     public static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
 
@@ -39,7 +43,10 @@ class PcqDisposerServiceFunctionalTest {
     @Autowired
     ProtectedCharacteristicsRepository pcqRepository;
 
-    @BeforeEach
+    @Rule
+    public OutputCaptureRule capture = new OutputCaptureRule();
+
+    @Before
     public void setUp() {
         setDisposerServiceValue("keepWithCase", 3652);
         setDisposerServiceValue("keepNoCase", 4383);
@@ -57,13 +64,13 @@ class PcqDisposerServiceFunctionalTest {
         );
     }
 
-    @AfterEach
+    @After
     public void tearDown() {
         pcqRepository.deleteAllById(createdPcqs);
     }
 
     @Test
-    void testDisposePcqLogsCollectedPcqs(CapturedOutput output) {
+    public void testDisposePcqLogsCollectedPcqs() {
         setDisposerServiceValue("disposerEnabled", true);
         setDisposerServiceValue("dryRun", true);
 
@@ -71,11 +78,11 @@ class PcqDisposerServiceFunctionalTest {
 
         List<ProtectedCharacteristics> pcqList = pcqRepository.findAllById(createdPcqs);
         assertThat(pcqList).hasSize(6);
-        assertLogMessagesContain(output.getAll(), null, "Deleting old PCQs");
+        assertLogMessagesContain(capture.getAll(), null, "Deleting old PCQs");
     }
 
     @Test
-    void testDisposePcqLogsDeletesPcqs(CapturedOutput capture) {
+    public void testDisposePcqLogsDeletesPcqs() {
         setDisposerServiceValue("disposerEnabled", true);
         setDisposerServiceValue("dryRun", false);
 
@@ -87,7 +94,7 @@ class PcqDisposerServiceFunctionalTest {
     }
 
     @Test
-    void testDisposePcqDoesNotRunIfDisabled(CapturedOutput capture) {
+    public void testDisposePcqDoesNotRunIfDisabled() {
         setDisposerServiceValue("disposerEnabled", false);
 
         pcqDisposerService.disposePcq();
@@ -141,7 +148,6 @@ class PcqDisposerServiceFunctionalTest {
     }
 
     private void setDisposerServiceValue(String flag, Object value) {
-        log.error("PCQ Disposer service - {}", pcqDisposerService);
         ReflectionTestUtils.setField(pcqDisposerService, flag, value);
     }
 
