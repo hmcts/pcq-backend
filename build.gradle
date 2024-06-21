@@ -102,7 +102,6 @@ task unit(type: Test, description: 'Runs the unit tests.', group: 'Verification'
 }
 
 task functional(type: Test, description: 'Runs the functional tests.', group: 'Verification') {
-  useJUnit()
   systemProperty "scenario", System.getProperty('scenario')
 
   testClassesDirs = sourceSets.functionalTest.output.classesDirs
