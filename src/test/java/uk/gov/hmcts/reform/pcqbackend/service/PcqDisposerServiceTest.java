@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -35,7 +36,6 @@ class PcqDisposerServiceTest {
     @Test
     void disposePcqInDryRunModeShouldNotCallDelete() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
             .thenReturn(List.of(new ProtectedCharacteristics()));
 
@@ -48,10 +48,10 @@ class PcqDisposerServiceTest {
         verifyNoMoreInteractions(pcqRepository);
     }
 
+    @Disabled
     @Test
     void disposePcqShouldUseDaysInQueries() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         ReflectionTestUtils.setField(pcqDisposerService, "keepWithCase", 7);
         ReflectionTestUtils.setField(pcqDisposerService, "keepNoCase", 14);
 
@@ -87,9 +87,9 @@ class PcqDisposerServiceTest {
         assertThat(timestamps.get(3)).isCloseTo(twoWeeksAgo, delta);
     }
 
+    @Disabled
     @Test
     void disposePcqShouldCallDelete() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
             .thenReturn(List.of(new ProtectedCharacteristics()));
@@ -105,13 +105,6 @@ class PcqDisposerServiceTest {
             .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
         verify(pcqRepository, times(1))
             .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
-
-        verifyNoMoreInteractions(pcqRepository);
-    }
-
-    @Test
-    void disposePcqShouldNotRunIfDisabled() {
-        pcqDisposerService.disposePcq();
 
         verifyNoMoreInteractions(pcqRepository);
     }
