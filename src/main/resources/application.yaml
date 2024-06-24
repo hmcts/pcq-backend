@@ -30,10 +30,6 @@ api-config-params:
 
 disposer:
   enabled: ${PCQ_DISPOSER_ENABLED:false}
-  # extended cron version with seconds:
-  # https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/support/CronExpression.html#parse(java.lang.String)
-  # pass "-" to disable, e.g. cron: -
-  cron: ${PCQ_DISPOSER_SCHEDULE:0 17 23 * * SUN-THU}
   dry-run: ${PCQ_DISPOSER_DRY_RUN:true}
   # days to keep PCQs before deleting
   keep-with-case: ${PCQ_DAYS_TO_KEEP_WITH_CASEID:92}
@@ -100,13 +96,14 @@ spring:
 #      log-abandoned: true
 #      abandon-when-percentage-full: 0
   jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
         jdbc:
           lob:
             # silence the 'wall-of-text' - unnecessary exception throw about blob types
             non_contextual_creation: true
+  main:
+    web-application-type: ${PCQ_APPLICATION_TYPE:SERVLET}
 
 flyway:
   noop:

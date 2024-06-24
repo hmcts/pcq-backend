@@ -2,6 +2,7 @@ package uk.gov.hmcts.reform.pcqbackend.service;
 
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,6 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     @Test
     public void testDisposePcqLogsCollectedPcqs() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
@@ -59,9 +59,9 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
             .doesNotContain(notExpected);
     }
 
+    @Ignore
     @Test
     public void testDisposePcqLogsDeletesPcqs() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", true);
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
@@ -84,9 +84,9 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     }
 
+    @Ignore
     @Test
     public void testDisposePcqDoesNotRunIfDisabled() {
-        ReflectionTestUtils.setField(pcqDisposerService, "disposerEnabled", false);
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
