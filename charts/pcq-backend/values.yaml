@@ -52,11 +52,13 @@ job:
   schedule: "17 22 * * *" # 22:17 UTC
   aadIdentityName: pcq
   environment:
+    # this controls whether to start as the job or backend server
     PCQ_DISPOSER_JOB: true
     PCQ_DB_NAME: pcq
     PCQ_DB_HOST: pcq-backend-flexible-{{ .Values.global.environment }}.postgres.database.azure.com
     PCQ_DB_PORT: "5432"
     PCQ_DISPOSER_ENABLED: false
+    # NONE for job, SERVLET (default) for backend server
     PCQ_APPLICATION_TYPE: NONE
   keyVaults:
     pcq:
