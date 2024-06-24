@@ -13,6 +13,14 @@ java:
     DB_ENCRYPTION_ENABLED: "Yes"
     DB_ALLOW_DELETE_RECORD: "true"
     TEST_S2S_URL: "http://rpe-service-auth-provider-aat.service.core-compute-aat.internal"
+  keyVaults:
+    pcq:
+      resourceGroup: pcq
+      secrets:
+        - name: backend-POSTGRES-USER
+          alias: PCQ_DB_USERNAME1
+        - name: backend-POSTGRES-PASS
+          alias: PCQ_DB_PASSWORD1
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
