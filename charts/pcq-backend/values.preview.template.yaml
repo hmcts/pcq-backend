@@ -29,7 +29,6 @@ job:
   image: ${IMAGE_NAME}
   kind: CronJob
   schedule: "*/15 * * * *" # every 15 minutes
-  aadIdentityName: pcq
   environment:
     PCQ_DISPOSER_JOB: true
     PCQ_DB_NAME: pcq
