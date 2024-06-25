@@ -27,7 +27,6 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
-@ActiveProfiles("functional")
 @WithTags({@WithTag("testType:Functional")})
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
