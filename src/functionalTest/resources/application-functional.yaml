@@ -53,6 +53,7 @@ logging:
   level:
     root: INFO
     uk.gov.hmcts.reform.pcqbackend: DEBUG
+    org.hibernate.engine.jdbc: DEBUG
 
 spring:
   datasource:

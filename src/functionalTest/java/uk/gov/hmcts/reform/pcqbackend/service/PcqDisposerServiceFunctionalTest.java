@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pcqbackend.Application;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 @WithTags({@WithTag("testType:Functional")})
 @RunWith(SpringRunner.class)
+@ActiveProfiles("functional")
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PcqDisposerServiceFunctionalTest {
 
