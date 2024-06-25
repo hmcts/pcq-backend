@@ -1,5 +1,10 @@
 java:
   environment:
+    PCQ_DB_NAME: "{{ .Values.postgresql.auth.database}}"
+    PCQ_DB_USERNAME: "{{ .Values.postgresql.auth.username}}"
+    PCQ_DB_PASSWORD: "{{ .Values.postgresql.auth.password}}"
+    PCQ_DB_HOST: "{{ .Release.Name }}-postgresql"
+    PCQ_DB_PORT: "5432"
     FLYWAY_URL: "jdbc:postgresql://{{ .Release.Name }}-postgresql:5432/{{ .Values.postgresql.auth.database}}"
     FLYWAY_USER: "{{ .Values.postgresql.auth.username}}"
     FLYWAY_PASSWORD: "{{ .Values.postgresql.auth.password}}"
