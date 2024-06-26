@@ -41,7 +41,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
-        ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
+        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
 
         pcqDisposerService.disposePcq();
 
@@ -50,8 +50,8 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
         String logMessages = capture.getAll();
         assertThat(logMessages)
-            .withFailMessage("Expected to find \"PCQ id: \" in log message, but didn't find")
-            .contains("PCQ id: " + pcq.getPcqId());
+            .withFailMessage("Expected to find \"DELETABLE PCQ IDS: \" in log message, but didn't find")
+            .contains("DELETABLE PCQ IDS: [");
 
         String notExpected = "Deleting old PCQs";
         assertThat(logMessages)

@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,15 +43,18 @@ public class PcqDisposerService {
         List<ProtectedCharacteristics> pcqList = pcqRepository
             .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(caseCutoffTimestamp);
 
-        pcqList.addAll(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(noCaseCutoffTimestamp));
-        pcqList.forEach(
-            pcq -> log.info(
-                "PCQ id: {}, case id: {}, last updated {}",
-                pcq.getPcqId(),
-                pcq.getCaseId(),
-                pcq.getLastUpdatedTimestamp()
-            )
-        );
+        List<ProtectedCharacteristics> pcqListNoCaseIds = pcqRepository
+            .findAllByCaseIdNullAndLastUpdatedTimestampBefore(noCaseCutoffTimestamp);
+
+        log.info("PCQs # with case id present: {}", pcqList.size());
+        log.info("PCQs # with no case ids present: {}", pcqListNoCaseIds.size());
+
+        pcqList.addAll(pcqListNoCaseIds);
+
+        List<String> pcqIds = pcqList.stream().map(ProtectedCharacteristics::getPcqId).toList();
+
+        List<List<String>> splitLists = Lists.partition(pcqIds, 100);
+        splitLists.forEach(split -> log.info("DELETABLE PCQ IDS: {}", split));
 
         if (!dryRun && !pcqList.isEmpty()) {
             log.info("Deleting old PCQs for real... number to delete {}", pcqList.size());
