@@ -58,8 +58,8 @@ public class PcqDisposerService {
 
         if (!dryRun && !pcqList.isEmpty()) {
             log.info("Deleting old PCQs for real... number to delete {}", pcqList.size());
-            //pcqRepository.deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(caseCutoffTimestamp);
-            //pcqRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(noCaseCutoffTimestamp);
+            pcqRepository.deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(caseCutoffTimestamp);
+            pcqRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(noCaseCutoffTimestamp);
         }
 
         log.info("PCQ disposer completed");
