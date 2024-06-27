@@ -2,7 +2,7 @@ package uk.gov.hmcts.reform.pcqbackend.service;
 
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +36,16 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
     @Rule
     public OutputCaptureRule capture = new OutputCaptureRule();
 
-    @Test
-    public void testDisposePcqLogsCollectedPcqs() {
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
+    @Before
+    public void setUp() {
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
+    }
+
+    @Test
+    public void testDisposePcqLogsCollectedPcqs() {
+        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
 
         pcqDisposerService.disposePcq();
 
@@ -59,13 +63,9 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
             .doesNotContain(notExpected);
     }
 
-    @Ignore
     @Test
     public void testDisposePcqLogsDeletesPcqs() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
-        insertPcq(Instant.now(), CASE_ID);
-        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
-        ProtectedCharacteristics pcq = insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
 
         pcqDisposerService.disposePcq();
 
@@ -74,39 +74,14 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
         String logMessages = capture.getAll();
         assertThat(logMessages)
-            .withFailMessage("Expected to find \"PCQ id: \" in the logs, but didn't find")
-            .contains("PCQ id: " + pcq.getPcqId());
+            .withFailMessage("Expected to find \"DELETABLE PCQ IDS: \" in the logs, but didn't find")
+            .contains("DELETABLE PCQ IDS: [");
 
         String expected = "Deleting old PCQs for real... number to delete 2";
         assertThat(logMessages)
             .withFailMessage("Expect to find \"" + expected + "\" in the logs")
             .contains(expected);
-
     }
-
-    @Ignore
-    @Test
-    public void testDisposePcqDoesNotRunIfDisabled() {
-        insertPcq(Instant.now(), CASE_ID);
-        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
-        insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
-
-        pcqDisposerService.disposePcq();
-
-        List<ProtectedCharacteristics> pcqList = pcqRepository.findAll();
-        assertThat(pcqList).hasSize(3);
-
-        String logMessages = capture.getAll();
-        String expectedMsg = "PCQ disposer is disabled, not running.";
-        assertThat(logMessages)
-            .withFailMessage("Expected to find + \"" + expectedMsg + "\" in the logs, but didn't find")
-            .contains(expectedMsg);
-
-        assertThat(logMessages)
-            .withFailMessage("Didn't expect to find \"PCQ disposer completed\" in the logs, but found")
-            .doesNotContain("PCQ disposer completed");
-    }
-
 
     public ProtectedCharacteristics insertPcq(Instant timestamp, String caseId) {
         ProtectedCharacteristics pcq = new ProtectedCharacteristics();

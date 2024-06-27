@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -48,7 +47,6 @@ class PcqDisposerServiceTest {
         verifyNoMoreInteractions(pcqRepository);
     }
 
-    @Disabled
     @Test
     void disposePcqShouldUseDaysInQueries() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
@@ -87,7 +85,6 @@ class PcqDisposerServiceTest {
         assertThat(timestamps.get(3)).isCloseTo(twoWeeksAgo, delta);
     }
 
-    @Disabled
     @Test
     void disposePcqShouldCallDelete() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
