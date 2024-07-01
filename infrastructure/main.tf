@@ -7,14 +7,14 @@ provider "azurerm" {
   subscription_id            = var.aks_subscription_id
   skip_provider_registration = "true"
   features {}
-  alias                      = "postgres_network"
+  alias = "postgres_network"
 
 }
 
 locals {
-  db_connection_options  = "?sslmode=require"
-  vault_name             = "${var.product}-${var.env}"
-  asp_name               = "${var.product}-${var.env}"
+  db_connection_options = "?sslmode=require"
+  vault_name            = "${var.product}-${var.env}"
+  asp_name              = "${var.product}-${var.env}"
 }
 
 module "pcq-db-flexible" {
@@ -23,37 +23,37 @@ module "pcq-db-flexible" {
   }
 
   source = "git@github.com:hmcts/terraform-module-postgresql-flexible?ref=master"
-    env = var.env
+  env    = var.env
 
-    product = var.product
-    component = var.component
-    business_area = "cft"
-    name = "${var.product}-${var.component}-flexible"
+  product       = var.product
+  component     = var.component
+  business_area = "cft"
+  name          = "${var.product}-${var.component}-flexible"
 
-    common_tags = var.common_tags
+  common_tags = var.common_tags
 
-    pgsql_admin_username = "pcquser"
-    pgsql_version   = "15"
-    auto_grow_enabled = true
+  pgsql_admin_username = "pcquser"
+  pgsql_version        = "15"
+  auto_grow_enabled    = true
 
-    # Setup Access Reader db user
-    force_user_permissions_trigger = "1"
+  # Setup Access Reader db user
+  force_user_permissions_trigger = "1"
 
-    pgsql_databases = [
-      {
-        name: "pcq"
-      }
-    ]
+  pgsql_databases = [
+    {
+      name : "pcq"
+    }
+  ]
 
-    pgsql_server_configuration = [
-      {
-        name = "azure.extensions"
-        value = "plpgsql,pg_stat_statements,pg_buffercache,pgcrypto"
-      }
-    ]
+  pgsql_server_configuration = [
+    {
+      name  = "azure.extensions"
+      value = "plpgsql,pg_stat_statements,pg_buffercache,pgcrypto"
+    }
+  ]
 
-    admin_user_object_id = var.jenkins_AAD_objectId
-  }
+  admin_user_object_id = var.jenkins_AAD_objectId
+}
 
 
 data "azurerm_key_vault" "key_vault" {
