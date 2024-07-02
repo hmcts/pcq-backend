@@ -19,7 +19,7 @@ plugins {
   id 'org.sonarqube' version '5.0.0.4638'
   id 'com.gorylenko.gradle-git-properties' version '2.4.2'
   id "io.freefair.lombok" version "8.6"
-  id "org.flywaydb.flyway" version "10.15.0"
+  id "org.flywaydb.flyway" version "10.15.2"
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
@@ -271,7 +271,7 @@ repositories {
 }
 
 def versions = [
-  flywaydb            : '10.15.0',
+  flywaydb            : '10.15.2',
   jjwt                : '0.12.6',
   junit               : '5.10.3',
   junitPlatform       : '1.9.3',
