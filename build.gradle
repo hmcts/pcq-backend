@@ -276,7 +276,7 @@ def versions = [
   junit               : '5.10.3',
   junitPlatform       : '1.9.3',
   springBoot          : springBoot.class.package.implementationVersion,
-  restAssured         : '5.4.0',
+  restAssured         : '5.5.0',
   serenity            : '4.1.20',
   lombok              : '1.18.34',
   gradlePitest        : '1.15.0',
