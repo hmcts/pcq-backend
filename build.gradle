@@ -282,7 +282,7 @@ def versions = [
   gradlePitest        : '1.15.0',
   pitest              : '1.16.1',
   sonarPitest         : '0.5',
-  testcontainers      : '1.19.8',
+  testcontainers      : '1.20.0',
   springCloud         : '4.1.4'
 ]
 
