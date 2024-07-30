@@ -23,13 +23,20 @@ public class JobApplication implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
-        String job = environment.getProperty("PCQ_DISPOSER_JOB");
-        if ("true".equals(job)) {
-            if (!disposerEnabled) {
-                log.info("PCQ disposer is disabled, not running.");
-                return;
+        try {
+            String job = environment.getProperty("PCQ_DISPOSER_JOB");
+            if ("true".equals(job)) {
+                if (!disposerEnabled) {
+                    log.info("PCQ disposer is disabled, not running.");
+                    return;
+                }
+                pcqDisposerService.disposePcq();
             }
-            pcqDisposerService.disposePcq();
+        } catch (Exception e) {
+            //To check this error on traces and raise alert
+            log.error("Error executing PCQ Disposer service : " + e);
+            //To see the stackTrace of Exception
+            log.error("Error executing PCQ Disposer service", e);
         }
     }
 }
