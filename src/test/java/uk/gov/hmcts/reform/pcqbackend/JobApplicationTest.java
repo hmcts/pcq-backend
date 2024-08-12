@@ -74,7 +74,7 @@ class JobApplicationTest {
     }
 
     @Test
-    void shouldCatchExceptionIfThrowException(CapturedOutput output) {
+    void shouldCatchExceptionAndLogError(CapturedOutput output) {
 
         // given
         ReflectionTestUtils.setField(jobApplication, DISPOSER_ENABLED, true);
