@@ -13,7 +13,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pcqbackend.service.PcqDisposerService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -75,7 +74,7 @@ class JobApplicationTest {
     }
 
     @Test
-    void shouldCatchExceptionIfThrowException() {
+    void shouldCatchExceptionIfThrowException(CapturedOutput output) {
 
         // given
         ReflectionTestUtils.setField(jobApplication, DISPOSER_ENABLED, true);
@@ -88,8 +87,6 @@ class JobApplicationTest {
 
         // then
         verify(pcqDisposerService, times(1)).disposePcq();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                                                          () -> pcqDisposerService.disposePcq());
-        assertThat(exception).hasMessageContaining("Exception from PCQ Disposer service");
+        assertThat(output).contains("Error executing PCQ Disposer service");
     }
 }
