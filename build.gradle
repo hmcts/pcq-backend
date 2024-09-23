@@ -280,7 +280,6 @@ def versions = [
   serenity            : '4.2.1',
   lombok              : '1.18.34',
   gradlePitest        : '1.15.0',
-  pitest              : '1.17.0',
   sonarPitest         : '0.5',
   testcontainers      : '1.20.1',
   springCloud         : '4.1.4'
@@ -337,7 +336,6 @@ dependencies {
   testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.26.3'
   testImplementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: '0.5'
   testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
-  testImplementation group: 'org.pitest', name: 'pitest', version: versions.pitest
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
   testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
