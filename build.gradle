@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath "org.flywaydb:flyway-database-postgresql:10.19.0"
+    classpath "org.flywaydb:flyway-database-postgresql:10.20.0"
   }
 }
 
@@ -19,7 +19,7 @@ plugins {
   id 'org.sonarqube' version '5.1.0.4882'
   id 'com.gorylenko.gradle-git-properties' version '2.4.2'
   id "io.freefair.lombok" version "8.10.2"
-  id "org.flywaydb.flyway" version "10.19.0"
+  id "org.flywaydb.flyway" version "10.20.0"
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
@@ -271,7 +271,7 @@ repositories {
 }
 
 def versions = [
-  flywaydb            : '10.19.0',
+  flywaydb            : '10.20.0',
   jjwt                : '0.12.6',
   junit               : '5.11.2',
   junitPlatform       : '1.11.2',
@@ -287,7 +287,7 @@ def versions = [
 
 dependencies {
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.28.1'
-  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.6'
+  implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '6.1.7'
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '1.2.5'
   implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '5.2.0'
   implementation group: 'com.microsoft.azure', name: 'applicationinsights-web', version: '3.6.1'
@@ -322,7 +322,7 @@ dependencies {
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: versions.jjwt
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: versions.jjwt
 
-  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.4', classifier: 'all'
+  testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.5', classifier: 'all'
   testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '3.0.1'
   testImplementation group: 'info.solidsoft.gradle.pitest', name: 'gradle-pitest-plugin', version: versions.gradlePitest
   testImplementation group: 'io.rest-assured', name: 'json-path', version: versions.restAssured
