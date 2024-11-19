@@ -222,7 +222,7 @@ dependencyCheck {
 dependencyManagement {
   dependencies {
     // CVE-2021-21290
-    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.15.6'
+    dependency group: 'com.azure', name: 'azure-core-http-netty', version: '1.15.7'
     dependencySet(group: 'io.netty', version: '4.1.115.Final') {
       entry 'netty-buffer'
       entry 'netty-codec'
