@@ -12,7 +12,7 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.1.6'
   id 'net.serenity-bdd.serenity-gradle-plugin' version '4.2.8'
-  id 'org.springframework.boot' version '3.3.5'
+  id 'org.springframework.boot' version '3.4.0'
   id 'org.owasp.dependencycheck' version '11.1.1'
   id 'com.github.ben-manes.versions' version '0.51.0'
   id "info.solidsoft.pitest" version '1.15.0'
@@ -258,7 +258,7 @@ dependencyManagement {
     }
   }
   imports {
-    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.4'
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2024.0.0'
   }
 }
 
@@ -302,8 +302,7 @@ dependencies {
   implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '4.0.5'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.4'
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
-  implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0'
-  implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.8.0'
+  implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.7.0'
   implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
