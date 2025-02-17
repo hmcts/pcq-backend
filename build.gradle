@@ -315,7 +315,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: versions.springCloud
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: "4.2.0"
-  implementation group: 'org.yaml', name: 'snakeyaml', version: '2.3'
+  implementation group: 'org.yaml', name: 'snakeyaml', version: '2.4'
   implementation group: "com.networknt", name: "json-schema-validator", version: '1.5.5'
 
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: versions.jjwt
