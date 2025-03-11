@@ -8,6 +8,7 @@
       "overrides": [
         {
           "telemetryType": "request",
+          "telemetryKind": "request",
           "attributes": [
             {
               "key": "http.url",
@@ -16,6 +17,17 @@
             }
           ],
           "percentage": 1
+        },
+        {
+          "telemetryKind": "dependency",
+          "attributes": [
+            {
+              "key": "target",
+              "value": ".*postgres\\.database.*",
+              "matchType": "regexp"
+            }
+          ],
+          "percentage": 0
         }
       ]
     }
