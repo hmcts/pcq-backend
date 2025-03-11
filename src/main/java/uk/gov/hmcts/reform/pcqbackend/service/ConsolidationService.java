@@ -35,7 +35,7 @@ public class ConsolidationService extends BaseService {
         this.protectedCharacteristicsRepository = protectedCharacteristicsRepository;
     }
 
-    public List<ProtectedCharacteristics> getPcqsWithoutCase(@Nullable List<String> headers)
+    /*public List<ProtectedCharacteristics> getPcqsWithoutCase(@Nullable List<String> headers)
         throws InvalidRequestException {
 
         String coRelationId = ConversionUtil.validateRequestHeader(headers);
@@ -45,6 +45,26 @@ public class ConsolidationService extends BaseService {
             .findByCaseIdIsNullAndCompletedDateGreaterThan(
                 PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
                 "api-config-params.number_of_days_limit")))),getEncryptionKey());
+
+        if (returnList == null) {
+            return new ArrayList<>();
+        }
+
+        return returnList;
+    }*/
+
+    public List<ProtectedCharacteristics> getPcqsWithoutCase(@Nullable List<String> headers)
+        throws InvalidRequestException {
+
+        String coRelationId = ConversionUtil.validateRequestHeader(headers);
+        log.info("Co-Relation Id : {} - getPcqsWithoutCase service invoked", coRelationId);
+
+        List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(
+                PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
+                    "api-config-params.number_of_days_limit")))),
+                PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
+                    "api-config-params.number_of_days_less_than_limit")))),getEncryptionKey());
 
         if (returnList == null) {
             return new ArrayList<>();
