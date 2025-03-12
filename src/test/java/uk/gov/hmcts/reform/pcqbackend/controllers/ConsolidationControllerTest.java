@@ -55,6 +55,7 @@ class ConsolidationControllerTest {
     private static final String TEST_PCQ_ID = "T1234";
     private static final String TEST_CASE_ID = "CCD112";
     private static final String NUMBER_OF_DAYS_PROPERTY = "api-config-params.number_of_days_limit";
+    private static final String NUMBER_OF_DAYS_PROPERTY_LESS_THAN = "api-config-params.number_of_days_less_than_limit";
     private static final String MSG_1 = "Expected 200 status";
     private static final String BODY_NULL_MSG = "Actual Body is null";
     private static final String STATUS_CODE_MSG = "Expected 200 status code";
@@ -62,6 +63,7 @@ class ConsolidationControllerTest {
     private static final String SUCCESS_MSG = "Success";
     private static final String HTTP_OK = "200";
     private static final String DAYS_LIMIT = "90";
+    private static final String DAYS_LIMIT_LESS_THAN = "180";
     private static final String UNKNOWN_ERROR_MSG = "Unknown error occurred";
     private static final String EXPECTED_NOT_FOUND_MSG = "Expected 400 status code";
     private static final String HTTP_NOT_FOUND = "400";
@@ -133,9 +135,11 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
             List<ProtectedCharacteristics> targetList = generateTargetList(3);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
@@ -156,7 +160,8 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),Mockito.eq(null));
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                        any(Timestamp.class),Mockito.eq(null));
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -178,9 +183,11 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
             List<ProtectedCharacteristics> targetList = generateTargetList(1);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
@@ -199,7 +206,8 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),Mockito.eq(null));
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                         any(Timestamp.class),Mockito.eq(null));
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -221,9 +229,11 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
@@ -243,7 +253,8 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),Mockito.eq(null));
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                       any(Timestamp.class),Mockito.eq(null));
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -265,8 +276,10 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
@@ -288,7 +301,8 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),Mockito.eq(null));
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
+                                                                          Mockito.eq(null));
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);
@@ -487,9 +501,11 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
             List<ProtectedCharacteristics> targetList = generateTargetList(3);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
@@ -509,7 +525,7 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
                 Mockito.eq(null));
 
         } catch (Exception e) {
@@ -532,9 +548,11 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
             List<ProtectedCharacteristics> targetList = generateTargetList(1);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
@@ -554,7 +572,8 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),Mockito.eq(null));
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                                                                          any(Timestamp.class),Mockito.eq(null));
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -576,9 +595,11 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
             List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
@@ -598,7 +619,8 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),Mockito.eq(null));
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                          any(Timestamp.class),Mockito.eq(null));
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage());
@@ -620,8 +642,10 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = getMockHeader();
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
+            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+                Timestamp.class),any(
                 Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
@@ -642,7 +666,8 @@ class ConsolidationControllerTest {
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThan(any(Timestamp.class),Mockito.eq(null));
+                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                         any(Timestamp.class),Mockito.eq(null));
 
         } catch (Exception e) {
             fail(ERROR_MSG_PREFIX + e.getMessage(), e);

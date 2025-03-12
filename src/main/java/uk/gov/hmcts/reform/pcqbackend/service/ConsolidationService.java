@@ -35,24 +35,6 @@ public class ConsolidationService extends BaseService {
         this.protectedCharacteristicsRepository = protectedCharacteristicsRepository;
     }
 
-    /*public List<ProtectedCharacteristics> getPcqsWithoutCase(@Nullable List<String> headers)
-        throws InvalidRequestException {
-
-        String coRelationId = ConversionUtil.validateRequestHeader(headers);
-        log.info("Co-Relation Id : {} - getPcqsWithoutCase service invoked", coRelationId);
-
-        List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository
-            .findByCaseIdIsNullAndCompletedDateGreaterThan(
-                PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
-                "api-config-params.number_of_days_limit")))),getEncryptionKey());
-
-        if (returnList == null) {
-            return new ArrayList<>();
-        }
-
-        return returnList;
-    }*/
-
     public List<ProtectedCharacteristics> getPcqsWithoutCase(@Nullable List<String> headers)
         throws InvalidRequestException {
 
