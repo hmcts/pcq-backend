@@ -63,7 +63,7 @@ class ConsolidationControllerTest {
     private static final String SUCCESS_MSG = "Success";
     private static final String HTTP_OK = "200";
     private static final String DAYS_LIMIT = "90";
-    private static final String DAYS_LIMIT_LESS_THAN = "180";
+    private static final String DAYS_LIMIT_LESS_THAN = "0";
     private static final String UNKNOWN_ERROR_MSG = "Unknown error occurred";
     private static final String EXPECTED_NOT_FOUND_MSG = "Expected 400 status code";
     private static final String HTTP_NOT_FOUND = "400";

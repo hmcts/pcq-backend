@@ -78,7 +78,7 @@ class ConsolidationServiceTest {
     @ValueSource(ints = {3, 1, 0})
     void testPcqWithoutCaseReturnExpectedNumberOfIds(int expectedSize) throws InvalidRequestException {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
-        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("180");
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("0");
         List<ProtectedCharacteristics> targetList = generateTargetList(expectedSize);
         when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
             Timestamp.class), any(Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
@@ -99,7 +99,7 @@ class ConsolidationServiceTest {
     @Test
     void testPcqWithoutCaseReturnNullList() throws InvalidRequestException {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
-        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("180");
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("0");
         when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
             Timestamp.class),any(Timestamp.class), Mockito.eq(null))).thenReturn(null);
 
