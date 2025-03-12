@@ -119,10 +119,11 @@ class ProtectedCharacteristicsRepositoryImplTest {
         protectedCharacteristicsRepository.updateCase(null, "1");
 
         Timestamp completedDate = Timestamp.valueOf(priorTimestamp);
+        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
 
         // get record
         final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
-            .findByCaseIdIsNullAndCompletedDateGreaterThan(completedDate, ENCRYPTION_KEY);
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(completedDate,currentDate, ENCRYPTION_KEY);
 
         assertThat(pc).isNotEmpty();
         assertThat(pc.get(0).getPcqId()).isEqualTo("1");
