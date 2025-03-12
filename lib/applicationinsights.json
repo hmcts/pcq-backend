@@ -22,8 +22,8 @@
           "telemetryKind": "dependency",
           "attributes": [
             {
-              "key": "target",
-              "value": ".*postgres\\.database.*",
+              "key": "Type",
+              "value": "postgresql",
               "matchType": "regexp"
             }
           ],
