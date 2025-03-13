@@ -16,6 +16,10 @@
               "matchType": "regexp"
             }
           ],
+          "percentage": 1
+        },
+        {
+          "telemetryType": "dependency",
           "percentage": 0
         }
       ]
