@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -40,13 +41,20 @@ public class ConsolidationService extends BaseService {
 
         String coRelationId = ConversionUtil.validateRequestHeader(headers);
         log.info("Co-Relation Id : {} - getPcqsWithoutCase service invoked", coRelationId);
+        Timestamp greaterThan = PcqUtils.getDateTimeInPast(Long.parseLong(
+            Objects.requireNonNull(environment.getProperty(
+            "api-config-params.number_of_days_limit"))));
+        Timestamp lessThanDate = PcqUtils.getDateTimeInPast(Long.parseLong(
+            Objects.requireNonNull(environment.getProperty(
+             "api-config-params.number_of_days_less_than_limit"))));
+        if (!greaterThan.before(lessThanDate)) {
+            throw new InvalidRequestException("The 'greaterThan' date must be before the 'lessThanDate'.",
+                                              HttpStatus.BAD_REQUEST);
+        }
 
         List<ProtectedCharacteristics> returnList = protectedCharacteristicsRepository
             .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(
-                PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
-                    "api-config-params.number_of_days_limit")))),
-                PcqUtils.getDateTimeInPast(Long.parseLong(Objects.requireNonNull(environment.getProperty(
-                    "api-config-params.number_of_days_less_than_limit")))),getEncryptionKey());
+                greaterThan, lessThanDate,getEncryptionKey());
 
         if (returnList == null) {
             return new ArrayList<>();

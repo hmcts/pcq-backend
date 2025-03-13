@@ -205,5 +205,25 @@ class ConsolidationServiceTest {
         }
     }
 
+    @Test
+    void testGreaterThanNotBeforeLessThanDate() {
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("0");
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("90");
+
+        try {
+            consolidationService.getPcqsWithoutCase(getTestHeader());
+            fail("The method should have thrown InvalidRequestException");
+        } catch (InvalidRequestException ive) {
+            assertEquals("The 'greaterThan' date must be before the 'lessThanDate'.",
+                         ive.getMessage(), "Exception message not matching");
+            assertEquals(HttpStatus.BAD_REQUEST, ive.getErrorCode(), "Http Status Code not matching");
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
+    }
+
 
 }

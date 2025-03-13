@@ -159,6 +159,7 @@ class ConsolidationControllerTest {
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
                         any(Timestamp.class),Mockito.eq(null));
@@ -205,6 +206,7 @@ class ConsolidationControllerTest {
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
                          any(Timestamp.class),Mockito.eq(null));
@@ -252,6 +254,7 @@ class ConsolidationControllerTest {
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
                        any(Timestamp.class),Mockito.eq(null));
@@ -300,6 +303,7 @@ class ConsolidationControllerTest {
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
                                                                           Mockito.eq(null));
@@ -523,6 +527,7 @@ class ConsolidationControllerTest {
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
@@ -570,7 +575,9 @@ class ConsolidationControllerTest {
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
                                                                           any(Timestamp.class),Mockito.eq(null));
@@ -617,7 +624,9 @@ class ConsolidationControllerTest {
 
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
                           any(Timestamp.class),Mockito.eq(null));
@@ -665,6 +674,7 @@ class ConsolidationControllerTest {
             verify(mockHeaders, times(1)).get(HEADER_KEY);
             verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
             verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
             verify(protectedCharacteristicsRepository, times(1))
                 .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
                          any(Timestamp.class),Mockito.eq(null));
