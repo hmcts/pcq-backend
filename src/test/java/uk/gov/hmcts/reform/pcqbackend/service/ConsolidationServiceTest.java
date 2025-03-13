@@ -51,6 +51,7 @@ class ConsolidationServiceTest {
     private static final String RESPONSE_NULL_MSG = "Response is null";
     private static final String RESPONSE_BODY_NULL_MSG = "Response Body is null";
     private static final String NUMBER_OF_DAYS_PROPERTY = "api-config-params.number_of_days_limit";
+    private static final String NUMBER_OF_DAYS_PROPERTY_LESS_THAN = "api-config-params.number_of_days_less_than_limit";
     private static final String TEST_PCQ_ID = "T1234";
     private static final String TEST_CASE_ID = "CCD112";
     private static final String ERROR_MSG_1 = "Number of rows returned are incorrect.";
@@ -77,10 +78,10 @@ class ConsolidationServiceTest {
     @ValueSource(ints = {3, 1, 0})
     void testPcqWithoutCaseReturnExpectedNumberOfIds(int expectedSize) throws InvalidRequestException {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
-
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("0");
         List<ProtectedCharacteristics> targetList = generateTargetList(expectedSize);
-        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
-            Timestamp.class), Mockito.eq(null))).thenReturn(targetList);
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class), any(Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
         List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
             getTestHeader());
@@ -91,15 +92,16 @@ class ConsolidationServiceTest {
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
         verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndCompletedDateGreaterThan(
-            any(Timestamp.class), Mockito.eq(null));
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(
+            any(Timestamp.class), any(Timestamp.class), Mockito.eq(null));
     }
 
     @Test
     void testPcqWithoutCaseReturnNullList() throws InvalidRequestException {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("90");
-        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThan(any(
-            Timestamp.class), Mockito.eq(null))).thenReturn(null);
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("0");
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class),any(Timestamp.class), Mockito.eq(null))).thenReturn(null);
 
         List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
             getTestHeader());
@@ -111,8 +113,8 @@ class ConsolidationServiceTest {
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
         verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndCompletedDateGreaterThan(
-            any(Timestamp.class), Mockito.eq(null));
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(
+            any(Timestamp.class),any(Timestamp.class), Mockito.eq(null));
     }
 
     @Test
@@ -201,6 +203,26 @@ class ConsolidationServiceTest {
             assertEquals(targetList.get(i).getDcnNumber(), actualList.get(i).getDcnNumber(),
                          "DCN Number not matching");
         }
+    }
+
+    @Test
+    void testGreaterThanNotBeforeLessThanDate() {
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("0");
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("90");
+
+        try {
+            consolidationService.getPcqsWithoutCase(getTestHeader());
+            fail("The method should have thrown InvalidRequestException");
+        } catch (InvalidRequestException ive) {
+            assertEquals("The 'greaterThan' date must be before the 'lessThanDate'.",
+                         ive.getMessage(), "Exception message not matching");
+            assertEquals(HttpStatus.BAD_REQUEST, ive.getErrorCode(), "Http Status Code not matching");
+        } catch (Exception e) {
+            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
     }
 
 

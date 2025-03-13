@@ -119,13 +119,43 @@ class ProtectedCharacteristicsRepositoryImplTest {
         protectedCharacteristicsRepository.updateCase(null, "1");
 
         Timestamp completedDate = Timestamp.valueOf(priorTimestamp);
+        Timestamp currentDate = new Timestamp(System.currentTimeMillis());
 
         // get record
         final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
-            .findByCaseIdIsNullAndCompletedDateGreaterThan(completedDate, ENCRYPTION_KEY);
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(completedDate,currentDate, ENCRYPTION_KEY);
 
         assertThat(pc).isNotEmpty();
         assertThat(pc.get(0).getPcqId()).isEqualTo("1");
+    }
+
+    @Test
+    void shouldFindByCaseIdIsNullAndCompletedDateGreaterThanLessThan() {
+        String priorTimestamp = "2023-06-13 00:00:00";
+        String lessThanTimeStamp = "2023-12-14 00:00:00";
+        ProtectedCharacteristics protectedCharacteristics = getProtectedCharacteristics(
+            String.valueOf(11),
+            "1990-09-" + String.format("%02d", 11));
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            Date date = sdf.parse("2023-11-30");
+            long time = date.getTime();
+            protectedCharacteristics.setCompletedDate(new Timestamp(time));
+            protectedCharacteristics.setCaseId(null);
+        } catch (Exception e) {
+            LOGGER.error("shouldFindByCaseIdIsNullAndCompletedDateGreaterThanLessThan", e);
+        }
+        protectedCharacteristicsRepositoryCustom
+            .saveProtectedCharacteristicsWithEncryption(protectedCharacteristics, ENCRYPTION_KEY);
+        Timestamp completedDate = Timestamp.valueOf(priorTimestamp);
+        Timestamp lessThanDate = Timestamp.valueOf(lessThanTimeStamp);
+
+        // get record
+        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(completedDate,lessThanDate, ENCRYPTION_KEY);
+
+        assertThat(pc).isNotEmpty();
+        assertThat(pc.get(0).getPcqId()).isEqualTo("11");
     }
 
     @Test
