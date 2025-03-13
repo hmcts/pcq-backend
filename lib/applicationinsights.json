@@ -19,6 +19,7 @@
           "percentage": 1
         },
         {
+          "telemetryType": "dependency",
           "telemetryKind": "dependency",
           "attributes": [
             {
