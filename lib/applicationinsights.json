@@ -8,7 +8,6 @@
       "overrides": [
         {
           "telemetryType": "request",
-          "telemetryKind": "request",
           "attributes": [
             {
               "key": "http.url",
