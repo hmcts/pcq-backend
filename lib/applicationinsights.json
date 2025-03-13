@@ -16,18 +16,6 @@
               "matchType": "regexp"
             }
           ],
-          "percentage": 1
-        },
-        {
-          "telemetryType": "dependency",
-          "telemetryKind": "dependency",
-          "attributes": [
-            {
-              "key": "Type",
-              "value": "postgresql",
-              "matchType": "regexp"
-            }
-          ],
           "percentage": 0
         }
       ]
