@@ -47,6 +47,7 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "WHERE p.pcqId = ?2")
     int updateCase(String caseId, String pcqId);
 
+
     @Query(value = "SELECT pc.pcq_id, pc.DCN_NUMBER, pc.FORM_ID, pc.CASE_ID, "
         + "pgp_sym_decrypt(decode(pc.party_Id, 'base64'), cast(:encryptionKey as text)) as party_id, "
         + "pc.CHANNEL, pc.COMPLETED_DATE, pc.SERVICE_ID, pc.ACTOR, "
@@ -61,10 +62,11 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         + "pc.DISABILITY_CONDITION_OTHER, "
         + "pc.DISABILITY_NONE, pc.PREGNANCY, pc.OPT_OUT, pc.LAST_UPDATED_TIMESTAMP "
         + "FROM protected_characteristics pc "
-        + "WHERE pc.case_id IS NULL AND  pc.COMPLETED_DATE > :completedDate ",
+        + "WHERE pc.case_id IS NULL AND  pc.COMPLETED_DATE > :completedDate "
+        + "AND  pc.COMPLETED_DATE < :lessThanDate",
         nativeQuery = true)
-    List<ProtectedCharacteristics> findByCaseIdIsNullAndCompletedDateGreaterThan(Timestamp completedDate,
-                String encryptionKey);
+    List<ProtectedCharacteristics> findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(Timestamp completedDate,
+                    Timestamp lessThanDate,String encryptionKey);
 
     @Modifying(clearAutomatically = true)
     @Query("DELETE FROM protected_characteristics p WHERE p.pcqId = ?1")
