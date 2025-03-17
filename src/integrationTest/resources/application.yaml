@@ -26,6 +26,7 @@ api-schema-file:
 api-version-number: 1
 api-config-params:
   number_of_days_limit: ${NUMBER_OF_DAYS_LIMIT:90}
+  number_of_days_less_than_limit: ${NUMBER_OF_DAYS_LESS_THAN_LIMIT:0}
 
 #Application specific unit test properties
 unit-test:
