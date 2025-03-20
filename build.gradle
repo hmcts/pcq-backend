@@ -252,13 +252,13 @@ dependencyManagement {
     // CVE-2021-29425
     dependency group: 'commons-io', name: 'commons-io', version: '2.18.0'
 
-    dependencySet(group: 'org.springframework.cloud', version: '4.2.0') {
+    dependencySet(group: 'org.springframework.cloud', version: '4.2.1') {
       entry 'spring-cloud-starter-openfeign'
       entry 'spring-cloud-openfeign-core'
     }
   }
   imports {
-    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2024.0.0'
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2024.0.1'
   }
 }
 
@@ -282,7 +282,7 @@ def versions = [
   gradlePitest        : '1.15.0',
   sonarPitest         : '0.5',
   testcontainers      : '1.20.6',
-  springCloud         : '4.2.0'
+  springCloud         : '4.2.1'
 ]
 
 dependencies {
@@ -314,7 +314,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web-services'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: versions.springCloud
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: "4.2.0"
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: "4.2.1"
   implementation group: 'org.yaml', name: 'snakeyaml', version: '2.4'
   implementation group: "com.networknt", name: "json-schema-validator", version: '1.5.6'
 
