@@ -13,7 +13,7 @@ import uk.gov.hmcts.contino.GradleBuilder
 def type = "java"
 def product = "pcq"
 def component = "backend"
-def branchesToSync = ['demo','ithc', 'perftest']
+def branchesToSync = ['demo', 'perftest']
 
 def secrets = [
   'pcq-${env}': [
