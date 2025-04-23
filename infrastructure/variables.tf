@@ -59,7 +59,7 @@ variable "db_monitor_action_group_name" {
 variable "db_alert_email_address_key" {
   description = "Email address key in azure Key Vault. If empty, no action group will be created."
   type        = string
-  default     = "db-monitoring-alert-email"
+  default     = ""
 }
 
 variable "cpu_threshold" {
