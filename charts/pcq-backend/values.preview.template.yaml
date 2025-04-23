@@ -34,7 +34,7 @@ job:
     PCQ_DB_NAME: pcq
     PCQ_DB_HOST: pcq-backend-flexible-{{ .Values.global.environment }}.postgres.database.azure.com
     PCQ_DB_PORT: "5432"
-    PCQ_DISPOSER_ENABLED: false
+    PCQ_DISPOSER_ENABLED: true
     PCQ_APPLICATION_TYPE: NONE
   keyVaults:
     pcq:
