@@ -40,7 +40,7 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
-    secret: ${JWT_SECRET:a-very-long-and-secure-key-generated-randomly}
+    secret: ${JWT_SECRET:a-very-long-and-boring-secret-key}
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
     encryption-enabled: ${DB_ENCRYPTION_ENABLED:Yes}
