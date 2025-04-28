@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 
@@ -110,20 +111,44 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
     Optional<ProtectedCharacteristics> findByPcqId(String pcqId, String encryptionKey);
 
 
-    List<ProtectedCharacteristics> findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+    @Query(value = "SELECT pc.pcq_id FROM protected_characteristics pc WHERE pc.case_id IS NOT NULL "
+        + "AND pc.last_updated_timestamp < :lastUpdatedTimestamp "
+        + "ORDER BY pc.last_updated_timestamp ASC LIMIT :rateLimit", nativeQuery = true)
+    List<String> findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+        @Param("lastUpdatedTimestamp") Timestamp lastUpdatedTimestamp,
+        @Param("rateLimit") int rateLimit
+    );
 
-    List<ProtectedCharacteristics> findAllByCaseIdNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+    @Query(value = "SELECT pc.pcq_id FROM protected_characteristics pc WHERE pc.case_id IS NULL "
+        + "AND pc.last_updated_timestamp < :lastUpdatedTimestamp "
+        + "ORDER BY pc.last_updated_timestamp ASC LIMIT :rateLimit", nativeQuery = true)
+    List<String> findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+        @Param("lastUpdatedTimestamp") Timestamp lastUpdatedTimestamp,
+        @Param("rateLimit") int rateLimit
+    );
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM protected_characteristics pc "
-        + "WHERE pc.caseId IS NOT NULL AND pc.lastUpdatedTimestamp < :lastUpdatedTimestamp")
-    void deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+    @Query(value = "DELETE FROM protected_characteristics pc "
+        + "WHERE pc.pcq_id IN (SELECT pcq_id FROM protected_characteristics "
+        + "WHERE case_id IS NOT NULL AND last_updated_timestamp < :lastUpdatedTimestamp "
+        + "ORDER BY pc.last_updated_timestamp ASC LIMIT :rateLimit)",
+        nativeQuery = true)
+    void deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+        @Param("lastUpdatedTimestamp") Timestamp lastUpdatedTimestamp,
+        @Param("rateLimit") int rateLimit
+    );
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM protected_characteristics pc "
-        + "WHERE pc.caseId IS NULL AND pc.lastUpdatedTimestamp < :lastUpdatedTimestamp")
-    void deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(Timestamp lastUpdatedTimestamp);
+    @Query(value = "DELETE FROM protected_characteristics pc "
+        + "WHERE pc.pcq_id IN (SELECT pcq_id FROM protected_characteristics "
+        + "WHERE case_id IS NULL AND last_updated_timestamp < :lastUpdatedTimestamp "
+        + "ORDER BY pc.last_updated_timestamp ASC LIMIT :rateLimit)",
+        nativeQuery = true)
+    void deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+        @Param("lastUpdatedTimestamp") Timestamp lastUpdatedTimestamp,
+        @Param("rateLimit") int rateLimit
+    );
 
 }

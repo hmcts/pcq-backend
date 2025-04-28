@@ -173,8 +173,8 @@ class ProtectedCharacteristicsRepositoryImplTest {
         Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
 
         // get record
-        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
-            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+        final List<String> pc = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, 1000);
 
         assertThat(pc).isNotEmpty();
     }
@@ -186,11 +186,11 @@ class ProtectedCharacteristicsRepositoryImplTest {
         Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
 
         // get record
-        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
-            .findAllByCaseIdNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+        final List<String> pc = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp,1000);
 
         assertThat(pc).isNotEmpty();
-        assertThat(pc.get(0).getPcqId()).isEqualTo("1");
+        assertThat(pc.get(0)).isEqualTo("1");
     }
 
     @Test
@@ -198,11 +198,11 @@ class ProtectedCharacteristicsRepositoryImplTest {
         Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
 
         protectedCharacteristicsRepository
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp,1000);
 
         // get record
-        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
-            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+        final List<String> pc = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp,1000);
 
         assertThat(pc).isEmpty();
     }
@@ -213,14 +213,90 @@ class ProtectedCharacteristicsRepositoryImplTest {
 
         Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
 
-        protectedCharacteristicsRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+        protectedCharacteristicsRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+            lastUpdatedTimestamp,1000);
 
         // get record
-        final List<ProtectedCharacteristics> pc = protectedCharacteristicsRepository
-            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(lastUpdatedTimestamp);
+        final List<String> pc = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp,1000);
 
         assertThat(pc).isNotEmpty();
-        assertThat(pc.get(0).getPcqId()).isEqualTo("2");
+        assertThat(pc.get(0)).isEqualTo("2");
+    }
+
+    @Test
+    void shouldFindAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit() {
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+        int rateLimit = 2;
+
+        List<String> result = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, rateLimit);
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(rateLimit);
+        assertThat(result).containsExactlyInAnyOrder("1","2"); // Adjust based on test data
+    }
+
+
+    @Test
+    void shouldFindAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit() {
+        protectedCharacteristicsRepository.updateCase(null, "10");
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+        int rateLimit = 1;
+
+        List<String> result = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                lastUpdatedTimestamp, rateLimit
+            );
+
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isLessThanOrEqualTo(rateLimit);
+        assertThat(result).containsExactlyInAnyOrder("10"); // Adjust based on test data
+    }
+
+    @Test
+    void shouldDeleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit() {
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+        int rateLimit = 2;
+
+        List<String> initialRecords = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+                lastUpdatedTimestamp, rateLimit
+            );
+        assertThat(initialRecords).isNotEmpty();
+
+        protectedCharacteristicsRepository
+            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, rateLimit);
+
+        List<String> remainingRecords = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+                lastUpdatedTimestamp, rateLimit
+            );
+        assertThat(remainingRecords).containsExactlyInAnyOrder("3", "4");
+    }
+
+    @Test
+    void shouldDeleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit() {
+        Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
+        int rateLimit = 2;
+        protectedCharacteristicsRepository.updateCase(null, "8");
+        protectedCharacteristicsRepository.updateCase(null, "9");
+        protectedCharacteristicsRepository.updateCase(null, "10");
+
+        List<String> initialRecords = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                lastUpdatedTimestamp, rateLimit
+            );
+        assertThat(initialRecords).isNotEmpty();
+
+        protectedCharacteristicsRepository
+            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, rateLimit);
+
+        List<String> remainingRecords = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                lastUpdatedTimestamp, rateLimit
+            );
+        assertThat(remainingRecords).containsExactlyInAnyOrder("10");
     }
 
     private ProtectedCharacteristics getProtectedCharacteristics(final String id, final String dob) {
