@@ -177,6 +177,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
             .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, 1000);
 
         assertThat(pc).isNotEmpty();
+        assertThat(pc.size()).isEqualTo(10);
     }
 
     @Test
