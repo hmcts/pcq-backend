@@ -30,8 +30,9 @@ api-config-params:
 
 
 disposer:
-  enabled: ${PCQ_DISPOSER_ENABLED:false}
+  enabled: ${PCQ_DISPOSER_ENABLED:true}
   dry-run: ${PCQ_DISPOSER_DRY_RUN:true}
+  rateLimit: ${PCQ_DISPOSER_RATE_LIMIT:1000}
   # days to keep PCQs before deleting
   keep-with-case: ${PCQ_DAYS_TO_KEEP_WITH_CASEID:92}
   keep-no-case: ${PCQ_DAYS_TO_KEEP_WITHOUT_CASEID:183}
@@ -40,15 +41,15 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
-    secret: ${JWT_SECRET:a-very-long-and-boring-secret-key}
+    secret: P7KIsafE4K8qIdXgvMJMtuqBDaxLpbBNMJBEb7N3Grnc388Jd4QhuzrlNKT18oj
   db:
-    backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
+    backend-encryption-key: TS5LYrsasZNY3d7psvufr6rwh6foSB7IpUKFA4GOK80LpzHYk8WjAvNKMz38rUl
     encryption-enabled: ${DB_ENCRYPTION_ENABLED:Yes}
     allow_delete_record: ${DB_ALLOW_DELETE_RECORD:true}
 
 idam:
   s2s-auth:
-    url: ${S2S_URL:http://localhost:4502}
+    url: ${S2S_URL:http://rpe-service-auth-provider-aat.service.core-compute-aat.internal}
 
 storage:
   connection-string: ${STORAGE_ACCOUNT_CONNECTION_STRING:UseDevelopmentStorage=true}
@@ -66,9 +67,9 @@ spring:
     import: "optional:configtree:/mnt/secrets/pcq/"
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${PCQ_DB_HOST:localhost}:${PCQ_DB_PORT:5432}/${PCQ_DB_NAME:pcq}${PCQ_DB_CONN_OPTIONS:}
-    username: ${PCQ_DB_USERNAME:pcquser}
-    password: ${PCQ_DB_PASSWORD:}
+    url: jdbc:postgresql://pcq-backend-flexible-aat.postgres.database.azure.com:5432/pcq?sslmode=require
+    username: pcquser
+    password: 6blu(xZn5S4SuReJ2FBx
     properties:
       charSet: UTF-8
     hikari:
