@@ -20,7 +20,7 @@ public class PcqDisposerService {
     @Value("${disposer.dry-run:true}")
     private boolean dryRun;
 
-    @Value("${disposer.rateLimit:1000}")
+    @Value("${disposer.rateLimit:50000}")
     private int rateLimit;
 
     @Value("${disposer.keep-with-case:92}")

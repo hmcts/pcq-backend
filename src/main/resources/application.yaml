@@ -32,7 +32,7 @@ api-config-params:
 disposer:
   enabled: ${PCQ_DISPOSER_ENABLED:false}
   dry-run: ${PCQ_DISPOSER_DRY_RUN:true}
-  rateLimit: ${PCQ_DISPOSER_RATE_LIMIT:1000}
+  rateLimit: ${PCQ_DISPOSER_RATE_LIMIT:50000}
   # days to keep PCQs before deleting
   keep-with-case: ${PCQ_DAYS_TO_KEEP_WITH_CASEID:92}
   keep-no-case: ${PCQ_DAYS_TO_KEEP_WITHOUT_CASEID:183}
