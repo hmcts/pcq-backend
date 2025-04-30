@@ -45,10 +45,10 @@ public class PcqDisposerService {
 
         // Convert to mutable lists
         List<String> pcqListWithCaseIds = new ArrayList<>(pcqRepository
-            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(caseCutoffTimestamp,rateLimit/2));
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(caseCutoffTimestamp,rateLimit / 2));
 
         List<String> pcqListNoCaseIds = new ArrayList<>(pcqRepository
-            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(noCaseCutoffTimestamp, rateLimit/2));
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(noCaseCutoffTimestamp, rateLimit / 2));
 
         log.info("PCQs # with case id present: {}", pcqListWithCaseIds.size());
         log.info("PCQs # with no case ids present: {}", pcqListNoCaseIds.size());
@@ -61,9 +61,9 @@ public class PcqDisposerService {
         if (!dryRun && !pcqListWithCaseIds.isEmpty()) {
             log.info("Deleting old PCQs for real... number to delete {}", pcqListWithCaseIds.size());
             pcqRepository.deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-                caseCutoffTimestamp, rateLimit/2);
+                caseCutoffTimestamp, rateLimit / 2);
             pcqRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-                noCaseCutoffTimestamp, rateLimit/2);
+                noCaseCutoffTimestamp, rateLimit / 2);
         }
 
         log.info("PCQ disposer completed");
