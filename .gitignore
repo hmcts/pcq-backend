@@ -31,3 +31,5 @@ infrastructure/.terraform
 
 .DS_Store
 src/main/resources/application-local.yaml
+
+*.swp
