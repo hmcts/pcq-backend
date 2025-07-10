@@ -281,7 +281,7 @@ def versions = [
   lombok              : '1.18.38',
   gradlePitest        : '1.15.0',
   sonarPitest         : '0.5',
-  testcontainers      : '1.21.2',
+  testcontainers      : '1.21.3',
   springCloud         : '4.3.0'
 ]
 
