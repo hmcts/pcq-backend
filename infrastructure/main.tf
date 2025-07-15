@@ -49,9 +49,13 @@ module "pcq-db-flexible" {
   # Setup Access Reader db user
   force_user_permissions_trigger = "1"
 
+ enable_db_report_privileges = true
+
   pgsql_databases = [
     {
       name : "pcq"
+      report_privilege_schema : "public"
+      report_privilege_tables : ["protected_characteristics"]
     }
   ]
 
