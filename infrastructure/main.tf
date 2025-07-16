@@ -55,6 +55,7 @@ module "pcq-db-flexible" {
     }
   ]
 
+
   pgsql_server_configuration = [
     {
       name  = "azure.extensions"
