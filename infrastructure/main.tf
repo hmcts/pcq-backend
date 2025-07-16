@@ -55,6 +55,7 @@ module "pcq-db-flexible" {
     {
       name : "pcq"
       report_privilege_schema : "public"
+      # Setup reporting table
       report_privilege_tables : ["protected_characteristics"]
     }
   ]
@@ -67,6 +68,13 @@ module "pcq-db-flexible" {
   ]
 
   admin_user_object_id = var.jenkins_AAD_objectId
+
+  # Setup keyvault propeties reporting
+  kv_name = data.azurerm_key_vault.key_vault.name
+  kv_subscription                    = var.kv_subscription
+  user_secret_name                   = "pcquser"
+  pass_secret_name                   = "pcquser"
+  force_db_report_privileges_trigger = "1"
 }
 
 ////////////////////////////////
