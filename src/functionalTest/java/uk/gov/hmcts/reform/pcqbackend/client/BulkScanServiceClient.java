@@ -24,6 +24,8 @@ public class BulkScanServiceClient {
             .get()
             .andReturn();
 
+
+
         assertThat(response.getStatusCode()).isEqualTo(200);
 
         return response
