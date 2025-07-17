@@ -65,7 +65,4 @@ module "sdp_db_user" {
 
   common_tags = var.common_tags
 
-  depends_on = [
-    module.pcq-db-flexible
-  ]
 }
