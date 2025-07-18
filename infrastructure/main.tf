@@ -60,6 +60,12 @@ module "pcq-db-flexible" {
     }
   ]
 
+  kv_name                            = data.azurerm_key_vault.key_vault.name
+  kv_subscription                    = var.kv_subscription
+  user_secret_name                   = azurerm_key_vault_secret.POSTGRES-USER.name
+  pass_secret_name                   = azurerm_key_vault_secret.POSTGRES-PASS.name
+  force_db_report_privileges_trigger = "1"
+
   pgsql_server_configuration = [
     {
       name  = "azure.extensions"
