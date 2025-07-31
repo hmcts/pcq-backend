@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
 import java.sql.Timestamp;
@@ -35,15 +34,17 @@ class PcqDisposerServiceTest {
     @Test
     void disposePcqInDryRunModeShouldNotCallDelete() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
-        when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
-            .thenReturn(List.of(new ProtectedCharacteristics()));
+        when(pcqRepository.findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(List.of());
 
         pcqDisposerService.disposePcq();
 
         verify(pcqRepository, times(1))
-            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+                any(Timestamp.class), any(Integer.class));
         verify(pcqRepository, times(1))
-            .findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                any(Timestamp.class), any(Integer.class));
         verifyNoMoreInteractions(pcqRepository);
     }
 
@@ -52,23 +53,35 @@ class PcqDisposerServiceTest {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         ReflectionTestUtils.setField(pcqDisposerService, "keepWithCase", 7);
         ReflectionTestUtils.setField(pcqDisposerService, "keepNoCase", 14);
+        ReflectionTestUtils.setField(pcqDisposerService, "rateLimit", 1000);
 
-        when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
-            .thenReturn(List.of(new ProtectedCharacteristics()));
+        // Mocking pcqIds
+        List<String> pcqIdsWithCase = List.of("pcqId1", "pcqId2");
+        List<String> pcqIdsNoCase = List.of("pcqId3", "pcqId4");
+
+        when(pcqRepository.findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqIdsWithCase);
+
+        when(pcqRepository.findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqIdsNoCase);
 
         pcqDisposerService.disposePcq();
 
         ArgumentCaptor<Timestamp> timestampCaptor = ArgumentCaptor.forClass(Timestamp.class);
 
         verify(pcqRepository, times(1))
-            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(timestampCaptor.capture());
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+                timestampCaptor.capture(), any(Integer.class));
         verify(pcqRepository, times(1))
-            .findAllByCaseIdNullAndLastUpdatedTimestampBefore(timestampCaptor.capture());
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                timestampCaptor.capture(), any(Integer.class));
 
         verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(timestampCaptor.capture());
+            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+                timestampCaptor.capture(), any(Integer.class));
         verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(timestampCaptor.capture());
+            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                timestampCaptor.capture(), any(Integer.class));
         verifyNoMoreInteractions(pcqRepository);
 
         List<Timestamp> timestamps = timestampCaptor.getAllValues();
@@ -88,20 +101,31 @@ class PcqDisposerServiceTest {
     @Test
     void disposePcqShouldCallDelete() {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
-        when(pcqRepository.findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class)))
-            .thenReturn(List.of(new ProtectedCharacteristics()));
+        ReflectionTestUtils.setField(pcqDisposerService, "rateLimit", 1000);
+        // Mocking pcqIds
+        List<String> pcqIdsWithCase = List.of("pcqId1", "pcqId2");
+        List<String> pcqIdsNoCase = List.of("pcqId3", "pcqId4");
+        when(pcqRepository.findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqIdsWithCase);
+
+        when(pcqRepository.findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqIdsNoCase);
 
         pcqDisposerService.disposePcq();
 
         verify(pcqRepository, times(1))
-            .findAllByCaseIdNotNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+                any(Timestamp.class), any(Integer.class));
         verify(pcqRepository, times(1))
-            .findAllByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                any(Timestamp.class), any(Integer.class));
 
         verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
+            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+                any(Timestamp.class), any(Integer.class));
         verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore(any(Timestamp.class));
+            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+                any(Timestamp.class), any(Integer.class));
 
         verifyNoMoreInteractions(pcqRepository);
     }
