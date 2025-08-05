@@ -59,6 +59,7 @@ public class PcqDisposerService {
         splitLists.forEach(split -> log.info("DELETABLE PCQ IDS: {}", split));
 
         if (!dryRun && !pcqListWithCaseIds.isEmpty()) {
+            log.info("Deleting old PCQs for real... number to delete {}", pcqListWithCaseIds.size());
             for (List<String> batch : splitLists) {
                 pcqRepository.deleteByPcqIds(batch);
             }
