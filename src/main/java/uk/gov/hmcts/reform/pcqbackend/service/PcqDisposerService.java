@@ -60,7 +60,7 @@ public class PcqDisposerService {
 
         if (!dryRun && !pcqListWithCaseIds.isEmpty()) {
             for (List<String> batch : splitLists) {
-                pcqRepository.deleteByPcqIds(batch);  // updated repository metho
+                pcqRepository.deleteByPcqIds(batch);
             }
         }
 
