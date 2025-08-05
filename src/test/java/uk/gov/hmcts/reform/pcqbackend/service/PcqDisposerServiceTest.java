@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +19,7 @@ import static java.util.concurrent.TimeUnit.HOURS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -118,5 +120,28 @@ class PcqDisposerServiceTest {
         verify(pcqRepository, times(1)).deleteByPcqIds(anyList());
 
         verifyNoMoreInteractions(pcqRepository);
+    }
+
+    @Test
+    void shouldLogErrorWhenDeletionFails() {
+        final LogCaptor logCaptor = LogCaptor.forClass(PcqDisposerService.class);
+        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
+        List<String> pcqIds = List.of("pcqId1", "pcqId2");
+        List<String> pcqId2s = List.of("pcqId3", "pcqId4");
+        when(pcqRepository.findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqIds);
+        when(pcqRepository.findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqId2s);
+
+        doThrow(new RuntimeException("Database error"))
+            .when(pcqRepository).deleteByPcqIds(anyList());
+
+        pcqDisposerService.disposePcq();
+        verify(pcqRepository, times(1)).deleteByPcqIds(anyList());
+        verifyNoMoreInteractions(pcqRepository);
+        assertThat(logCaptor.getErrorLogs())
+            .anyMatch(log -> log.contains("Error executing PCQ Disposer service"));
+        assertThat(logCaptor.getErrorLogs())
+            .anyMatch(log -> log.contains("Failed to delete batch of PCQs"));
     }
 }

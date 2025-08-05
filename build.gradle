@@ -317,9 +317,11 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: "4.3.0"
   implementation group: 'org.yaml', name: 'snakeyaml', version: '2.4'
   implementation group: "com.networknt", name: "json-schema-validator", version: '1.5.8'
+  implementation group: "io.github.hakky54", name: "logcaptor", version: '2.12.0'
 
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: versions.jjwt
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: versions.jjwt
+
 
   testImplementation group: 'com.github.hmcts', name: 'fortify-client', version: '1.4.10', classifier: 'all'
   testImplementation group: 'com.github.tomakehurst', name: 'wiremock-jre8-standalone', version: '3.0.1'
