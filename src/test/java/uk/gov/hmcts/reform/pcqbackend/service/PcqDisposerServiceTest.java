@@ -17,6 +17,7 @@ import java.util.List;
 import static java.util.concurrent.TimeUnit.HOURS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -76,12 +77,8 @@ class PcqDisposerServiceTest {
             .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
                 timestampCaptor.capture(), any(Integer.class));
 
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-                timestampCaptor.capture(), any(Integer.class));
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-                timestampCaptor.capture(), any(Integer.class));
+        verify(pcqRepository, times(1)).deleteByPcqIds(anyList());
+
         verifyNoMoreInteractions(pcqRepository);
 
         List<Timestamp> timestamps = timestampCaptor.getAllValues();
@@ -94,8 +91,6 @@ class PcqDisposerServiceTest {
         long delta = HOURS.toMillis(1) + 1000;
         assertThat(timestamps.get(0)).isCloseTo(weekAgo, delta);
         assertThat(timestamps.get(1)).isCloseTo(twoWeeksAgo, delta);
-        assertThat(timestamps.get(2)).isCloseTo(weekAgo, delta);
-        assertThat(timestamps.get(3)).isCloseTo(twoWeeksAgo, delta);
     }
 
     @Test
@@ -120,12 +115,7 @@ class PcqDisposerServiceTest {
             .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
                 any(Timestamp.class), any(Integer.class));
 
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-                any(Timestamp.class), any(Integer.class));
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-                any(Timestamp.class), any(Integer.class));
+        verify(pcqRepository, times(1)).deleteByPcqIds(anyList());
 
         verifyNoMoreInteractions(pcqRepository);
     }

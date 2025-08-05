@@ -59,11 +59,16 @@ public class PcqDisposerService {
         splitLists.forEach(split -> log.info("DELETABLE PCQ IDS: {}", split));
 
         if (!dryRun && !pcqListWithCaseIds.isEmpty()) {
-            log.info("Deleting old PCQs for real... number to delete {}", pcqListWithCaseIds.size());
-            pcqRepository.deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-                caseCutoffTimestamp, rateLimit);
-            pcqRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-                noCaseCutoffTimestamp, rateLimit);
+            for (List<String> batch : splitLists) {
+                try {
+                    pcqRepository.deleteByPcqIds(batch);  // updated repository method
+                } catch (Exception e) {
+                    //To trace the log and create alert
+                    log.error("Error executing PCQ Disposer service : " +  e);
+                    //To have stack trace
+                    log.error("Failed to delete batch of PCQs: {}", batch, e);
+                }
+            }
         }
 
         log.info("PCQ disposer completed");
