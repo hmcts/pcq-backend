@@ -61,7 +61,14 @@ public class PcqDisposerService {
         if (!dryRun && !pcqListWithCaseIds.isEmpty()) {
             log.info("Deleting old PCQs for real... number to delete {}", pcqListWithCaseIds.size());
             for (List<String> batch : splitLists) {
-                pcqRepository.deleteByPcqIds(batch);
+                try {
+                    pcqRepository.deleteByPcqIds(batch);
+                } catch (Exception e) {
+                    //To trace the log and create alert
+                    log.error("Error executing PCQ Disposer service : " +  e);
+                    //To have stack trace
+                    log.error("Failed to delete batch of PCQs: {}", batch, e);
+                }
             }
         }
 
