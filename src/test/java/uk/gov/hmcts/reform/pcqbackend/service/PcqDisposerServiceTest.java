@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
-import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -125,7 +124,6 @@ class PcqDisposerServiceTest {
 
     @Test
     void shouldLogErrorWhenDeletionFails() {
-        final LogCaptor logCaptor = LogCaptor.forClass(PcqDisposerService.class);
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         List<String> pcqIds = List.of("pcqId1", "pcqId2");
         List<String> pcqId2s = List.of("pcqId3", "pcqId4");
