@@ -16,7 +16,10 @@ import java.util.List;
 
 import static java.util.concurrent.TimeUnit.HOURS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -76,12 +79,8 @@ class PcqDisposerServiceTest {
             .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
                 timestampCaptor.capture(), any(Integer.class));
 
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-                timestampCaptor.capture(), any(Integer.class));
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-                timestampCaptor.capture(), any(Integer.class));
+        verify(pcqRepository, times(1)).deleteByPcqIds(anyList());
+
         verifyNoMoreInteractions(pcqRepository);
 
         List<Timestamp> timestamps = timestampCaptor.getAllValues();
@@ -94,8 +93,6 @@ class PcqDisposerServiceTest {
         long delta = HOURS.toMillis(1) + 1000;
         assertThat(timestamps.get(0)).isCloseTo(weekAgo, delta);
         assertThat(timestamps.get(1)).isCloseTo(twoWeeksAgo, delta);
-        assertThat(timestamps.get(2)).isCloseTo(weekAgo, delta);
-        assertThat(timestamps.get(3)).isCloseTo(twoWeeksAgo, delta);
     }
 
     @Test
@@ -120,13 +117,25 @@ class PcqDisposerServiceTest {
             .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
                 any(Timestamp.class), any(Integer.class));
 
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-                any(Timestamp.class), any(Integer.class));
-        verify(pcqRepository, times(1))
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-                any(Timestamp.class), any(Integer.class));
+        verify(pcqRepository, times(1)).deleteByPcqIds(anyList());
 
         verifyNoMoreInteractions(pcqRepository);
+    }
+
+    @Test
+    void shouldLogErrorWhenDeletionFails() {
+        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
+        List<String> pcqIds = List.of("pcqId1", "pcqId2");
+        List<String> pcqId2s = List.of("pcqId3", "pcqId4");
+        when(pcqRepository.findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqIds);
+        when(pcqRepository.findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+            any(Timestamp.class), any(Integer.class))).thenReturn(pcqId2s);
+
+        doThrow(new RuntimeException("Database error"))
+            .when(pcqRepository).deleteByPcqIds(anyList());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> pcqDisposerService.disposePcq());
+        assertThat(exception.getMessage()).contains("Failed to delete batch");
     }
 }
