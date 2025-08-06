@@ -77,7 +77,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
             .withFailMessage("Expected to find \"DELETABLE PCQ IDS: \" in the logs, but didn't find")
             .contains("DELETABLE PCQ IDS: [");
 
-        String expected = "Deleting old PCQs for real... number to delete 2";
+        String expected = "PCQ disposer completed.Total deleted PCQ records: 2";
         assertThat(logMessages)
             .withFailMessage("Expect to find \"" + expected + "\" in the logs")
             .contains(expected);
