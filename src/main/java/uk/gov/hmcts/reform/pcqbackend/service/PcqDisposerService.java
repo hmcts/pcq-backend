@@ -64,10 +64,7 @@ public class PcqDisposerService {
                 try {
                     pcqRepository.deleteByPcqIds(batch);
                 } catch (Exception e) {
-                    //To trace the log and create alert
-                    log.error("Error executing PCQ Disposer service : " +  e);
-                    //To have stack trace
-                    log.error("Failed to delete batch of PCQs: {}", batch, e);
+                    throw new RuntimeException("Failed to delete batch: " + batch, e);
                 }
             }
         }

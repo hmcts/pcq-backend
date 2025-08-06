@@ -17,6 +17,7 @@ import java.util.List;
 
 import static java.util.concurrent.TimeUnit.HOURS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.doThrow;
@@ -136,12 +137,7 @@ class PcqDisposerServiceTest {
         doThrow(new RuntimeException("Database error"))
             .when(pcqRepository).deleteByPcqIds(anyList());
 
-        pcqDisposerService.disposePcq();
-        verify(pcqRepository, times(1)).deleteByPcqIds(anyList());
-        verifyNoMoreInteractions(pcqRepository);
-        assertThat(logCaptor.getErrorLogs())
-            .anyMatch(log -> log.contains("Error executing PCQ Disposer service"));
-        assertThat(logCaptor.getErrorLogs())
-            .anyMatch(log -> log.contains("Failed to delete batch of PCQs"));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> pcqDisposerService.disposePcq());
+        assertThat(exception.getMessage()).contains("Failed to delete batch");
     }
 }
