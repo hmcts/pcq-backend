@@ -198,8 +198,10 @@ class ProtectedCharacteristicsRepositoryImplTest {
     void shouldDeleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBefore() {
         Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
 
-        protectedCharacteristicsRepository
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp,1000);
+        List<String> pcqIds = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp,1000);
+
+        protectedCharacteristicsRepository.deleteByPcqIds(pcqIds);
 
         // get record
         final List<String> pc = protectedCharacteristicsRepository
@@ -214,8 +216,11 @@ class ProtectedCharacteristicsRepositoryImplTest {
 
         Timestamp lastUpdatedTimestamp = new Timestamp(System.currentTimeMillis());
 
-        protectedCharacteristicsRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
+        List<String> pcqIds = protectedCharacteristicsRepository
+            .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
             lastUpdatedTimestamp,1000);
+
+        protectedCharacteristicsRepository.deleteByPcqIds(pcqIds);
 
         // get record
         final List<String> pc = protectedCharacteristicsRepository
@@ -266,8 +271,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
             );
         assertThat(initialRecords).isNotEmpty();
 
-        protectedCharacteristicsRepository
-            .deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, rateLimit);
+        protectedCharacteristicsRepository.deleteByPcqIds(initialRecords);
 
         List<String> remainingRecords = protectedCharacteristicsRepository
             .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
@@ -290,8 +294,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
             );
         assertThat(initialRecords).isNotEmpty();
 
-        protectedCharacteristicsRepository
-            .deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, rateLimit);
+        protectedCharacteristicsRepository.deleteByPcqIds(initialRecords);
 
         List<String> remainingRecords = protectedCharacteristicsRepository
             .findAllPcqIdsByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
