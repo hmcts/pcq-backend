@@ -69,6 +69,6 @@ public class PcqDisposerService {
             }
         }
 
-        log.info("PCQ disposer completed. Total deleted PCQ records: {} , dryRun : {} ", pcqListWithCaseIds.size(),dryRun);
+        log.info("PCQ disposer completed. Total deleted PCQ records: {}, dryRun: {} ", pcqListWithCaseIds.size(),dryRun);
     }
 }
