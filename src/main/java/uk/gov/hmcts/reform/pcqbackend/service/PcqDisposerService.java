@@ -67,8 +67,9 @@ public class PcqDisposerService {
                     throw new DeleteException("Failed to delete batch: " + batch, e);
                 }
             }
+            log.info("PCQ disposer completed. Total deleted PCQ records: {}", pcqListWithCaseIds.size());
         }
 
-        log.info("PCQ disposer completed. Total deleted PCQ records: {}", pcqListWithCaseIds.size());
+        log.info("PCQ disposer finished.");
     }
 }
