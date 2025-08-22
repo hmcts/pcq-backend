@@ -272,7 +272,7 @@ repositories {
 
 def versions = [
   flywaydb            : '11.11.2',
-  jjwt                : '0.12.7',
+  jjwt                : '0.13.0',
   junit               : '5.11.4',
   junitPlatform       : '1.11.4',
   springBoot          : springBoot.class.package.implementationVersion,
