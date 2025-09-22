@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
+import uk.gov.hmcts.reform.pcqbackend.exceptions.DeleteException;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
 
 import java.sql.Timestamp;
@@ -59,13 +60,15 @@ public class PcqDisposerService {
         splitLists.forEach(split -> log.info("DELETABLE PCQ IDS: {}", split));
 
         if (!dryRun && !pcqListWithCaseIds.isEmpty()) {
-            log.info("Deleting old PCQs for real... number to delete {}", pcqListWithCaseIds.size());
-            pcqRepository.deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-                caseCutoffTimestamp, rateLimit);
-            pcqRepository.deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-                noCaseCutoffTimestamp, rateLimit);
+            for (List<String> batch : splitLists) {
+                try {
+                    pcqRepository.deleteByPcqIds(batch);
+                } catch (Exception e) {
+                    throw new DeleteException("Failed to delete batch: " + batch, e);
+                }
+            }
         }
 
-        log.info("PCQ disposer completed");
+        log.info("PCQ disposer completed. Total deleted PCQ records: {}, dryRun: {} ",pcqListWithCaseIds.size(),dryRun);
     }
 }

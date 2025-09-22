@@ -127,28 +127,10 @@ public interface ProtectedCharacteristicsRepository extends JpaRepository<Protec
         @Param("rateLimit") int rateLimit
     );
 
-    @Modifying
-    @Transactional
-    @Query(value = "DELETE FROM protected_characteristics pc "
-        + "WHERE pc.pcq_id IN (SELECT pcq_id FROM protected_characteristics "
-        + "WHERE case_id IS NOT NULL AND last_updated_timestamp < :lastUpdatedTimestamp "
-        + "ORDER BY pc.last_updated_timestamp ASC LIMIT :rateLimit)",
-        nativeQuery = true)
-    void deleteInBulkByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
-        @Param("lastUpdatedTimestamp") Timestamp lastUpdatedTimestamp,
-        @Param("rateLimit") int rateLimit
-    );
 
     @Modifying
     @Transactional
-    @Query(value = "DELETE FROM protected_characteristics pc "
-        + "WHERE pc.pcq_id IN (SELECT pcq_id FROM protected_characteristics "
-        + "WHERE case_id IS NULL AND last_updated_timestamp < :lastUpdatedTimestamp "
-        + "ORDER BY pc.last_updated_timestamp ASC LIMIT :rateLimit)",
-        nativeQuery = true)
-    void deleteInBulkByCaseIdNullAndLastUpdatedTimestampBeforeWithLimit(
-        @Param("lastUpdatedTimestamp") Timestamp lastUpdatedTimestamp,
-        @Param("rateLimit") int rateLimit
-    );
+    @Query(value = "DELETE FROM protected_characteristics WHERE pcq_id IN :ids", nativeQuery = true)
+    void deleteByPcqIds(@Param("ids") List<String> ids);
 
 }
