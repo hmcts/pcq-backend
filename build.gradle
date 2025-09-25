@@ -256,6 +256,8 @@ dependencyManagement {
       entry 'spring-cloud-starter-openfeign'
       entry 'spring-cloud-openfeign-core'
     }
+
+    dependency group: 'commons-io', name: 'commons-io', version: '2.20.0'
   }
   imports {
     mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2024.0.2'
@@ -273,8 +275,6 @@ repositories {
 def versions = [
   flywaydb            : '11.13.1',
   jjwt                : '0.13.0',
-  junit               : '5.13.4',
-  junitPlatform       : '1.13.4',
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '5.5.6',
   serenity            : '4.2.34',
@@ -339,11 +339,9 @@ dependencies {
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
   testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
 
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
-  testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: versions.junitPlatform
-  testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
-
+  testImplementation(platform("org.junit:junit-bom:5.13.4"))
+  testImplementation("org.junit.jupiter:junit-jupiter")
+  
   integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
   integrationTestImplementation sourceSets.main.runtimeClasspath
