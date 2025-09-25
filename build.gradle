@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath "org.flywaydb:flyway-database-postgresql:11.13.0"
+    classpath "org.flywaydb:flyway-database-postgresql:11.13.1"
   }
 }
 
@@ -271,7 +271,7 @@ repositories {
 }
 
 def versions = [
-  flywaydb            : '11.13.0',
+  flywaydb            : '11.13.1',
   jjwt                : '0.13.0',
   junit               : '5.11.4',
   junitPlatform       : '1.11.4',
