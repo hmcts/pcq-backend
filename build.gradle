@@ -273,8 +273,7 @@ repositories {
 def versions = [
   flywaydb            : '11.13.1',
   jjwt                : '0.13.0',
-  junit               : '5.11.4',
-  junitPlatform       : '1.11.4',
+  junit               : '5.12.2',
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '5.5.6',
   serenity            : '4.2.34',
@@ -339,10 +338,9 @@ dependencies {
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
   testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
 
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: versions.junit
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: versions.junit
-  testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-launcher', version: versions.junitPlatform
-  testRuntimeOnly group: 'org.junit.platform', name: 'junit-platform-commons', version: versions.junitPlatform
+
+  testImplementation(platform("org.junit:junit-bom:${versions.junit}"))
+  testImplementation("org.junit.jupiter:junit-jupiter")
 
   integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
   integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
