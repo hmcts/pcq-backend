@@ -274,7 +274,7 @@ repositories {
 def versions = [
   flywaydb            : '11.20.1',
   jjwt                : '0.13.0',
-  junit               : '6.0.1',
+  junit               : '6.0.2',
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '5.5.6',
   serenity            : '4.3.4',
