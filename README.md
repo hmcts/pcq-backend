@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=uk.gov.hmcts.reform%3Apcq-backend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=uk.gov.hmcts.reform%3Apcq-backend) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=uk.gov.hmcts.reform%3Apcq-backend&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=uk.gov.hmcts.reform%3Apcq-backend) [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=uk.gov.hmcts.reform%3Apcq-backend&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=uk.gov.hmcts.reform%3Apcq-backend) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=uk.gov.hmcts.reform%3Apcq-backend&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=uk.gov.hmcts.reform%3Apcq-backend) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=uk.gov.hmcts.reform%3Apcq-backend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=uk.gov.hmcts.reform%3Apcq-backend)
 
-This is the frontend for the protected characteristics questionnaire service. This service will ask a set of questions that will help us check we are treating people fairly and equally. It helps us to meet our commitment to equality (under the Equality Act 2010). 
+This is the backend for the protected characteristics questionnaire service. This service will ask a set of questions that will help us check we are treating people fairly and equally. It helps us to meet our commitment to equality (under the Equality Act 2010).
 
 ## Overview
 
@@ -14,15 +14,53 @@ This is the frontend for the protected characteristics questionnaire service. Th
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/hmcts/pcq-frontend/master/pcq_overview.png" width="500"/>
+  <br>
+  <sub>System overview diagram maintained in the pcq-frontend repository.</sub>
 </p>
 
 ## Purpose
 
-This is the Protected Characteristics Back-End application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service
+This is the Protected Characteristics backend application that will save user's answers to the database, fetch PCQ Ids that don't have an associated case record and add case information to a PCQ record in the database. The API will be invoked by two components - PCQ front-end and the Consolidation service.
 
 ## What's inside
 
-The application exposes health endpoint (http://localhost:4550/health).
+The application exposes few endpoints
+1. Submit answers (/pcq/backend/submitAnswers).
+2. Get answer for PCQ Id (/pcq/backend/getAnswer/{pcqId}).
+3. Get PCQ Ids without CaseId (/pcq/backend/consolidation/pcqRecordWithoutCase).
+4. Add CaseId for PCQ Record (/pcq/backend/consolidation/addCaseForPCQ/{pcqId}).
+
+
+## Authorisation
+
+The service uses two authentication mechanisms, depending on the endpoint:
+
+1. JWT (for submitAnswers)
+   - Endpoint: `/pcq/backend/submitAnswers`
+   - Header: `Authorization: Bearer <jwt>`
+   - Secret: `security.jwt.secret` (env: `JWT_SECRET`)
+   - The JWT subject is used as the party id; `authorities` claim is mapped to Spring authorities.
+
+2. Service-to-service (for SAS token generation)
+   - Endpoint: `/pcq/backend/token/bulkscan`
+   - Header: `ServiceAuthorization: <s2s token>`
+   - Token is validated via the IdAM s2s-auth service (`idam.s2s-auth.url`).
+   - Allowed services are configured in `authorised.services`.
+
+Other endpoints are currently permitted without authentication by the HTTP security filter chain.
+
+## Disposal job
+
+PCQ disposal is a batch job that runs on application start when `PCQ_DISPOSER_JOB=true`.
+It is additionally gated by `disposer.enabled` (env: `PCQ_DISPOSER_ENABLED`).
+
+Behavior and configuration:
+- `disposer.dry-run` (env: `PCQ_DISPOSER_DRY_RUN`) logs candidate PCQ ids without deleting when true.
+- `disposer.rateLimit` (env: `PCQ_DISPOSER_RATE_LIMIT`) caps the number of records fetched per category.
+- `disposer.keep-with-case` (env: `PCQ_DAYS_TO_KEEP_WITH_CASEID`) keeps records with case ids for N days.
+- `disposer.keep-no-case` (env: `PCQ_DAYS_TO_KEEP_WITHOUT_CASEID`) keeps records without case ids for N days.
+
+The job deletes records in batches of 100 when not in dry-run mode.
 
 ## Plugins
 
@@ -160,29 +198,6 @@ Finally you can remove all volumes - note this removes all existing database val
 
 There is no need to remove postgres and java or similar core images.
 
-
-## Hystrix
-
-[Hystrix](https://github.com/Netflix/Hystrix/wiki) is a library that helps you control the interactions
-between your application and other services by adding latency tolerance and fault tolerance logic. It does this
-by isolating points of access between the services, stopping cascading failures across them,
-and providing fallback options. We recommend you to use Hystrix in your application if it calls any services.
-
-### Hystrix circuit breaker
-
-This API has [Hystrix Circuit Breaker](https://github.com/Netflix/Hystrix/wiki/How-it-Works#circuit-breaker)
-already enabled. It monitors and manages all the`@HystrixCommand` or `HystrixObservableCommand` annotated methods
-inside `@Component` or `@Service` annotated classes.
-
-### Other
-
-Hystrix offers much more than Circuit Breaker pattern implementation or command monitoring.
-Here are some other functionalities it provides:
- * [Separate, per-dependency thread pools](https://github.com/Netflix/Hystrix/wiki/How-it-Works#isolation)
- * [Semaphores](https://github.com/Netflix/Hystrix/wiki/How-it-Works#semaphores), which you can use to limit
- the number of concurrent calls to any given dependency
- * [Request caching](https://github.com/Netflix/Hystrix/wiki/How-it-Works#request-caching), allowing
- different code paths to execute Hystrix Commands without worrying about duplicating work
 
 ## License
 
