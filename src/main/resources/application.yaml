@@ -44,8 +44,7 @@ security:
     secret: ${JWT_SECRET:a-very-long-and-boring-secret-key}
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
-    encryption-enabled: ${DB_ENCRYPTION_ENABLED:Yes}
-    allow_delete_record: ${DB_ALLOW_DELETE_RECORD:true}
+    allow_delete_record: ${DB_ALLOW_DELETE_RECORD:false}
 
 idam:
   s2s-auth:
