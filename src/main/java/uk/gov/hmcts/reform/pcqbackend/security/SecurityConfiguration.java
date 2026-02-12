@@ -3,8 +3,10 @@ package uk.gov.hmcts.reform.pcqbackend.security;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+    @Value("${security.db.allow_get_answer_record:false}")
+    private boolean allowGetAnswerRecord;
+
     @Bean
     public SecurityFilterChain configure(HttpSecurity http, JwtConfiguration jwtConfiguration) throws Exception {
         http
@@ -29,8 +34,9 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(
                 authz -> authz
                     .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                    .requestMatchers("/pcq/backend/getAnswer/**")
+                    .access((authentication, context) -> new AuthorizationDecision(allowGetAnswerRecord))
                     .requestMatchers(
-                        "/pcq/backend/getAnswer/**",
                         "/pcq/backend/consolidation/**",
                         "/pcq/backend/token/**",
                         "/pcq/backend/deletePcqRecord/**",
