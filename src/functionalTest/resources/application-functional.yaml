@@ -1,6 +1,6 @@
 targetInstance: ${TEST_URL:http://localhost:4550}
-jwt_test_secret: ${JWT_SECRET:a-very-long-and-boring-secret-key}
-backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
+jwt_test_secret: ${JWT_SECRET}
+backend-encryption-key: ${DB_ENCRYPTION_KEY}
 
 management:
   endpoint:
@@ -39,11 +39,10 @@ security:
   db:
     allow_delete_record: ${DB_ALLOW_DELETE_RECORD:true}
     allow_get_answer_record: ${DB_ALLOW_GET_ANSWER_RECORD:true}
-idam:
-  s2s-auth:
-    url: ${TEST_S2S_URL:http://localhost:4502}
-    secret-cs: ${S2S_CS_SECRET:AAAAAAAAAAAAAAAA}
-    name-cs: ${S2S_CS_NAME:pcq_consolidation_service}
+
+idam.s2s-auth.url: ${TEST_S2S_URL:http://localhost:4502}
+idam.s2s-auth.secret-cs: ${S2S_CS_SECRET}
+idam.s2s-auth.name-cs: ${S2S_CS_NAME:pcq_consolidation_service}
 
 authorised.services: pcq_consolidation_service,reform_scan_blob_router
 

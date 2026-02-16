@@ -1,9 +1,12 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +20,9 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,9 +51,24 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     private static final String ASSERT_MESSAGE_CASE_ID = "Case Id Not Matching";
     private static final String TEST_CASE_ID = "CCD-121212";
     private static final String JSON_FILE = "JsonTestFiles/FirstSubmitAnswer.json";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
+    private static final String JSON_RESPONSE = "application/json;charset=UTF-8";
 
     @Rule
     public OutputCaptureRule capture = new OutputCaptureRule();
+
+    @Rule
+    public WireMockRule wireMockServer = new WireMockRule(WireMockConfiguration.options().port(4554));
+
+    @Before
+    public void setupAuthorisationStubs() {
+        wireMockServer.resetAll();
+        wireMockServer.stubFor(get(urlPathMatching("/details"))
+                                   .willReturn(aResponse()
+                                                   .withHeader(CONTENT_TYPE_HEADER, JSON_RESPONSE)
+                                                   .withStatus(200)
+                                                   .withBody("pcq_consolidation_service")));
+    }
 
     @Test
     public void addCaseForPcqSuccess() throws IOException {

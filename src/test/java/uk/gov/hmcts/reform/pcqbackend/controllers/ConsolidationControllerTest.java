@@ -15,6 +15,7 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
+import uk.gov.hmcts.reform.pcqbackend.security.ServiceAuthorizationAuthenticator;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
 
 import java.sql.Timestamp;
@@ -42,6 +43,8 @@ class ConsolidationControllerTest {
 
     private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
+    private ServiceAuthorizationAuthenticator serviceAuthorizationAuthenticator;
+
     private static final String HEADER_KEY = "X-Correlation-Id";
     private static final String API_ERROR_MESSAGE_UPDATED = "Successfully updated";
     private static final String API_ERROR_MESSAGE_BAD_REQUEST = "Invalid Request";
@@ -64,6 +67,8 @@ class ConsolidationControllerTest {
     private static final String HTTP_OK = "200";
     private static final String DAYS_LIMIT = "90";
     private static final String DAYS_LIMIT_LESS_THAN = "0";
+    private static final String SERVICE_AUTH_HEADER = "Bearer test-service-auth";
+    private static final String TEST_SERVICE_NAME = "pcq_consolidation_service";
     private static final String UNKNOWN_ERROR_MSG = "Unknown error occurred";
     private static final String EXPECTED_NOT_FOUND_MSG = "Expected 400 status code";
     private static final String HTTP_NOT_FOUND = "400";
@@ -79,13 +84,19 @@ class ConsolidationControllerTest {
             protectedCharacteristicsRepository,
             environment
         );
-        this.consolidationController = new ConsolidationController(environment, consolidationService);
+        this.serviceAuthorizationAuthenticator = mock(ServiceAuthorizationAuthenticator.class);
+        this.consolidationController = new ConsolidationController(
+            environment,
+            serviceAuthorizationAuthenticator,
+            consolidationService
+        );
         MockitoAnnotations.openMocks(this);
 
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(UPDATE_MSG_PROPERTY)).thenReturn(API_ERROR_MESSAGE_UPDATED);
         when(environment.getProperty("api-error-messages.accepted")).thenReturn(SUCCESS_MSG);
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn(UNKNOWN_ERROR_MSG);
+        when(serviceAuthorizationAuthenticator.authenticate(SERVICE_AUTH_HEADER)).thenReturn(TEST_SERVICE_NAME);
     }
 
     /**
@@ -103,7 +114,7 @@ class ConsolidationControllerTest {
             when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders);
+                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
@@ -143,7 +154,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders);
+                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
@@ -192,7 +203,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders);
+                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
@@ -239,7 +250,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders);
+                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
@@ -286,7 +297,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders);
+                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
@@ -328,8 +339,8 @@ class ConsolidationControllerTest {
             HttpHeaders mockHeaders = mock(HttpHeaders.class);
             when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(mockHeaders, TEST_PCQ_ID,
-                                                                                          TEST_CASE_ID);
+            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(
+                mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID,  TEST_CASE_ID);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
@@ -362,8 +373,8 @@ class ConsolidationControllerTest {
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(1);
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(mockHeaders, TEST_PCQ_ID,
-                                                                                          TEST_CASE_ID);
+            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(mockHeaders,
+                      SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID);
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
@@ -399,8 +410,8 @@ class ConsolidationControllerTest {
             when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
             when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(0);
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(mockHeaders, TEST_PCQ_ID,
-                                                                                          TEST_CASE_ID);
+            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(
+                mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID);
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
 
@@ -437,8 +448,8 @@ class ConsolidationControllerTest {
             when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenThrow(
                 NullPointerException.class);
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(mockHeaders, TEST_PCQ_ID,
-                                                                                          TEST_CASE_ID);
+            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(
+                mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID);
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
 
@@ -473,7 +484,7 @@ class ConsolidationControllerTest {
             when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders);
+                mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
@@ -513,7 +524,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders);
+                mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
@@ -561,7 +572,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders);
+                mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
@@ -610,7 +621,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders);
+                mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
@@ -658,7 +669,7 @@ class ConsolidationControllerTest {
                 Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
 
             ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders);
+                mockHeaders, SERVICE_AUTH_HEADER);
 
             assertNotNull(actual, RESPONSE_NULL_MSG);
             assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
