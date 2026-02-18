@@ -45,6 +45,7 @@ security:
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
     allow_delete_record: ${DB_ALLOW_DELETE_RECORD:false}
+    allow_get_answer_record: ${DB_ALLOW_GET_ANSWER_RECORD:false}
 
 idam:
   s2s-auth:
@@ -117,4 +118,3 @@ springdoc:
     path: /v2/api-docs
   packagesToScan: uk.gov.hmcts.reform.pcqbackend.controllers
   pathsToMatch: /**
-
