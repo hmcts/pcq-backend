@@ -38,6 +38,7 @@ security:
     prefix: Bearer
   db:
     allow_delete_record: ${DB_ALLOW_DELETE_RECORD:true}
+    allow_get_answer_record: ${DB_ALLOW_GET_ANSWER_RECORD:true}
 idam:
   s2s-auth:
     url: ${TEST_S2S_URL:http://localhost:4502}
