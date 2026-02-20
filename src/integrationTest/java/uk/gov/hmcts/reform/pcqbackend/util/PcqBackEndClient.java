@@ -114,7 +114,7 @@ public class PcqBackEndClient {
     @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
     private <T> Map<String, Object> putRequest(String uriPath, Object... params) {
 
-        HttpEntity<T> request = new HttpEntity<>(getCoRelationTokenHeaders());
+        HttpEntity<T> request = new HttpEntity<>(getCoRelationAndServiceAuthorisationHeaders());
         ResponseEntity<Map> responseEntity;
         //adding the query params to the URL
         UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + prdApiPort + uriPath)
@@ -188,7 +188,7 @@ public class PcqBackEndClient {
         ResponseEntity<PcqRecordWithoutCaseResponse> responseEntity;
 
         try {
-            HttpEntity<?> request = new HttpEntity<>(getCoRelationTokenHeaders());
+            HttpEntity<?> request = new HttpEntity<>(getCoRelationAndServiceAuthorisationHeaders());
             responseEntity = restTemplate
                 .exchange("http://localhost:" + prdApiPort + uriPath,
                           HttpMethod.GET,
@@ -261,6 +261,12 @@ public class PcqBackEndClient {
     private HttpHeaders getServiceAuthorisationHeader() {
 
         HttpHeaders headers = new HttpHeaders();
+        headers.add("ServiceAuthorization", "INTEG-TEST-PCQ");
+        return headers;
+    }
+
+    private HttpHeaders getCoRelationAndServiceAuthorisationHeaders() {
+        HttpHeaders headers = getCoRelationTokenHeaders();
         headers.add("ServiceAuthorization", "INTEG-TEST-PCQ");
         return headers;
     }
