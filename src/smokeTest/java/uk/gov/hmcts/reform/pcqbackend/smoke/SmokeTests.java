@@ -1,5 +1,7 @@
 package uk.gov.hmcts.reform.pcqbackend.smoke;
 
+import com.google.common.collect.ImmutableMap;
+import com.warrenstrange.googleauth.GoogleAuthenticator;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -22,6 +24,15 @@ public class SmokeTests {
     @Value("${test.instance.uri}")
     private String url;
 
+    @Value("${idam.s2s-auth.url}")
+    private String s2sUrl;
+
+    @Value("${idam.s2s-auth.name-cs}")
+    private String s2sName;
+
+    @Value("${idam.s2s-auth.secret-cs}")
+    private String s2sSecret;
+
     private static final int HTTP_OK = HttpStatus.OK.value();
 
     RequestSpecification requestSpec;
@@ -33,6 +44,7 @@ public class SmokeTests {
         builder.addParam("http.socket.timeout", "60000");
         builder.addParam("http.connection-manager.timeout", "60000");
         builder.addHeader("X-Correlation-Id", "correlationid");
+        builder.addHeader("ServiceAuthorization", "Bearer " + getServiceAuthToken());
         builder.setRelaxedHTTPSValidation();
         requestSpec = builder.build();
     }
@@ -72,5 +84,22 @@ public class SmokeTests {
 
     private boolean okResponse(ValidatableResponse response) {
         return response.extract().statusCode() == HTTP_OK ? Boolean.TRUE : Boolean.FALSE;
+    }
+
+    private String getServiceAuthToken() {
+        return given()
+            .relaxedHTTPSValidation()
+            .baseUri(s2sUrl)
+            .contentType("application/json")
+            .body(ImmutableMap.of(
+                "microservice", s2sName,
+                "oneTimePassword", new GoogleAuthenticator().getTotpPassword(s2sSecret)
+            ))
+            .when()
+            .post("/lease")
+            .then()
+            .statusCode(HTTP_OK)
+            .extract()
+            .asString();
     }
 }
