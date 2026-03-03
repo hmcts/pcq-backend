@@ -32,6 +32,7 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
+    secret: a-very-long-and-boring-secret-key-for-unit-tests
 
 idam:
   s2s-auth:

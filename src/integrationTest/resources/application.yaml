@@ -36,6 +36,7 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
+    secret: a-very-long-and-boring-secret-key
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
 
