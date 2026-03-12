@@ -2,16 +2,6 @@ targetInstance: ${TEST_URL:http://localhost:4550}
 jwt_test_secret: ${JWT_SECRET}
 backend-encryption-key: ${DB_ENCRYPTION_KEY}
 
-management:
-  endpoint:
-    health:
-      show-details: "always"
-  endpoints:
-    web:
-      base-path: /
-      exposure:
-        include: health, info, prometheus
-
 #Application specific properties
 api-error-messages:
   bad_request: Invalid Request
