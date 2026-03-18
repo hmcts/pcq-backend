@@ -4,7 +4,7 @@ services:
   pcq-backend:
     build:
       context: .
-    image: hmctspublic.azurecr.io/pcq/backend
+    image: hmctsprod.azurecr.io/pcq/backend
     environment:
       # database configuration
       - SPRING_DATASOURCE_URL=jdbc:postgresql://pcq-database:5432/${PCQ_DB_NAME}
@@ -32,7 +32,7 @@ services:
       - pcq-database-data:/var/lib/postgresql/data
 
   pcq-frontend:
-    image: hmctspublic.azurecr.io/pcq/frontend
+    image: hmctsprod.azurecr.io/pcq/frontend
     environment:
       - LAUNCHDARKLY_KEY=${PCQ_LD_KEY}
       - PCQ_BACKEND_ENABLED=true
@@ -43,7 +43,7 @@ services:
       - pcq-backend
 
   service-auth-provider-api:
-    image: hmctspublic.azurecr.io/rpe/service-auth-provider:latest
+    image: hmctsprod.azurecr.io/rpe/service-auth-provider:latest
     healthcheck:
       interval: 10s
       timeout: 10s
