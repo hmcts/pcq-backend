@@ -150,7 +150,7 @@ by executing the following command:
 ```
 
 az login
-az acr login --name hmctspublic --subscription DCD-CNP-Prod
+az acr login --name hmctsprod --subscription DCD-CNP-Prod
 
 This will start the API container exposing the application's port
 (set to `4550` in this template app).
@@ -177,8 +177,8 @@ Run the following to install the azure and kubernetes command-line tools
 login to azure - you'll not need hmctsprivate access for PCQ.
 ```bash
   az login (will open a browser to login)
-  az acr login --name hmctspublic --subscription DCD-CNP-Prod
-  az acr login --name hmctsprivate --subscription DCD-CNP-Prod
+  az acr login --name hmctsprod --subscription DCD-CNP-Prod
+  az acr login --name hmctsprod --subscription DCD-CNP-Prod
 ```
 
 #### Removing old docker images
