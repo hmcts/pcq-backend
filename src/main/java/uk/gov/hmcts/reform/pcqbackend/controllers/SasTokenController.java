@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.hmcts.reform.pcq.commons.model.SasTokenResponse;
-import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
-import uk.gov.hmcts.reform.pcqbackend.security.AuthorisedServices;
-import uk.gov.hmcts.reform.pcqbackend.service.AuthService;
+import uk.gov.hmcts.reform.pcqbackend.security.ServiceAuthorizationAuthenticator;
 import uk.gov.hmcts.reform.pcqbackend.service.SasTokenService;
 
 
@@ -34,11 +32,9 @@ import uk.gov.hmcts.reform.pcqbackend.service.SasTokenService;
     + "The API will be invoked by the bulk-scan-processor service.")
 public class SasTokenController {
 
-    private final AuthService authService;
+    private final ServiceAuthorizationAuthenticator serviceAuthorizationAuthenticator;
 
     private final SasTokenService sasTokenService;
-
-    private final AuthorisedServices authorisedServices;
 
     @Operation(
         tags = "GET end-points",
@@ -60,11 +56,7 @@ public class SasTokenController {
     public ResponseEntity<SasTokenResponse> generateBulkScanSasToken(
         @RequestHeader(name = "ServiceAuthorization", required = false) String serviceAuthHeader
     ) {
-        String serviceName = authService.authenticate(serviceAuthHeader);
-        if (!authorisedServices.hasService(serviceName)) {
-            log.info("Service {} has NOT been authorised!", serviceName);
-            throw new InvalidAuthenticationException("Unable to authenticate service request.");
-        }
+        serviceAuthorizationAuthenticator.authenticate(serviceAuthHeader);
         SasTokenResponse sasTokenResponse = new SasTokenResponse(sasTokenService.generateSasToken());
         return ResponseEntity.ok(sasTokenResponse);
     }

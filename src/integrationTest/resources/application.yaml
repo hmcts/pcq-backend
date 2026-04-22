@@ -1,16 +1,6 @@
 server:
   port: 4550
 
-management:
-  endpoint:
-    health:
-      show-details: "always"
-  endpoints:
-    web:
-      base-path: /
-      exposure:
-        include: health, info, prometheus
-
 #Application specific properties
 api-error-messages:
   bad_request: Invalid Request
@@ -36,6 +26,7 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
+    secret: a-very-long-and-boring-secret-key
   db:
     backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
 
@@ -44,7 +35,7 @@ storage:
   blob-pcq-container: ${STORAGE_ACCOUNT_PCQ_CONTAINER:pcq}
   sas-token-expiry: ${SAS_TOKEN_EXPIRY:3600}
 
-authorised.services: reform_scan_blob_router
+authorised.services: reform_scan_blob_router,pcq_consolidation_service
 
 #If you use a database then uncomment below lines and update db properties accordingly
 spring:

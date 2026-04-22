@@ -26,6 +26,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class PcqBackEndServiceClient {
 
     private static final String CO_RELATION_HEADER = "X-Correlation-Id";
+    private static final String SERVICE_AUTHORISATION_HEADER = "ServiceAuthorization";
     private static final String SUBMIT_ANSWERS_URL = "/pcq/backend/submitAnswers";
     private static final String INFO_MSG_CONSTANT_1 = "Update answers record response: ";
     private static final String SUBJECT = "TEST";
@@ -33,11 +34,19 @@ public class PcqBackEndServiceClient {
 
     private final String pcqBackEndApiUrl;
     private final String jwtSecretKey;
+    private final String s2sName;
+    private final String s2sSecret;
+    private final String s2sUrl;
+    private final IdamServiceClient idamServiceClient = new IdamServiceClient();
 
-    public PcqBackEndServiceClient(String pcqBackEndApiUrl, String jwtSecretKey) {
+    public PcqBackEndServiceClient(String pcqBackEndApiUrl, String jwtSecretKey,
+                                   String s2sName, String s2sSecret, String s2sUrl) {
 
         this.pcqBackEndApiUrl = pcqBackEndApiUrl;
         this.jwtSecretKey = jwtSecretKey;
+        this.s2sName = s2sName;
+        this.s2sSecret = s2sSecret;
+        this.s2sUrl = s2sUrl;
     }
 
     @SuppressWarnings("PMD.LawOfDemeter")
@@ -198,7 +207,7 @@ public class PcqBackEndServiceClient {
 
     public PcqRecordWithoutCaseResponse getAnswerRecordsWithoutCase(HttpStatus status) {
 
-        Response response = getCoRelationHeaders()
+        Response response = getCoRelationAndServiceAuthHeaders()
             .get("pcq/backend/consolidation/pcqRecordWithoutCase")
             .andReturn();
         response.then()
@@ -212,7 +221,7 @@ public class PcqBackEndServiceClient {
     }
 
     public Map<String, Object> addCaseForPcq(String pcqId, String caseId, HttpStatus status) {
-        Response response = getMultipleAuthHeadersWithQueryParams("caseId", caseId)
+        Response response = getCoRelationAndServiceAuthHeadersWithQueryParams("caseId", caseId)
             .put("pcq/backend/consolidation/addCaseForPCQ/" + pcqId)
             .andReturn();
         response.then()
@@ -245,23 +254,31 @@ public class PcqBackEndServiceClient {
                 + PcqUtils.generateAuthorizationToken(secretKey, SUBJECT, TEST_AUTHORITIES));
     }
 
-    public RequestSpecification getCoRelationHeaders() {
-        return with()
-            .relaxedHTTPSValidation()
-            .baseUri(pcqBackEndApiUrl)
-            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-            .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
-            .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ");
-    }
-
-    public RequestSpecification getMultipleAuthHeadersWithQueryParams(String paramName, String paramValue) {
+    public RequestSpecification getCoRelationAndServiceAuthHeaders() {
         return with()
             .relaxedHTTPSValidation()
             .baseUri(pcqBackEndApiUrl)
             .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
             .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
             .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ")
+            .header(SERVICE_AUTHORISATION_HEADER, getServiceAuthorisationValue());
+    }
+
+    public RequestSpecification getCoRelationAndServiceAuthHeadersWithQueryParams(String paramName,
+                                                                                   String paramValue) {
+        return with()
+            .relaxedHTTPSValidation()
+            .baseUri(pcqBackEndApiUrl)
+            .header("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+            .header("Accepts", MediaType.APPLICATION_JSON_VALUE)
+            .header(CO_RELATION_HEADER, "FUNC-TEST-PCQ")
+            .header(SERVICE_AUTHORISATION_HEADER, getServiceAuthorisationValue())
             .queryParam(paramName, paramValue);
+    }
+
+    private String getServiceAuthorisationValue() {
+        String s2sToken = idamServiceClient.s2sSignIn(s2sName, s2sSecret, s2sUrl);
+        return "Bearer " + s2sToken;
     }
 
 }

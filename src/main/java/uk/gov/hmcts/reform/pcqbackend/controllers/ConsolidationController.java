@@ -24,6 +24,7 @@ import uk.gov.hmcts.reform.pcq.commons.model.SubmitResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
+import uk.gov.hmcts.reform.pcqbackend.security.ServiceAuthorizationAuthenticator;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
 import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
 
@@ -50,6 +51,8 @@ public class ConsolidationController {
 
     private final Environment environment;
 
+    private final ServiceAuthorizationAuthenticator serviceAuthorizationAuthenticator;
+
     private final ConsolidationService consolidationService;
 
     @Operation(
@@ -72,10 +75,13 @@ public class ConsolidationController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public ResponseEntity<SubmitResponse> addCaseForPcq(@RequestHeader HttpHeaders headers,
+                                                        @RequestHeader(name = "ServiceAuthorization")
+                                                            String serviceAuthHeader,
                                                         @PathVariable("pcqId") @NotBlank String pcqId,
                                                         @NotBlank String caseId) {
 
         try {
+            serviceAuthorizationAuthenticator.authenticate(serviceAuthHeader);
             return consolidationService.updateCaseId(headers.get(environment.getProperty(
                 CO_RELATIONID_PROPERTY_NAME)),pcqId, caseId);
         } catch (Exception e) {
@@ -104,9 +110,11 @@ public class ConsolidationController {
         path = "/pcqRecordWithoutCase",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<PcqRecordWithoutCaseResponse> getPcqRecordWithoutCase(@RequestHeader HttpHeaders headers) {
+    public ResponseEntity<PcqRecordWithoutCaseResponse> getPcqRecordWithoutCase(@RequestHeader HttpHeaders headers,
+        @RequestHeader(name = "ServiceAuthorization") String serviceAuthHeader) {
 
         try {
+            serviceAuthorizationAuthenticator.authenticate(serviceAuthHeader);
             List<ProtectedCharacteristics> protectedCharacteristicsList = consolidationService.getPcqsWithoutCase(
                 headers.get(environment.getProperty(CO_RELATIONID_PROPERTY_NAME)));
 

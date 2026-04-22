@@ -43,10 +43,10 @@ java:
         - name: s2s-secret-pcq-consolidation-service
           alias: S2S_CS_SECRET
 
-  image: 'hmctspublic.azurecr.io/pcq/backend:latest'
+  image: 'hmctsprod.azurecr.io/pcq/backend:latest'
 
 job:
-  image: 'hmctspublic.azurecr.io/pcq/backend:latest'
+  image: 'hmctsprod.azurecr.io/pcq/backend:latest'
   kind: CronJob
   schedule: "17 22 * * *" # 22:17 UTC
   aadIdentityName: pcq
@@ -70,3 +70,5 @@ job:
           alias: PCQ_DB_PASSWORD
         - name: app-insights-connection-string
           alias: app-insights-connection-string
+        - name: jwt-secret
+          alias: JWT_SECRET

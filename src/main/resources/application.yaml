@@ -4,12 +4,23 @@ server:
 management:
   endpoint:
     health:
-      show-details: "always"
+      probes:
+        enabled: true
+      show-details: never
+      show-components: always
+
+  health:
+    ping:
+      enabled: false
+    ssl:
+      enabled: false
+    refresh:
+      enabled: false
   endpoints:
     web:
       base-path: /
       exposure:
-        include: health, info, prometheus
+        include: health
 
 #Application specific properties
 api-error-messages:
@@ -41,10 +52,11 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
-    secret: ${JWT_SECRET:a-very-long-and-boring-secret-key}
+    secret: ${JWT_SECRET}
   db:
-    backend-encryption-key: ${DB_ENCRYPTION_KEY:ThisIsATestKeyForEncryption}
+    backend-encryption-key: ${DB_ENCRYPTION_KEY}
     allow_delete_record: ${DB_ALLOW_DELETE_RECORD:false}
+    allow_get_answer_record: ${DB_ALLOW_GET_ANSWER_RECORD:false}
 
 idam:
   s2s-auth:
@@ -60,6 +72,11 @@ authorised.services: pcq_consolidation_service,reform_scan_blob_router
 #If you use a database then uncomment below lines and update db properties accordingly
 
 spring:
+  cloud:
+    discovery:
+      client:
+        health-indicator:
+          enabled: false
   application:
     name: Protected Characteristics Questions
   config:

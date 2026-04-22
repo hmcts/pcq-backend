@@ -1,16 +1,6 @@
 server:
   port: 4550
 
-management:
-  endpoint:
-    health:
-      show-details: "always"
-  endpoints:
-    web:
-      base-path: /
-      exposure:
-        include: health, info, prometheus
-
 #Application specific properties
 api-error-messages:
   bad_request: Invalid Request
@@ -32,6 +22,7 @@ security:
   jwt:
     header: Authorization
     prefix: Bearer
+    secret: a-very-long-and-boring-secret-key-for-unit-tests
 
 idam:
   s2s-auth:

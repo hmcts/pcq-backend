@@ -47,6 +47,15 @@ public abstract class PcqBaseFunctionalTest {
     @Value("${api-config-params.number_of_days_limit}")
     protected String daysLimit;
 
+    @Value("${idam.s2s-auth.name-cs:pcq_consolidation_service}")
+    protected String s2sName;
+
+    @Value("${idam.s2s-auth.secret-cs:AAAAAAAAAAAAAAAA}")
+    protected String s2sSecret;
+
+    @Value("${idam.s2s-auth.url:http://localhost:4502}")
+    protected String s2sUrl;
+
     protected PcqBackEndServiceClient pcqBackEndServiceClient;
 
     protected RequestSpecification bearerToken;
@@ -61,7 +70,13 @@ public abstract class PcqBaseFunctionalTest {
         /* SerenityRest.proxy("proxyout.reform.hmcts.net", 8080);
         RestAssured.proxy("proxyout.reform.hmcts.net", 8080);*/
 
-        pcqBackEndServiceClient = new PcqBackEndServiceClient(pcqBackEndApiUrl, jwtSecretKey);
+        pcqBackEndServiceClient = new PcqBackEndServiceClient(
+            pcqBackEndApiUrl,
+            jwtSecretKey,
+            s2sName,
+            s2sSecret,
+            s2sUrl
+        );
     }
 
     @After
