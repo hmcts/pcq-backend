@@ -2,10 +2,11 @@ package uk.gov.hmcts.reform.pcqbackend.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.networknt.schema.JsonSchema;
-import com.networknt.schema.JsonSchemaFactory;
-import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
+import com.networknt.schema.Error;
+import com.networknt.schema.InputFormat;
+import com.networknt.schema.Schema;
+import com.networknt.schema.SchemaRegistry;
+import com.networknt.schema.SpecificationVersion;
 import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 
 @Slf4j
@@ -250,40 +251,39 @@ public class SubmitAnswersService extends BaseService {
     }
 
     @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-    private void validateRequestAgainstSchema(Object requestObject, String schemaFileName) throws IOException,
-        SchemaValidationException {
+    private void validateRequestAgainstSchema(Object requestObject, String schemaFileName)
+        throws IOException, SchemaValidationException {
 
-
-        //Convert the requestObject to a JSON String.
         ObjectMapper mapper = new ObjectMapper();
-        String jsonString = mapper.writeValueAsString(requestObject);
 
-        //Use the json string to form a JSONNode.
-        JsonNode jsonNode = mapper.readTree(jsonString);
+        // Convert request object → JsonNode (no need to go via String)
+        JsonNode jsonNode = mapper.valueToTree(requestObject);
 
-        //Generate the JSON Schema object from the schema file in the classpath.
-        JsonSchemaFactory jsonSchemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
         try (InputStream inputStream = new ClassPathResource(schemaFileName).getInputStream()) {
-            JsonSchema jsonSchema = jsonSchemaFactory.getSchema(inputStream);
+
+            // Read schema
+            JsonNode schemaNode = mapper.readTree(inputStream);
+
+            //Generate the JSON Schema object from the schema file in the classpath.
+            SchemaRegistry registry = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_7);
+
+            Schema schema = registry.getSchema(String.valueOf(schemaNode));
 
             //Now validate the json against the schema
-            Set<ValidationMessage> errorSet = jsonSchema.validate(jsonNode);
+            List<Error> errors = schema.validate(String.valueOf(jsonNode), InputFormat.JSON);
 
-            if (errorSet != null && !errorSet.isEmpty()) {
+            if (!errors.isEmpty()) {
 
-                StringBuilder strBuilder = new StringBuilder();
+                String errorMessage = errors.stream()
+                    .map(Error::getMessage)
+                    .collect(Collectors.joining(" ; "));
 
-                //noinspection RedundantExplicitVariableType
-                for (ValidationMessage validationMessage : errorSet) {
-                    strBuilder.append(validationMessage.getMessage());
-                    strBuilder.append(" ; ");
-                }
-
-                throw new SchemaValidationException("Request does not conform to JSON Schema.", strBuilder.toString());
+                throw new SchemaValidationException(
+                    "Request does not conform to JSON Schema.",
+                    errorMessage
+                );
             }
-
         }
-
     }
 
     private void validateVersionNumber(int requestVersionNumber) throws InvalidRequestException {
