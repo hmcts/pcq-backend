@@ -256,7 +256,7 @@ public class SubmitAnswersService extends BaseService {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        // Convert request object → JsonNode (no need to go via String)
+        // Convert request object → JsonNode for validation against the JSON Schema.
         JsonNode jsonNode = mapper.valueToTree(requestObject);
 
         try (InputStream inputStream = new ClassPathResource(schemaFileName).getInputStream()) {
