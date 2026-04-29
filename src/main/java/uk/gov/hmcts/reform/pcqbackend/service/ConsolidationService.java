@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 @Service
 public class ConsolidationService extends BaseService {
 
-    ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+    private final ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @Autowired
     public ConsolidationService(ProtectedCharacteristicsRepository protectedCharacteristicsRepository,

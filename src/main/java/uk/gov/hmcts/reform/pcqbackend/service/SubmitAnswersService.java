@@ -43,7 +43,7 @@ public class SubmitAnswersService extends BaseService {
     private static final String OPTOUT_YES = "Y";
     private static final String INFO_LOG_MSG = "Co-Relation Id : {}, Channel : {}, Service : {} - submitAnswers API, ";
 
-    ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+    private final ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @Autowired
     public SubmitAnswersService(ProtectedCharacteristicsRepository protectedCharacteristicsRepository,

@@ -4,7 +4,7 @@ import org.springframework.core.env.Environment;
 
 public class BaseService {
 
-    Environment environment;
+    protected final Environment environment;
 
     BaseService(Environment environment) {
         this.environment = environment;
