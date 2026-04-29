@@ -253,10 +253,6 @@ dependencyManagement {
     // CVE-2021-29425
     dependency group: 'commons-io', name: 'commons-io', version: '2.22.0'
 
-    dependencySet(group: 'org.springframework.cloud', version: '4.3.0') {
-      entry 'spring-cloud-starter-openfeign'
-      entry 'spring-cloud-openfeign-core'
-    }
   }
   imports {
     mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.0.0'
@@ -274,15 +270,13 @@ repositories {
 def versions = [
   flywaydb            : '12.4.0',
   jjwt                : '0.13.0',
-  junit               : '6.0.3',
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '6.0.0',
   serenity            : '5.3.10',
   lombok              : '1.18.46',
   gradlePitest        : '1.15.0',
   sonarPitest         : '0.5',
-  testcontainers      : '1.21.4',
-  springCloud         : '4.3.0'
+  testcontainers      : '1.21.4'
 ]
 
 dependencies {
@@ -313,8 +307,8 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web-services'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap', version: versions.springCloud
-  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: "4.3.0"
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-bootstrap'
+  implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   implementation group: 'org.yaml', name: 'snakeyaml', version: '2.6'
   implementation group: "com.networknt", name: "json-schema-validator", version: '1.5.9'
 
@@ -339,8 +333,6 @@ dependencies {
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
   testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
 
-
-  testImplementation(platform("org.junit:junit-bom:${versions.junit}"))
   testImplementation("org.junit.jupiter:junit-jupiter")
 
   integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
