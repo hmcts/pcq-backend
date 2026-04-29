@@ -1,8 +1,8 @@
 provider "azurerm" {
   features {}
   resource_provider_registrations = "none"
-  alias                      = "sdp_vault"
-  subscription_id            = local.sdp_environment_ids[local.sdp_environment].subscription
+  alias                           = "sdp_vault"
+  subscription_id                 = local.sdp_environment_ids[local.sdp_environment].subscription
 }
 
 locals {
