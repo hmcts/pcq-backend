@@ -16,9 +16,9 @@ import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsReposit
 @Service
 public class DeleteService {
     protected static final String NOT_FOUND_ERROR_MSG_KEY = "api-error-messages.not_found";
-    Environment environment;
+    private final Environment environment;
 
-    ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
+    private final ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @Autowired
     public DeleteService(ProtectedCharacteristicsRepository protectedCharacteristicsRepository,
