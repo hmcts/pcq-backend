@@ -8,8 +8,11 @@ import java.util.List;
 @Component
 public class AuthorisedServices {
 
-    @Value("#{'${authorised.services}'.split(',\\s*')}")
-    private List<String> authorisedServicesList;
+    private final List<String> authorisedServicesList;
+
+    public AuthorisedServices(@Value("#{'${authorised.services}'.split(',\\s*')}") List<String> services) {
+        this.authorisedServicesList = List.copyOf(services);
+    }
 
     public boolean hasService(String serviceName) {
         return authorisedServicesList.contains(serviceName);
