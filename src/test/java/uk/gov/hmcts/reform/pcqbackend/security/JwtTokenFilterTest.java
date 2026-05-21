@@ -86,9 +86,8 @@ class JwtTokenFilterTest {
     @Test
     void testAuthSuccess() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
-
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn(
             "Bearer " + generateAuthorizationToken(JwtTokenFilterTest.SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
         when(jwtConfiguration.getPrefix()).thenReturn(TOKEN_PREFIX);
@@ -115,8 +114,8 @@ class JwtTokenFilterTest {
     @Test
     void testAuthFailure() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
         FilterChain mockChain = mock(FilterChain.class);
+        HttpServletResponse mockResponse = mock(HttpServletResponse.class);
 
         when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn(
             "Bearer " + generateAuthorizationToken(JwtTokenFilterTest.SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
