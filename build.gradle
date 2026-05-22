@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath "org.flywaydb:flyway-database-postgresql:12.6.1"
+    classpath "org.flywaydb:flyway-database-postgresql:12.6.2"
   }
 }
 
@@ -19,7 +19,7 @@ plugins {
   id 'org.sonarqube' version '7.3.0.8198'
   id 'com.gorylenko.gradle-git-properties' version '2.5.7'
   id "io.freefair.lombok" version "9.5.0"
-  id "org.flywaydb.flyway" version "12.6.1"
+  id "org.flywaydb.flyway" version "12.6.2"
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
@@ -268,7 +268,7 @@ repositories {
 }
 
 def versions = [
-  flywaydb            : '12.6.1',
+  flywaydb            : '12.6.2',
   jjwt                : '0.13.0',
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '6.0.0',
