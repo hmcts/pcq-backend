@@ -80,7 +80,7 @@ public class PcqBackEndClient {
 
         } catch (RestClientResponseException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
         }
@@ -103,7 +103,7 @@ public class PcqBackEndClient {
 
         } catch (RestClientResponseException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
         }
@@ -117,7 +117,7 @@ public class PcqBackEndClient {
         HttpEntity<T> request = new HttpEntity<>(getCoRelationAndServiceAuthorisationHeaders());
         ResponseEntity<Map> responseEntity;
         //adding the query params to the URL
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + prdApiPort + uriPath)
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:" + prdApiPort + uriPath)
             .queryParam("caseId", params[0]);
         try {
 
@@ -128,7 +128,7 @@ public class PcqBackEndClient {
 
         } catch (RestClientResponseException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
         }
@@ -151,7 +151,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }
@@ -174,7 +174,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }
@@ -197,7 +197,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }
@@ -286,7 +286,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }

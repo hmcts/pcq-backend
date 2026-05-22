@@ -11,7 +11,7 @@ import uk.gov.hmcts.reform.authorisation.validators.ServiceAuthTokenValidator;
 
 @Configuration
 @Lazy
-@EnableFeignClients(basePackages = {"uk.gov.hmcts.reform.idam"})
+@EnableFeignClients(clients = {ServiceAuthorisationApi.class})
 public class AuthServiceConfiguration {
 
     @Bean

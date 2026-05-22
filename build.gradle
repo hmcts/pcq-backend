@@ -12,7 +12,7 @@ plugins {
   id 'jacoco'
   id 'io.spring.dependency-management' version '1.1.7'
   id 'net.serenity-bdd.serenity-gradle-plugin' version '5.3.9'
-  id 'org.springframework.boot' version '3.5.14'
+  id 'org.springframework.boot' version '4.0.6'
   id 'org.owasp.dependencycheck' version '12.2.1'
   id 'com.github.ben-manes.versions' version '0.54.0'
   id "info.solidsoft.pitest" version '1.19.0'
@@ -113,7 +113,7 @@ task functional(type: Test, description: 'Runs the functional tests.', group: 'V
 task integration(type: Test, description: 'Runs the integration tests.', group: 'Verification') {
   testClassesDirs = sourceSets.integrationTest.output.classesDirs
   classpath = sourceSets.integrationTest.runtimeClasspath
-  //useJUnitPlatform()
+  useJUnitPlatform()
   // set your environment variables here
   // environment("APPINSIGHTS_INSTRUMENTATIONKEY", "test-key")
 }
@@ -255,7 +255,7 @@ dependencyManagement {
 
   }
   imports {
-    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.0.0'
+    mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.1.1'
   }
 }
 
@@ -296,17 +296,16 @@ dependencies {
   implementation group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '4.0.8'
   implementation group: 'org.postgresql', name: 'postgresql', version: '42.7.11'
   implementation group: 'org.projectlombok', name: 'lombok', version: versions.lombok
-  implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.8.17'
+  implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '3.0.3'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-flyway'
   implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-actuator'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-aop'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-json'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web-services'
-  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+  implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   implementation group: 'org.yaml', name: 'snakeyaml', version: '2.6'
   implementation group: "com.networknt", name: "json-schema-validator", version: '1.5.9'
@@ -329,8 +328,14 @@ dependencies {
   testImplementation group: 'org.codehaus.sonar-plugins', name: 'sonar-pitest-plugin', version: '0.5'
   testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '3.0'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa-test'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-flyway-test'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test'
+
   testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
   testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
+  testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: versions.testcontainers
 
   testImplementation("org.junit.jupiter:junit-jupiter")
 
