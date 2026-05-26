@@ -2,8 +2,8 @@ package uk.gov.hmcts.reform.pcqbackend.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -48,12 +48,12 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
 
     protected PcqBackEndClient pcqBackEndClient;
 
-    @Before
+    @BeforeEach
     public void setUpClient() {
         pcqBackEndClient = new PcqBackEndClient(port);
     }
 
-    @After
+    @AfterEach
     public void cleanupTestData() {
         protectedCharacteristicsRepository.deleteAll();
     }

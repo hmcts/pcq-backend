@@ -2,11 +2,12 @@ package uk.gov.hmcts.reform.pcqbackend.service;
 
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
@@ -21,6 +22,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @WithTags({@WithTag("testType:Integration")})
+@ExtendWith(OutputCaptureExtension.class)
 public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
     public static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
@@ -33,10 +35,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
     @Autowired
     ProtectedCharacteristicsRepository pcqRepository;
 
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
-
-    @Before
+    @BeforeEach
     public void setUp() {
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
@@ -44,7 +43,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testDisposePcqLogsCollectedPcqs() {
+    public void testDisposePcqLogsCollectedPcqs(CapturedOutput capture) {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
 
         pcqDisposerService.disposePcq();
@@ -64,7 +63,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testDisposePcqLogsDeletesPcqs() {
+    public void testDisposePcqLogsDeletesPcqs(CapturedOutput capture) {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
 
         pcqDisposerService.disposePcq();

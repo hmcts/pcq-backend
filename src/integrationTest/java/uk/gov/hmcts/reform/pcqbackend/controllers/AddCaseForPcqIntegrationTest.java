@@ -1,16 +1,18 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
@@ -36,13 +38,14 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
+@ExtendWith(OutputCaptureExtension.class)
 public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_1 = "pcqId";
     public static final String RESPONSE_KEY_2 = "responseStatusCode";
     public static final String RESPONSE_KEY_3 = "responseStatus";
     public static final String HTTP_OK = "200";
-    public static final String HTTP_BAD_REQUEST = "400";
+    public static final String HTTP_BAD_REQUEST = "400 BAD_REQUEST";
     public static final String RESPONSE_SUCCESS_MSG = "Successfully updated";
 
     private static final String ASSERT_MESSAGE_PCQ = "PCQId not valid";
@@ -54,13 +57,13 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String JSON_RESPONSE = "application/json;charset=UTF-8";
 
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
+    @RegisterExtension
+    static WireMockExtension wireMockServer =
+        WireMockExtension.newInstance()
+            .options(WireMockConfiguration.wireMockConfig().port(4554))
+            .build();
 
-    @Rule
-    public WireMockRule wireMockServer = new WireMockRule(WireMockConfiguration.options().port(4554));
-
-    @Before
+    @BeforeEach
     public void setupAuthorisationStubs() {
         wireMockServer.resetAll();
         wireMockServer.stubFor(get(urlPathMatching("/details"))
@@ -71,7 +74,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForPcqSuccess() throws IOException {
+    public void addCaseForPcqSuccess(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -94,7 +97,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertResponse(responseMap, answerRequest.getPcqId(), HTTP_OK, RESPONSE_SUCCESS_MSG);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
 
         //Fetch the record from database and verify the answers.
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
@@ -107,7 +110,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForInvalidPcq() throws IOException {
+    public void addCaseForInvalidPcq(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -118,7 +121,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertEquals(HTTP_BAD_REQUEST, responseMap.get("http_status"), ASSERT_MESSAGE_STATUS_CODE);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
 
         //Fetch the record from database and verify the answers.
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
@@ -131,7 +134,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForNullParams() throws IOException {
+    public void addCaseForNullParams(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -142,7 +145,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertEquals(HTTP_BAD_REQUEST, responseMap.get("http_status"), ASSERT_MESSAGE_STATUS_CODE);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
 
         //Fetch the record from database and verify the answers.
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
@@ -155,7 +158,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForPcqInjectionTest() throws IOException {
+    public void addCaseForPcqInjectionTest(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -167,7 +170,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertResponse(responseMap, answerRequest.getPcqId(), HTTP_OK, RESPONSE_SUCCESS_MSG);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
 
         //Fetch the record from database and verify the answers.
         Optional<ProtectedCharacteristics> protectedCharacteristicsOptional =
@@ -182,7 +185,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
             .isCloseTo(Instant.now(), SECONDS.toMillis(2));
     }
 
-    private void checkLogsForKeywords() {
+    private void checkLogsForKeywords(CapturedOutput capture) {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
     }

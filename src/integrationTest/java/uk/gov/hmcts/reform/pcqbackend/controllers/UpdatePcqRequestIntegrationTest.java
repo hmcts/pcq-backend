@@ -4,10 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswers;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
@@ -28,6 +29,7 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
+@ExtendWith(OutputCaptureExtension.class)
 public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_4 = "response_body";
@@ -38,11 +40,8 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
     private static final String TEST_DUP_PCQ_ID = "UPDATE-DUP-INTEG-TEST";
 
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
-
     @Test
-    public void updateDobProvidedSuccess() throws IOException {
+    public void updateDobProvidedSuccess(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -59,11 +58,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void updateDobProvidedSuccessOptOutNull() throws IOException {
+    public void updateDobProvidedSuccessOptOutNull(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -80,11 +79,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void dobProvidedStateDate() throws IOException {
+    public void dobProvidedStateDate(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -106,11 +105,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             "Dob Provided matching"
         );
 
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void updateDobSuccess() throws IOException {
+    public void updateDobSuccess(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -127,11 +126,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void invalidDob() throws IOException {
+    public void invalidDob(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -155,11 +154,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             "Dob not matching"
         );
 
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void updateMainLanguage() throws IOException {
+    public void updateMainLanguage(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -167,7 +166,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 3; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -176,12 +175,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateOtherLanguage() throws IOException {
+    public void updateOtherLanguage(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -198,11 +197,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void testInjectionOtherLanguage() throws IOException {
+    public void testInjectionOtherLanguage(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -219,7 +218,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         protectedCharacteristicsOptional = protectedCharacteristicsRepository
             .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
@@ -231,7 +230,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateEnglishLanguageLevel() throws IOException {
+    public void updateEnglishLanguageLevel(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -239,7 +238,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 5; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -248,12 +247,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateSex() throws IOException {
+    public void updateSex(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -261,7 +260,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 3; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -270,12 +269,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateGender() throws IOException {
+    public void updateGender(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -283,7 +282,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 3; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -292,12 +291,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateGenderDifferent() throws IOException {
+    public void updateGenderDifferent(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -314,11 +313,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void updateSexuality() throws IOException {
+    public void updateSexuality(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -326,7 +325,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 5; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -335,12 +334,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateOtherSexuality() throws IOException {
+    public void updateOtherSexuality(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -357,11 +356,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void testInjectionOtherSexuality() throws IOException {
+    public void testInjectionOtherSexuality(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -378,7 +377,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         protectedCharacteristicsOptional = protectedCharacteristicsRepository
             .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
@@ -390,7 +389,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateMarried() throws IOException {
+    public void updateMarried(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -398,7 +397,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 3; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -407,19 +406,19 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateEthnicity() throws IOException {
+    public void updateEthnicity(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/Ethnicity.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 19; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -428,12 +427,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateEthnicityOther() throws IOException {
+    public void updateEthnicityOther(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -450,11 +449,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void testInjectionOtherEthnicity() throws IOException {
+    public void testInjectionOtherEthnicity(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -471,7 +470,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         protectedCharacteristicsOptional = protectedCharacteristicsRepository
             .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
@@ -483,7 +482,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateReligion() throws IOException {
+    public void updateReligion(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -491,7 +490,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 9; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -500,12 +499,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateReligionOther() throws IOException {
+    public void updateReligionOther(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -522,11 +521,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void testInjectionOtherReligion() throws IOException {
+    public void testInjectionOtherReligion(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -543,7 +542,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         protectedCharacteristicsOptional = protectedCharacteristicsRepository
             .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
@@ -555,7 +554,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateDisabilityConditions() throws IOException {
+    public void updateDisabilityConditions(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -563,7 +562,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 3; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -572,12 +571,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateDisabilityImpact() throws IOException {
+    public void updateDisabilityImpact(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -585,7 +584,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 4; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -594,12 +593,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void updateDisabilityTypes() throws IOException {
+    public void updateDisabilityTypes(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -616,11 +615,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void updateOtherDisabilityDetails() throws IOException {
+    public void updateOtherDisabilityDetails(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -637,11 +636,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void testInjectionOtherDisability() throws IOException {
+    public void testInjectionOtherDisability(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -658,7 +657,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertFalse(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         protectedCharacteristicsOptional = protectedCharacteristicsRepository
             .findByPcqId(TEST_DUP_PCQ_ID,getEncryptionKey());
@@ -670,7 +669,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updatePregnancy() throws IOException {
+    public void updatePregnancy(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -678,7 +677,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
         runAnswerUpdates(answerRequest);
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
 
         for (int i = 0; i < 3; i++) {
             PcqAnswers answers = answerRequest.getPcqAnswers();
@@ -687,12 +686,12 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.setCompletedDate(updateCompletedDate(answerRequest.getCompletedDate()));
 
             runAnswerUpdates(answerRequest);
-            assertLogsForKeywords();
+            assertLogsForKeywords(capturedOutput);
         }
     }
 
     @Test
-    public void invalidPregnancy() throws IOException {
+    public void invalidPregnancy(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -716,11 +715,11 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             "Pregnancy not matching"
         );
 
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void testSqlInjection() {
+    public void testSqlInjection(CapturedOutput capturedOutput) {
         // Create a record first.
         createTestRecord();
 
@@ -735,29 +734,29 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertEquals(protectedCharacteristicsOptional.get().getPcqId(), TEST_PCQ_ID, "PCQ Id not matching");
 
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void updateMainLanguageEnglish() throws IOException {
+    public void updateMainLanguageEnglish(CapturedOutput capturedOutput) throws IOException {
         String fileName = "JsonTestFiles/UpdateMainLanguageEnglish.json";
         String errorMessage = "Main Language English not matching";
-        assertLanguageUpdated(fileName, errorMessage);
+        assertLanguageUpdated(fileName, errorMessage,capturedOutput);
     }
 
     @Test
-    public void updateMainLanguageWelsh() throws IOException {
+    public void updateMainLanguageWelsh(CapturedOutput capturedOutput) throws IOException {
         String fileName = "JsonTestFiles/UpdateMainLanguageWelsh.json";
         String errorMessage = "Main Language Welsh not matching";
-        assertLanguageUpdated(fileName, errorMessage);
+        assertLanguageUpdated(fileName, errorMessage,capturedOutput);
     }
 
     //Test English or welsh option as well for backward compatibility
     @Test
-    public void updateMainLanguageEnglishOrWelsh() throws IOException {
+    public void updateMainLanguageEnglishOrWelsh(CapturedOutput capturedOutput) throws IOException {
         String fileName = "JsonTestFiles/UpdateMainLanguageEnglishOrWelsh.json";
         String errorMessage = "Main Language English or Welsh not matching";
-        assertLanguageUpdated(fileName, errorMessage);
+        assertLanguageUpdated(fileName, errorMessage,capturedOutput);
     }
 
     private void createTestRecord() {
@@ -791,12 +790,13 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         return answerRequest;
     }
 
-    private void assertLogsForKeywords() {
+    private void assertLogsForKeywords(CapturedOutput capture) {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
     }
 
-    private void assertLanguageUpdated(String fileName, String errorMessage) throws IOException {
+    private void assertLanguageUpdated(String fileName, String errorMessage,
+               CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -818,7 +818,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
             answerRequest.getPcqAnswers().getLanguageMain(),
             errorMessage
         );
-        assertLogsForKeywords();
+        assertLogsForKeywords(capturedOutput);
     }
 
 }

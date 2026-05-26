@@ -1,16 +1,18 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.http.ResponseEntity;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
@@ -35,6 +37,7 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
+@ExtendWith(OutputCaptureExtension.class)
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.LinguisticNaming"})
 public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
@@ -50,13 +53,13 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
     private static final String JSON_RESPONSE = "application/json;charset=UTF-8";
 
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
+    @RegisterExtension
+    static WireMockExtension wireMockServer =
+        WireMockExtension.newInstance()
+            .options(WireMockConfiguration.wireMockConfig().port(4554))
+            .build();
 
-    @Rule
-    public WireMockRule wireMockServer = new WireMockRule(WireMockConfiguration.options().port(4554));
-
-    @Before
+    @BeforeEach
     public void setupAuthorisationStubs() {
         wireMockServer.resetAll();
         wireMockServer.stubFor(get(urlPathMatching("/details"))
@@ -67,7 +70,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getPcqRecordWithoutCaseSingleRecord() throws IOException {
+    public void getPcqRecordWithoutCaseSingleRecord(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -79,11 +82,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 1, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getDcnRecordWithoutCaseSingleRecord() throws IOException {
+    public void getDcnRecordWithoutCaseSingleRecord(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -95,11 +98,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 1, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getPcqRecordWithoutCaseRecordNotFound() throws IOException {
+    public void getPcqRecordWithoutCaseRecordNotFound(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCase.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -111,11 +114,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 0, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getDcnRecordWithoutCaseRecordNotFound() throws IOException {
+    public void getDcnRecordWithoutCaseRecordNotFound(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswerWithCase.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -127,11 +130,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 0, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getPcqRecordWithoutCaseCompletedDatePastBoundary() throws IOException {
+    public void getPcqRecordWithoutCaseCompletedDatePastBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -145,11 +148,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 0, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getDcnRecordWithoutCaseCompletedDatePastBoundary() throws IOException {
+    public void getDcnRecordWithoutCaseCompletedDatePastBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -163,11 +166,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 0, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getPcqRecordWithoutCaseCompletedDateOnBoundary() throws IOException {
+    public void getPcqRecordWithoutCaseCompletedDateOnBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -181,11 +184,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 0, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getDcnRecordWithoutCaseCompletedDateOnBoundary() throws IOException {
+    public void getDcnRecordWithoutCaseCompletedDateOnBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -199,11 +202,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 0, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getPcqRecordWithoutCaseCompletedDatePreBoundary() throws IOException {
+    public void getPcqRecordWithoutCaseCompletedDatePreBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -217,11 +220,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 1, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getDcnRecordWithoutCaseCompletedDatePreBoundary() throws IOException {
+    public void getDcnRecordWithoutCaseCompletedDatePreBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -235,11 +238,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 1, answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getPcqRecordWithoutCaseMultipleIds() throws IOException {
+    public void getPcqRecordWithoutCaseMultipleIds(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data 3 times in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -259,11 +262,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 3, answerRequest, answerRequest2, answerRequest3);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void getDcnRecordWithoutCaseMultipleIds() throws IOException {
+    public void getDcnRecordWithoutCaseMultipleIds(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data 3 times in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -283,11 +286,11 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
         //Test the assertions
         assertTestForSuccess(responseMap, 3, answerRequest, answerRequest2, answerRequest3);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
 
-    private void checkLogsForKeywords() {
+    private void checkLogsForKeywords(CapturedOutput capture) {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
     }
