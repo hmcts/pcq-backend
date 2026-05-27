@@ -46,7 +46,6 @@ class SasTokenControllerTest {
     private static final String RESPONSE_MESSAGE_UNABLE_TO_GENERATE_TOKEN = "Unable to generate token";
     private static final String RESPONSE_ERROR_UNABLE_TO_GENERATE_TOKEN = "Unable to generate token";
     private static final String RESPONSE_HAS_CORRECT_OUTPUT = "Response is showing correct output.";
-    private static final String BULK_SCAN_SERVICE_NAME = "bulkscan";
 
     /**
      * This method tests the generateBulkScanSasToken API to generate a SAS token.

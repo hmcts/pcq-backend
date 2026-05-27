@@ -40,7 +40,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
     private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         for (int i = 1; i <= 10; i++) {
             protectedCharacteristicsRepositoryCustom
                 .saveProtectedCharacteristicsWithEncryption(getProtectedCharacteristics(
@@ -176,8 +176,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
         final List<String> pc = protectedCharacteristicsRepository
             .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, 1000);
 
-        assertThat(pc).isNotEmpty();
-        assertThat(pc.size()).isEqualTo(10);
+        assertThat(pc).isNotEmpty().hasSize(10);
     }
 
     @Test
@@ -238,9 +237,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
         List<String> result = protectedCharacteristicsRepository
             .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, rateLimit);
 
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(rateLimit);
-        assertThat(result).containsExactlyInAnyOrder("1","2"); // Adjust based on test data
+        assertThat(result).isNotEmpty().hasSize(rateLimit).containsExactlyInAnyOrder("1","2");
     }
 
 
@@ -255,9 +252,8 @@ class ProtectedCharacteristicsRepositoryImplTest {
                 lastUpdatedTimestamp, rateLimit
             );
 
-        assertThat(result).isNotEmpty();
-        assertThat(result.size()).isLessThanOrEqualTo(rateLimit);
-        assertThat(result).containsExactlyInAnyOrder("10"); // Adjust based on test data
+        assertThat(result).isNotEmpty().hasSizeLessThanOrEqualTo(rateLimit)
+            .containsExactlyInAnyOrder("10");
     }
 
     @Test
