@@ -40,7 +40,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
     private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         for (int i = 1; i <= 10; i++) {
             protectedCharacteristicsRepositoryCustom
                 .saveProtectedCharacteristicsWithEncryption(getProtectedCharacteristics(
@@ -177,7 +177,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
             .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, 1000);
 
         assertThat(pc).isNotEmpty();
-        assertThat(pc.size()).isEqualTo(10);
+        assertThat(pc).hasSize(10);
     }
 
     @Test
@@ -239,7 +239,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
             .findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(lastUpdatedTimestamp, rateLimit);
 
         assertThat(result).isNotEmpty();
-        assertThat(result.size()).isEqualTo(rateLimit);
+        assertThat(result).hasSize(rateLimit);
         assertThat(result).containsExactlyInAnyOrder("1","2"); // Adjust based on test data
     }
 
@@ -256,7 +256,7 @@ class ProtectedCharacteristicsRepositoryImplTest {
             );
 
         assertThat(result).isNotEmpty();
-        assertThat(result.size()).isLessThanOrEqualTo(rateLimit);
+        assertThat(result).hasSizeLessThanOrEqualTo(rateLimit);
         assertThat(result).containsExactlyInAnyOrder("10"); // Adjust based on test data
     }
 
