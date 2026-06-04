@@ -4,10 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
@@ -27,6 +28,7 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings({"PMD.TooManyMethods"})
+@ExtendWith(OutputCaptureExtension.class)
 public class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_1 = "pcqId";
@@ -36,7 +38,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     public static final String HTTP_CREATED = "201";
     public static final String HTTP_BAD_REQUEST = "400";
     public static final String HTTP_INVALID_REQUEST = "403";
-    public static final String HTTP_UNAUTHORISED = "401";
+    public static final String HTTP_UNAUTHORISED = "401 UNAUTHORIZED";
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
     public static final String RESPONSE_INVALID_MSG = "Invalid Request";
     public static final String TEST_PCQ_ID = "Integ-Test-1";
@@ -47,11 +49,8 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     private static final String TIMESTAMPS_NOT_MATCH_MSG =
         "Completed date does not match last updated timestamp, when they should";
 
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
-
     @Test
-    public void createPcqAnswersSuccess() throws IOException {
+    public void createPcqAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -67,7 +66,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), TIMESTAMPS_NOT_MATCH_MSG);
 
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
@@ -86,7 +85,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void createPcqFullAnswersSuccess() throws IOException {
+    public void createPcqFullAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnAllAnswers.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -102,11 +101,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), TIMESTAMPS_NOT_MATCH_MSG);
 
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void duplicateDcnRecordNotCreated() throws IOException {
+    public void duplicateDcnRecordNotCreated(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnAllAnswers.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -122,7 +121,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), TIMESTAMPS_NOT_MATCH_MSG);
 
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
 
         // Try to submit another record with same DCN number
         String newPcqId = UUID.randomUUID().toString();
@@ -138,11 +137,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), RECORD_NOT_FOUND_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void createPcqSqlInjectionAnswersSuccess() throws IOException {
+    public void createPcqSqlInjectionAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnSqlInjection.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -158,11 +157,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
         ProtectedCharacteristics pcq = protectedCharacteristicsOptional.get();
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), TIMESTAMPS_NOT_MATCH_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void createPcqInvalidAnswersSuccess() throws IOException {
+    public void createPcqInvalidAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnAllAnswers.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -178,11 +177,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), TIMESTAMPS_NOT_MATCH_MSG);
 
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void invalidDob() throws IOException {
+    public void invalidDob(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnDob.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -198,11 +197,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void invalidAnswersRange() throws IOException {
+    public void invalidAnswersRange(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnAnswerRange.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -218,11 +217,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void dcnMissing() throws IOException {
+    public void dcnMissing(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnMissing.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -238,11 +237,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void dcnBlank() throws IOException {
+    public void dcnBlank(CapturedOutput capturedOutput) throws IOException {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnBlank.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -259,11 +258,11 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void invalidVersion() throws IOException {
+    public void invalidVersion(CapturedOutput capturedOutput) throws IOException {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionForPaper.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -280,10 +279,10 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
         assertTrue(protectedCharacteristicsOptional.isEmpty(), NOT_FOUND_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
-    private void checkLogsForKeywords() {
+    private void checkLogsForKeywords(CapturedOutput capture) {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
     }
