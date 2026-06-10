@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
   <suppress until="2026-08-31">
-    <packageUrl regex="true">^pkg:maven/com.microsoft.azure/applicationinsights-web@3.7.8@.*$</packageUrl>
+    <notes>
+      False positive. CVE-2025-21199 affects Microsoft Azure Agent Installer
+      (Backup and Site Recovery Agent) and not the Java Application Insights SDK.
+    </notes>
+    <packageUrl regex="true">
+      ^pkg:maven/com\.microsoft\.azure/applicationinsights-.*$
+    </packageUrl>
     <cve>CVE-2025-21199</cve>
   </suppress>
   <suppress until="2026-08-31">
-    <notes>False positive Azure SDK CPE match.</notes>
-    <packageUrl regex="true">^pkg:maven/com\.microsoft\.azure/azure-keyvault-core@1.2.4@.*$</packageUrl>
-    <packageUrl regex="true">^pkg:maven/com\.azure/azure-core@.*$</packageUrl>
+    <notes>
+      False positive. CVE-2026-33117 affects
+      com.azure:azure-security-keyvault-keys in the modern Azure SDK.
+      The application contains com.microsoft.azure:azure-keyvault-core:1.2.4
+      transitively via com.microsoft.azure:azure-storage:8.6.6, which is not
+      the affected library.
+    </notes>
+    <packageUrl regex="true">
+      ^pkg:maven/com\.microsoft\.azure/azure-keyvault-core@.*$
+    </packageUrl>
     <cve>CVE-2026-33117</cve>
   </suppress>
   <suppress until="2026-08-31">
