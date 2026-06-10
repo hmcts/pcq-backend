@@ -2,15 +2,15 @@ package uk.gov.hmcts.reform.pcqbackend.controllers;
 
 import com.azure.storage.blob.BlobServiceVersion;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
 import com.microsoft.azure.storage.StorageException;
 import com.microsoft.azure.storage.core.PathUtility;
 import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.TestPropertySource;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
@@ -41,12 +41,15 @@ public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
     private static final String JSON_RESPONSE = "application/json;charset=UTF-8";
     private static final String EXPECTED_STATUS_MESSAGE = "Should retreive expected HTTP status";
     private static final String EXPECTED_STATUS_OK = "200 OK";
-    private static final String EXPECTED_STATUS_UNAUTHORISED = "401";
-    private static final String EXPECTED_STATUS_NOT_FOUND = "404";
+    private static final String EXPECTED_STATUS_UNAUTHORISED = "401 UNAUTHORIZED";
+    private static final String EXPECTED_STATUS_NOT_FOUND = "404 NOT_FOUND";
     private static final int SAS_TOKEN_EXPIRY = 3600;
 
-    @Rule
-    public WireMockRule wireMockServer = new WireMockRule(WireMockConfiguration.options().port(4554));
+    @RegisterExtension
+    static WireMockExtension wireMockServer =
+        WireMockExtension.newInstance()
+            .options(WireMockConfiguration.wireMockConfig().port(4554))
+            .build();
 
     @Test
     public void testShouldGetSasTokenSuccess() throws StorageException {
