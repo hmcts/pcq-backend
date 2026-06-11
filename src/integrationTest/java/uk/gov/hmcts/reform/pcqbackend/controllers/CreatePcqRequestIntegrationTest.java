@@ -4,11 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import org.junit.Rule;
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.util.PcqIntegrationTest;
@@ -26,6 +27,7 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
+@ExtendWith(OutputCaptureExtension.class)
 public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_1 = "pcqId";
@@ -39,12 +41,8 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
     private static final String IO_EXCEPTION_MSG = "IOException while executing test";
     public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code not valid";
 
-
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
-
     @Test
-    public void createPcqAnswersSuccessWithoutCase() throws IOException {
+    public void createPcqAnswersSuccessWithoutCase(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -59,11 +57,11 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
         String errorMsg = "PCQ completed date does not match last updated timestamp";
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), errorMsg);
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void createPcqAnswersSuccessWithCase() throws IOException {
+    public void createPcqAnswersSuccessWithCase(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCase.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -80,11 +78,11 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), errorMsg);
 
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     @Test
-    public void createPcqAnswersSuccessWithCaseOptOutExplicitNull() throws IOException {
+    public void createPcqAnswersSuccessWithCaseOptOutExplicitNull(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCaseOptOutNull.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -101,7 +99,7 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
         assertEquals(pcq.getCompletedDate(), pcq.getLastUpdatedTimestamp(), errorMsg);
 
         checkAssertionsOnResponse(protectedCharacteristicsOptional.get(), answerRequest);
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
     /**
@@ -110,7 +108,7 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
      */
     @DisplayName("Should return with an 500 error code for transaction error.")
     @Test
-    public void testControllerInternalError() throws IOException {
+    public void testControllerInternalError(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
         answerRequest.setPcqId("");
@@ -119,10 +117,10 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
         assertNull(response.get(RESPONSE_KEY_2), RESPONSE_STATUS_CODE_MSG);
 
-        checkLogsForKeywords();
+        checkLogsForKeywords(capturedOutput);
     }
 
-    private void checkLogsForKeywords() {
+    private void checkLogsForKeywords(CapturedOutput capture) {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
     }

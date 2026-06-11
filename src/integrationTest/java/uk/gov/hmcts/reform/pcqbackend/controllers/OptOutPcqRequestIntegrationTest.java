@@ -4,10 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import net.serenitybdd.annotations.WithTag;
 import net.serenitybdd.annotations.WithTags;
 import net.serenitybdd.junit.spring.integration.SpringIntegrationSerenityRunner;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.system.OutputCaptureRule;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.web.util.HtmlUtils;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswers;
@@ -28,6 +28,7 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @Slf4j
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
+@ExtendWith(OutputCaptureExtension.class)
 public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
 
     public static final String RESPONSE_KEY_1 = "pcqId";
@@ -45,9 +46,6 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
     private static final String TEST_DUP_PCQ_ID = "UPDATE-DUP-INTEG-TEST";
     public static final String RESPONSE_CREATED_MSG = "Successfully created";
     private static final String FAIL_TO_FIND_PCQ_MSG = "Expected to find PCQ record in db, but didn't";
-
-    @Rule
-    public OutputCaptureRule capture = new OutputCaptureRule();
 
     @Test
     public void submitAnswersInvalidOptOutValue() throws IOException {

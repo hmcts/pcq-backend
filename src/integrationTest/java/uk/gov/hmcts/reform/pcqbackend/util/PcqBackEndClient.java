@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +10,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+import tools.jackson.databind.ObjectMapper;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
@@ -80,7 +80,7 @@ public class PcqBackEndClient {
 
         } catch (RestClientResponseException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
         }
@@ -103,7 +103,7 @@ public class PcqBackEndClient {
 
         } catch (RestClientResponseException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
         }
@@ -117,7 +117,7 @@ public class PcqBackEndClient {
         HttpEntity<T> request = new HttpEntity<>(getCoRelationAndServiceAuthorisationHeaders());
         ResponseEntity<Map> responseEntity;
         //adding the query params to the URL
-        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl("http://localhost:" + prdApiPort + uriPath)
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:" + prdApiPort + uriPath)
             .queryParam("caseId", params[0]);
         try {
 
@@ -128,7 +128,7 @@ public class PcqBackEndClient {
 
         } catch (RestClientResponseException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
         }
@@ -151,7 +151,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }
@@ -174,7 +174,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }
@@ -197,7 +197,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }
@@ -286,7 +286,7 @@ public class PcqBackEndClient {
                           params);
         } catch (HttpStatusCodeException ex) {
             HashMap<String, Object> statusAndBody = new HashMap<>(2);
-            statusAndBody.put("http_status", String.valueOf(ex.getRawStatusCode()));
+            statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
         }
