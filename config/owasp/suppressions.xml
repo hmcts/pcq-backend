@@ -17,11 +17,5 @@
   </suppress>
   <suppress until="2026-08-31">
     <cve>CVE-2026-33117</cve>
-    <cve>CVE-2026-41840</cve>
-    <cve>CVE-2026-41841</cve>
-    <cve>CVE-2026-41842</cve>
-    <cve>CVE-2026-41843</cve>
-    <cve>CVE-2026-41850</cve>
-    <cve>CVE-2026-41851</cve>
   </suppress>
 </suppressions>
