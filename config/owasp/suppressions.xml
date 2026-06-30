@@ -18,5 +18,6 @@
   <suppress until="2026-08-31">
     <cve>CVE-2025-7962</cve>
     <cve>CVE-2026-33117</cve>
+    <cve>CVE-2026-54515</cve>
   </suppress>
 </suppressions>
