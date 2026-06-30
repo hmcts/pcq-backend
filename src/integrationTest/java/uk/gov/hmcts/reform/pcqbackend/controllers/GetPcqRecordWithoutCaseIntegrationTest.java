@@ -39,10 +39,10 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @WithTags({@WithTag("testType:Integration")})
 @ExtendWith(OutputCaptureExtension.class)
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.LinguisticNaming"})
-public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
+class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
 
-    public static final String HTTP_OK = "200";
-    public static final String RESPONSE_SUCCESS_MSG = "Success";
+    private static final String HTTP_OK = "200";
+    private static final String RESPONSE_SUCCESS_MSG = "Success";
 
     private static final String ASSERT_MESSAGE_PCQ = "PCQId not valid";
     private static final String ASSERT_MESSAGE_STATUS = "Response Status not valid";
@@ -54,15 +54,15 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     private static final String JSON_RESPONSE = "application/json;charset=UTF-8";
 
     @RegisterExtension
-    static WireMockExtension wireMockServer =
+    static final WireMockExtension WIREMOCK_SERVER =
         WireMockExtension.newInstance()
             .options(WireMockConfiguration.wireMockConfig().port(4554))
             .build();
 
     @BeforeEach
-    public void setupAuthorisationStubs() {
-        wireMockServer.resetAll();
-        wireMockServer.stubFor(get(urlPathMatching("/details"))
+    void setupAuthorisationStubs() {
+        WIREMOCK_SERVER.resetAll();
+        WIREMOCK_SERVER.stubFor(get(urlPathMatching("/details"))
                                    .willReturn(aResponse()
                                                    .withHeader(CONTENT_TYPE_HEADER, JSON_RESPONSE)
                                                    .withStatus(200)
@@ -70,7 +70,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getPcqRecordWithoutCaseSingleRecord(CapturedOutput capturedOutput) throws IOException {
+    void getPcqRecordWithoutCaseSingleRecord(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -86,7 +86,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getDcnRecordWithoutCaseSingleRecord(CapturedOutput capturedOutput) throws IOException {
+    void getDcnRecordWithoutCaseSingleRecord(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -102,7 +102,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getPcqRecordWithoutCaseRecordNotFound(CapturedOutput capturedOutput) throws IOException {
+    void getPcqRecordWithoutCaseRecordNotFound(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCase.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -118,7 +118,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getDcnRecordWithoutCaseRecordNotFound(CapturedOutput capturedOutput) throws IOException {
+    void getDcnRecordWithoutCaseRecordNotFound(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswerWithCase.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -134,7 +134,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getPcqRecordWithoutCaseCompletedDatePastBoundary(CapturedOutput capturedOutput) throws IOException {
+    void getPcqRecordWithoutCaseCompletedDatePastBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -152,7 +152,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getDcnRecordWithoutCaseCompletedDatePastBoundary(CapturedOutput capturedOutput) throws IOException {
+    void getDcnRecordWithoutCaseCompletedDatePastBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -170,7 +170,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getPcqRecordWithoutCaseCompletedDateOnBoundary(CapturedOutput capturedOutput) throws IOException {
+    void getPcqRecordWithoutCaseCompletedDateOnBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -188,7 +188,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getDcnRecordWithoutCaseCompletedDateOnBoundary(CapturedOutput capturedOutput) throws IOException {
+    void getDcnRecordWithoutCaseCompletedDateOnBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -206,7 +206,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getPcqRecordWithoutCaseCompletedDatePreBoundary(CapturedOutput capturedOutput) throws IOException {
+    void getPcqRecordWithoutCaseCompletedDatePreBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -224,7 +224,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getDcnRecordWithoutCaseCompletedDatePreBoundary(CapturedOutput capturedOutput) throws IOException {
+    void getDcnRecordWithoutCaseCompletedDatePreBoundary(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -242,7 +242,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getPcqRecordWithoutCaseMultipleIds(CapturedOutput capturedOutput) throws IOException {
+    void getPcqRecordWithoutCaseMultipleIds(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data 3 times in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -266,7 +266,7 @@ public class GetPcqRecordWithoutCaseIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void getDcnRecordWithoutCaseMultipleIds(CapturedOutput capturedOutput) throws IOException {
+    void getDcnRecordWithoutCaseMultipleIds(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data 3 times in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_DCN_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);

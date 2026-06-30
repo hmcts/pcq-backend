@@ -17,7 +17,6 @@ import uk.gov.hmcts.reform.pcqbackend.exceptions.SecurityConfigurationException;
 
 @Configuration
 @EnableWebSecurity
-@SuppressWarnings({"PMD.SignatureDeclareThrowsException"})
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
@@ -25,8 +24,7 @@ public class SecurityConfiguration {
     private boolean allowGetAnswerRecord;
 
     @Bean
-    public SecurityFilterChain configure(HttpSecurity http, JwtConfiguration jwtConfiguration)
-        throws SecurityConfigurationException {
+    public SecurityFilterChain configure(HttpSecurity http, JwtConfiguration jwtConfiguration) {
         try {
             http
                 .csrf(AbstractHttpConfigurer::disable)

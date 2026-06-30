@@ -31,10 +31,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @TestPropertySource(locations = "/application.properties")
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
-public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
+class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
 
-    public static final String SERVICE_BULKSCAN = "bulkscan";
-    public static final String SERVICE_RANDOM = "random";
+    private static final String SERVICE_BULKSCAN = "bulkscan";
+    private static final String SERVICE_RANDOM = "random";
     private static final String RESPONSE_SAS_KEY = "sas_token";
     private static final String RESPONSE_HTTP_STATUS = "http_status";
     private static final String CONTENT_TYPE_HEADER = "Content-Type";
@@ -46,13 +46,13 @@ public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
     private static final int SAS_TOKEN_EXPIRY = 3600;
 
     @RegisterExtension
-    static WireMockExtension wireMockServer =
+    static final WireMockExtension WIREMOCK_SERVER =
         WireMockExtension.newInstance()
             .options(WireMockConfiguration.wireMockConfig().port(4554))
             .build();
 
     @Test
-    public void testShouldGetSasTokenSuccess() throws StorageException {
+    void testShouldGetSasTokenSuccess() throws StorageException {
         //Setup authentication stubs
         setupAuthorisationStubs();
 
@@ -65,7 +65,7 @@ public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testShouldGetSasTokenNotFoundService() {
+    void testShouldGetSasTokenNotFoundService() {
         //Setup authentication stubs
         setupAuthorisationStubs();
 
@@ -78,7 +78,7 @@ public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testShouldGetSasTokenUnauthorised() {
+    void testShouldGetSasTokenUnauthorised() {
         //Setup authentication stubs
         setupAuthorisationBadAuthStubs();
 
@@ -107,8 +107,8 @@ public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
     }
 
     private void setupAuthorisationStubs() {
-        wireMockServer.resetAll();
-        wireMockServer.stubFor(get(urlPathMatching("/details"))
+        WIREMOCK_SERVER.resetAll();
+        WIREMOCK_SERVER.stubFor(get(urlPathMatching("/details"))
                                    .willReturn(aResponse()
                                                    .withHeader(CONTENT_TYPE_HEADER, JSON_RESPONSE)
                                                    .withStatus(200)
@@ -116,8 +116,8 @@ public class SasTokenControllerIntegrationTest extends PcqIntegrationTest {
     }
 
     private void setupAuthorisationBadAuthStubs() {
-        wireMockServer.resetAll();
-        wireMockServer.stubFor(get(urlPathMatching("/details"))
+        WIREMOCK_SERVER.resetAll();
+        WIREMOCK_SERVER.stubFor(get(urlPathMatching("/details"))
                                    .willReturn(aResponse()
                                                    .withHeader(CONTENT_TYPE_HEADER, JSON_RESPONSE)
                                                    .withStatus(200)

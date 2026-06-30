@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Setter
-@SuppressWarnings({"PMD.TooManyFields"})
+@SuppressWarnings({"PMD.TooManyFields", "PMD.ReplaceJavaUtilDate"})
 public class ProtectedCharacteristics implements Serializable {
 
     @Serial

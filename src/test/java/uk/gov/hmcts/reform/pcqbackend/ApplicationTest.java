@@ -10,12 +10,11 @@ import static org.mockito.Mockito.times;
 class ApplicationTest {
 
     @Test
-    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
     void testMainMethod() {
         try (MockedStatic<SpringApplication> mockedStatic = Mockito.mockStatic(SpringApplication.class)) {
-            mockedStatic.when(() -> SpringApplication.run(Application.class, new String[]{})).thenReturn(null);
+            mockedStatic.when(() -> SpringApplication.run(Application.class)).thenReturn(null);
             Application.main(new String[]{});
-            mockedStatic.verify(() -> SpringApplication.run(Application.class, new String[]{}), times(1));
+            mockedStatic.verify(() -> SpringApplication.run(Application.class), times(1));
         }
     }
 }

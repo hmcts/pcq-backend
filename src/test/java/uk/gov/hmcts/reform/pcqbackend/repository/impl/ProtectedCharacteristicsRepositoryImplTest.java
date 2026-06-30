@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@SuppressWarnings({"PMD.TooManyMethods", "PMD.ExcessiveParameterList"})
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.ReplaceJavaUtilDate"})
 class ProtectedCharacteristicsRepositoryImplTest {
 
     private static final String ENCRYPTION_KEY = "ThisIsATestKeyForEncryption";

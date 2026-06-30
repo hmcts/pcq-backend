@@ -9,7 +9,7 @@ public class Application {
 
     public static void main(final String[] args) {
 
-        if ("true".equals(System.getenv("PCQ_DISPOSER_JOB"))) {
+        if (Boolean.parseBoolean(System.getenv("PCQ_DISPOSER_JOB"))) {
             System.exit(SpringApplication.exit(SpringApplication.run(Application.class, args)));
         }
         SpringApplication.run(Application.class, args);

@@ -18,16 +18,16 @@ import static org.junit.Assert.assertEquals;
 
 @SpringBootTest
 @Testcontainers
-public class TestContainerDbIntegrationTest {
+class TestContainerDbIntegrationTest {
 
-    public static final String DOCKER_IMAGE_PG_15_ALPINE = "postgres:15-alpine";
+    private static final String DOCKER_IMAGE_PG_15_ALPINE = "postgres:15-alpine";
 
     @Container
-    public static final PostgreSQLContainer POSTGRE_SQL_CONTAINER
+    private static final PostgreSQLContainer POSTGRE_SQL_CONTAINER
         = new PostgreSQLContainer<>(DOCKER_IMAGE_PG_15_ALPINE);
 
     @BeforeAll
-    public static void setUp() {
+    static void setUp() {
         String jdbcUrl = POSTGRE_SQL_CONTAINER.getJdbcUrl();
         String username = POSTGRE_SQL_CONTAINER.getUsername();
         String password = POSTGRE_SQL_CONTAINER.getPassword();
@@ -38,7 +38,7 @@ public class TestContainerDbIntegrationTest {
 
     @Test
     @SuppressWarnings({"PMD.CloseResource"})
-    public void testDatabaseExists() throws SQLException {
+    void testDatabaseExists() throws SQLException {
         String jdbcUrl = POSTGRE_SQL_CONTAINER.getJdbcUrl();
         String username = POSTGRE_SQL_CONTAINER.getUsername();
         String password = POSTGRE_SQL_CONTAINER.getPassword();
@@ -55,7 +55,7 @@ public class TestContainerDbIntegrationTest {
 
     @Test
     @SuppressWarnings({"PMD.CloseResource"})
-    public void testAnotherDatabaseExists() throws SQLException {
+    void testAnotherDatabaseExists() throws SQLException {
         String jdbcUrl = POSTGRE_SQL_CONTAINER.getJdbcUrl();
         String username = POSTGRE_SQL_CONTAINER.getUsername();
         String password = POSTGRE_SQL_CONTAINER.getPassword();

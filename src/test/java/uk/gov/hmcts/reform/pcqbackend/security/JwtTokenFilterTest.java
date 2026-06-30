@@ -87,7 +87,7 @@ class JwtTokenFilterTest {
     void testAuthSuccess() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn(
-            "Bearer " + generateAuthorizationToken(JwtTokenFilterTest.SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
+            "Bearer " + generateAuthorizationToken(SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
         when(jwtConfiguration.getPrefix()).thenReturn(TOKEN_PREFIX);
         when(jwtConfiguration.getSecret()).thenReturn(SECRET_KEY);
 
@@ -115,7 +115,7 @@ class JwtTokenFilterTest {
     void testAuthFailure() {
         HttpServletRequest mockRequest = mock(HttpServletRequest.class);
         when(mockRequest.getHeader(jwtConfiguration.getHeader())).thenReturn(
-            "Bearer " + generateAuthorizationToken(JwtTokenFilterTest.SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
+            "Bearer " + generateAuthorizationToken(SECRET_KEY, SUBJECT, TEST_AUTHORITIES));
         when(jwtConfiguration.getPrefix()).thenReturn(TOKEN_PREFIX);
         when(jwtConfiguration.getSecret()).thenReturn("Invalid Key");
 

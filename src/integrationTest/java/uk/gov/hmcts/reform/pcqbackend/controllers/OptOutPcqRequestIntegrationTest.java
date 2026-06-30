@@ -29,26 +29,26 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
 @ExtendWith(OutputCaptureExtension.class)
-public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
+class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
 
-    public static final String RESPONSE_KEY_1 = "pcqId";
-    public static final String RESPONSE_KEY_2 = "responseStatusCode";
-    public static final String RESPONSE_KEY_3 = "responseStatus";
-    public static final String HTTP_OK = "200";
-    public static final String HTTP_BAD_REQUEST = "400";
-    public static final String HTTP_CREATED = "201";
-    public static final String RESPONSE_UPDATED_MSG = "Successfully updated";
-    public static final String TEST_PCQ_ID = "UPDATE-INTEG-TEST";
-    public static final String RESPONSE_INVALID_MSG = "Invalid Request";
-    public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code valid";
-    public static final String RESPONSE_STATUS_MSG = "Response Status valid";
-    public static final String RESPONSE_KEY_4 = "response_body";
+    private static final String RESPONSE_KEY_1 = "pcqId";
+    private static final String RESPONSE_KEY_2 = "responseStatusCode";
+    private static final String RESPONSE_KEY_3 = "responseStatus";
+    private static final String HTTP_OK = "200";
+    private static final String HTTP_BAD_REQUEST = "400";
+    private static final String HTTP_CREATED = "201";
+    private static final String RESPONSE_UPDATED_MSG = "Successfully updated";
+    private static final String TEST_PCQ_ID = "UPDATE-INTEG-TEST";
+    private static final String RESPONSE_INVALID_MSG = "Invalid Request";
+    private static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code valid";
+    private static final String RESPONSE_STATUS_MSG = "Response Status valid";
+    private static final String RESPONSE_KEY_4 = "response_body";
     private static final String TEST_DUP_PCQ_ID = "UPDATE-DUP-INTEG-TEST";
-    public static final String RESPONSE_CREATED_MSG = "Successfully created";
+    static final String RESPONSE_CREATED_MSG = "Successfully created";
     private static final String FAIL_TO_FIND_PCQ_MSG = "Expected to find PCQ record in db, but didn't";
 
     @Test
-    public void submitAnswersInvalidOptOutValue() throws IOException {
+    void submitAnswersInvalidOptOutValue() throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJsonOptOut1.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -65,7 +65,7 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void optOutWithSuccess() throws IOException {
+    void optOutWithSuccess() throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -84,7 +84,7 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void optOutRecordNotFound() throws IOException {
+    void optOutRecordNotFound() throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/OptOutRequested.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -100,7 +100,7 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void optOutForSqlInjectionTest() throws IOException {
+    void optOutForSqlInjectionTest() throws IOException {
         // Create multiple records first.
         createMultipleTestRecords();
 
@@ -131,7 +131,7 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void optOutInvalidJson() throws IOException {
+    void optOutInvalidJson() throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -157,7 +157,7 @@ public class OptOutPcqRequestIntegrationTest extends PcqIntegrationTest {
         pcqBackEndClient.createPcqAnswer(testRequest);
     }
 
-    public PcqAnswerRequest createAnswerRequestForTest(String pcqId) {
+    PcqAnswerRequest createAnswerRequestForTest(String pcqId) {
         PcqAnswerRequest answerRequest = new PcqAnswerRequest();
         answerRequest.setPcqId(pcqId);
         answerRequest.setCaseId("CCD-Case-2");

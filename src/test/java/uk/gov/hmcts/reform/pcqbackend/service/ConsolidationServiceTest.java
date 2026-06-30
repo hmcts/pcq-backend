@@ -30,7 +30,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@SuppressWarnings({"PMD.TooManyMethods"})
 class ConsolidationServiceTest {
 
     @Mock
@@ -176,7 +175,7 @@ class ConsolidationServiceTest {
         verify(protectedCharacteristicsRepository, times(1)).updateCase(TEST_CASE_ID, TEST_PCQ_ID);
     }
 
-    public static List<String> getTestHeader() {
+    static List<String> getTestHeader() {
         List<String> headerList =  new ArrayList<>();
         headerList.add(CO_RELATION_ID_FOR_TEST);
 
@@ -184,7 +183,7 @@ class ConsolidationServiceTest {
     }
 
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public static List<ProtectedCharacteristics> generateTargetList(int rowCount) {
+    static List<ProtectedCharacteristics> generateTargetList(int rowCount) {
         List<ProtectedCharacteristics> targetList = new ArrayList<>(rowCount);
         for (int i = 0; i < rowCount; i++) {
             ProtectedCharacteristics targetObj = new ProtectedCharacteristics();
@@ -196,7 +195,7 @@ class ConsolidationServiceTest {
         return targetList;
     }
 
-    public static void assertListContents(List<ProtectedCharacteristics> targetList,
+    static void assertListContents(List<ProtectedCharacteristics> targetList,
                                           List<ProtectedCharacteristics> actualList) {
         for (int i = 0; i < targetList.size(); i++) {
             assertEquals(targetList.get(i).getPcqId(), actualList.get(i).getPcqId(), "Pcq Id is not matching");

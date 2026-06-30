@@ -30,18 +30,18 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 @ExtendWith(OutputCaptureExtension.class)
-public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
+class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
-    public static final String RESPONSE_KEY_4 = "response_body";
-    public static final String HTTP_ACCEPTED = "202";
-    public static final String HTTP_BAD_REQUEST = "400";
-    public static final String RESPONSE_ACCEPTED_MSG = "Success";
-    public static final String RESPONSE_INVALID_MSG = "Invalid Request";
+    private static final String RESPONSE_KEY_4 = "response_body";
+    private static final String HTTP_ACCEPTED = "202";
+    private static final String HTTP_BAD_REQUEST = "400";
+    private static final String RESPONSE_ACCEPTED_MSG = "Success";
+    private static final String RESPONSE_INVALID_MSG = "Invalid Request";
 
     private static final String TEST_DUP_PCQ_ID = "UPDATE-DUP-INTEG-TEST";
 
     @Test
-    public void updateDobProvidedSuccess(CapturedOutput capturedOutput) throws IOException {
+    void updateDobProvidedSuccess(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -62,7 +62,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateDobProvidedSuccessOptOutNull(CapturedOutput capturedOutput) throws IOException {
+    void updateDobProvidedSuccessOptOutNull(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -83,7 +83,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void dobProvidedStateDate(CapturedOutput capturedOutput) throws IOException {
+    void dobProvidedStateDate(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -109,7 +109,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateDobSuccess(CapturedOutput capturedOutput) throws IOException {
+    void updateDobSuccess(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -130,7 +130,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void invalidDob(CapturedOutput capturedOutput) throws IOException {
+    void invalidDob(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -158,7 +158,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateMainLanguage(CapturedOutput capturedOutput) throws IOException {
+    void updateMainLanguage(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -180,7 +180,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateOtherLanguage(CapturedOutput capturedOutput) throws IOException {
+    void updateOtherLanguage(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -201,7 +201,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testInjectionOtherLanguage(CapturedOutput capturedOutput) throws IOException {
+    void testInjectionOtherLanguage(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -230,7 +230,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateEnglishLanguageLevel(CapturedOutput capturedOutput) throws IOException {
+    void updateEnglishLanguageLevel(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -252,7 +252,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateSex(CapturedOutput capturedOutput) throws IOException {
+    void updateSex(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -274,7 +274,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateGender(CapturedOutput capturedOutput) throws IOException {
+    void updateGender(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -296,7 +296,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateGenderDifferent(CapturedOutput capturedOutput) throws IOException {
+    void updateGenderDifferent(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -317,7 +317,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateSexuality(CapturedOutput capturedOutput) throws IOException {
+    void updateSexuality(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -339,7 +339,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateOtherSexuality(CapturedOutput capturedOutput) throws IOException {
+    void updateOtherSexuality(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -360,7 +360,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testInjectionOtherSexuality(CapturedOutput capturedOutput) throws IOException {
+    void testInjectionOtherSexuality(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -389,7 +389,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateMarried(CapturedOutput capturedOutput) throws IOException {
+    void updateMarried(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -411,7 +411,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateEthnicity(CapturedOutput capturedOutput) throws IOException {
+    void updateEthnicity(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -432,7 +432,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateEthnicityOther(CapturedOutput capturedOutput) throws IOException {
+    void updateEthnicityOther(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -453,7 +453,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testInjectionOtherEthnicity(CapturedOutput capturedOutput) throws IOException {
+    void testInjectionOtherEthnicity(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -482,7 +482,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateReligion(CapturedOutput capturedOutput) throws IOException {
+    void updateReligion(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -504,7 +504,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateReligionOther(CapturedOutput capturedOutput) throws IOException {
+    void updateReligionOther(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -525,7 +525,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testInjectionOtherReligion(CapturedOutput capturedOutput) throws IOException {
+    void testInjectionOtherReligion(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -554,7 +554,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateDisabilityConditions(CapturedOutput capturedOutput) throws IOException {
+    void updateDisabilityConditions(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -576,7 +576,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateDisabilityImpact(CapturedOutput capturedOutput) throws IOException {
+    void updateDisabilityImpact(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -598,7 +598,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateDisabilityTypes(CapturedOutput capturedOutput) throws IOException {
+    void updateDisabilityTypes(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -619,7 +619,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateOtherDisabilityDetails(CapturedOutput capturedOutput) throws IOException {
+    void updateOtherDisabilityDetails(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -640,7 +640,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testInjectionOtherDisability(CapturedOutput capturedOutput) throws IOException {
+    void testInjectionOtherDisability(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createMultipleTestRecords();
 
@@ -669,7 +669,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updatePregnancy(CapturedOutput capturedOutput) throws IOException {
+    void updatePregnancy(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -691,7 +691,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void invalidPregnancy(CapturedOutput capturedOutput) throws IOException {
+    void invalidPregnancy(CapturedOutput capturedOutput) throws IOException {
         // Create a record first.
         createTestRecord();
 
@@ -719,7 +719,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testSqlInjection(CapturedOutput capturedOutput) {
+    void testSqlInjection(CapturedOutput capturedOutput) {
         // Create a record first.
         createTestRecord();
 
@@ -738,14 +738,14 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void updateMainLanguageEnglish(CapturedOutput capturedOutput) throws IOException {
+    void updateMainLanguageEnglish(CapturedOutput capturedOutput) throws IOException {
         String fileName = "JsonTestFiles/UpdateMainLanguageEnglish.json";
         String errorMessage = "Main Language English not matching";
         assertLanguageUpdated(fileName, errorMessage,capturedOutput);
     }
 
     @Test
-    public void updateMainLanguageWelsh(CapturedOutput capturedOutput) throws IOException {
+    void updateMainLanguageWelsh(CapturedOutput capturedOutput) throws IOException {
         String fileName = "JsonTestFiles/UpdateMainLanguageWelsh.json";
         String errorMessage = "Main Language Welsh not matching";
         assertLanguageUpdated(fileName, errorMessage,capturedOutput);
@@ -753,7 +753,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
     //Test English or welsh option as well for backward compatibility
     @Test
-    public void updateMainLanguageEnglishOrWelsh(CapturedOutput capturedOutput) throws IOException {
+    void updateMainLanguageEnglishOrWelsh(CapturedOutput capturedOutput) throws IOException {
         String fileName = "JsonTestFiles/UpdateMainLanguageEnglishOrWelsh.json";
         String errorMessage = "Main Language English or Welsh not matching";
         assertLanguageUpdated(fileName, errorMessage,capturedOutput);
@@ -772,7 +772,7 @@ public class UpdatePcqRequestIntegrationTest extends PcqIntegrationTest {
         pcqBackEndClient.createPcqAnswer(testRequest);
     }
 
-    public PcqAnswerRequest createAnswerRequestForTest(String pcqId) {
+    private PcqAnswerRequest createAnswerRequestForTest(String pcqId) {
         PcqAnswerRequest answerRequest = new PcqAnswerRequest();
         answerRequest.setPcqId(pcqId);
         answerRequest.setCaseId("CCD-Case-2");

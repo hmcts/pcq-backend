@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ComponentScan("uk.gov.hmcts.reform.pcqbackend")
 @TestPropertySource("classpath:application-functional.yaml")
 @Slf4j
-@SuppressWarnings({"PMD.AbstractClassWithoutAnyMethod", "PMD.AbstractClassWithoutAbstractMethod"})
+@SuppressWarnings({"PMD.AbstractClassWithoutAbstractMethod", "PMD.ReplaceJavaUtilDate"})
 public abstract class PcqBaseFunctionalTest {
 
     @Value("${targetInstance}")
@@ -89,7 +89,7 @@ public abstract class PcqBaseFunctionalTest {
         }
     }
 
-    @SuppressWarnings({"unchecked", "PMD.ConfusingTernary"})
+    @SuppressWarnings({"unchecked"})
     protected void checkAssertionsOnResponse(Map<String, Object> responseMap,
                                              PcqAnswerRequest answerRequest) {
         assertEquals(responseMap.get("pcqId"), answerRequest.getPcqId(), "PCQId not matching");
@@ -104,7 +104,7 @@ public abstract class PcqBaseFunctionalTest {
         assertEquals(((Integer)responseMap.get("versionNo")).intValue(),
                      answerRequest.getVersionNo(), "VersionNumber not matching");
 
-        LinkedHashMap<String, Object> answers = (LinkedHashMap<String, Object>) responseMap.get("pcqAnswers");
+        Map<String, Object> answers = (LinkedHashMap<String, Object>) responseMap.get("pcqAnswers");
 
         PcqAnswers pcqAnswers = answerRequest.getPcqAnswers();
         assertEquals((Integer)answers.get("dob_provided"), pcqAnswers.getDobProvided(), "DobProvided not matching");
@@ -189,7 +189,7 @@ public abstract class PcqBaseFunctionalTest {
 
     @SuppressWarnings({"unchecked"})
     protected void checkOptOutOnResponse(Map<String, Object> responseMap) {
-        LinkedHashMap<String, Object> answers = (LinkedHashMap<String, Object>) responseMap.get("pcqAnswers");
+        Map<String, Object> answers = (LinkedHashMap<String, Object>) responseMap.get("pcqAnswers");
         assertTrue((Boolean)answers.get("opt_out"), "Opt-out should be true");
     }
 

@@ -39,14 +39,14 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
 @ExtendWith(OutputCaptureExtension.class)
-public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
+class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
 
-    public static final String RESPONSE_KEY_1 = "pcqId";
-    public static final String RESPONSE_KEY_2 = "responseStatusCode";
-    public static final String RESPONSE_KEY_3 = "responseStatus";
-    public static final String HTTP_OK = "200";
-    public static final String HTTP_BAD_REQUEST = "400 BAD_REQUEST";
-    public static final String RESPONSE_SUCCESS_MSG = "Successfully updated";
+    private static final String RESPONSE_KEY_1 = "pcqId";
+    private static final String RESPONSE_KEY_2 = "responseStatusCode";
+    private static final String RESPONSE_KEY_3 = "responseStatus";
+    private static final String HTTP_OK = "200";
+    private static final String HTTP_BAD_REQUEST = "400 BAD_REQUEST";
+    private static final String RESPONSE_SUCCESS_MSG = "Successfully updated";
 
     private static final String ASSERT_MESSAGE_PCQ = "PCQId not valid";
     private static final String ASSERT_MESSAGE_STATUS = "Response Status not valid";
@@ -58,15 +58,15 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     private static final String JSON_RESPONSE = "application/json;charset=UTF-8";
 
     @RegisterExtension
-    static WireMockExtension wireMockServer =
+    static final WireMockExtension WIREMOCK_SERVER =
         WireMockExtension.newInstance()
             .options(WireMockConfiguration.wireMockConfig().port(4554))
             .build();
 
     @BeforeEach
-    public void setupAuthorisationStubs() {
-        wireMockServer.resetAll();
-        wireMockServer.stubFor(get(urlPathMatching("/details"))
+    void setupAuthorisationStubs() {
+        WIREMOCK_SERVER.resetAll();
+        WIREMOCK_SERVER.stubFor(get(urlPathMatching("/details"))
                                    .willReturn(aResponse()
                                                    .withHeader(CONTENT_TYPE_HEADER, JSON_RESPONSE)
                                                    .withStatus(200)
@@ -74,7 +74,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForPcqSuccess(CapturedOutput capturedOutput) throws IOException {
+    void addCaseForPcqSuccess(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -110,7 +110,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForInvalidPcq(CapturedOutput capturedOutput) throws IOException {
+    void addCaseForInvalidPcq(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -134,7 +134,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForNullParams(CapturedOutput capturedOutput) throws IOException {
+    void addCaseForNullParams(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -158,7 +158,7 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void addCaseForPcqInjectionTest(CapturedOutput capturedOutput) throws IOException {
+    void addCaseForPcqInjectionTest(CapturedOutput capturedOutput) throws IOException {
         //Create the Test Data in the database.
         String jsonStringRequest = jsonStringFromFile(JSON_FILE);
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -185,13 +185,13 @@ public class AddCaseForPcqIntegrationTest extends PcqIntegrationTest {
             .isCloseTo(Instant.now(), SECONDS.toMillis(2));
     }
 
-    private void checkLogsForKeywords(CapturedOutput capture) {
+    void checkLogsForKeywords(CapturedOutput capture) {
         assertTrue(capture.getAll().contains("Co-Relation Id : " + CO_RELATION_ID_FOR_TEST),
                    "Co-Relation Id was not logged in log files.");
     }
 
     @SuppressWarnings("unchecked")
-    private void assertResponse(Map<String, Object> responseMap, String pcqId, String httpStatus, String response) {
+    void assertResponse(Map<String, Object> responseMap, String pcqId, String httpStatus, String response) {
         assertNotNull(responseMap.get(RESPONSE_KEY_1), ASSERT_MESSAGE_PCQ);
         assertEquals(httpStatus, responseMap.get(RESPONSE_KEY_2), ASSERT_MESSAGE_STATUS_CODE);
         assertEquals(response, responseMap.get(RESPONSE_KEY_3), ASSERT_MESSAGE_STATUS);

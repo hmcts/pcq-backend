@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository()
+@SuppressWarnings("PMD.ReplaceJavaUtilDate")
 public interface ProtectedCharacteristicsRepository extends JpaRepository<ProtectedCharacteristics, String>,
     ProtectedCharacteristicsRepositoryCustom {
 

@@ -1,6 +1,5 @@
 package uk.gov.hmcts.reform.pcqbackend.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,8 +46,12 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFr
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
 @Slf4j
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.AvoidDuplicateLiterals",
-    "PMD.JUnitTestsShouldIncludeAssert"})
+@SuppressWarnings({
+    "PMD.ExcessiveImports",
+    "PMD.TooManyMethods",
+    "PMD.AvoidDuplicateLiterals",
+    "PMD.ReplaceJavaUtilDate"
+})
 class PcqAnswersControllerTest {
 
     private PcqAnswersController pcqAnswersController;
@@ -812,8 +815,8 @@ class PcqAnswersControllerTest {
      * @param obj - The Java object.
      * @return - JSON String representation of the Java object.
      */
-    public static String asJsonString(final Object obj) throws JsonProcessingException {
-        return  new ObjectMapper().writeValueAsString(obj);
+    static String asJsonString(final Object obj) {
+        return new ObjectMapper().writeValueAsString(obj);
     }
 
 

@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeader;
 
 @Slf4j
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods"})
+@SuppressWarnings({"PMD.TooManyMethods"})
 class ConsolidationControllerTest {
 
     private ConsolidationController consolidationController;
@@ -42,8 +42,6 @@ class ConsolidationControllerTest {
     private Environment environment;
 
     private ProtectedCharacteristicsRepository protectedCharacteristicsRepository;
-
-    private ServiceAuthorizationAuthenticator serviceAuthorizationAuthenticator;
 
     private static final String HEADER_KEY = "X-Correlation-Id";
     private static final String API_ERROR_MESSAGE_UPDATED = "Successfully updated";
@@ -84,7 +82,8 @@ class ConsolidationControllerTest {
             protectedCharacteristicsRepository,
             environment
         );
-        this.serviceAuthorizationAuthenticator = mock(ServiceAuthorizationAuthenticator.class);
+        ServiceAuthorizationAuthenticator serviceAuthorizationAuthenticator =
+            mock(ServiceAuthorizationAuthenticator.class);
         this.consolidationController = new ConsolidationController(
             environment,
             serviceAuthorizationAuthenticator,
@@ -704,7 +703,7 @@ class ConsolidationControllerTest {
     }
 
     @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-    public static List<ProtectedCharacteristics> generateTargetList(int rowCount) {
+    static List<ProtectedCharacteristics> generateTargetList(int rowCount) {
         List<ProtectedCharacteristics> targetList = new ArrayList<>(rowCount);
         for (int i = 0; i < rowCount; i++) {
             ProtectedCharacteristics targetObj = new ProtectedCharacteristics();
@@ -718,14 +717,7 @@ class ConsolidationControllerTest {
         return targetList;
     }
 
-    public static void assertArrayContents(List<ProtectedCharacteristics> targetList,
-                                           String... actualList) {
-        for (int i = 0; i < targetList.size(); i++) {
-            assertEquals(targetList.get(i).getPcqId(), actualList[i], "Pcq Id is not matching");
-        }
-    }
-
-    public static void assertArrayContents(List<ProtectedCharacteristics> targetList,
+    static void assertArrayContents(List<ProtectedCharacteristics> targetList,
                                           PcqAnswerResponse... actualList) {
         for (int i = 0; i < targetList.size(); i++) {
             assertEquals(targetList.get(i).getPcqId(), actualList[i].getPcqId(), "Pcq Id is not matching");

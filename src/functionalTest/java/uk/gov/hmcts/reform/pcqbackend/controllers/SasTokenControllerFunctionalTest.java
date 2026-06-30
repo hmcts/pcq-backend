@@ -38,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @ComponentScan("uk.gov.hmcts.reform.pcqbackend")
 @ActiveProfiles("functional")
 @Slf4j
+@SuppressWarnings("PMD.ReplaceJavaUtilDate")
 public class SasTokenControllerFunctionalTest {
 
     private static final String IO_EXCEPTION_MSG = "Error during test execution";
@@ -110,7 +111,6 @@ public class SasTokenControllerFunctionalTest {
         }
     }
 
-    @SuppressWarnings("PMD.LawOfDemeter")
     public void verifySasTokenWithStorageContainer(String storageUrl, String container, String sasTokenResponse)
         throws IOException {
         final ObjectNode node = new ObjectMapper().readValue(sasTokenResponse, ObjectNode.class);

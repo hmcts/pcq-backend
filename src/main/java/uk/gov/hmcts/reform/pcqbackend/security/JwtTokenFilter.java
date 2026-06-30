@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 
 
 @Slf4j
+@SuppressWarnings({"PMD.RelianceOnDefaultCharset"})
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtConfiguration jwtConfiguration;

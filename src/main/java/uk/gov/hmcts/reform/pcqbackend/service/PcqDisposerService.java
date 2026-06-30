@@ -16,6 +16,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@SuppressWarnings("PMD.ReplaceJavaUtilDate")
 public class PcqDisposerService {
 
     @Value("${disposer.dry-run:true}")

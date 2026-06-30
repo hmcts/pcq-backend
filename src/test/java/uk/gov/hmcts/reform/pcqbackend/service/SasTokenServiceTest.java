@@ -17,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@SuppressWarnings("PMD.ReplaceJavaUtilDate")
 class SasTokenServiceTest {
 
     private static final String BLOB_DEV_CONNECTION_STRING = "UseDevelopmentStorage=true";
