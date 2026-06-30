@@ -66,7 +66,7 @@ public class SubmitAnswersService extends BaseService {
             performValidations(answerRequest);
 
             //Step 3. Check whether record exists in database for the pcqId.
-            if (pcqId == null || pcqId.isEmpty()) {
+            if (pcqId.isEmpty()) {
                 return PcqUtils.generateResponseEntity("PCQ Id is blank or null.", HttpStatus.BAD_REQUEST,
                                                      environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
             }

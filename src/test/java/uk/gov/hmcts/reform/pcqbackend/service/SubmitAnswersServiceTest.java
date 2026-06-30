@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,15 +24,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeader;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
@@ -53,31 +51,18 @@ class SubmitAnswersServiceTest {
     private SubmitAnswersService submitAnswersService;
 
     private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
-
     private static final String STATUS_CODE_400_MSG = "Expected 400 status code";
-
     private static final String INVALID_ERROR = "Invalid Request";
-
     private static final String INVALID_ERROR_PROPERTY = "api-error-messages.bad_request";
-
     private static final String RESPONSE_NULL_MSG = "Response is null";
-
     private static final String RESPONSE_BODY_NULL_MSG = "Response Body is null";
-
     private static final String SCHEMA_FILE_PROPERTY = "api-schema-file.submitanswer-schema";
-
     private static final String SCHEMA_FILE = "JsonSchema/submitAnswersSchema.json";
-
     private static final String API_VERSION_PROPERTY = "api-version-number";
-
     private static final String TEST_PCQ_ID = "T1234";
-
     private static final String DB_ENCRYPTION_KEY = "security.db.backend-encryption-key";
-
     private static final String STATUS_CODE_201_MSG = "Expected 201 status code";
-
     private static final String CREATED_MESSAGE_PROPERTY = "api-error-messages.created";
-
     private static final String UPDATED_MESSAGE_PROPERTY = "api-error-messages.updated";
     private static final String TEST_TIME_STAMP = "2020-03-05T09:13:45.000Z";
     private static final String TEST_DOB = "1970-01-01T00:00:00.000Z";
@@ -87,7 +72,6 @@ class SubmitAnswersServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-
     @Test
     void testNoHeaders() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
@@ -96,15 +80,14 @@ class SubmitAnswersServiceTest {
             PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(null, pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
-
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -117,15 +100,15 @@ class SubmitAnswersServiceTest {
             PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(null, pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -141,15 +124,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -165,15 +148,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -190,15 +173,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                        pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -223,15 +206,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                        pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(409, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(409, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -248,15 +231,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -273,15 +256,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -310,15 +293,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -352,15 +335,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -378,15 +361,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -433,15 +416,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                        pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(200, responseEntity.getStatusCode().value(), "Expected 200 status code");
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(200, responseEntity.getStatusCode().value(), "Expected 200 status code");
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -487,15 +470,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -541,15 +524,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -579,15 +562,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -608,15 +591,15 @@ class SubmitAnswersServiceTest {
             ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
                                                                                            pcqAnswerRequest);
 
-            assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
             Object responseMap = responseEntity.getBody();
-            assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
 
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -636,13 +619,13 @@ class SubmitAnswersServiceTest {
 
             ProtectedCharacteristics actualObject = submitAnswersService.getProtectedCharacteristicsById(pcqId);
 
-            assertNotNull(actualObject, RESPONSE_NULL_MSG);
-            assertEquals(pcqId, actualObject.getPcqId(), "Not expected pcq id");
+            Assertions.assertNotNull(actualObject, RESPONSE_NULL_MSG);
+            Assertions.assertEquals(pcqId, actualObject.getPcqId(), "Not expected pcq id");
 
             verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -660,12 +643,12 @@ class SubmitAnswersServiceTest {
 
             ProtectedCharacteristics actualObject = submitAnswersService.getProtectedCharacteristicsById(pcqId);
 
-            assertNull(actualObject, RESPONSE_NULL_MSG);
+            Assertions.assertNull(actualObject, RESPONSE_NULL_MSG);
 
             verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
         } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
         }
 
     }
@@ -717,11 +700,37 @@ class SubmitAnswersServiceTest {
         ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(
             getTestHeader(), pcqAnswerRequest);
 
-        assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
         Object responseMap = responseEntity.getBody();
-        assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-        assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+    }
+
+    @Test
+    void testPcqIdIsEmptyReturnsBadRequest() {
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
+        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
+        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
+
+        try {
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+            pcqAnswerRequest.setPcqId("");
+
+            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(
+                getTestHeader(), pcqAnswerRequest);
+
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+            Object responseMap = responseEntity.getBody();
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
+            verifyNoInteractions(protectedCharacteristicsRepository);
+
+        } catch (Exception e) {
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
     }
 
 }
