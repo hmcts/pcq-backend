@@ -29,20 +29,20 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @WithTags({@WithTag("testType:Integration")})
 @SuppressWarnings({"PMD.TooManyMethods"})
 @ExtendWith(OutputCaptureExtension.class)
-public class PaperChannelIntegrationTest extends PcqIntegrationTest {
+class PaperChannelIntegrationTest extends PcqIntegrationTest {
 
-    public static final String RESPONSE_KEY_1 = "pcqId";
-    public static final String RESPONSE_KEY_2 = "responseStatusCode";
-    public static final String RESPONSE_KEY_3 = "responseStatus";
-    public static final String RESPONSE_KEY_4 = "response_body";
-    public static final String HTTP_CREATED = "201";
-    public static final String HTTP_BAD_REQUEST = "400";
-    public static final String HTTP_INVALID_REQUEST = "403";
-    public static final String HTTP_UNAUTHORISED = "401 UNAUTHORIZED";
-    public static final String RESPONSE_CREATED_MSG = "Successfully created";
-    public static final String RESPONSE_INVALID_MSG = "Invalid Request";
-    public static final String TEST_PCQ_ID = "Integ-Test-1";
-    public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code not valid";
+    private static final String RESPONSE_KEY_1 = "pcqId";
+    private static final String RESPONSE_KEY_2 = "responseStatusCode";
+    private static final String RESPONSE_KEY_3 = "responseStatus";
+    private static final String RESPONSE_KEY_4 = "response_body";
+    private static final String HTTP_CREATED = "201";
+    private static final String HTTP_BAD_REQUEST = "400";
+    private static final String HTTP_INVALID_REQUEST = "403";
+    private static final String HTTP_UNAUTHORISED = "401 UNAUTHORIZED";
+    private static final String RESPONSE_CREATED_MSG = "Successfully created";
+    private static final String RESPONSE_INVALID_MSG = "Invalid Request";
+    private static final String TEST_PCQ_ID = "Integ-Test-1";
+    private static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code not valid";
     private static final String PCQ_ID_INVALID_MSG = "PCQId not valid";
     private static final String RESPONSE_STATUS_MSG = "Response Status not valid";
     private static final String RECORD_NOT_FOUND_MSG = "Record Not found";
@@ -50,7 +50,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
         "Completed date does not match last updated timestamp, when they should";
 
     @Test
-    public void createPcqAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
+    void createPcqAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -70,7 +70,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void authorisationValidationTest() throws IOException {
+    void authorisationValidationTest() throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitDcnAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -85,7 +85,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void createPcqFullAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
+    void createPcqFullAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnAllAnswers.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -105,7 +105,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void duplicateDcnRecordNotCreated(CapturedOutput capturedOutput) throws IOException {
+    void duplicateDcnRecordNotCreated(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnAllAnswers.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -141,7 +141,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void createPcqSqlInjectionAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
+    void createPcqSqlInjectionAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnSqlInjection.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -161,7 +161,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void createPcqInvalidAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
+    void createPcqInvalidAnswersSuccess(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/SubmitDcnAllAnswers.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -181,7 +181,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void invalidDob(CapturedOutput capturedOutput) throws IOException {
+    void invalidDob(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnDob.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -201,7 +201,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void invalidAnswersRange(CapturedOutput capturedOutput) throws IOException {
+    void invalidAnswersRange(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnAnswerRange.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -221,7 +221,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void dcnMissing(CapturedOutput capturedOutput) throws IOException {
+    void dcnMissing(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnMissing.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -241,7 +241,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void dcnBlank(CapturedOutput capturedOutput) throws IOException {
+    void dcnBlank(CapturedOutput capturedOutput) throws IOException {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/invalidDcnBlank.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
@@ -262,7 +262,7 @@ public class PaperChannelIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void invalidVersion(CapturedOutput capturedOutput) throws IOException {
+    void invalidVersion(CapturedOutput capturedOutput) throws IOException {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionForPaper.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);

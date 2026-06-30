@@ -28,21 +28,21 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFr
 @RunWith(SpringIntegrationSerenityRunner.class)
 @WithTags({@WithTag("testType:Integration")})
 @ExtendWith(OutputCaptureExtension.class)
-public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
+class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
 
-    public static final String RESPONSE_KEY_1 = "pcqId";
-    public static final String RESPONSE_KEY_2 = "responseStatusCode";
-    public static final String RESPONSE_KEY_3 = "responseStatus";
-    public static final String HTTP_CREATED = "201";
-    public static final String HTTP_INTERNAL_ERROR = "500";
-    public static final String RESPONSE_CREATED_MSG = "Successfully created";
-    public static final String TEST_PCQ_ID = "Integ-Test-1";
-    public static final String RESPONSE_UNKNOWN = "Unknown error occurred";
+    private static final String RESPONSE_KEY_1 = "pcqId";
+    private static final String RESPONSE_KEY_2 = "responseStatusCode";
+    private static final String RESPONSE_KEY_3 = "responseStatus";
+    private static final String HTTP_CREATED = "201";
+    private static final String HTTP_INTERNAL_ERROR = "500";
+    private static final String RESPONSE_CREATED_MSG = "Successfully created";
+    private static final String TEST_PCQ_ID = "Integ-Test-1";
+    private static final String RESPONSE_UNKNOWN = "Unknown error occurred";
     private static final String IO_EXCEPTION_MSG = "IOException while executing test";
-    public static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code not valid";
+    private static final String RESPONSE_STATUS_CODE_MSG = "Response Status Code not valid";
 
     @Test
-    public void createPcqAnswersSuccessWithoutCase(CapturedOutput capturedOutput) throws IOException {
+    void createPcqAnswersSuccessWithoutCase(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -61,7 +61,7 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void createPcqAnswersSuccessWithCase(CapturedOutput capturedOutput) throws IOException {
+    void createPcqAnswersSuccessWithCase(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCase.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -82,7 +82,7 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void createPcqAnswersSuccessWithCaseOptOutExplicitNull(CapturedOutput capturedOutput) throws IOException {
+    void createPcqAnswersSuccessWithCaseOptOutExplicitNull(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerWithCaseOptOutNull.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
@@ -108,7 +108,7 @@ public class CreatePcqRequestIntegrationTest extends PcqIntegrationTest {
      */
     @DisplayName("Should return with an 500 error code for transaction error.")
     @Test
-    public void testControllerInternalError(CapturedOutput capturedOutput) throws IOException {
+    void testControllerInternalError(CapturedOutput capturedOutput) throws IOException {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
         answerRequest.setPcqId("");

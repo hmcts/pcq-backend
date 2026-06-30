@@ -49,7 +49,6 @@ public class PcqBackEndServiceClient {
         this.s2sUrl = s2sUrl;
     }
 
-    @SuppressWarnings("PMD.LawOfDemeter")
     public String getWelcomePage() {
         return SerenityRest
             .get(pcqBackEndApiUrl)
@@ -61,7 +60,6 @@ public class PcqBackEndServiceClient {
             .asString();
     }
 
-    @SuppressWarnings("PMD.LawOfDemeter")
     public String getHealthPage() {
         return SerenityRest
             .get(pcqBackEndApiUrl + "/health")

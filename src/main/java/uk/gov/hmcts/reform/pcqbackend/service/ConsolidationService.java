@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 @Slf4j
 @Service
+@SuppressWarnings("PMD.ReplaceJavaUtilDate")
 public class ConsolidationService extends BaseService {
 
     private final ProtectedCharacteristicsRepository protectedCharacteristicsRepository;

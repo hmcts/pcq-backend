@@ -23,9 +23,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @WithTags({@WithTag("testType:Integration")})
 @ExtendWith(OutputCaptureExtension.class)
-public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
+class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
 
-    public static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
+    private static final String CASE_ID = "9dd003e0-8e63-42d2-ac1e-d2be4bf956d9";
 
     private static final int KEEP_NO_CASE = 183;
 
@@ -36,14 +36,14 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
     ProtectedCharacteristicsRepository pcqRepository;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         insertPcq(Instant.now(), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), CASE_ID);
         insertPcq(Instant.now().minus(KEEP_NO_CASE * 3L, ChronoUnit.DAYS), null);
     }
 
     @Test
-    public void testDisposePcqLogsCollectedPcqs(CapturedOutput capture) {
+    void testDisposePcqLogsCollectedPcqs(CapturedOutput capture) {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", true);
 
         pcqDisposerService.disposePcq();
@@ -63,7 +63,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
     }
 
     @Test
-    public void testDisposePcqLogsDeletesPcqs(CapturedOutput capture) {
+    void testDisposePcqLogsDeletesPcqs(CapturedOutput capture) {
         ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
 
         pcqDisposerService.disposePcq();
@@ -82,7 +82,7 @@ public class PcqDisposerServiceIntegrationTest extends PcqIntegrationTest {
             .contains(expected);
     }
 
-    public ProtectedCharacteristics insertPcq(Instant timestamp, String caseId) {
+    private ProtectedCharacteristics insertPcq(Instant timestamp, String caseId) {
         ProtectedCharacteristics pcq = new ProtectedCharacteristics();
         String uuid = UUID.randomUUID().toString();
         pcq.setPcqId(uuid);

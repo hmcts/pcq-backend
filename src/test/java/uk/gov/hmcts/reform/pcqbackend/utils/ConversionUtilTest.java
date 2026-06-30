@@ -12,6 +12,7 @@ import static uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils.getTimeFromString;
 class ConversionUtilTest {
 
     @Test
+    @SuppressWarnings("PMD.ReplaceJavaUtilDate")
     void convertJsonToDomainCopiesLastUpdatedTimestampFromCompletedDate() {
         PcqAnswerRequest answerRequest = new PcqAnswerRequest("123");
         answerRequest.setActor("actor");

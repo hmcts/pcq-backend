@@ -15,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class IdamServiceClient {
 
-    @SuppressWarnings("PMD.UseConcurrentHashMap")
     public String s2sSignIn(String s2sName, String s2sSecret, String s2sUrl) {
 
         Map<String, Object> params = ImmutableMap.of(

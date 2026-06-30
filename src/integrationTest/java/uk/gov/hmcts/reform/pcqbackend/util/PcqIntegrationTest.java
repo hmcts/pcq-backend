@@ -24,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @Configuration
 @Slf4j
+@SuppressWarnings({"PMD.ReplaceJavaUtilDate"})
 public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
 
     public static final String CO_RELATION_ID_FOR_TEST = "INTEG-TEST-PCQ";
@@ -58,7 +59,6 @@ public abstract class PcqIntegrationTest extends SpringBootIntegrationTest {
         protectedCharacteristicsRepository.deleteAll();
     }
 
-    @SuppressWarnings("PMD.ConfusingTernary")
     protected void checkAssertionsOnResponse(ProtectedCharacteristics protectedCharacteristics,
                                           PcqAnswerRequest answerRequest) {
         assertEquals(protectedCharacteristics.getPcqId(), answerRequest.getPcqId(), "PCQId not matching");

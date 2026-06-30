@@ -15,7 +15,6 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcq.commons.utils.PcqUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,7 +65,7 @@ public class PcqBackEndClient {
         return getRequestForSasToken(APP_BASE_PATH + "/token/" + serviceName);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    @SuppressWarnings({"rawtypes"})
     private <T> Map<String, Object> postRequest(String uriPath, T requestBody) {
 
         HttpEntity<T> request = new HttpEntity<>(requestBody, getS2sTokenHeaders());
@@ -79,7 +78,7 @@ public class PcqBackEndClient {
                 Map.class);
 
         } catch (RestClientResponseException ex) {
-            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            Map<String, Object> statusAndBody = new ConcurrentHashMap<>(2);
             statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
@@ -88,7 +87,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    @SuppressWarnings({"rawtypes"})
     private <T> Map<String, Object> postRequestNoAuthHeader(String uriPath, T requestBody) {
 
         HttpEntity<T> request = new HttpEntity<>(requestBody, getCoRelationTokenHeaders());
@@ -102,7 +101,7 @@ public class PcqBackEndClient {
                 Map.class);
 
         } catch (RestClientResponseException ex) {
-            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            Map<String, Object> statusAndBody = new ConcurrentHashMap<>(2);
             statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
@@ -111,7 +110,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    @SuppressWarnings({"rawtypes"})
     private <T> Map<String, Object> putRequest(String uriPath, Object... params) {
 
         HttpEntity<T> request = new HttpEntity<>(getCoRelationAndServiceAuthorisationHeaders());
@@ -127,7 +126,7 @@ public class PcqBackEndClient {
                                                      Map.class);
 
         } catch (RestClientResponseException ex) {
-            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            Map<String, Object> statusAndBody = new ConcurrentHashMap<>(2);
             statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return getResponse(statusAndBody);
@@ -136,7 +135,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    @SuppressWarnings({"rawtypes"})
     private Map<String, Object> getRequest(String uriPath, Object... params) {
 
         ResponseEntity<Map> responseEntity;
@@ -150,7 +149,7 @@ public class PcqBackEndClient {
                           Map.class,
                           params);
         } catch (HttpStatusCodeException ex) {
-            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            Map<String, Object> statusAndBody = new ConcurrentHashMap<>(2);
             statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
@@ -159,7 +158,7 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"rawtypes", "PMD.DataflowAnomalyAnalysis"})
+    @SuppressWarnings({"rawtypes"})
     private Map<String, Object> getRequestForSasToken(String uriPath, Object... params) {
 
         ResponseEntity<Map> responseEntity;
@@ -173,7 +172,7 @@ public class PcqBackEndClient {
                           Map.class,
                           params);
         } catch (HttpStatusCodeException ex) {
-            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            Map<String, Object> statusAndBody = new ConcurrentHashMap<>(2);
             statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
@@ -182,7 +181,6 @@ public class PcqBackEndClient {
         return getResponse(responseEntity);
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> getPcqRecordRequestObject(String uriPath, Object... params) {
 
         ResponseEntity<PcqRecordWithoutCaseResponse> responseEntity;
@@ -196,7 +194,7 @@ public class PcqBackEndClient {
                           PcqRecordWithoutCaseResponse.class,
                           params);
         } catch (HttpStatusCodeException ex) {
-            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            Map<String, Object> statusAndBody = new ConcurrentHashMap<>(2);
             statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;
@@ -219,8 +217,8 @@ public class PcqBackEndClient {
         return response;
     }
 
-    @SuppressWarnings({"unchecked", "PMD.LooseCoupling"})
-    private Map<String, Object> getResponse(HashMap<String, Object> responseBody) {
+    @SuppressWarnings({"unchecked"})
+    private Map<String, Object> getResponse(Map<String, Object> responseBody) {
 
         Map<String, Object> response = objectMapper
             .convertValue(responseBody, Map.class);
@@ -271,7 +269,6 @@ public class PcqBackEndClient {
         return headers;
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis"})
     private Map<String, Object> deleteRequest(String uriPath, Object... params) {
 
         ResponseEntity<Map> responseEntity;
@@ -285,7 +282,7 @@ public class PcqBackEndClient {
                           Map.class,
                           params);
         } catch (HttpStatusCodeException ex) {
-            HashMap<String, Object> statusAndBody = new HashMap<>(2);
+            Map<String, Object> statusAndBody = new ConcurrentHashMap<>(2);
             statusAndBody.put("http_status", String.valueOf(ex.getStatusCode()));
             statusAndBody.put("response_body", ex.getResponseBodyAsString());
             return statusAndBody;

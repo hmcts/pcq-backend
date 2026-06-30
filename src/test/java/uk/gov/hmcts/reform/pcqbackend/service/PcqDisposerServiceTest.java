@@ -1,5 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@SuppressWarnings("PMD.ReplaceJavaUtilDate")
 class PcqDisposerServiceTest {
 
     @Mock
@@ -33,6 +35,11 @@ class PcqDisposerServiceTest {
 
     @InjectMocks
     private PcqDisposerService pcqDisposerService;
+
+    @BeforeEach
+    void setUp() {
+        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
+    }
 
     @Test
     void disposePcqInDryRunModeShouldNotCallDelete() {
@@ -53,7 +60,6 @@ class PcqDisposerServiceTest {
 
     @Test
     void disposePcqShouldUseDaysInQueries() {
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         ReflectionTestUtils.setField(pcqDisposerService, "keepWithCase", 7);
         ReflectionTestUtils.setField(pcqDisposerService, "keepNoCase", 14);
         ReflectionTestUtils.setField(pcqDisposerService, "rateLimit", 1000);
@@ -97,7 +103,6 @@ class PcqDisposerServiceTest {
 
     @Test
     void disposePcqShouldCallDelete() {
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         ReflectionTestUtils.setField(pcqDisposerService, "rateLimit", 1000);
         // Mocking pcqIds
         List<String> pcqIdsWithCase = List.of("pcqId1", "pcqId2");
@@ -124,7 +129,6 @@ class PcqDisposerServiceTest {
 
     @Test
     void shouldLogErrorWhenDeletionFails() {
-        ReflectionTestUtils.setField(pcqDisposerService, "dryRun", false);
         List<String> pcqIds = List.of("pcqId1", "pcqId2");
         List<String> pcqId2s = List.of("pcqId3", "pcqId4");
         when(pcqRepository.findAllPcqIdsByCaseIdNotNullAndLastUpdatedTimestampBeforeWithLimit(
@@ -135,7 +139,7 @@ class PcqDisposerServiceTest {
         doThrow(new RuntimeException("Database error"))
             .when(pcqRepository).deleteByPcqIds(anyList());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> pcqDisposerService.disposePcq());
+        RuntimeException exception = assertThrows(RuntimeException.class, pcqDisposerService::disposePcq);
         assertThat(exception.getMessage()).contains("Failed to delete batch");
     }
 }

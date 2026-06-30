@@ -24,8 +24,7 @@ public class JobApplication implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         try {
-            String job = environment.getProperty("PCQ_DISPOSER_JOB");
-            if ("true".equals(job)) {
+            if (Boolean.parseBoolean(environment.getProperty("PCQ_DISPOSER_JOB"))) {
                 if (!disposerEnabled) {
                     log.info("PCQ disposer is disabled, not running.");
                     return;
@@ -40,4 +39,3 @@ public class JobApplication implements ApplicationRunner {
         }
     }
 }
-

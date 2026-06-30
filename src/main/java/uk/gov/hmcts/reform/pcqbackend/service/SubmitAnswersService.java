@@ -53,8 +53,6 @@ public class SubmitAnswersService extends BaseService {
         this.protectedCharacteristicsRepository = protectedCharacteristicsRepository;
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
-        "PMD.UnusedLocalVariable","PMD.AvoidThrowingRawExceptionTypes"})
     @Transactional
     public ResponseEntity<Object> processPcqAnswers(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
@@ -68,13 +66,12 @@ public class SubmitAnswersService extends BaseService {
             performValidations(answerRequest);
 
             //Step 3. Check whether record exists in database for the pcqId.
-            Optional<ProtectedCharacteristics> protectedCharacteristics;
-            if (pcqId != null && !pcqId.isEmpty()) {
-                protectedCharacteristics = protectedCharacteristicsRepository
-                    .findByPcqId(answerRequest.getPcqId(), getEncryptionKey());
-            } else {
-                throw new InvalidRequestException("PCQ Id is blank or null.", HttpStatus.BAD_REQUEST);
+            if (pcqId == null || pcqId.isEmpty()) {
+                return PcqUtils.generateResponseEntity("PCQ Id is blank or null.", HttpStatus.BAD_REQUEST,
+                                                     environment.getProperty(BAD_REQUEST_ERROR_MSG_KEY));
             }
+            Optional<ProtectedCharacteristics> protectedCharacteristics = protectedCharacteristicsRepository
+                    .findByPcqId(pcqId, getEncryptionKey());
 
             ProtectedCharacteristics createCharacteristics = ConversionUtil.convertJsonToDomain(answerRequest);
             if (protectedCharacteristics.isEmpty()) {
@@ -154,9 +151,8 @@ public class SubmitAnswersService extends BaseService {
 
     }
 
-    @SuppressWarnings({"PMD.DataflowAnomalyAnalysis", "PMD.AvoidDuplicateLiterals", "PMD.ExcessiveMethodLength",
-        "PMD.UnusedLocalVariable"})
     @Transactional
+    @SuppressWarnings("PMD.ReplaceJavaUtilDate")
     public ResponseEntity<Object> processOptOut(@Nullable List<String> headers, PcqAnswerRequest answerRequest) {
         String pcqId = answerRequest.getPcqId();
         String coRelationId = "";
@@ -250,7 +246,6 @@ public class SubmitAnswersService extends BaseService {
                                                environment.getProperty("api-error-messages.created"));
     }
 
-    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
     private void validateRequestAgainstSchema(Object requestObject, String schemaFileName)
         throws IOException, SchemaValidationException {
 
@@ -325,7 +320,7 @@ public class SubmitAnswersService extends BaseService {
 
         //Step 3. For paper channel, validate the DCN number.
         if (PAPER_CHANNEL == answerRequest.getChannel()
-            && (answerRequest.getOptOut() == null || !answerRequest.getOptOut().equalsIgnoreCase(OPTOUT_YES))) {
+            && (answerRequest.getOptOut() == null || !OPTOUT_YES.equalsIgnoreCase(answerRequest.getOptOut()))) {
             validateDcnNumber(answerRequest.getDcnNumber());
         }
     }

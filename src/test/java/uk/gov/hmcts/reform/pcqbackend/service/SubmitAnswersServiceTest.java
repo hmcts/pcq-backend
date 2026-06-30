@@ -37,8 +37,10 @@ import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.getTestHeade
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonObjectFromString;
 import static uk.gov.hmcts.reform.pcq.commons.tests.utils.TestUtils.jsonStringFromFile;
 
-@SuppressWarnings({"PMD.ExcessiveImports", "PMD.TooManyMethods", "PMD.JUnit4TestShouldUseTestAnnotation",
-    "PMD.JUnitTestsShouldIncludeAssert"})
+@SuppressWarnings({
+    "PMD.TooManyMethods",
+    "PMD.ReplaceJavaUtilDate"
+})
 class SubmitAnswersServiceTest {
 
     @Mock
