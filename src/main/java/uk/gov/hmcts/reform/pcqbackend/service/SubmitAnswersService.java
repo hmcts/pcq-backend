@@ -122,9 +122,10 @@ public class SubmitAnswersService extends BaseService {
 
                 if (resultCount == 0) {
                     log.error("Co-Relation Id : {} - submitAnswers API, Completed Date is in the past.", coRelationId);
-                    return PcqUtils.generateResponseEntity(pcqId, HttpStatus.ACCEPTED,
-                                                           environment.getProperty(
-                                                                     "api-error-messages.accepted"));
+                    return PcqUtils.generateResponseEntity(
+                        pcqId,
+                        HttpStatus.ACCEPTED,
+                        environment.getProperty("api-error-messages.accepted"));
                 } else {
                     log.info(INFO_LOG_MSG
                                  + "Protected Characteristic Record submitted for Update.", coRelationId,
