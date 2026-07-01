@@ -318,14 +318,14 @@ dependencies {
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-flyway-test'
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc-test'
 
-  testImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
+  testImplementation group: 'org.testcontainers', name: 'testcontainers-postgresql', version: versions.testcontainers
   testImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
-  testImplementation group: 'org.testcontainers', name: 'junit-jupiter', version: versions.testcontainers
+  testImplementation group: 'org.testcontainers', name: 'testcontainers-junit-jupiter', version: versions.testcontainers
 
   testImplementation("org.junit.jupiter:junit-jupiter")
 
   integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers', version: versions.testcontainers
-  integrationTestImplementation group: 'org.testcontainers', name: 'postgresql', version: versions.testcontainers
+  integrationTestImplementation group: 'org.testcontainers', name: 'testcontainers-postgresql', version: versions.testcontainers
   integrationTestImplementation sourceSets.main.runtimeClasspath
   integrationTestImplementation sourceSets.test.runtimeClasspath
 
