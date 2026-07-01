@@ -3,6 +3,7 @@ package uk.gov.hmcts.reform.pcqbackend.utils;
 import org.junit.jupiter.api.Test;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
+import uk.gov.hmcts.reform.pcqbackend.util.ConversionUtil;
 
 import java.sql.Timestamp;
 
