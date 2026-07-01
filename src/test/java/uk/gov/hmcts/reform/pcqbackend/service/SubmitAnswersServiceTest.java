@@ -733,4 +733,56 @@ class SubmitAnswersServiceTest {
         }
     }
 
+    @Test
+    void testResultCountIs0ReturnsAccepted() {
+        when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
+        when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
+        when(environment.getProperty("api-error-messages.accepted")).thenReturn("Accepted");
+        String pcqId = TEST_PCQ_ID;
+
+        try {
+            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+            targetObject.setPcqId(pcqId);
+            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+            int resultCount = 0;
+            int dobProvided = 1;
+            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+
+            when(protectedCharacteristicsRepository.findByPcqId(pcqId, null))
+                .thenReturn(protectedCharacteristicsOptional);
+            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null, null,
+                                                                          null,
+                                                                          testTimeStamp, false, pcqId, testTimeStamp)
+            ).thenReturn(resultCount);
+
+            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
+            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
+                                                                                           pcqAnswerRequest);
+
+            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+
+            Object responseMap = responseEntity.getBody();
+            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+            Assertions.assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
+
+        } catch (Exception e) {
+            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
+        }
+    }
+
 }
