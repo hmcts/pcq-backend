@@ -29,7 +29,7 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.DataNotFoundException;
 import uk.gov.hmcts.reform.pcqbackend.service.DeleteService;
 import uk.gov.hmcts.reform.pcqbackend.service.SubmitAnswersService;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
+import uk.gov.hmcts.reform.pcqbackend.util.ConversionUtil;
 
 
 /**

@@ -17,7 +17,6 @@ import java.nio.file.Paths;
 
 /**
  * Built-in feature which saves service's swagger specs in temporary directory.
- * Each travis run on master should automatically save and upload (if updated) documentation.
  */
 @SpringJUnitWebConfig
 @SpringBootTest

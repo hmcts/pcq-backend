@@ -26,7 +26,7 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.security.ServiceAuthorizationAuthenticator;
 import uk.gov.hmcts.reform.pcqbackend.service.ConsolidationService;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
+import uk.gov.hmcts.reform.pcqbackend.util.ConversionUtil;
 
 import java.util.List;
 

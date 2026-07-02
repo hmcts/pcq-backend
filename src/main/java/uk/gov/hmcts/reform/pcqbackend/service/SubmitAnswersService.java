@@ -23,7 +23,7 @@ import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.SchemaValidationException;
 import uk.gov.hmcts.reform.pcqbackend.repository.ProtectedCharacteristicsRepository;
-import uk.gov.hmcts.reform.pcqbackend.utils.ConversionUtil;
+import uk.gov.hmcts.reform.pcqbackend.util.ConversionUtil;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package uk.gov.hmcts.reform.pcqbackend.utils;
+package uk.gov.hmcts.reform.pcqbackend.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,6 @@ import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerRequest;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswerResponse;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqAnswers;
 import uk.gov.hmcts.reform.pcq.commons.model.PcqRecordWithoutCaseResponse;
-import uk.gov.hmcts.reform.pcq.commons.model.PcqWithoutCaseResponse;
 import uk.gov.hmcts.reform.pcqbackend.domain.ProtectedCharacteristics;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidRequestException;
 
@@ -144,28 +143,6 @@ public final class ConversionUtil {
         }
 
         return protectedCharacteristics;
-    }
-
-    public static ResponseEntity<PcqWithoutCaseResponse> generatePcqWithoutCaseResponse(List<ProtectedCharacteristics>
-                                                                                            pcqIds, HttpStatus code,
-                                                                                        String message) {
-        PcqWithoutCaseResponse pcqWithoutCaseResponse = new PcqWithoutCaseResponse();
-        if (pcqIds == null) {
-            pcqWithoutCaseResponse.setResponseStatus(message);
-            pcqWithoutCaseResponse.setResponseStatusCode(String.valueOf(code.value()));
-
-            return new ResponseEntity<>(pcqWithoutCaseResponse, code);
-        }
-
-        List<String> pcqIdArray = new ArrayList<>(pcqIds.size());
-        for (ProtectedCharacteristics protectedCharacteristics : pcqIds) {
-            pcqIdArray.add(protectedCharacteristics.getPcqId());
-        }
-        pcqWithoutCaseResponse.setPcqId(pcqIdArray.toArray(new String[0]));
-        pcqWithoutCaseResponse.setResponseStatus(message);
-        pcqWithoutCaseResponse.setResponseStatusCode(String.valueOf(code.value()));
-
-        return new ResponseEntity<>(pcqWithoutCaseResponse, code);
     }
 
     public static ResponseEntity<PcqRecordWithoutCaseResponse> generatePcqRecordWithoutCaseResponse(
