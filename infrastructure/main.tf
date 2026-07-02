@@ -12,8 +12,8 @@ provider "azurerm" {
 }
 
 locals {
-  vault_name            = "${var.product}-${var.env}"
-  db_server_name        = "${var.product}-${var.component}-flexible"
+  vault_name     = "${var.product}-${var.env}"
+  db_server_name = "${var.product}-${var.component}-flexible"
 }
 
 data "azurerm_key_vault" "key_vault" {
