@@ -8,6 +8,7 @@
     <cve>CVE-2026-44891</cve>
     <cve>CVE-2026-54399</cve>
     <cve>CVE-2026-54428</cve>
+    <cve>CVE-2026-54515</cve>
     <cve>CVE-2026-66299</cve>
   </suppress>
 </suppressions>
