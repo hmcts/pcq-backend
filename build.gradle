@@ -259,7 +259,7 @@ def versions = [
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '6.0.1',
   serenity            : '5.3.11',
-  lombok              : '1.18.46',
+  lombok              : '1.18.48',
   gradlePitest        : '1.15.0',
   sonarPitest         : '0.5',
   testcontainers      : '2.0.5'
