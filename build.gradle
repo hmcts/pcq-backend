@@ -28,7 +28,7 @@ apply plugin: "org.owasp.dependencycheck"
 group = 'uk.gov.hmcts.reform'
 version = '1.0.2'
 
-ext['netty.version'] = '4.2.17.Final'
+ext['netty.version'] = '4.2.18.Final'
 ext['tomcat.version'] = '11.0.25'
 ext['log4j2.version'] = '2.25.5'
 
