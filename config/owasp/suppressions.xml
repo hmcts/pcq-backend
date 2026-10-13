@@ -45,4 +45,19 @@
       <packageUrl>pkg:maven/com.microsoft.azure/applicationinsights-web@2.6.4</packageUrl>
       <cve>CVE-2026-33117</cve>
   </suppress>
+
+  <suppress>
+      <packageUrl>pkg:maven/com.azure/azure-core@1.60.0</packageUrl>
+      <cve>CVE-2026-33117</cve>
+  </suppress>
+  
+  <suppress>
+      <packageUrl>pkg:maven/com.azure/azure-core-http-netty@1.16.8</packageUrl>
+      <cve>CVE-2026-33117</cve>
+  </suppress>
+  
+  <suppress>
+      <packageUrl>pkg:maven/com.azure/azure-json@1.5.1</packageUrl>
+      <cve>CVE-2026-33117</cve>
+  </suppress>
 </suppressions>
