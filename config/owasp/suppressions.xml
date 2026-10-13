@@ -32,17 +32,17 @@
   </suppress>
   
   <suppress>
-    <cve>CVE-2026-33117</cve>
     <packageUrl>pkg:maven/com.microsoft.azure/applicationinsights-core@2.6.4</packageUrl>
+    <cve>CVE-2026-33117</cve>
   </suppress>
   
   <suppress>
-      <cve>CVE-2026-33117</cve>
       <packageUrl>pkg:maven/com.microsoft.azure/applicationinsights-spring-boot-starter@2.6.4</packageUrl>
+      <cve>CVE-2026-33117</cve>
   </suppress>
   
   <suppress>
-      <cve>CVE-2026-33117</cve>
       <packageUrl>pkg:maven/com.microsoft.azure/applicationinsights-web@2.6.4</packageUrl>
+      <cve>CVE-2026-33117</cve>
   </suppress>
 </suppressions>
