@@ -14,7 +14,7 @@ plugins {
   id 'net.serenity-bdd.serenity-gradle-plugin' version '5.3.9'
   id 'org.springframework.boot' version '4.1.1'
   id 'org.owasp.dependencycheck' version '13.0.0'
-  id 'com.github.ben-manes.versions' version '0.64.0'
+  id 'io.github.ben-manes.versions' version '0.66.0'
   id "info.solidsoft.pitest" version '1.19.0'
   id 'org.sonarqube' version '7.5.0.8588'
   id 'com.gorylenko.gradle-git-properties' version '4.0.1'
@@ -295,6 +295,7 @@ dependencies {
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   implementation group: 'org.yaml', name: 'snakeyaml', version: '2.7'
   implementation group: "com.networknt", name: "json-schema-validator", version: '3.0.8'
+  implementation group: 'com.eatthepath', name: 'java-otp', version: '1.0.0'
 
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: versions.jjwt
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: versions.jjwt

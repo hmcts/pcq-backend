@@ -1,12 +1,12 @@
 package uk.gov.hmcts.reform.pcqbackend.client;
 
 import com.google.common.collect.ImmutableMap;
-import com.warrenstrange.googleauth.GoogleAuthenticator;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import uk.gov.hmcts.reform.pcqbackend.util.TotpGenerator;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class IdamServiceClient {
 
         Map<String, Object> params = ImmutableMap.of(
             "microservice", s2sName,
-            "oneTimePassword", new GoogleAuthenticator().getTotpPassword(s2sSecret)
+            "oneTimePassword", TotpGenerator.generate(s2sSecret)
         );
 
         Response response = RestAssured

@@ -1,7 +1,6 @@
 package uk.gov.hmcts.reform.pcqbackend.smoke;
 
 import com.google.common.collect.ImmutableMap;
-import com.warrenstrange.googleauth.GoogleAuthenticator;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import uk.gov.hmcts.reform.pcqbackend.util.TotpGenerator;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertTrue;
@@ -80,7 +80,7 @@ public class SmokeTests {
             .contentType("application/json")
             .body(ImmutableMap.of(
                 "microservice", s2sName,
-                "oneTimePassword", new GoogleAuthenticator().getTotpPassword(s2sSecret)
+                "oneTimePassword", TotpGenerator.generate(s2sSecret)
             ))
             .when()
             .post("/lease")
