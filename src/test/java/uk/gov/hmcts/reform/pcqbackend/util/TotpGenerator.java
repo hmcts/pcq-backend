@@ -17,10 +17,10 @@ public final class TotpGenerator {
 
     public static String generate(String base32Secret) {
         byte[] secretBytes = new Base32().decode(base32Secret.toUpperCase(Locale.ROOT));
-        SecretKeySpec key = new SecretKeySpec(secretBytes, TOTP.getAlgorithm());
+        SecretKeySpec key = new SecretKeySpec(secretBytes, "HmacSHA1");
 
         try {
-            return TOTP.generateOneTimePasswordString(key, Instant.now());
+            return TOTP.generateOneTimePasswordString(key, Instant.now(),Locale.ROOT);
         } catch (Exception ex) {
             throw new IllegalStateException("Failed to generate TOTP", ex);
         }
