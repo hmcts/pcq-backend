@@ -266,6 +266,11 @@ def versions = [
 ]
 
 dependencies {
+  constraints {
+    // CVE-2026-33117: versions below 4.10.6 are vulnerable.
+    implementation 'com.azure:azure-security-keyvault-keys:4.10.6'
+  }
+
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.36.0'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '8.0.0'
   implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '2.0.0'
