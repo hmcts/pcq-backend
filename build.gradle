@@ -1,6 +1,6 @@
 buildscript {
   dependencies {
-    classpath "org.flywaydb:flyway-database-postgresql:13.10.0"
+    classpath "org.flywaydb:flyway-database-postgresql:13.10.3"
   }
 }
 
@@ -18,8 +18,8 @@ plugins {
   id "info.solidsoft.pitest" version '1.19.0'
   id 'org.sonarqube' version '7.5.0.8588'
   id 'com.gorylenko.gradle-git-properties' version '4.0.1'
-  id "io.freefair.lombok" version "9.8.1"
-  id "org.flywaydb.flyway" version "13.10.0"
+  id "io.freefair.lombok" version "9.8.2"
+  id "org.flywaydb.flyway" version "13.10.3"
 }
 
 apply plugin: "com.gorylenko.gradle-git-properties"
@@ -254,7 +254,7 @@ repositories {
 }
 
 def versions = [
-  flywaydb            : '13.10.0',
+  flywaydb            : '13.10.3',
   jjwt                : '0.13.0',
   springBoot          : springBoot.class.package.implementationVersion,
   restAssured         : '6.0.1',
@@ -273,7 +273,7 @@ dependencies {
 
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.36.0'
   implementation group: 'com.github.hmcts.java-logging', name: 'logging', version: '8.0.0'
-  implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '2.0.0'
+  implementation group: 'com.github.hmcts', name: 'pcq-commons', version: '2.0.1'
   implementation group: 'com.github.hmcts', name: 'service-auth-provider-java-client', version: '6.1.2'
   implementation group: 'com.microsoft.azure', name: 'applicationinsights-web', version: '3.7.10'
   implementation group: 'com.microsoft.azure', name: 'azure-storage', version: '8.6.6'
