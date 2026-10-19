@@ -18,7 +18,7 @@ plugins {
   id "info.solidsoft.pitest" version '1.19.0'
   id 'org.sonarqube' version '7.5.0.8588'
   id 'com.gorylenko.gradle-git-properties' version '4.0.1'
-  id "io.freefair.lombok" version "9.8.1"
+  id "io.freefair.lombok" version "9.8.2"
   id "org.flywaydb.flyway" version "13.10.0"
 }
 
