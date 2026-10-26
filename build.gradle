@@ -257,7 +257,7 @@ def versions = [
   flywaydb            : '13.10.3',
   jjwt                : '0.13.0',
   springBoot          : springBoot.class.package.implementationVersion,
-  restAssured         : '6.0.1',
+  restAssured         : '6.3.0',
   serenity            : '5.4.1',
   lombok              : '1.18.48',
   gradlePitest        : '1.15.0',
