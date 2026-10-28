@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SuppressWarnings("PMD.ReplaceJavaUtilDate")
@@ -23,8 +23,6 @@ class SasTokenServiceTest {
     private static final String BLOB_DEV_CONNECTION_STRING = "UseDevelopmentStorage=true";
 
     private static final String NOT_NULL_MESSAGE = "Should be not null.";
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
-
     private SasTokenService sasTokenService;
 
     @BeforeEach
@@ -37,15 +35,10 @@ class SasTokenServiceTest {
     }
 
     @Test
-    void testGenerateSasTokenSuccess() {
-        try {
-            String actualSasToken = sasTokenService.generateSasToken();
-            assertNotNull(actualSasToken, NOT_NULL_MESSAGE);
-            verifySasTokenProperties(actualSasToken);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+    void testGenerateSasTokenSuccess() throws StorageException {
+        String actualSasToken = assertDoesNotThrow(sasTokenService::generateSasToken);
+        assertNotNull(actualSasToken, NOT_NULL_MESSAGE);
+        verifySasTokenProperties(actualSasToken);
     }
 
     private void verifySasTokenProperties(String tokenResponse) throws StorageException {
