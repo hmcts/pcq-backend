@@ -42,7 +42,6 @@ class ConsolidationServiceTest {
     private ConsolidationService consolidationService;
 
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
     private static final String INVALID_ERROR = "Invalid Request";
     private static final String UPDATED_MSG = "Successfully updated";
     private static final String INVALID_ERROR_PROPERTY = "api-error-messages.bad_request";

@@ -63,7 +63,6 @@ class PcqAnswersControllerTest {
     private static final String HEADER_KEY = "X-Correlation-Id";
     private static final String API_ERROR_MESSAGE_ACCEPTED = "Success";
     private static final String API_ERROR_MESSAGE_BAD_REQUEST = "Invalid Request";
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
     private static final String INVALID_ERROR = "Invalid Request";
     private static final String INVALID_ERROR_PROPERTY = "api-error-messages.bad_request";

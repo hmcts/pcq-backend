@@ -443,7 +443,7 @@ class ConsolidationControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
 
         PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-        assert actualBody != null;
+        assertNotNull(actualBody, BODY_NULL_MSG);
         assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
         assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
 

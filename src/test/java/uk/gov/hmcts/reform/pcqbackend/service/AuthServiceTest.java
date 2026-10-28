@@ -20,7 +20,6 @@ class AuthServiceTest {
     private static final String REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH = "DFJSDFSDFSDFSDFSDSFS";
     private static final String REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME = "reform_scan_blob_router";
     private static final String IAE_EXCEPTION_MESSAGE = "Missing ServiceAuthorization header";
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
 
     @InjectMocks
     private AuthService authService;
