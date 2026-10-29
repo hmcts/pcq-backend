@@ -32,8 +32,7 @@ class AuthServiceTest {
         when(authTokenValidator.getServiceName(REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH))
             .thenReturn(REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME);
 
-        String actualServiceName = assertDoesNotThrow(() ->
-            authService.authenticate(REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH));
+        String actualServiceName = authService.authenticate(REFORM_SCAN_BLOB_ROUTER_SERVICE_AUTH);
 
         assertNotNull(actualServiceName, "Should be not null");
         assertEquals(REFORM_SCAN_BLOB_ROUTER_SERVICE_NAME,

@@ -36,7 +36,7 @@ class SasTokenServiceTest {
 
     @Test
     void testGenerateSasTokenSuccess() throws StorageException {
-        String actualSasToken = assertDoesNotThrow(sasTokenService::generateSasToken);
+        String actualSasToken = sasTokenService.generateSasToken();
         assertNotNull(actualSasToken, NOT_NULL_MESSAGE);
         verifySasTokenProperties(actualSasToken);
     }
