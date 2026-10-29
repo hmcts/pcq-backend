@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
@@ -454,11 +456,12 @@ class ConsolidationControllerTest {
 
     /**
      * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
-     * the response contains multiple pcq records. The response status code will be 200.
+     * the response contains pcq records based on parameter. The response status code will be 200.
      */
-    @DisplayName("Should return with an Success Request error code 200 and multiple pcq records")
-    @Test
-    void testGetPcqRecordWithoutCaseMultipleIds()  {
+    @DisplayName("Should return with an Success Request error code 200 and pcq records based on number of records")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3})
+    void testGetPcqRecordWithoutCaseWithVariedNumberOfRecords(int numberOfRecords)  {
 
 
         when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
@@ -467,7 +470,7 @@ class ConsolidationControllerTest {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-        List<ProtectedCharacteristics> targetList = generateTargetList(3);
+        List<ProtectedCharacteristics> targetList = generateTargetList(numberOfRecords);
         when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
             Timestamp.class),any(
             Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
@@ -492,92 +495,6 @@ class ConsolidationControllerTest {
         verify(protectedCharacteristicsRepository, times(1))
             .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
             Mockito.eq(null));
-
-    }
-
-    /**
-     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
-     * the response contains array with single pcq record. The response status code will be 200.
-     */
-    @DisplayName("Should return with an Success Request error code 200 and single pcq record")
-    @Test
-    void testGetPcqRecordWithoutCaseSingleId()  {
-
-        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-        HttpHeaders mockHeaders = getMockHeader();
-        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
-
-        List<ProtectedCharacteristics> targetList = generateTargetList(1);
-        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-            Timestamp.class),any(
-            Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
-
-        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
-            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
-
-        assertNotNull(actual, RESPONSE_NULL_MSG);
-        assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
-
-        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-        assertNotNull(actualBody, BODY_NULL_MSG);
-        assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-        assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-        assertNotNull(actualBody.getPcqRecord(), "Pcq Record are null");
-        assertArrayContents(targetList, actualBody.getPcqRecord());
-
-        verify(mockHeaders, times(1)).get(HEADER_KEY);
-        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-
-        verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                                                                      any(Timestamp.class),Mockito.eq(null));
-
-    }
-
-    /**
-     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
-     * the response contains empty array (no pcq records). The response status code will be 200.
-     */
-    @DisplayName("Should return with an Success Request error code 200 and no pcq ids")
-    @Test
-    void testGetPcqRecordWithoutCaseNoPcqRecords()  {
-
-        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-        HttpHeaders mockHeaders = getMockHeader();
-        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
-
-        List<ProtectedCharacteristics> targetList = generateTargetList(0);
-        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-            Timestamp.class),any(
-            Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
-
-        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
-            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
-
-        assertNotNull(actual, RESPONSE_NULL_MSG);
-        assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
-
-        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-        assertNotNull(actualBody, BODY_NULL_MSG);
-        assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-        assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-        assertNotNull(actualBody.getPcqRecord(), "Pcq Records are null");
-        assertArrayContents(targetList, actualBody.getPcqRecord());
-
-        verify(mockHeaders, times(1)).get(HEADER_KEY);
-        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-
-        verify(protectedCharacteristicsRepository, times(1))
-            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                      any(Timestamp.class),Mockito.eq(null));
 
     }
 
