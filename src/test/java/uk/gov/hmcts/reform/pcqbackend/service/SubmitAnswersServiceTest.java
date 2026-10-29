@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -76,19 +77,15 @@ class SubmitAnswersServiceTest {
     void testNoHeaders() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
-        try {
-            PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(null, pcqAnswerRequest);
+        PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(null, pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
 
     }
 
@@ -96,126 +93,98 @@ class SubmitAnswersServiceTest {
     void testNoHeadersProcessOptOut() {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
-        try {
-            PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(null, pcqAnswerRequest);
+        PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processOptOut(null, pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
 
     }
 
     @Test
-    void testInvalidJson() {
+    void testInvalidJson() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
 
     }
 
     @Test
-    void testInvalidJsonProcessOptOut() {
+    void testInvalidJsonProcessOptOut() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
     }
 
     @Test
-    void testInvalidPaperChannel() {
+    void testInvalidPaperChannel() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnMissing.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                       pcqAnswerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnMissing.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(400, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
     }
 
     @Test
-    void testRecordAlreadyExistsPaperChannel() {
+    void testRecordAlreadyExistsPaperChannel() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerPaperChannel.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerPaperChannel.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
-            protectedCharacteristicsList.add(targetObject);
-            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class),
-                 Mockito.eq(null)))
-                .thenReturn(protectedCharacteristicsList);
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
+        protectedCharacteristicsList.add(targetObject);
+        when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class),
+             Mockito.eq(null)))
+            .thenReturn(protectedCharacteristicsList);
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                       pcqAnswerRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(409, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(409, responseEntity.getStatusCode().value(),STATUS_CODE_400_MSG);
 
     }
 
@@ -245,362 +214,307 @@ class SubmitAnswersServiceTest {
     }
 
     @Test
-    void testInvalidVersionProcessOptOut() {
+    void testInvalidVersionProcessOptOut() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
 
     }
 
     @Test
-    void testSubmitFirstTime() {
+    void testSubmitFirstTime() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created first record");
         when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
+            .thenReturn(protectedCharacteristicsOptional);
+        doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+            targetObject,encryptionKey);
 
-            String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
-                .thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
-                targetObject,encryptionKey);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
-
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
     }
 
     @Test
-    void testSubmitPaperChannel() {
+    void testSubmitPaperChannel() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully created paper channel record");
         when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerPaperChannel.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerPaperChannel.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
-            String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
-            when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class),
-                 Mockito.eq(encryptionKey)))
-                .thenReturn(protectedCharacteristicsList);
+        List<ProtectedCharacteristics> protectedCharacteristicsList = new ArrayList<>();
+        String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
+        when(protectedCharacteristicsRepository.findByDcnNumber(any(String.class),
+             Mockito.eq(encryptionKey)))
+            .thenReturn(protectedCharacteristicsList);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
-                .thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
-                targetObject,encryptionKey);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
+            .thenReturn(protectedCharacteristicsOptional);
+        doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+            targetObject,encryptionKey);
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
     }
 
     @Test
-    void testOptOutSuccess() {
+    void testOptOutSuccess() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Success");
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+             submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
 
     }
 
     @Test
-    void testOptOutTrueRecord() {
+    void testOptOutTrueRecord() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Success");
         when(environment.getProperty(UPDATED_MESSAGE_PROPERTY)).thenReturn("Updated");
         String pcqId = TEST_PCQ_ID;
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+        int resultCount = 1;
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      null,null,
+                                                                      testTimeStamp,true,
+                                                                      pcqId,testTimeStamp))
+                                    .thenReturn(resultCount);
 
-        try {
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
-            int resultCount = 1;
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          null,null,
-                                                                          testTimeStamp,true,
-                                                                          pcqId,testTimeStamp))
-                                        .thenReturn(resultCount);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
-                                                                                       pcqAnswerRequest);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(200, responseEntity.getStatusCode().value(), "Expected 200 status code");
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(200, responseEntity.getStatusCode().value(), "Expected 200 status code");
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
 
     }
 
     @Test
-    void testSubmitSecondTime() {
+    void testSubmitSecondTime() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty(CREATED_MESSAGE_PROPERTY)).thenReturn("Successfully updated second time");
         String pcqId = TEST_PCQ_ID;
-        try {
 
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 1;
-            int dobProvided = 1;
-            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        int resultCount = 1;
+        int dobProvided = 1;
+        Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp, false,pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null,
+                                                                      testTimeStamp, false,pcqId, testTimeStamp)
+        ).thenReturn(resultCount);
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(201, responseEntity.getStatusCode().value(), STATUS_CODE_201_MSG);
 
     }
 
     @Test
-    void testStaleCompletedDate() {
+    void testStaleCompletedDate() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Success");
         String pcqId = TEST_PCQ_ID;
-        try {
 
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 0;
-            int dobProvided = 1;
-            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        int resultCount = 0;
+        int dobProvided = 1;
+        Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp, null,pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null,
+                                                                      testTimeStamp, null,pcqId, testTimeStamp)
+        ).thenReturn(resultCount);
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
 
     }
 
     @Test
-    void testInternalError() {
+    void testInternalError() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
         when(environment.getProperty(DB_ENCRYPTION_KEY)).thenReturn("ThisIsATestKeyForEncryption");
         String pcqId = TEST_PCQ_ID;
 
-        try {
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
+            .thenReturn(protectedCharacteristicsOptional);
+        doThrow(new NullPointerException()).when(protectedCharacteristicsRepository)
+            .saveProtectedCharacteristicsWithEncryption(targetObject,encryptionKey);
 
-            String encryptionKey = environment.getProperty(DB_ENCRYPTION_KEY);
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,encryptionKey))
-                .thenReturn(protectedCharacteristicsOptional);
-            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository)
-                .saveProtectedCharacteristicsWithEncryption(targetObject,encryptionKey);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
-
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
 
     }
 
     @Test
-    void testInternalErrorForOptOut() {
+    void testInternalErrorForOptOut() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
         String pcqId = TEST_PCQ_ID;
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                                                .thenThrow(NullPointerException.class);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+                                            .thenThrow(NullPointerException.class);
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(500, responseEntity.getStatusCode().value(), "Expected 500 status code");
 
     }
 
@@ -608,25 +522,21 @@ class SubmitAnswersServiceTest {
     void testGetProtectedCharacteristicsPositive() {
         String pcqId = TEST_PCQ_ID;
 
-        try {
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
 
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
+        ProtectedCharacteristics actualObject = assertDoesNotThrow(() ->
+            submitAnswersService.getProtectedCharacteristicsById(pcqId));
 
-            ProtectedCharacteristics actualObject = submitAnswersService.getProtectedCharacteristicsById(pcqId);
+        Assertions.assertNotNull(actualObject, RESPONSE_NULL_MSG);
+        Assertions.assertEquals(pcqId, actualObject.getPcqId(), "Not expected pcq id");
 
-            Assertions.assertNotNull(actualObject, RESPONSE_NULL_MSG);
-            Assertions.assertEquals(pcqId, actualObject.getPcqId(), "Not expected pcq id");
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
 
     }
 
@@ -634,22 +544,18 @@ class SubmitAnswersServiceTest {
     void testGetProtectedCharacteristicsNegative() {
         String pcqId = TEST_PCQ_ID;
 
-        try {
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
+        ProtectedCharacteristics actualObject = assertDoesNotThrow(() ->
+            submitAnswersService.getProtectedCharacteristicsById(pcqId));
 
-            ProtectedCharacteristics actualObject = submitAnswersService.getProtectedCharacteristicsById(pcqId);
+        Assertions.assertNull(actualObject, RESPONSE_NULL_MSG);
 
-            Assertions.assertNull(actualObject, RESPONSE_NULL_MSG);
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
 
     }
 
@@ -708,81 +614,71 @@ class SubmitAnswersServiceTest {
     }
 
     @Test
-    void testPcqIdIsEmptyReturnsBadRequest() {
+    void testPcqIdIsEmptyReturnsBadRequest() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            pcqAnswerRequest.setPcqId("");
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        pcqAnswerRequest.setPcqId("");
 
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(
-                getTestHeader(), pcqAnswerRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() -> submitAnswersService.processPcqAnswers(
+            getTestHeader(), pcqAnswerRequest));
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
-            verifyNoInteractions(protectedCharacteristicsRepository);
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(400, responseEntity.getStatusCode().value(), STATUS_CODE_400_MSG);
+        verifyNoInteractions(protectedCharacteristicsRepository);
     }
 
     @Test
-    void testResultCountIs0ReturnsAccepted() {
+    void testResultCountIs0ReturnsAccepted() throws IOException {
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
         when(environment.getProperty("api-error-messages.accepted")).thenReturn("Accepted");
         String pcqId = TEST_PCQ_ID;
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        int resultCount = 0;
+        int dobProvided = 1;
+        Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
-        try {
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 0;
-            int dobProvided = 1;
-            Date testDob = new Date(PcqUtils.getTimeFromString(TEST_DOB).getTime());
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId, null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null,
+                                                                      testTimeStamp, false, pcqId, testTimeStamp)
+        ).thenReturn(resultCount);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId, null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp, false, pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
+             submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(202, responseEntity.getStatusCode().value(), "Expected 202 status code");
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
     }
 
 }

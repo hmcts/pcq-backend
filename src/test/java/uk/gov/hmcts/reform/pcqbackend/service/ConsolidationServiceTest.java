@@ -23,7 +23,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -42,7 +42,6 @@ class ConsolidationServiceTest {
     private ConsolidationService consolidationService;
 
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
     private static final String INVALID_ERROR = "Invalid Request";
     private static final String UPDATED_MSG = "Successfully updated";
     private static final String INVALID_ERROR_PROPERTY = "api-error-messages.bad_request";
@@ -58,17 +57,11 @@ class ConsolidationServiceTest {
 
     @Test
     void testNoHeadersGetRequest() {
-
-        try {
-            consolidationService.getPcqsWithoutCase(null);
-            fail("The method should have thrown InvalidRequestException");
-        } catch (InvalidRequestException ive) {
-            assertEquals("Invalid Request. Expecting required header - Co-Relation Id - in the request.",
-                         ive.getMessage(), "Exception message not matching");
-            assertEquals(HttpStatus.BAD_REQUEST, ive.getErrorCode(), "Http Status Code not matching");
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        InvalidRequestException ive = assertThrows(InvalidRequestException.class, () ->
+            consolidationService.getPcqsWithoutCase(null));
+        assertEquals("Invalid Request. Expecting required header - Co-Relation Id - in the request.",
+                     ive.getMessage(), "Exception message not matching");
+        assertEquals(HttpStatus.BAD_REQUEST, ive.getErrorCode(), "Http Status Code not matching");
 
     }
 
@@ -209,16 +202,11 @@ class ConsolidationServiceTest {
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn("0");
         when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn("90");
 
-        try {
-            consolidationService.getPcqsWithoutCase(getTestHeader());
-            fail("The method should have thrown InvalidRequestException");
-        } catch (InvalidRequestException ive) {
-            assertEquals("The 'greaterThan' date must be before the 'lessThanDate'.",
-                         ive.getMessage(), "Exception message not matching");
-            assertEquals(HttpStatus.BAD_REQUEST, ive.getErrorCode(), "Http Status Code not matching");
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        InvalidRequestException ive = assertThrows(InvalidRequestException.class, () ->
+            consolidationService.getPcqsWithoutCase(getTestHeader()));
+        assertEquals("The 'greaterThan' date must be before the 'lessThanDate'.",
+                     ive.getMessage(), "Exception message not matching");
+        assertEquals(HttpStatus.BAD_REQUEST, ive.getErrorCode(), "Http Status Code not matching");
 
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
         verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);

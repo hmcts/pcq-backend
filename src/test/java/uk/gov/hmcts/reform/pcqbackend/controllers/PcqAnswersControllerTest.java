@@ -30,10 +30,10 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -63,7 +63,6 @@ class PcqAnswersControllerTest {
     private static final String HEADER_KEY = "X-Correlation-Id";
     private static final String API_ERROR_MESSAGE_ACCEPTED = "Success";
     private static final String API_ERROR_MESSAGE_BAD_REQUEST = "Invalid Request";
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
     private static final String INVALID_ERROR = "Invalid Request";
     private static final String INVALID_ERROR_PROPERTY = "api-error-messages.bad_request";
@@ -122,43 +121,39 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should submit the answers successfully and return with 201 response code")
     @Test
-    void testSubmitAnswersFirstTime()  {
+    void testSubmitAnswersFirstTime() throws IOException {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_FILENAME);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_FILENAME);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
-                targetObject,null);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+            targetObject,null);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(),
-                         "Expected 201 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.CREATED, actual.getStatusCode(),
+                     "Expected 201 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByPcqId(pcqId,null);
-            verify(protectedCharacteristicsRepository, times(1))
-                .saveProtectedCharacteristicsWithEncryption(any(
-                ProtectedCharacteristics.class), Mockito.eq(null));
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByPcqId(pcqId,null);
+        verify(protectedCharacteristicsRepository, times(1))
+            .saveProtectedCharacteristicsWithEncryption(any(
+            ProtectedCharacteristics.class), Mockito.eq(null));
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
     }
 
     /**
@@ -167,40 +162,37 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should submit the answers when OptOut is NULL successfully and return with 201 response code")
     @Test
-    void testSubmitAnswersOptOutNull()  {
+    void testSubmitAnswersOptOutNull() throws IOException {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_NULL_FILENAME);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
-                targetObject,null);
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+            targetObject,null);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByPcqId(pcqId,null);
-            verify(protectedCharacteristicsRepository, times(1))
-                .saveProtectedCharacteristicsWithEncryption(any(
-                ProtectedCharacteristics.class),Mockito.eq(null));
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByPcqId(pcqId,null);
+        verify(protectedCharacteristicsRepository, times(1))
+            .saveProtectedCharacteristicsWithEncryption(any(
+            ProtectedCharacteristics.class),Mockito.eq(null));
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -210,40 +202,37 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should submit the answers for the paper channel successfully and return with 201 response code")
     @Test
-    void testSubmitAnswersPaperChannel()  {
+    void testSubmitAnswersPaperChannel() throws IOException {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_PAPER_CHANNEL_FILENAME);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_PAPER_CHANNEL_FILENAME);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
-                targetObject,null);
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
+            targetObject,null);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByPcqId(pcqId,null);
-            verify(protectedCharacteristicsRepository, times(1))
-                .saveProtectedCharacteristicsWithEncryption(any(
-                    ProtectedCharacteristics.class),Mockito.eq(null));
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByPcqId(pcqId,null);
+        verify(protectedCharacteristicsRepository, times(1))
+            .saveProtectedCharacteristicsWithEncryption(any(
+                ProtectedCharacteristics.class),Mockito.eq(null));
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -254,25 +243,22 @@ class PcqAnswersControllerTest {
     @DisplayName("Should null the answers and set optOut as true when OptOut is Y "
         + "successfully and return with 201 response code")
     @Test
-    void testSubmitAnswersOptOutSuccess()  {
-        try {
-            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+    void testSubmitAnswersOptOutSuccess() throws IOException {
+        String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_OPT_OUT_FILENAME);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -283,29 +269,26 @@ class PcqAnswersControllerTest {
     @DisplayName("Should NOT create the answers for missing DCN Number in paper channel and return with "
         + "400 response code")
     @Test
-    void testSubmitAnswersPaperChannelMissingDcnNumber()  {
+    void testSubmitAnswersPaperChannelMissingDcnNumber() throws IOException {
 
-        try {
-            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_MISSING_FILENAME);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_MISSING_FILENAME);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -316,29 +299,26 @@ class PcqAnswersControllerTest {
     @DisplayName("Should NOT create the answers for empty DCN Number in paper channel and return with "
         + "400 response code")
     @Test
-    void testSubmitAnswersPaperChannelEmptyDcnNumber()  {
+    void testSubmitAnswersPaperChannelEmptyDcnNumber() throws IOException {
 
-        try {
-            String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_EMPTY_FILENAME);
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile(FIRST_SUBMIT_ANSWER_DCN_EMPTY_FILENAME);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -348,72 +328,68 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should update the answers successfully and return with 201 response code")
     @Test
-    void testSubmitAnswersSecondTime()  {
+    void testSubmitAnswersSecondTime() throws IOException {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 1;
-            int dobProvided = 1;
-            Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        int resultCount = 1;
+        int dobProvided = 1;
+        Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp,false, pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null,
+                                                                      testTimeStamp,false, pcqId, testTimeStamp)
+        ).thenReturn(resultCount);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-            verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
-                dobProvided, testDob, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, testTimeStamp,false, pcqId, testTimeStamp);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
+        verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
+            dobProvided, testDob, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, testTimeStamp,false, pcqId, testTimeStamp);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
     }
 
     /**
@@ -423,73 +399,70 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should not update the database and return with 202 response code")
     @Test
-    void testCompletedDateStale()  {
+    void testCompletedDateStale() throws IOException {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            int resultCount = 0;
-            int dobProvided = 1;
-            Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
-            Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        int resultCount = 0;
+        int dobProvided = 1;
+        Date testDob = Date.valueOf(LocalDate.of(1970, Month.JANUARY, 1));
+        Timestamp testTimeStamp = PcqUtils.getTimeFromString(TEST_TIME_STAMP);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null, null,
-                                                                          null,
-                                                                          testTimeStamp,false, pcqId, testTimeStamp)
-            ).thenReturn(resultCount);
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty("api-error-messages.accepted")).thenReturn(API_ERROR_MESSAGE_ACCEPTED);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        when(protectedCharacteristicsRepository.updateCharacteristics(dobProvided, testDob, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null, null,
+                                                                      null,
+                                                                      testTimeStamp,false, pcqId, testTimeStamp)
+        ).thenReturn(resultCount);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        when(environment.getProperty("api-error-messages.accepted")).thenReturn(API_ERROR_MESSAGE_ACCEPTED);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.ACCEPTED, actual.getStatusCode(), "Expected 202 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.ACCEPTED, actual.getStatusCode(), "Expected 202 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty("api-error-messages.accepted");
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-            verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
-                dobProvided, testDob, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, null,
-                null, testTimeStamp,false, pcqId, testTimeStamp);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty("api-error-messages.accepted");
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
+        verify(protectedCharacteristicsRepository, times(1)).updateCharacteristics(
+            dobProvided, testDob, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, null,
+            null, testTimeStamp,false, pcqId, testTimeStamp);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -499,29 +472,26 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should validate the version number and return with 403 response code")
     @Test
-    void testInvalidVersionNumber()  {
+    void testInvalidVersionNumber() throws IOException {
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -531,29 +501,26 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should validate the version number for OptOut operation and return with 403 response code")
     @Test
-    void testInvalidVersionNumberForOptOut()  {
+    void testInvalidVersionNumberForOptOut() throws IOException {
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(INVALID_ERROR_PROPERTY);
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
 
     }
 
@@ -563,26 +530,22 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    void testInvalidRequestForMissingHeader()  {
+    void testInvalidRequestForMissingHeader() throws IOException {
 
-        try {
-            String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = mock(HttpHeaders.class);
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = mock(HttpHeaders.class);
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
 
     }
 
@@ -592,120 +555,54 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400 for OptOut")
     @Test
-    void testInvalidOptOutRequestForMissingHeader()  {
+    void testInvalidOptOutRequestForMissingHeader() throws IOException {
 
-        try {
-            String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            answerRequest.setOptOut("Y");
+        String jsonStringRequest = asJsonString(new PcqAnswerRequest(TEST_PCQ_ID));
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        answerRequest.setOptOut("Y");
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = mock(HttpHeaders.class);
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = mock(HttpHeaders.class);
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
 
     }
 
     /**
-     * This method tests the submitAnswers API when it is called with invalid Json.
+     * This method tests the submitAnswers API when it is called with invalid Json with or without Invalid opt out
      * The response status code will be 400.
      */
     @DisplayName("Should return with an Invalid Request error code 400")
-    @Test
-    void testRequestForInvalidJson()  {
+    @ParameterizedTest
+    @CsvSource({
+        "JsonTestFiles/InvalidJson1.json",
+        "JsonTestFiles/InvalidOptOutJson1.json",
+        "JsonTestFiles/InvalidOptOutJson.json",
+    })
+    void testRequestForInvalidJsonWithInvalidOptOut(String jsonFilePath) throws IOException {
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        String jsonStringRequest = jsonStringFromFile(jsonFilePath);
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
-    }
-
-    /**
-     * This method tests the submitAnswers API OptOut request when it is called with invalid Json.
-     * The response status code will be 400.
-     */
-    @DisplayName("Should return with an Invalid Request error code 400 for OptOut request")
-    @Test
-    void testOptOutRequestForInvalidJson()  {
-
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
-    }
-
-    /**
-     * This method tests the submitAnswers API when it is called with invalid OptOut value in the Json.
-     * The response status code will be 400.
-     */
-    @DisplayName("Should return with an Invalid Request error code 400 for Invalid OptOut value")
-    @Test
-    void testRequestForInvalidOptOutValue()  {
-
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(API_ERROR_MESSAGE_BAD_REQUEST);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
 
     }
 
@@ -715,40 +612,37 @@ class PcqAnswersControllerTest {
      */
     @DisplayName("Should return with an 500 error code")
     @Test
-    void testInternalError()  {
+    void testInternalError() throws IOException {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
-            PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
+        PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
-            doThrow(new NullPointerException()).when(protectedCharacteristicsRepository)
-                .saveProtectedCharacteristicsWithEncryption(any(
-                ProtectedCharacteristics.class),Mockito.eq(null));
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
+        doThrow(new NullPointerException()).when(protectedCharacteristicsRepository)
+            .saveProtectedCharacteristicsWithEncryption(any(
+            ProtectedCharacteristics.class),Mockito.eq(null));
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        when(environment.getProperty("api-error-messages.internal_error")).thenReturn("Unknown error occurred");
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-            ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
+             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
 
 
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty("api-error-messages.internal_error");
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-            verify(protectedCharacteristicsRepository, times(1))
-                .saveProtectedCharacteristicsWithEncryption(any(
-                ProtectedCharacteristics.class),Mockito.eq(null));
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty("api-error-messages.internal_error");
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
+        verify(protectedCharacteristicsRepository, times(1))
+            .saveProtectedCharacteristicsWithEncryption(any(
+            ProtectedCharacteristics.class),Mockito.eq(null));
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
     }
 
     /**
@@ -760,26 +654,22 @@ class PcqAnswersControllerTest {
     void testGetAnswerFound()  {
 
         String pcqId = TEST_PCQ_ID;
-        try {
+        ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
+        targetObject.setPcqId(pcqId);
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
 
-            ProtectedCharacteristics targetObject = new ProtectedCharacteristics();
-            targetObject.setPcqId(pcqId);
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.of(targetObject);
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
+        ResponseEntity<PcqAnswerResponse> actual = assertDoesNotThrow(() ->
+            pcqAnswersController.getAnswersByPcqId(pcqId));
 
-            ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
+        PcqAnswerResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, RESPONSE_NULL_MSG);
 
-            PcqAnswerResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, RESPONSE_NULL_MSG);
-
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
     }
 
@@ -792,20 +682,14 @@ class PcqAnswersControllerTest {
     void testGetAnswerNotFound()  {
 
         String pcqId = TEST_PCQ_ID;
-        try {
+        Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
 
-            Optional<ProtectedCharacteristics> protectedCharacteristicsOptional = Optional.empty();
+        when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
+            .thenReturn(protectedCharacteristicsOptional);
 
-            when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
-                .thenReturn(protectedCharacteristicsOptional);
+        assertThrows(DataNotFoundException.class, () -> pcqAnswersController.getAnswersByPcqId(pcqId));
 
-            assertThrows(DataNotFoundException.class, () -> pcqAnswersController.getAnswersByPcqId(pcqId));
-
-            verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(protectedCharacteristicsRepository, times(1)).findByPcqId(pcqId,null);
 
     }
 
@@ -836,19 +720,14 @@ class PcqAnswersControllerTest {
     void testDeletePcqRecord()  {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
-            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(1);
-            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+        when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
+        when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(1);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() -> pcqAnswersController.deletePcqRecord(pcqId));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
 
-            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
 
     }
 
@@ -861,18 +740,14 @@ class PcqAnswersControllerTest {
     void testDeletePcqRecordNotFound()  {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
-            when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(0);
-            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+        when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
+        when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(0);
+        ResponseEntity<Object> actual = assertDoesNotThrow(() -> pcqAnswersController.deletePcqRecord(pcqId));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode(), "Expected 404 status code");
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode(), "Expected 404 status code");
 
-            verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(protectedCharacteristicsRepository, times(1)).deletePcqRecord(pcqId);
 
     }
 
@@ -885,16 +760,11 @@ class PcqAnswersControllerTest {
     void testDeletePcqRecordUnauthorised()  {
 
         String pcqId = TEST_PCQ_ID;
-        try {
-            when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("false");
-            ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
+        when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("false");
+        ResponseEntity<Object> actual = assertDoesNotThrow(() -> pcqAnswersController.deletePcqRecord(pcqId));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode(), "Expected 404 status code");
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode(), "Expected 404 status code");
 
     }
 

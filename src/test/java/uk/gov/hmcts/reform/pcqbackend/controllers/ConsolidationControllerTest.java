@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.core.env.Environment;
@@ -22,6 +24,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -104,31 +107,25 @@ class ConsolidationControllerTest {
      */
     @DisplayName("Should return with an Invalid Request error code 400")
     @Test
-    void testGetPcqWithoutCaseForMissingHeader()  {
+    void testGetPcqWithoutCaseForMissingHeader() {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = mock(HttpHeaders.class);
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = mock(HttpHeaders.class);
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER)
+        );
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
+        assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
-            assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
-
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
     }
 
     /**
@@ -139,44 +136,38 @@ class ConsolidationControllerTest {
     @Test
     void testGetPcqWithoutCaseMultipleIds()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
+        List<ProtectedCharacteristics> targetList = generateTargetList(3);
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class),any(
+            Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
-            List<ProtectedCharacteristics> targetList = generateTargetList(3);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+             consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
+        assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are null");
+        assertTrue(actualBody.getPcqRecord().length > 0, "PcqAnswers has at least 1 entry");
+        assertArrayContents(targetList, actualBody.getPcqRecord());
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-            assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are null");
-            assertTrue(actualBody.getPcqRecord().length > 0, "PcqAnswers has at least 1 entry");
-            assertArrayContents(targetList, actualBody.getPcqRecord());
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                        any(Timestamp.class),Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                    any(Timestamp.class),Mockito.eq(null));
 
     }
 
@@ -188,42 +179,36 @@ class ConsolidationControllerTest {
     @Test
     void testGetPcqWithoutCaseSingleId()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
+        List<ProtectedCharacteristics> targetList = generateTargetList(1);
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class),any(
+            Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
-            List<ProtectedCharacteristics> targetList = generateTargetList(1);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
+        assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are not null");
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-            assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are not null");
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                         any(Timestamp.class),Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                     any(Timestamp.class),Mockito.eq(null));
 
     }
 
@@ -235,43 +220,37 @@ class ConsolidationControllerTest {
     @Test
     void testGetPcqWithoutCaseNoPcqIds()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
+        List<ProtectedCharacteristics> targetList = generateTargetList(0);
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class),any(
+            Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
-            List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+             consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
+        assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are null");
+        assertArrayContents(targetList, actualBody.getPcqRecord());
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-            assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqRecord(), "PcqAnswers are null");
-            assertArrayContents(targetList, actualBody.getPcqRecord());
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                       any(Timestamp.class),Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                   any(Timestamp.class),Mockito.eq(null));
 
     }
 
@@ -283,44 +262,38 @@ class ConsolidationControllerTest {
     @Test
     void testGetPcqWithoutCaseInternalError()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class),any(
+            Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
 
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController
-                .getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
+        assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertEquals(0, actualBody.getPcqRecord().length, EXPECTED_EMPTY_PCQIDS_MSG);
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
-            assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertEquals(0, actualBody.getPcqRecord().length, EXPECTED_EMPTY_PCQIDS_MSG);
+        List<ProtectedCharacteristics> targetList = generateTargetList(0);
+        assertArrayContents(targetList, actualBody.getPcqRecord());
 
-            List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            assertArrayContents(targetList, actualBody.getPcqRecord());
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
-                                                                          Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
+                                                                      Mockito.eq(null));
 
     }
 
@@ -332,28 +305,23 @@ class ConsolidationControllerTest {
     @Test
     void testAddCaseForPcqForMissingHeader()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = mock(HttpHeaders.class);
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = mock(HttpHeaders.class);
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+        ResponseEntity<SubmitResponse> actual = assertDoesNotThrow(() ->
+            consolidationController.addCaseForPcq(
+            mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID,  TEST_CASE_ID));
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(
-                mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID,  TEST_CASE_ID);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
+        SubmitResponse actualBody = actual.getBody();
+        assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
+        assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
 
-            SubmitResponse actualBody = actual.getBody();
-            assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
-            assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
 
     }
 
@@ -365,32 +333,28 @@ class ConsolidationControllerTest {
     @Test
     void testAddCaseForPcqSuccess()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(1);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(1);
+        ResponseEntity<SubmitResponse> actual = assertDoesNotThrow(() ->
+             consolidationController.addCaseForPcq(mockHeaders,
+                  SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID));
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(mockHeaders,
-                      SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID);
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
+        SubmitResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
+        assertEquals(API_ERROR_MESSAGE_UPDATED, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertNotNull(actualBody.getPcqId(), "PcqIds are not null");
 
-            SubmitResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-            assertEquals(API_ERROR_MESSAGE_UPDATED, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqId(), "PcqIds are not null");
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1))
+            .updateCase(TEST_CASE_ID, TEST_PCQ_ID);
 
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .updateCase(TEST_CASE_ID, TEST_PCQ_ID);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
 
     }
 
@@ -439,32 +403,26 @@ class ConsolidationControllerTest {
     @Test
     void testAddCaseForPcqInternalServerError()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenThrow(
+            NullPointerException.class);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenThrow(
-                NullPointerException.class);
+        ResponseEntity<SubmitResponse> actual = assertDoesNotThrow(() -> consolidationController.addCaseForPcq(
+            mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID));
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(
-                mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID);
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
+        SubmitResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
+        assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
 
-            SubmitResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
-            assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .updateCase(TEST_CASE_ID, TEST_PCQ_ID);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1))
+            .updateCase(TEST_CASE_ID, TEST_PCQ_ID);
 
     }
 
@@ -476,174 +434,67 @@ class ConsolidationControllerTest {
     @Test
     void testGetPcqRecordWithoutCaseForMissingHeader()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = mock(HttpHeaders.class);
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = mock(HttpHeaders.class);
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders, SERVICE_AUTH_HEADER);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
+        assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
-            assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
 
     }
 
     /**
      * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
-     * the response contains multiple pcq records. The response status code will be 200.
+     * the response contains pcq records based on parameter. The response status code will be 200.
      */
-    @DisplayName("Should return with an Success Request error code 200 and multiple pcq records")
-    @Test
-    void testGetPcqRecordWithoutCaseMultipleIds()  {
+    @DisplayName("Should return with an Success Request error code 200 and pcq records based on number of records")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3})
+    void testGetPcqRecordWithoutCaseWithVariedNumberOfRecords(int numberOfRecords)  {
 
-        try {
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            List<ProtectedCharacteristics> targetList = generateTargetList(3);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
+        List<ProtectedCharacteristics> targetList = generateTargetList(numberOfRecords);
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class),any(
+            Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders, SERVICE_AUTH_HEADER);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-            assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqRecord(), "PcqRecords are null");
-            assertArrayContents(targetList, actualBody.getPcqRecord());
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
+        assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertNotNull(actualBody.getPcqRecord(), "PcqRecords are null");
+        assertArrayContents(targetList, actualBody.getPcqRecord());
 
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
-                Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
-
-    }
-
-    /**
-     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
-     * the response contains array with single pcq record. The response status code will be 200.
-     */
-    @DisplayName("Should return with an Success Request error code 200 and single pcq record")
-    @Test
-    void testGetPcqRecordWithoutCaseSingleId()  {
-
-        try {
-
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
-
-            List<ProtectedCharacteristics> targetList = generateTargetList(1);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
-
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders, SERVICE_AUTH_HEADER);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
-
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-            assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqRecord(), "Pcq Record are null");
-            assertArrayContents(targetList, actualBody.getPcqRecord());
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                                                                          any(Timestamp.class),Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
-
-    }
-
-    /**
-     * This method tests the getPcqRecordWithoutCase API when it is called with all valid parameters and
-     * the response contains empty array (no pcq records). The response status code will be 200.
-     */
-    @DisplayName("Should return with an Success Request error code 200 and no pcq ids")
-    @Test
-    void testGetPcqRecordWithoutCaseNoPcqRecords()  {
-
-        try {
-
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
-
-            List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenReturn(targetList);
-
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders, SERVICE_AUTH_HEADER);
-
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.OK, actual.getStatusCode(), STATUS_CODE_MSG);
-
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_OK, actualBody.getResponseStatusCode(), MSG_1);
-            assertEquals(SUCCESS_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqRecord(), "Pcq Records are null");
-            assertArrayContents(targetList, actualBody.getPcqRecord());
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                          any(Timestamp.class),Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),any(Timestamp.class),
+            Mockito.eq(null));
 
     }
 
@@ -655,44 +506,37 @@ class ConsolidationControllerTest {
     @Test
     void testGetPcqRecordWithoutCaseInternalError()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
+        when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY)).thenReturn(DAYS_LIMIT);
-            when(environment.getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN)).thenReturn(DAYS_LIMIT_LESS_THAN);
+        when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
+            Timestamp.class),any(
+            Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
 
-            when(protectedCharacteristicsRepository.findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(
-                Timestamp.class),any(
-                Timestamp.class),Mockito.eq(null))).thenThrow(NullPointerException.class);
+        ResponseEntity<PcqRecordWithoutCaseResponse> actual = assertDoesNotThrow(() ->
+            consolidationController.getPcqRecordWithoutCase(mockHeaders, SERVICE_AUTH_HEADER));
 
-            ResponseEntity<PcqRecordWithoutCaseResponse> actual = consolidationController.getPcqRecordWithoutCase(
-                mockHeaders, SERVICE_AUTH_HEADER);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
 
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
+        PcqRecordWithoutCaseResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
+        assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertEquals(0, actualBody.getPcqRecord().length, EXPECTED_EMPTY_PCQRCORDS_MSG);
+        List<ProtectedCharacteristics> targetList = generateTargetList(0);
+        assertArrayContents(targetList, actualBody.getPcqRecord());
 
-            PcqRecordWithoutCaseResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals("500", actualBody.getResponseStatusCode(), "Expected 500 status");
-            assertEquals(UNKNOWN_ERROR_MSG, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertEquals(0, actualBody.getPcqRecord().length, EXPECTED_EMPTY_PCQRCORDS_MSG);
-            List<ProtectedCharacteristics> targetList = generateTargetList(0);
-            assertArrayContents(targetList, actualBody.getPcqRecord());
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
-            verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
-            verify(protectedCharacteristicsRepository, times(1))
-                .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
-                         any(Timestamp.class),Mockito.eq(null));
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
-
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY);
+        verify(environment, times(1)).getProperty(NUMBER_OF_DAYS_PROPERTY_LESS_THAN);
+        verify(protectedCharacteristicsRepository, times(1))
+            .findByCaseIdIsNullAndCompletedDateGreaterThanAndLessThan(any(Timestamp.class),
+                     any(Timestamp.class),Mockito.eq(null));
     }
 
     private HttpHeaders getMockHeader() {
