@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -78,8 +77,7 @@ class SubmitAnswersServiceTest {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
         PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(null, pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(null, pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -94,8 +92,7 @@ class SubmitAnswersServiceTest {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
 
         PcqAnswerRequest pcqAnswerRequest = new PcqAnswerRequest("C1234");
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processOptOut(null, pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(null, pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -112,8 +109,8 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidJson1.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -131,8 +128,7 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidOptOutJson1.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -150,8 +146,8 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerDcnMissing.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -177,8 +173,8 @@ class SubmitAnswersServiceTest {
              Mockito.eq(null)))
             .thenReturn(protectedCharacteristicsList);
 
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -221,8 +217,7 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersionOptOut.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity = submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -251,8 +246,8 @@ class SubmitAnswersServiceTest {
         doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
             targetObject,encryptionKey);
 
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -287,8 +282,8 @@ class SubmitAnswersServiceTest {
         doNothing().when(protectedCharacteristicsRepository).saveProtectedCharacteristicsWithEncryption(
             targetObject,encryptionKey);
 
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -307,8 +302,8 @@ class SubmitAnswersServiceTest {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-             submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -356,8 +351,8 @@ class SubmitAnswersServiceTest {
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswerOptOut.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
 
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -405,8 +400,8 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -453,8 +448,8 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -484,8 +479,8 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/FirstSubmitAnswer.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -507,8 +502,8 @@ class SubmitAnswersServiceTest {
         when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
                                             .thenThrow(NullPointerException.class);
 
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processOptOut(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -529,8 +524,8 @@ class SubmitAnswersServiceTest {
         when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
             .thenReturn(protectedCharacteristicsOptional);
 
-        ProtectedCharacteristics actualObject = assertDoesNotThrow(() ->
-            submitAnswersService.getProtectedCharacteristicsById(pcqId));
+        ProtectedCharacteristics actualObject =
+            submitAnswersService.getProtectedCharacteristicsById(pcqId);
 
         Assertions.assertNotNull(actualObject, RESPONSE_NULL_MSG);
         Assertions.assertEquals(pcqId, actualObject.getPcqId(), "Not expected pcq id");
@@ -549,8 +544,7 @@ class SubmitAnswersServiceTest {
         when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
             .thenReturn(protectedCharacteristicsOptional);
 
-        ProtectedCharacteristics actualObject = assertDoesNotThrow(() ->
-            submitAnswersService.getProtectedCharacteristicsById(pcqId));
+        ProtectedCharacteristics actualObject = submitAnswersService.getProtectedCharacteristicsById(pcqId);
 
         Assertions.assertNull(actualObject, RESPONSE_NULL_MSG);
 
@@ -623,8 +617,8 @@ class SubmitAnswersServiceTest {
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
         pcqAnswerRequest.setPcqId("");
 
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() -> submitAnswersService.processPcqAnswers(
-            getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =  submitAnswersService.processPcqAnswers(
+            getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
@@ -670,8 +664,8 @@ class SubmitAnswersServiceTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
         PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> responseEntity = assertDoesNotThrow(() ->
-             submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest));
+        ResponseEntity<Object> responseEntity =
+            submitAnswersService.processPcqAnswers(getTestHeader(), pcqAnswerRequest);
 
         Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 

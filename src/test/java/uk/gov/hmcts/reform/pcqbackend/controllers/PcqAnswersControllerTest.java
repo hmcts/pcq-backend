@@ -30,7 +30,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -139,8 +138,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.CREATED, actual.getStatusCode(),
@@ -179,8 +177,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
@@ -219,8 +216,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
@@ -251,8 +247,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
@@ -279,8 +274,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
@@ -309,8 +303,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
@@ -364,8 +357,7 @@ class PcqAnswersControllerTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.CREATED, actual.getStatusCode(), "Expected 201 status code");
@@ -436,8 +428,7 @@ class PcqAnswersControllerTest {
 
         String jsonStringRequest = jsonStringFromFile("JsonTestFiles/DobSubmitAnswer.json");
         PcqAnswerRequest answerRequest = jsonObjectFromString(jsonStringRequest);
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.ACCEPTED, actual.getStatusCode(), "Expected 202 status code");
@@ -482,8 +473,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
@@ -511,8 +501,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.FORBIDDEN, actual.getStatusCode(), "Expected 403 status code");
@@ -539,8 +528,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = mock(HttpHeaders.class);
         when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
@@ -565,8 +553,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = mock(HttpHeaders.class);
         when(mockHeaders.get(HEADER_KEY)).thenReturn(null);
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
@@ -596,8 +583,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), "Expected 400 status code");
@@ -629,8 +615,7 @@ class PcqAnswersControllerTest {
         HttpHeaders mockHeaders = getMockHeader();
         when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
 
-        ResponseEntity<Object> actual = assertDoesNotThrow(() ->
-             pcqAnswersController.submitAnswers(mockHeaders, answerRequest));
+        ResponseEntity<Object> actual = pcqAnswersController.submitAnswers(mockHeaders, answerRequest);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, actual.getStatusCode(), "Expected 500 status code");
@@ -660,8 +645,7 @@ class PcqAnswersControllerTest {
         when(protectedCharacteristicsRepository.findByPcqId(pcqId,null))
             .thenReturn(protectedCharacteristicsOptional);
 
-        ResponseEntity<PcqAnswerResponse> actual = assertDoesNotThrow(() ->
-            pcqAnswersController.getAnswersByPcqId(pcqId));
+        ResponseEntity<PcqAnswerResponse> actual = pcqAnswersController.getAnswersByPcqId(pcqId);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
@@ -722,7 +706,7 @@ class PcqAnswersControllerTest {
         String pcqId = TEST_PCQ_ID;
         when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
         when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(1);
-        ResponseEntity<Object> actual = assertDoesNotThrow(() -> pcqAnswersController.deletePcqRecord(pcqId));
+        ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.OK, actual.getStatusCode(), "Expected 200 status code");
@@ -742,7 +726,7 @@ class PcqAnswersControllerTest {
         String pcqId = TEST_PCQ_ID;
         when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("true");
         when(protectedCharacteristicsRepository.deletePcqRecord(pcqId)).thenReturn(0);
-        ResponseEntity<Object> actual = assertDoesNotThrow(() -> pcqAnswersController.deletePcqRecord(pcqId));
+        ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.NOT_FOUND, actual.getStatusCode(), "Expected 404 status code");
@@ -761,7 +745,7 @@ class PcqAnswersControllerTest {
 
         String pcqId = TEST_PCQ_ID;
         when(environment.getProperty(ALLOW_DELETE_PROPERTY)).thenReturn("false");
-        ResponseEntity<Object> actual = assertDoesNotThrow(() -> pcqAnswersController.deletePcqRecord(pcqId));
+        ResponseEntity<Object> actual = pcqAnswersController.deletePcqRecord(pcqId);
 
         assertNotNull(actual, RESPONSE_NULL_MSG);
         assertEquals(HttpStatus.UNAUTHORIZED, actual.getStatusCode(), "Expected 404 status code");
