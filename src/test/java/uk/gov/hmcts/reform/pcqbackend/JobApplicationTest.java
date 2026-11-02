@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
@@ -13,6 +12,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.hmcts.reform.pcqbackend.service.PcqDisposerService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -79,7 +79,7 @@ class JobApplicationTest {
         // given
         ReflectionTestUtils.setField(jobApplication, DISPOSER_ENABLED, true);
         when(environment.getProperty(PCQ_DISPOSER_JOB_PROPERTY)).thenReturn("true");
-        Mockito.doThrow(new IllegalArgumentException("Exception from PCQ Disposer service"))
+        doThrow(new IllegalArgumentException("Exception from PCQ Disposer service"))
             .when(pcqDisposerService).disposePcq();
 
         // when
