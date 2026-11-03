@@ -34,7 +34,7 @@ jobs:
           git config user.name "PCQ GitHub action"
           git remote add upstream "https://jenkins-reform-hmcts:${{ secrets.SWAGGER_PUBLISHER_API_TOKEN }}@github.com/hmcts/reform-api-docs.git"
           git pull upstream master
-          repo=`echo "$GITHUB_REPOSITORY" | cut -f2- -d/`
+          repo=`echo "${GITHUB_REPOSITORY}" | cut -f2- -d/`
           echo "$(cat /tmp/pcq-backend.json)" > "docs/specs/pcq-backend.json"
           git add "docs/specs/pcq-backend.json"
           # Only commit and push if we have changes.

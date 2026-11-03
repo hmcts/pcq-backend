@@ -1,10 +1,10 @@
 package uk.gov.hmcts.reform.pcqbackend.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import uk.gov.hmcts.reform.authorisation.validators.AuthTokenValidator;
 import uk.gov.hmcts.reform.pcqbackend.exceptions.InvalidAuthenticationException;
 
-@Component
+@Service
 public class AuthService {
 
     private final AuthTokenValidator authTokenValidator;
