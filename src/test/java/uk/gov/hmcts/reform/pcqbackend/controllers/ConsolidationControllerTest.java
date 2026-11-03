@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -49,7 +48,6 @@ class ConsolidationControllerTest {
     private static final String HEADER_KEY = "X-Correlation-Id";
     private static final String API_ERROR_MESSAGE_UPDATED = "Successfully updated";
     private static final String API_ERROR_MESSAGE_BAD_REQUEST = "Invalid Request";
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
     private static final String CO_RELATION_ID_FOR_TEST = "Test-Id";
     private static final String INVALID_ERROR = "Invalid Request";
     private static final String INVALID_ERROR_PROPERTY = "api-error-messages.bad_request";
@@ -366,32 +364,25 @@ class ConsolidationControllerTest {
     @Test
     void testAddCaseForPcqFailure()  {
 
-        try {
+        when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
+        HttpHeaders mockHeaders = getMockHeader();
+        when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
+        when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(0);
 
-            when(environment.getProperty(HEADER_API_PROPERTY)).thenReturn(HEADER_KEY);
-            HttpHeaders mockHeaders = getMockHeader();
-            when(mockHeaders.get(HEADER_KEY)).thenReturn(getTestHeader());
-            when(protectedCharacteristicsRepository.updateCase(TEST_CASE_ID, TEST_PCQ_ID)).thenReturn(0);
+        ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(
+            mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID);
+        assertNotNull(actual, RESPONSE_NULL_MSG);
+        assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
 
-            ResponseEntity<SubmitResponse> actual = consolidationController.addCaseForPcq(
-                mockHeaders, SERVICE_AUTH_HEADER, TEST_PCQ_ID, TEST_CASE_ID);
-            assertNotNull(actual, RESPONSE_NULL_MSG);
-            assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode(), EXPECTED_NOT_FOUND_MSG);
+        SubmitResponse actualBody = actual.getBody();
+        assertNotNull(actualBody, BODY_NULL_MSG);
+        assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
+        assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
+        assertNotNull(actualBody.getPcqId(), "PcqIds are not null");
 
-            SubmitResponse actualBody = actual.getBody();
-            assertNotNull(actualBody, BODY_NULL_MSG);
-            assertEquals(HTTP_NOT_FOUND, actualBody.getResponseStatusCode(), EXPECTED_400_MSG);
-            assertEquals(API_ERROR_MESSAGE_BAD_REQUEST, actualBody.getResponseStatus(), UNEXPECTED_RESPONSE_MSG);
-            assertNotNull(actualBody.getPcqId(), "PcqIds are not null");
-
-            verify(mockHeaders, times(1)).get(HEADER_KEY);
-            verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
-            verify(protectedCharacteristicsRepository, times(1))
-                .updateCase(TEST_CASE_ID, TEST_PCQ_ID);
-
-        } catch (Exception e) {
-            fail(ERROR_MSG_PREFIX + e.getMessage());
-        }
+        verify(mockHeaders, times(1)).get(HEADER_KEY);
+        verify(environment, times(1)).getProperty(HEADER_API_PROPERTY);
+        verify(protectedCharacteristicsRepository, times(1)).updateCase(TEST_CASE_ID, TEST_PCQ_ID);
 
     }
 

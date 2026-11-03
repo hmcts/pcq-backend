@@ -50,7 +50,6 @@ class SubmitAnswersServiceTest {
     @InjectMocks
     private SubmitAnswersService submitAnswersService;
 
-    private static final String ERROR_MSG_PREFIX = "Test failed because of exception during execution. Message is ";
     private static final String STATUS_CODE_400_MSG = "Expected 400 status code";
     private static final String INVALID_ERROR = "Invalid Request";
     private static final String INVALID_ERROR_PROPERTY = "api-error-messages.bad_request";
@@ -185,27 +184,21 @@ class SubmitAnswersServiceTest {
     }
 
     @Test
-    void testInvalidVersion() {
+    void testInvalidVersion() throws IOException {
         when(environment.getProperty(INVALID_ERROR_PROPERTY)).thenReturn(INVALID_ERROR);
         when(environment.getProperty(SCHEMA_FILE_PROPERTY)).thenReturn(SCHEMA_FILE);
         when(environment.getProperty(API_VERSION_PROPERTY)).thenReturn("1");
 
-        try {
-            String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
-            PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
-            ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
-                                                                                           pcqAnswerRequest);
+        String jsonStringRequest = jsonStringFromFile("JsonTestFiles/InvalidVersion.json");
+        PcqAnswerRequest pcqAnswerRequest = jsonObjectFromString(jsonStringRequest);
+        ResponseEntity<Object> responseEntity = submitAnswersService.processPcqAnswers(getTestHeader(),
+                                                                                       pcqAnswerRequest);
 
-            Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
+        Assertions.assertNotNull(responseEntity, RESPONSE_NULL_MSG);
 
-            Object responseMap = responseEntity.getBody();
-            Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
-            Assertions.assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
-
-
-        } catch (Exception e) {
-            Assertions.fail(ERROR_MSG_PREFIX + e.getMessage(), e);
-        }
+        Object responseMap = responseEntity.getBody();
+        Assertions.assertNotNull(responseMap, RESPONSE_BODY_NULL_MSG);
+        Assertions.assertEquals(403, responseEntity.getStatusCode().value(), "Expected 403 status code");
 
     }
 
