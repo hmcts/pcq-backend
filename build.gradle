@@ -294,7 +294,7 @@ dependencies {
   implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webmvc'
   implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign'
   implementation group: 'org.yaml', name: 'snakeyaml', version: '2.7'
-  implementation group: "com.networknt", name: "json-schema-validator", version: '3.0.8'
+  implementation group: "com.networknt", name: "json-schema-validator", version: '3.0.9'
   implementation group: 'com.eatthepath', name: 'java-otp', version: '1.0.0'
 
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: versions.jjwt
