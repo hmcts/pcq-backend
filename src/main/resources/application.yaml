@@ -6,6 +6,10 @@ management:
     health:
       probes:
         enabled: true
+      group:
+        readiness:
+          include:
+            - db
       show-details: never
       show-components: always
 
