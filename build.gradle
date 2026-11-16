@@ -263,7 +263,7 @@ def versions = [
 dependencies {
   constraints {
     // CVE-2026-33117: versions below 4.10.6 are vulnerable.
-    implementation 'com.azure:azure-security-keyvault-keys:4.12.1'
+    implementation 'com.azure:azure-security-keyvault-keys:4.13.0'
   }
 
   implementation group: 'com.azure', name: 'azure-storage-blob', version: '12.37.2'
